@@ -90,9 +90,22 @@ struct TokenizerState<'input> {
     remaining: &'input str,
 }
 
+impl<'input> TokenizerState<'input> {
+    fn new(input: &'input str) -> Self {
+        Self {
+            current_pos: 0,
+            remaining: input,
+            input,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 enum Token<'input> {
-    Thingy { val: &'input str, start_pos: usize },
     SingleQuote { val: &'input str, start_pos: usize },
+    DoubleQuote { val: &'input str, start_pos: usize },
+    WhiteSpace { val: &'input str, start_pos: usize },
+    Word { val: &'input str, start_pos: usize },
 }
 
 fn tokenizer<'state, 'input: 'state>(
@@ -103,34 +116,101 @@ fn tokenizer<'state, 'input: 'state>(
         let state = &mut *state;
         let mut chars = state.remaining.chars().peekable();
         let mut len = 1;
+        let mut escaped = false;
 
         let Some(chr) = chars.next() else {
             return None;
         };
         match chr {
             '\'' => {
-                while chars.peek().copied() != Some('\'') {
+                while let Some(s) = chars.peek().copied() {
+                    if s == '\'' {
+                        break;
+                    }
                     len += 1;
                     chars.next();
                 }
+                let skip = chars.peek() == Some(&'\'');
+                let old_current = state.current_pos;
+                state.current_pos += len;
+                let old_remaining = state.remaining;
+                state.remaining = &state.remaining[(len + skip as usize)..];
+                return Some(Token::SingleQuote {
+                    val: &old_remaining[1..len],
+                    start_pos: old_current,
+                });
+            }
+            '"' => {
+                while let Some(s) = chars.peek().copied() {
+                    if !escaped && s == '\"' {
+                        break;
+                    }
+                    len += 1;
+                    escaped = chars.next() == Some('\\');
+                }
+                let skip = chars.peek() == Some(&'\"');
+                let old_current = state.current_pos;
+                state.current_pos += len;
+                let old_remaining = state.remaining;
+                state.remaining = &state.remaining[(len + skip as usize)..];
+                return Some(Token::DoubleQuote {
+                    val: &old_remaining[1..len],
+                    start_pos: old_current,
+                });
+            }
+            _ => {}
+        }
+        let was_whitespace = chr.is_ascii_whitespace();
+        while let Some(&chr) = chars.peek() {
+            if chr.is_ascii_whitespace() && !escaped && !was_whitespace {
+                dbg!(state.current_pos);
                 let old_current = state.current_pos;
                 state.current_pos += len;
                 let old_remaining = state.remaining;
                 state.remaining = &state.remaining[len..];
-                return (Some(Token::SingleQuote {
+                return Some(Token::Word {
                     val: &old_remaining[..len],
                     start_pos: old_current,
-                }));
+                });
+            } else if !chr.is_ascii_whitespace() && was_whitespace {
+                let old_current = state.current_pos;
+                state.current_pos += len;
+                let old_remaining = state.remaining;
+                state.remaining = &state.remaining[len..];
+                return Some(Token::WhiteSpace {
+                    val: &old_remaining[..len],
+                    start_pos: old_current,
+                });
             }
-            '"' => {}
-            _ => {}
+            len += 1;
+            escaped = chars.next() == Some('\\');
         }
-
-        Some(Token::Thingy {
-            val: state.input,
-            start_pos: 0,
+        let old_current = state.current_pos;
+        state.current_pos += len;
+        let old_remaining = state.remaining;
+        state.remaining = &state.remaining[len..];
+        Some(if was_whitespace {
+            Token::WhiteSpace {
+                val: &old_remaining[..len],
+                start_pos: old_current,
+            }
+        } else {
+            Token::Word {
+                val: &old_remaining[..len],
+                start_pos: old_current,
+            }
         })
     })
 }
 
-fn main() {}
+fn main() {
+    for line in std::io::stdin().lines() {
+        let line = line.unwrap();
+        let mut state = TokenizerState::new(&line);
+        println!("line is = '{line}'");
+        println!(
+            "token are = {:?}",
+            tokenizer(&mut state).collect::<Vec<_>>()
+        );
+    }
+}
