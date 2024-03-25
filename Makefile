@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/03/25 15:18:33 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/03/25 15:30:19 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -118,7 +118,8 @@ footer:
 
 pull:
 	@printf "$(GREEN)Pulling Submodules$(END)\n"
-	@git submodule foreach git pull
+	@git submodule init
+	@git submodule update
 
 #	Phony
 .PHONY: all bonus clean fclean re
