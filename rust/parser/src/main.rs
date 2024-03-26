@@ -223,6 +223,8 @@ fn tokenizer<'state, 'input: 'state>(
     })
 }
 
+// This isn't a C thingy, it is just needed to make rust happy
+
 struct TokenizerWrapper<'input> {
     _marker: std::marker::PhantomPinned,
     first_pass: TokenizerState<'input>,
@@ -233,8 +235,7 @@ impl<'input> TokenizerWrapper<'input> {
     fn new(s: TokenizerState<'input>) -> Pin<Box<Self>> {
         let mut value = Box::new(std::mem::MaybeUninit::<Self>::uninit());
         unsafe {
-            //
-            let ptr: *mut Self = value.as_mut_ptr();
+            let ptr = value.as_mut_ptr();
             std::ptr::write(std::ptr::addr_of_mut!((*ptr).first_pass), s);
             std::ptr::write(
                 std::ptr::addr_of_mut!((*ptr).iter),
@@ -250,6 +251,8 @@ impl<'input> TokenizerWrapper<'input> {
         unsafe { Pin::into_inner_unchecked(self.as_mut()).iter.next() }
     }
 }
+
+// end of rust thingy
 
 struct ExpenderState<'input> {
     // These will be inserted when a substitution is made, like $HOME
