@@ -1,0 +1,3 @@
+[submodule "mecstd"]
+	path = mecstd
+	url = git@github.com:Maix0/mecstd.git

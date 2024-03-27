@@ -1,0 +1,56 @@
+[definition.vec]
+headers = ["mecstd/generic_sources/header/vec_C__PREFIX__.h__TEMPLATE__"]
+sources = [
+	"mecstd/generic_sources/src/vec_C__PREFIX__.c__TEMPLATE__",
+	"mecstd/generic_sources/src/vec_C__PREFIX___functions2.c__TEMPLATE__",
+]
+replace.C__TYPENAME__ = "type"
+replace.C__TYPEHEADER__ = "header_include"
+replace.C__PREFIX__ = "prefix"
+replace.C__PREFIXUP__ = "prefix"
+
+
+[definition.hashmap]
+headers = ["mecstd/generic_sources/header/hashmap_C__PREFIX__.h__TEMPLATE__"]
+sources = [
+	"mecstd/generic_sources/src/hashmap_C__PREFIX__.c__TEMPLATE__",
+	"mecstd/generic_sources/src/hashmap_C__PREFIX___utils.c__TEMPLATE__",
+]
+replace.C__VALTYPE__ = "type"
+replace.C__KEYTYPE__ = "type"
+replace.C__TYPEHEADER__ = "header_include"
+replace.C__PREFIX__ = "prefix"
+replace.C__PREFIXUP__ = "prefix"
+
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_u8"
+replace.C__TYPEHEADER__ = ''
+replace.C__PREFIX__ = "u8"
+replace.C__PREFIXUP__ = "U8"
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_buffer_str"
+replace.C__TYPEHEADER__ = '#include "me/buffered_str/buf_str.h"'
+replace.C__PREFIX__ = "buf_str"
+replace.C__PREFIXUP__ = "BUF_STR"
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_str"
+replace.C__TYPEHEADER__ = ''
+replace.C__PREFIX__ = "str"
+replace.C__PREFIXUP__ = "STR"
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_process"
+replace.C__TYPEHEADER__ = '#include "me/os/process.h"'
+replace.C__PREFIX__ = "process"
+replace.C__PREFIXUP__ = "PROCESS"

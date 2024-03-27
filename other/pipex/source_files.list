@@ -1,0 +1,9 @@
+app/main
+app/main2
+app/main3
+lib/os/pipe
+lib/os/process
+lib/os/process_inner
+lib/os/process_inner2
+lib/string/inner/split_literals_escaped
+lib/string/split_literals

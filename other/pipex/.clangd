@@ -1,0 +1,20 @@
+CompileFlags: # Tweak the parse settings
+  Add:
+    - "-I/usr/include/"
+    - "-I/home/maix/school/pipex/mlx/"
+    - "-I/home/maix/school/pipex/mecstd/include/"
+    - "-I/home/maix/school/pipex/mecstd/vendor/"
+    - "-I/home/maix/school/pipex/mecstd/output/include/"
+    - "-I/home/maix/school/pipex/mecstd/generic_sources/header/"
+    - "-I/home/maix/school/pipex/include/"
+    - "-I/home/maix/school/pipex/output/include/"
+    - "-I/home/maix/school/pipex/generic_sources/header/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/vendor/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/mecstd/include/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/mecstd/vendor/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/mecstd/output/include/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/mecstd/generic_sources/header/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/include/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/output/include/"
+    - "-I/home/maiboyer/Documents/ring-1/pipex/generic_sources/header/"
+
