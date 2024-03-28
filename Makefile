@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/03/25 15:30:19 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/03/28 15:17:18 by rparodi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,12 +23,13 @@ CC = cc
 RM = rm -rf
 
 # Flags
-CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD
+CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline
 
 # Sources
-LIB =	
+LIB =	./libft/get_next_line.c \
+		./libft/get_next_line_utils.c
 
-SRC =	
+SRC =	./sources/main.c
 
 # Objects
 OBJDIRNAME = ./objects
@@ -54,7 +55,7 @@ bonus: header $(OBJ) $(LIB_OBJ) footer
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@printf '$(GREY) Creating $(END)$(GREEN)$(OBJDIRNAME)$(END)\n'
 	@printf '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)\n'
-	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) $(LIB_OBJ)
+	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) ./stdme/build/libft.a
 
 # Clean (make clean)
 clean:

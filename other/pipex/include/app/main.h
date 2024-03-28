@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 18:51:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/06 18:52:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/03/28 12:37:04 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
 
-# include "me/fs/open.h"
-# include "me/fs/read.h"
+# include "../me/fs/open.h"
+# include "../me/fs/read.h"
 # include "me/fs/write.h"
 # include "me/gnl/gnl.h"
 # include "me/mem/mem_find_bytes.h"
