@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/29 11:42:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/03/29 14:46:30 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@
 # include <readline/history.h>
 
 i32	main(void);
-void	ft_exit(u8 exit_status);
+void	ft_exit(i8 *str, u8 exit_status);
 
 #endif
