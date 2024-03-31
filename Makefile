@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/03/29 11:45:30 by rparodi          ###   ########.fr        #
+#    Updated: 2024/03/31 19:52:25 by rparodi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,8 +26,8 @@ RM = rm -rf
 CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline
 
 # Sources
-LIB =	./libft/get_next_line.c \
-		./libft/get_next_line_utils.c
+LIB =	./libft/ft_split.c \
+		./libft/ft_strcmp.c
 
 SRC =	./sources/ft_exit.c\
 		./sources/main.c
