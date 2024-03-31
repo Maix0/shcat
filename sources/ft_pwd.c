@@ -1,46 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/01 01:16:47 by rparodi          ###   ########.fr       */
+/*   Created: 2024/03/31 22:14:33 by rparodi           #+#    #+#             */
+/*   Updated: 2024/03/31 22:27:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_free_strs(t_str *strs)
+void	ft_pwd(void)
 {
-	t_usize	i;
+	t_str	str;
+	t_usize	size;
 
-	i = 0;
-	while (strs[i])
-	{
-		free(strs[i]);
-		i++;
+	size = 1024;
+	str = (t_str)ft_calloc((size + 1), sizeof(t_i8));
+	if (str == NULL)
+		ft_exit(NULL, 0);
+	while (getcwd(str, size) == NULL) {
+		if (str)
+			free(str);
+		size *= 2;
+		str = (t_str)ft_calloc(sizeof(t_i8), size);
+		if (str == NULL) {
+			ft_exit(NULL, 0);
+		}
 	}
-	free(strs);
-}
-
-	t_str	str_input;
-	t_str	*strs_input;
-
-void	ft_free_utils(t_utils *s)
-{
-	if (s->str_input)
-		free(str_input);
-	if (s->strs_input)
-		ft_free_strs(strs_input);
-	free(s);
-}
-
-void	ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)
-{
-	if (maiboyerlpb)
-		ft_free_utils(maiboyerlpb);
-	printf("exit\n");
-	exit(exit_status);
+	printf("%s\n", str);
+	free(str);
 }

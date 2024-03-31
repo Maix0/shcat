@@ -1,31 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/07 16:56:56 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/31 21:57:48 by rparodi          ###   ########.fr       */
+/*   Created: 2024/03/31 21:48:04 by rparodi           #+#    #+#             */
+/*   Updated: 2024/03/31 21:51:41 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+void	ft_echo(t_str txt, t_str flag)
 {
-	size_t	i;
-	int		diff;
-
-	i = 0;
-	while ((s1[i] || s2[i]))
-	{
-		if (s1[i] != s2[i] && s1 && s2)
-		{
-			diff = (unsigned char)s1[i] - (unsigned char)s2[i];
-			return (diff);
-		}
-		i++;
-	}
-	return (0);
+	printf("%s", txt);
+	if (ft_strcmp(flag, "-n") != 0)
+		printf("\n");
 }

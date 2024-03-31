@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/07 16:56:56 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/31 21:57:48 by rparodi          ###   ########.fr       */
+/*   Created: 2023/11/07 16:55:25 by rparodi           #+#    #+#             */
+/*   Updated: 2024/04/01 01:38:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+t_usize	ft_strlcpy(t_str dst, t_const_str src, t_usize size)
 {
-	size_t	i;
-	int		diff;
+	t_usize	i;
 
 	i = 0;
-	while ((s1[i] || s2[i]))
+	while (src[i] && i + 1 < size)
 	{
-		if (s1[i] != s2[i] && s1 && s2)
-		{
-			diff = (unsigned char)s1[i] - (unsigned char)s2[i];
-			return (diff);
-		}
+		dst[i] = src[i];
 		i++;
 	}
-	return (0);
+	if (size > 0)
+	{
+		dst[i] = '\0';
+		i++;
+	}
+	return (ft_strlen(src));
 }
