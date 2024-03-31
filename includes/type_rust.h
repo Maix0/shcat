@@ -6,33 +6,39 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:44:20 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/29 11:44:40 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/03/31 20:53:56 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPE_RUST_H
 #define TYPE_RUST_H
 
-#include <stddef.h>
+# include <stdbool.h>
+# include <stddef.h>
+# include <unistd.h>
 
-# define bool int
-# define true 1
-# define false 0
+typedef char				*t_str;
+typedef const char			*t_const_str;
 
-# define u8 unsigned char
-# define u16 unsigned short
-# define u32 unsigned int
-# define u64 unsigned long long
+typedef unsigned char		t_u8;
+typedef char				t_i8;
+typedef unsigned short		t_u16;
+typedef short				t_i16;
+typedef int					t_i32;
+typedef unsigned int		t_u32;
+typedef unsigned long long	t_u64;
+typedef long long			t_i64;
+typedef ssize_t				t_isize;
+typedef size_t				t_usize;
 
-# define i8 char
-# define i16 short
-# define i32 int
-# define i64 long long
+typedef float				t_f32;
+typedef double				t_f64;
 
-# define usize size_t
-# define isize ssize_t
+typedef int					t_file;
 
-# define f32 float
-# define f64 double
+typedef bool				t_error;
+
+# define ERROR 1
+# define NO_ERROR 0
 
 #endif

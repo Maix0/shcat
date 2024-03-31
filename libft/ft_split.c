@@ -6,16 +6,16 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 13:56:02 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/31 19:35:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/03/31 21:07:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	count_words(const char *str, char sep)
+static t_i32	count_words(t_const_str str, t_i8 sep)
 {
-	int	i;
-	int	count;
+	t_i32	i;
+	t_i32	count;
 
 	i = 0;
 	count = 0;
@@ -33,13 +33,13 @@ static int	count_words(const char *str, char sep)
 	return (count);
 }
 
-static char	*ft_strndup(const char *s, int j)
+static t_str	ft_strndup(t_const_str s, t_i32 j)
 {
-	int		i;
-	char	*str;
+	t_i32		i;
+	t_str		str;
 
 	i = 0;
-	str = (char *)malloc((j + 1));
+	str = (t_str)malloc((j + 1));
 	if (!str)
 		return (NULL);
 	while (s[i] && i < j)
@@ -51,10 +51,10 @@ static char	*ft_strndup(const char *s, int j)
 	return (str);
 }
 
-static char	**ext_w(char **words_array, const char *str, char sep, int size)
+static t_str	*ext_w(t_str *words_array, t_const_str str, t_i8 sep, t_i32 size)
 {
-	int	i;
-	int	j;
+	t_i32	i;
+	t_i32	j;
 
 	i = 0;
 	j = 0;
@@ -74,13 +74,13 @@ static char	**ext_w(char **words_array, const char *str, char sep, int size)
 	return (words_array);
 }
 
-char	**ft_split(char const *s, char c)
+t_str	*ft_split(t_const_str s, t_i8 c)
 {
-	int		size;
-	char	**words_array;
+	t_i32		size;
+	t_str		*words_array;
 
 	size = count_words(s, c);
-	words_array = (char **)malloc(sizeof(char *) * (size + 1));
+	words_array = (t_str *)malloc(sizeof(char *) * (size + 1));
 	if (!words_array)
 		return (NULL);
 	if (size == 0)

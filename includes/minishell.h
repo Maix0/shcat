@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/31 19:52:56 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/03/31 21:04:32 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,10 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-i32		main(void);
-i32		ft_strcmp(const char *s1, const char *s2);
-void	ft_exit(i8 *str, u8 exit_status);
-i8		**ft_split(i8 const *s, i8 c);
+t_i32		main(void);
+t_i32		ft_strcmp(const char *s1, const char *s2);
+t_i32		ft_check_type_operators(t_i8 **operators);
+void		ft_exit(t_str str, t_u8 exit_status);
+t_str		*ft_split(t_const_str s, t_i8 c);
 
 #endif

@@ -6,55 +6,70 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/03/31 20:08:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/03/31 21:02:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-i32	ft_check_type_cmd(i8 **cmd)
+t_i32	ft_check_type_operators(t_str *operators)
 {
-	usize	j;
+	t_usize	i;
 
-	j = 0;
-	while (cmd[j])
+	i = 0;
+	while (operators[i])
 	{
-		if (ft_strcmp(cmd[j], ">") == 0)
+		if (ft_strcmp(operators[i], ">") == 0)
 			printf("Have to redirect in the file\n");
-		else if (ft_strcmp(cmd[j], ">>") == 0)
+		else if (ft_strcmp(operators[i], ">>") == 0)
 			printf("Have to redirect at the end of the file after\n");
-		else if (ft_strcmp(cmd[j], ">&") == 0)
+		else if (ft_strcmp(operators[i], ">&") == 0)
 			printf("Have to redirect the stdout in the file\n");
-		else if (ft_strcmp(cmd[j], "<") == 0)
+		else if (ft_strcmp(operators[i], "<") == 0)
 			printf("Have to redirect at the end of the file before\n");
-		else if (ft_strcmp(cmd[j], "<<") == 0)
+		else if (ft_strcmp(operators[i], "<<") == 0)
 			printf("Have to redirect at the end of the file after\n");
-		else if (ft_strcmp(cmd[j], "<&") == 0)
+		else if (ft_strcmp(operators[i], "<&") == 0)
 			printf("Have to redirect the stdout in the file\n");
-		else if (ft_strcmp(cmd[j], ";") == 0)
+		else if (ft_strcmp(operators[i], ";") == 0)
 			printf("Have to execute one more command\n");
-		else if (ft_strcmp(cmd[j], ";") == 0)
+		else if (ft_strcmp(operators[i], ";") == 0)
 			printf("Have to execute one more command\n");
-		else if (ft_strcmp(cmd[j], "|") == 0)
-			printf("I have to pipe a cmd !\n");
-		else if (ft_strcmp(cmd[j], "||") == 0)
+		else if (ft_strcmp(operators[i], "|") == 0)
+			printf("I have to pipe a operators !\n");
+		else if (ft_strcmp(operators[i], "||") == 0)
 			printf("Or something\n");
-		else if (ft_strcmp(cmd[j], "&&") == 0)
+		else if (ft_strcmp(operators[i], "&&") == 0)
 			printf("Only if the first has exit status 0\n");
-		else if (ft_strcmp(cmd[j], "&") == 0)
+		else if (ft_strcmp(operators[i], "&") == 0)
 			printf("Parreil mais chelou\n");
 		else
-			printf("Error!\n");
-		j++;
+			return (0);
+		i++;
 	}
 	return (1);
 }
 
-void	ft_take_cmd(void)
+void ft_check(char **input)
 {
-    i32		i;
-    i8		*user_input = NULL;
-	i8		**args = NULL;
+	t_usize	i;
+
+	i = 0;
+	while (input[i] != NULL)
+	{
+		if (ft_check_type_operators(input) == 1)
+			printf("Operateur\n");
+		else
+			printf("Commande ou args\n");
+		i++;
+	}
+}
+
+void	ft_take_args(void)
+{
+    t_i32		i;
+    t_str		user_input = NULL;
+	t_str		*args = NULL;
 
 	i = 0;
 	while (i < 10000000)
@@ -65,14 +80,14 @@ void	ft_take_cmd(void)
 		args = ft_split(user_input, ' ');
 		if (!user_input)
 			exit(1);
-		ft_check_type_cmd(args);
+		ft_check(args);
 		add_history(user_input);
         free(user_input);
         i++;
     }
 }
 
-i32	main(void)
+t_i32	main(void)
 {
-	ft_take_cmd();
+	ft_take_args();
 }
