@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/01 01:51:47 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/01 18:17:41 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,11 @@ void ft_check(t_utils *shcat, char **input)
 		else
 		{
 			if (ft_strcmp(input[i], "exit") == 0)
-				ft_exit(NULL, 0);
+				ft_exit(shcat, 0);
 			else if (ft_strcmp(input[i], "pwd") == 0)
 				ft_pwd();
+			else if (ft_strcmp(input[i], "cmd") == 0)
+				ft_echo("ECHO MAIS PAS ARG BORDEL !\n", "flag");
 			else
 				ft_other_cmd(shcat, i);
 		}
@@ -74,18 +76,16 @@ void ft_check(t_utils *shcat, char **input)
 
 void	ft_take_args(t_utils *shcat)
 {
-    t_i32		i;
-    t_str		user_input = NULL;
-	t_str		*args = NULL;
+    t_i32	i;
 
 	i = 0;
 	while (1)
 	{
-		shcat->str_input = readline(shcat->name_shell);
-		if (!user_input)
+		shcat->str_input = readline((t_const_str)shcat->name_shell);
+		if (!shcat->str_input)
 			ft_exit(shcat, 0);
-		shcat->strs_input = ft_split(user_input, ' ');
-		if (!args)
+		shcat->strs_input = ft_split(shcat->str_input, ' ');
+		if (!shcat->strs_input)
 			exit(1);
 		ft_check(shcat, shcat->strs_input);
 		add_history(shcat->str_input);
@@ -124,12 +124,12 @@ t_i32	main(t_i32 argc, t_str argv[], t_str arge[])
 {
 	t_utils	*shcat;
 
-	shcat = (t_utils *)malloc(sizeof(t_utils));
+	shcat = (t_utils *)ft_calloc(sizeof(t_utils), 1);
 	if (argc == 2)
 		shcat->name_shell = ft_strdup(strcat(argv[1], " > "));
 	else
 		shcat->name_shell = ft_strdup("shcat > ");
-	ft_init_arge(arge, shcat);
 	shcat->envp = arge;
+	ft_init_arge(arge, shcat);
 	ft_take_args(shcat);
 }

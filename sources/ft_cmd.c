@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 01:00:30 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/01 01:54:23 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/01 15:48:48 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	ft_other_cmd(t_utils *shcat, t_usize i)
 	pid_t	pid;
 	t_i32	options;
 
-	printf("ft_other_cmd = %s", shcat->strs_input[i]);
+	printf("ft_other_cmd = %s\n", shcat->strs_input[i]);
 	options = 0;
 	pid = fork();
 	if (pid == -1)
