@@ -6,47 +6,40 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/01 18:17:41 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/13 17:05:11 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_i32	ft_check_type_operators(t_str *operators)
+t_i32	ft_check_type_operators(t_str operators)
 {
-	t_usize	i;
-
-	i = 0;
-	while (operators[i])
-	{
-		if (ft_strcmp(operators[i], ">") == 0)
-			printf("Have to redirect in the file\n");
-		else if (ft_strcmp(operators[i], ">>") == 0)
-			printf("Have to redirect at the end of the file after\n");
-		else if (ft_strcmp(operators[i], ">&") == 0)
-			printf("Have to redirect the stdout in the file\n");
-		else if (ft_strcmp(operators[i], "<") == 0)
-			printf("Have to redirect at the end of the file before\n");
-		else if (ft_strcmp(operators[i], "<<") == 0)
-			printf("Have to redirect at the end of the file after\n");
-		else if (ft_strcmp(operators[i], "<&") == 0)
-			printf("Have to redirect the stdout in the file\n");
-		else if (ft_strcmp(operators[i], ";") == 0)
-			printf("Have to execute one more command\n");
-		else if (ft_strcmp(operators[i], ";") == 0)
-			printf("Have to execute one more command\n");
-		else if (ft_strcmp(operators[i], "|") == 0)
-			printf("I have to pipe a operators !\n");
-		else if (ft_strcmp(operators[i], "||") == 0)
-			printf("Or something\n");
-		else if (ft_strcmp(operators[i], "&&") == 0)
-			printf("Only if the first has exit status 0\n");
-		else if (ft_strcmp(operators[i], "&") == 0)
-			printf("Parreil mais chelou\n");
-		else
-			return (0);
-		i++;
-	}
+	if (ft_strcmp(operators, ">") == 0)
+		printf("Have to redirect in the file\n");
+	else if (ft_strcmp(operators, ">>") == 0)
+		printf("Have to redirect at the end of the file after\n");
+	else if (ft_strcmp(operators, ">&") == 0)
+		printf("Have to redirect the stdout in the file\n");
+	else if (ft_strcmp(operators, "<") == 0)
+		printf("Have to redirect at the end of the file before\n");
+	else if (ft_strcmp(operators, "<<") == 0)
+		printf("Have to redirect at the end of the file after\n");
+	else if (ft_strcmp(operators, "<&") == 0)
+		printf("Have to redirect the stdout in the file\n");
+	else if (ft_strcmp(operators, ";") == 0)
+		printf("Have to execute one more command\n");
+	else if (ft_strcmp(operators, ";") == 0)
+		printf("Have to execute one more command\n");
+	else if (ft_strcmp(operators, "|") == 0)
+		printf("I have to pipe a operators !\n");
+	else if (ft_strcmp(operators, "||") == 0)
+		printf("Or something\n");
+	else if (ft_strcmp(operators, "&&") == 0)
+		printf("Only if the first has exit status 0\n");
+	else if (ft_strcmp(operators, "&") == 0)
+		printf("Parreil mais chelou\n");
+	else
+		return (0);
 	return (1);
 }
 
@@ -57,7 +50,7 @@ void ft_check(t_utils *shcat, char **input)
 	i = 0;
 	while (input[i] != NULL)
 	{
-		if (ft_check_type_operators(input) == 1)
+		if (ft_check_type_operators(input[i]) == 1)
 			printf("Operateur\n");
 		else
 		{
@@ -65,7 +58,7 @@ void ft_check(t_utils *shcat, char **input)
 				ft_exit(shcat, 0);
 			else if (ft_strcmp(input[i], "pwd") == 0)
 				ft_pwd();
-			else if (ft_strcmp(input[i], "cmd") == 0)
+			else if (ft_strcmp(input[i], "echo") == 0)
 				ft_echo("ECHO MAIS PAS ARG BORDEL !\n", "flag");
 			else
 				ft_other_cmd(shcat, i);

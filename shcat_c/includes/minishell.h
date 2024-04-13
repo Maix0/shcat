@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/01 01:51:57 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/13 17:05:26 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_utils
 t_i32	main(t_i32 argc, t_str argv[], t_str arge[]);
 void	ft_other_cmd(t_utils *shcat, t_usize i);
 t_i32	ft_strcmp(const char *s1, const char *s2);
-t_i32	ft_check_type_operators(t_i8 **operators);
+t_i32	ft_check_type_operators(t_str operators);
 t_str	*ft_split(t_const_str s, t_i8 c);
 t_str	ft_strdup(t_const_str s);
 void	*ft_calloc(t_usize nmemb, t_usize size);
