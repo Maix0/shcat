@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/13 17:05:11 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/13 17:47:50 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 t_i32	ft_check_type_operators(t_str operators)
 {
-	if (ft_strcmp(operators, ">") == 0)
+	if (operators == NULL)
+		printf("End of input");
+	else if (ft_strcmp(operators, ">") == 0)
 		printf("Have to redirect in the file\n");
 	else if (ft_strcmp(operators, ">>") == 0)
 		printf("Have to redirect at the end of the file after\n");
@@ -43,26 +45,26 @@ t_i32	ft_check_type_operators(t_str operators)
 	return (1);
 }
 
-void ft_check(t_utils *shcat, char **input)
+void	ft_check(t_utils *shcat, char **input)
 {
 	t_usize	i;
-
+	t_usize	prev_i;
+	
 	i = 0;
+	prev_i = 0;
 	while (input[i] != NULL)
 	{
-		if (ft_check_type_operators(input[i]) == 1)
-			printf("Operateur\n");
+		while (ft_check_type_operators(input[i]) == 1)
+			i++;
+		if (ft_strcmp(input[i], "exit") == 0)
+			ft_exit(shcat, 0);
+		else if (ft_strcmp(input[i], "pwd") == 0)
+			ft_pwd();
+		else if (ft_strcmp(input[i], "echo") == 0)
+			ft_echo("ECHO MAIS PAS ARG BORDEL !\n", "flag");
 		else
-		{
-			if (ft_strcmp(input[i], "exit") == 0)
-				ft_exit(shcat, 0);
-			else if (ft_strcmp(input[i], "pwd") == 0)
-				ft_pwd();
-			else if (ft_strcmp(input[i], "echo") == 0)
-				ft_echo("ECHO MAIS PAS ARG BORDEL !\n", "flag");
-			else
-				ft_other_cmd(shcat, i);
-		}
+			ft_other_cmd(shcat, i, prev_i);
+		prev_i = i;
 		i++;
 	}
 }
@@ -119,9 +121,9 @@ t_i32	main(t_i32 argc, t_str argv[], t_str arge[])
 
 	shcat = (t_utils *)ft_calloc(sizeof(t_utils), 1);
 	if (argc == 2)
-		shcat->name_shell = ft_strdup(strcat(argv[1], " > "));
+		shcat->name_shell = ft_strdup(strcat(argv[1], " \001🐱\002 > "));
 	else
-		shcat->name_shell = ft_strdup("shcat > ");
+		shcat->name_shell = ft_strdup("shcat \001🐱\002 > ");
 	shcat->envp = arge;
 	ft_init_arge(arge, shcat);
 	ft_take_args(shcat);

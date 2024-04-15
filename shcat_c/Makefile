@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/01 01:49:49 by rparodi          ###   ########.fr        #
+#    Updated: 2024/04/13 20:18:33 by rparodi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ LIB =	./libft/ft_bzero.c \
 		./libft/ft_strcmp.c \
 		./libft/ft_strdup.c \
 		./libft/ft_strlcpy.c \
+		./libft/ft_strjoin.c \
 		./libft/ft_strlen.c
 
 SRC =	./sources/ft_cmd.c \
