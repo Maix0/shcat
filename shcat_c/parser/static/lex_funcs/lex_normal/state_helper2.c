@@ -1,40 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state_helper.c                                     :+:      :+:    :+:   */
+/*   state_helper2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/28 18:39:26 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/28 19:10:20 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/04/28 19:09:30 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/04/28 19:10:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./lex_normal_funcs.h"
 
-bool	lex_helper_s519(t_lexer *lexer, t_lexer_state *s)
+bool	lex_helper_s522(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '<')
-		return (lex_advance(612, lexer, s));
+		return (lex_advance(613, lexer, s));
 	if (s->lookahead == '>')
 		return (lex_advance(618, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_skip(542, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(856, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
-	return (false);
-}
-
-bool	lex_helper_s520(t_lexer *lexer, t_lexer_state *s)
-{
-	if (s->lookahead == '<')
-		return (lex_advance(612, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(544, lexer, s));
+		return (lex_skip(543, lexer, s));
 	if (s->lookahead == '`')
 		return (lex_advance(855, lexer, s));
 	if (s->lookahead == '|')
@@ -42,16 +27,31 @@ bool	lex_helper_s520(t_lexer *lexer, t_lexer_state *s)
 	return (false);
 }
 
-bool	lex_helper_s521(t_lexer *lexer, t_lexer_state *s)
+bool	lex_helper_s86(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '<')
-		return (lex_advance(613, lexer, s));
 	if (s->lookahead == '>')
 		return (lex_advance(618, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_skip(541, lexer, s));
+		return (lex_skip(379, lexer, s));
 	if (s->lookahead == '`')
-		return (lex_advance(856, lexer, s));
+		return (lex_advance(510, lexer, s));
+	if (s->lookahead == 'e')
+		return (lex_advance(514, lexer, s));
+	if (s->lookahead == '|')
+		return (lex_advance(593, lexer, s));
+	return (false);
+}
+
+bool	lex_helper_s87(t_lexer *lexer, t_lexer_state *s)
+{
+	if (s->lookahead == '>')
+		return (lex_advance(618, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_skip(380, lexer, s));
+	if (s->lookahead == '`')
+		return (lex_advance(510, lexer, s));
+	if (s->lookahead == 'e')
+		return (lex_advance(514, lexer, s));
 	if (s->lookahead == '|')
 		return (lex_advance(593, lexer, s));
 	return (false);

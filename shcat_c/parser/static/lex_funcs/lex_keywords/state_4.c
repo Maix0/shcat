@@ -29,20 +29,8 @@ bool	lex_keywords_s21(t_lexer *lexer, t_lexer_state *s)
 
 bool	lex_keywords_s22(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\\')
-		return (lex_skip(8, lexer, s));
-	if (s->lookahead == 'c')
-		return (lex_advance(10, lexer, s));
-	if (s->lookahead == 'd')
-		return (lex_advance(11, lexer, s));
-	if (s->lookahead == 'e')
-		return (lex_advance(12, lexer, s));
-	if (s->lookahead == 'f')
-		return (lex_advance(13, lexer, s));
-	if (s->lookahead == 'i')
-		return (lex_advance(14, lexer, s));
-	if (s->lookahead == 'l')
-		return (lex_advance(16, lexer, s));
+	if (lex_keywords_s22_bis(lexer, s))
+		return (true);
 	if (s->lookahead == 'r')
 		return (lex_advance(17, lexer, s));
 	if (s->lookahead == 's')

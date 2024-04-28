@@ -22,6 +22,9 @@
 # include "./inline.h"
 # include "../../../parse_types.h"
 
+bool	lex_keywords_s0_bis(t_lexer *lexer, t_lexer_state *s);
+bool	lex_keywords_s22_bis(t_lexer *lexer, t_lexer_state *s);
+
 bool	lex_keywords_s0(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s1(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s2(t_lexer *lexer, t_lexer_state *s);
