@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 17:23:03 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 17:48:04 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,8 +71,8 @@ fclean: clean
 	rm -f $(BUILD_DIR)/$(NAME)
 
 re:
-	$(MAKE) --no-print-directory fclean
-	$(MAKE) --no-print-directory all
+	@$(MAKE) --no-print-directory fclean
+	@$(MAKE) --no-print-directory all
 
 generate_filelist:
 	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*)\.c\$$' --replace '\$$1' | sort -u" > ./source_files.list
