@@ -1,0 +1,9 @@
+CompileFlags: # Tweak the parse settings
+  Add: 
+    - "-I/home/maiboyer/Documents/mecstd/include/"
+    - "-I/home/maiboyer/Documents/mecstd/output/include/"
+    - "-I/home/maiboyer/Documents/mecstd/generic_sources/header/"
+    - "-I/home/maix/school/mecstd/include/"
+    - "-I/home/maix/school/mecstd/output/include/"
+    - "-I/home/maix/school/mecstd/generic_sources/header/"
+

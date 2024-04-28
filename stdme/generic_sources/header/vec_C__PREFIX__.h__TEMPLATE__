@@ -1,0 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vec_C__PREFIX__.h                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/04 18:46:53 by maiboyer          #+#    #+#             */
+/*   Updated: 2023/12/09 17:53:00 by maiboyer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef VEC_C__PREFIXUP___H
+#define VEC_C__PREFIXUP___H
+
+C__TYPEHEADER__
+#include "me/types.h"
+
+typedef bool (*t_vec_C__PREFIX___sort_fn)(C__TYPENAME__ *, C__TYPENAME__ *);
+typedef void (*t_free_C__PREFIX___item)(C__TYPENAME__);
+
+typedef struct s_vec_C__PREFIX__
+{
+	t_free_C__PREFIX___item free_func;
+	t_usize					len;
+	t_usize					capacity;
+	C__TYPENAME__		   *buffer;
+} t_vec_C__PREFIX__;
+
+t_vec_C__PREFIX__ vec_C__PREFIX___new(t_usize				  capacity,
+									  t_free_C__PREFIX___item free_function);
+t_error vec_C__PREFIX___push(t_vec_C__PREFIX__ *vec, C__TYPENAME__ element);
+t_error vec_C__PREFIX___push_front(t_vec_C__PREFIX__ *vec,
+								   C__TYPENAME__	  element);
+t_error vec_C__PREFIX___pop(t_vec_C__PREFIX__ *vec, C__TYPENAME__ *value);
+t_error vec_C__PREFIX___pop_front(t_vec_C__PREFIX__ *vec, C__TYPENAME__ *value);
+void	vec_C__PREFIX___free(t_vec_C__PREFIX__ vec);
+t_error vec_C__PREFIX___reserve(t_vec_C__PREFIX__ *vec,
+								t_usize			   wanted_capacity);
+t_error vec_C__PREFIX___find(t_vec_C__PREFIX__ *vec,
+							 bool (*fn)(const C__TYPENAME__ *), t_usize *index);
+t_error vec_C__PREFIX___find_starting(t_vec_C__PREFIX__ *vec,
+									  bool (*fn)(const C__TYPENAME__ *),
+									  t_usize starting_index, t_usize *index);
+t_error vec_C__PREFIX___all(t_vec_C__PREFIX__ *vec,
+							bool (*fn)(const C__TYPENAME__ *), bool *result);
+t_error vec_C__PREFIX___any(t_vec_C__PREFIX__ *vec,
+							bool (*fn)(const C__TYPENAME__ *), bool *result);
+void	vec_C__PREFIX___iter(t_vec_C__PREFIX__ *vec,
+							 void (*fn)(t_usize index, C__TYPENAME__ *value,
+										void *state),
+							 void *state);
+void	vec_C__PREFIX___reverse(t_vec_C__PREFIX__ *vec);
+void	vec_C__PREFIX___sort(t_vec_C__PREFIX__		  *vec,
+							 t_vec_C__PREFIX___sort_fn is_sorted);
+
+#endif
