@@ -1,9 +1,0 @@
-BasedOnStyle: Microsoft
-IndentWidth: 4
-ColumnLimit: 80
-UseTab: Always
-SortIncludes: CaseInsensitive
-IndentPPDirectives: AfterHash
-PPIndentWidth: 1
-AllowShortIfStatementsOnASingleLine: false
-AlignConsecutiveDeclarations: true

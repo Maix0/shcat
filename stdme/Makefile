@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 19:33:09 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 20:00:43 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ GENERIC_INCLUDE	=	output/include
 NAME			=	libme.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
-CC				=	clang
+CC				?=	clang
 CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD
 BONUS_FILES		=	
 LIBS_NAME		=	
