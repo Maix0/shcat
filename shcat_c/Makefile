@@ -6,12 +6,12 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/28 17:36:57 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 17:50:28 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Objdir
-OBJDIRNAME = ./objects
+OBJDIRNAME = ./build
 
 # Colors
 GREEN = \033[32m
