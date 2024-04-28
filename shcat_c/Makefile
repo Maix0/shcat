@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/13 20:18:33 by rparodi          ###   ########.fr        #
+#    Updated: 2024/04/28 17:05:10 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ CC = cc
 RM = rm -rf
 
 # Flags
-CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline
+CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline -I./libft
 
 # Sources
 LIB =	./libft/ft_bzero.c \
@@ -84,7 +84,7 @@ fclean: clean
 re: header fclean all
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ)
+$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
@@ -127,6 +127,10 @@ footer:
 		@printf "$(GOLD)                  \\| |._.| |/-\`$(END)\n"
 		@printf "$(GOLD)                   '\"'   '\"'$(END)\n"
 		@printf '              $(GREY)The compilation is$(END) $(GOLD)finish$(END)\n               $(GREY)Have a good $(END)$(GOLD)correction !$(END)\n'
+
+$(OBJDIRNAME)/libme.a:
+	@$(MAKE) --no-print-directory -C ./stdme/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))"
+
 
 pull:
 	@printf "$(GREEN)Pulling Submodules$(END)\n"
