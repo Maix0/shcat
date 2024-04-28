@@ -1,4 +1,5 @@
 CompileFlags: # Tweak the parse settings
   Add: 
     - "-I/usr/include"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/shcat_c/includes"
 

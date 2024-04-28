@@ -6,14 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/13 20:17:16 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/28 18:34:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-# include "./type_rust.h"
+# include "me/types.h"
 
 # include <unistd.h>
 # include <fcntl.h>
