@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/28 17:05:10 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 17:24:41 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,10 @@ SRCDIRNAME = sources
 CC = cc
 RM = rm -rf
 
+# Objdir
+OBJDIRNAME = ./objects
 # Flags
-CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline -I./libft
+CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline -L$(OBJDIRNAME) -lme -lgmr -I./includes -I./stdme/includes -I./parser_src/includes 
 
 # Sources
 LIB =	./libft/ft_bzero.c \
@@ -43,7 +45,6 @@ SRC =	./sources/ft_cmd.c \
 		./sources/main.c
 
 # Objects
-OBJDIRNAME = ./objects
 OBJ = $(addprefix $(OBJDIRNAME)/,$(SRC:.c=.o))
 LIB_OBJ = $(addprefix $(OBJDIRNAME)/,$(LIB:.c=.o))
 
@@ -66,7 +67,7 @@ bonus: header $(OBJ) $(LIB_OBJ) footer
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@printf '$(GREY) Creating $(END)$(GREEN)$(OBJDIRNAME)$(END)\n'
 	@printf '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)\n'
-	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) ./stdme/build/libft.a
+	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ)
 
 # Clean (make clean)
 clean:
@@ -81,10 +82,12 @@ fclean: clean
 	@echo ""
 
 # Restart (make re)
-re: header fclean all
+re: header 
+	$(MAKE) fclean
+	$(MAKE) all
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a
+$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
@@ -129,7 +132,10 @@ footer:
 		@printf '              $(GREY)The compilation is$(END) $(GOLD)finish$(END)\n               $(GREY)Have a good $(END)$(GOLD)correction !$(END)\n'
 
 $(OBJDIRNAME)/libme.a:
-	@$(MAKE) --no-print-directory -C ./stdme/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))"
+	@$(MAKE) --no-print-directory -C ./stdme/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libme.a
+
+$(OBJDIRNAME)/libgmr.a:
+	@$(MAKE) --no-print-directory -C ./parser/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
 
 
 pull:
@@ -138,6 +144,6 @@ pull:
 	@git submodule update
 
 #	Phony
-.PHONY: all bonus clean fclean re
+.PHONY: all bonus clean fclean re $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 
 -include	${OBJ:.o=.d}
