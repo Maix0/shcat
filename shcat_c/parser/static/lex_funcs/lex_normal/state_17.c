@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/28 18:59:20 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,8 @@ bool	lex_normal_s86(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(554, lexer, s));
 	if (s->lookahead == '<')
 		return (lex_advance(612, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(379, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(510, lexer, s));
-	if (s->lookahead == 'e')
-		return (lex_advance(514, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
+	if (lex_helper_s86(lexer, s))
+		return (true);
 	if (((s->lookahead >= '[' && s->lookahead <= ']') || \
 	(s->lookahead >= '{' && s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));
@@ -78,16 +70,8 @@ bool	lex_normal_s87(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(554, lexer, s));
 	if (s->lookahead == '<')
 		return (lex_advance(613, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(380, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(510, lexer, s));
-	if (s->lookahead == 'e')
-		return (lex_advance(514, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
+	if (lex_helper_s87(lexer, s))
+		return (true);
 	if (((s->lookahead >= '[' && s->lookahead <= ']') || \
 	(s->lookahead >= '{' && s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));

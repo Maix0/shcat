@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/28 18:52:19 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,8 @@ bool	lex_normal_s520(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(655, lexer, s));
 	if (s->lookahead == ';')
 		return (lex_advance(555, lexer, s));
-	if (s->lookahead == '<')
-		return (lex_advance(612, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(544, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(855, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
+	if (lex_helper_s520(lexer, s))
+		return (true);
 	if (((s->lookahead >= '[' && s->lookahead <= ']') || \
 	(s->lookahead >= '{' && s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));
@@ -59,16 +51,8 @@ bool	lex_normal_s521(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(655, lexer, s));
 	if (s->lookahead == ';')
 		return (lex_advance(555, lexer, s));
-	if (s->lookahead == '<')
-		return (lex_advance(613, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(541, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(856, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
+	if (lex_helper_s521(lexer, s))
+		return (true);
 	if (((s->lookahead >= '[' && s->lookahead <= ']') || \
 	(s->lookahead >= '{' && s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));
@@ -92,16 +76,8 @@ bool	lex_normal_s522(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(655, lexer, s));
 	if (s->lookahead == ';')
 		return (lex_advance(555, lexer, s));
-	if (s->lookahead == '<')
-		return (lex_advance(613, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(543, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(855, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
+	if (lex_helper_s522(lexer, s))
+		return (true);
 	if (((s->lookahead >= '[' && s->lookahead <= ']') || \
 	(s->lookahead >= '{' && s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));

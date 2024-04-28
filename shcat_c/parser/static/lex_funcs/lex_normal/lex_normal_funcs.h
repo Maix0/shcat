@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/28 18:56:16 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,13 @@
 # include "../../char_set/charset_inline.h"
 # include "./inline.h"
 # include "../../../parse_types.h"
+
+bool	lex_helper_s86(t_lexer *lexer, t_lexer_state *s);
+bool	lex_helper_s87(t_lexer *lexer, t_lexer_state *s);
+bool	lex_helper_s519(t_lexer *lexer, t_lexer_state *s);
+bool	lex_helper_s520(t_lexer *lexer, t_lexer_state *s);
+bool	lex_helper_s521(t_lexer *lexer, t_lexer_state *s);
+bool	lex_helper_s522(t_lexer *lexer, t_lexer_state *s);
 
 bool	lex_normal_s0(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s1(t_lexer *lexer, t_lexer_state *s);

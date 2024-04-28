@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/28 19:04:01 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,20 +88,6 @@ bool	lex_normal_s483(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(489, lexer, s));
 	if (s->lookahead == '-')
 		return (lex_advance(504, lexer, s));
-	if (s->lookahead == '0')
-		return (lex_advance(808, lexer, s));
-	if (s->lookahead == '<')
-		return (lex_advance(613, lexer, s));
-	if (s->lookahead == '>')
-		return (lex_advance(618, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_skip(385, lexer, s));
-	if (s->lookahead == ']')
-		return (lex_advance(675, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(510, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(593, lexer, s));
 	if ((s->lookahead == '[' || (s->lookahead >= '{' && \
 	s->lookahead <= '}')))
 		return (lex_advance(786, lexer, s));
