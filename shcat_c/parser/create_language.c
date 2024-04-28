@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "./includes/parser.h"
-#include "./src/headers/constants.h"
-#include "./src/headers/symbols.h"
+#include "./static/headers/constants.h"
+#include "./static/headers/symbols.h"
 #include "./parse_types.h"
 
 const uint16_t			   *create_parse_table(void);
