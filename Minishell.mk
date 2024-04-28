@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 20:01:05 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 20:06:32 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,8 +61,6 @@ all:
 	@$(MAKE) -C ./parser/ LIB_NAME="$(shell realpath ./parser)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
-__build_final: $(NAME)
-
 # Bonus (make bonus)
 bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@mkdir -p $(OBJDIRNAME)
@@ -72,7 +70,7 @@ bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lme -lgmr
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ)
+$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/28 18:58:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/28 20:07:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	lang = tree_sitter_bash();
 	parser = ts_parser_new();
 	ts_parser_set_language(parser, lang);
-	input = "test \n cmd";
+	input = "test \n \\cmd";
 	root_node = parse_to_nodes(parser, input);
 	print_node_data(&root_node, 0);
 	free_node(root_node);
