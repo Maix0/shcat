@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 17:36:20 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 18:17:52 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,6 +53,8 @@ GREY = \033[0;90m
 RED = \033[0;31m
 GOLD = \033[38;5;220m
 END = \033[0m
+
+.PHONY: $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 
 all: $(NAME)
 

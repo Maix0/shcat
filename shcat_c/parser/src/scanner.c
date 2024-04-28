@@ -1,5 +1,5 @@
-#include "tree_sitter/array.h"
-#include "tree_sitter/parser.h"
+#include "array.h"
+#include "parser.h"
 
 #include <assert.h>
 #include <ctype.h>
@@ -425,6 +425,8 @@ static bool scan_heredoc_content(t_scanner *scanner, TSLexer *lexer,
 static bool regex_scan(t_scanner *scanner, TSLexer *lexer,
 					   const bool *valid_symbols)
 {
+	(void)(scanner);
+
 	if ((valid_symbols[REGEX] || valid_symbols[REGEX_NO_SLASH] ||
 		 valid_symbols[REGEX_NO_SPACE]) &&
 		!in_error_recovery(valid_symbols))
@@ -924,6 +926,8 @@ static bool extglob_pattern_scan(t_scanner *scanner, TSLexer *lexer,
 static bool expansion_word_scan(t_scanner *scanner, TSLexer *lexer,
 								const bool *valid_symbols)
 {
+	(void)(scanner);
+	
 	if (valid_symbols[EXPANSION_WORD])
 	{
 		bool advanced_once = false;
@@ -1026,6 +1030,8 @@ static bool expansion_word_scan(t_scanner *scanner, TSLexer *lexer,
 static bool brace_start_scan(t_scanner *scanner, TSLexer *lexer,
 							 const bool *valid_symbols)
 {
+	(void)(scanner);
+	
 	if (valid_symbols[BRACE_START] && !in_error_recovery(valid_symbols))
 	{
 		while (isspace(lexer->lookahead))

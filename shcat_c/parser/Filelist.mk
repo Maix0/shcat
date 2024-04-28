@@ -4372,4 +4372,13 @@ static/symbols_names/symbols_names_1	\
 static/symbols_names/symbols_names_2	\
 static/unique_symbols_map/unique_symbols_map_0	\
 static/unique_symbols_map/unique_symbols_map_1	\
-static/unique_symbols_map/unique_symbols_map_2
+static/unique_symbols_map/unique_symbols_map_2	\
+src/language	\
+src/lexer	\
+src/node	\
+src/parser	\
+src/scanner	\
+src/stack	\
+src/subtree	\
+src/tree	\
+src/tree_cursor	\

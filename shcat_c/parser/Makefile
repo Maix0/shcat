@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 17:48:04 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 18:19:27 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME			=	libgmr.a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				=	clang
-CFLAGS			=	-Wall -Wextra -Werror -g3 -MMD
+CFLAGS			=	-Wall -Wextra -Werror -g3 -MMD -I./includes
 
 include ./Filelist.mk
 

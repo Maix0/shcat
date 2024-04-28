@@ -69,6 +69,7 @@ typedef uint32_t (*UnicodeDecodeFunction)(const uint8_t *chunk, uint32_t size,
 
 uint32_t my_decode(const uint8_t *chunk, uint32_t size, int32_t *lookahead)
 {
+	(void)(size);
 	*((uint32_t *)lookahead) = *chunk;
 	return (1);
 }

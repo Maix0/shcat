@@ -1,6 +1,6 @@
 #define _POSIX_C_SOURCE 200112L
 
-#include "tree_sitter/api.h"
+#include "api.h"
 #include "./array.h"
 
 #include "./length.h"

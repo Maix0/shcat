@@ -1,5 +1,5 @@
 #include "./language.h"
-#include "tree_sitter/api.h"
+#include "api.h"
 #include <string.h>
 
 const TSLanguage *ts_language_copy(const TSLanguage *self) {
@@ -7,6 +7,7 @@ const TSLanguage *ts_language_copy(const TSLanguage *self) {
 }
 
 void ts_language_delete(const TSLanguage *self) {
+	(void)(self);
 }
 
 uint32_t ts_language_symbol_count(const TSLanguage *self) {

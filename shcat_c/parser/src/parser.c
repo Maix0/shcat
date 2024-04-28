@@ -11,7 +11,7 @@
 #include "./subtree.h"
 #include "./tree.h"
 
-#include "tree_sitter/api.h"
+#include "api.h"
 #include <assert.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -101,7 +101,7 @@ static const unsigned MAX_VERSION_COUNT = 6;
 static const unsigned MAX_VERSION_COUNT_OVERFLOW = 4;
 static const unsigned MAX_SUMMARY_DEPTH = 16;
 static const unsigned MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
-static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
+//static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
 
 typedef struct
 {
@@ -399,11 +399,13 @@ static bool ts_parser__better_version_exists(TSParser	 *self,
 
 static bool ts_parser__call_main_lex_fn(TSParser *self, TSLexMode lex_mode)
 {
+	(void)(lex_mode);
 	return self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
 }
 
 static bool ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode)
 {
+	(void)(lex_mode);
 	return self->language->keyword_lex_fn(&self->lexer.data, 0);
 }
 
@@ -2093,6 +2095,7 @@ void ts_parser_set_cancellation_flag(TSParser *self, const size_t *flag)
 
 uint64_t ts_parser_timeout_micros(const TSParser *self)
 {
+	(void)(self);
 	return 0;
 }
 
