@@ -6,47 +6,12 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/28 17:24:41 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 17:36:57 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-
-# Variables
-
-# Name
-NAME = minishell 
-LIBDIRNAME = libft
-SRCDIRNAME = sources
-
-# Commands
-CC = cc
-RM = rm -rf
-
 # Objdir
 OBJDIRNAME = ./objects
-# Flags
-CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline -L$(OBJDIRNAME) -lme -lgmr -I./includes -I./stdme/includes -I./parser_src/includes 
-
-# Sources
-LIB =	./libft/ft_bzero.c \
-		./libft/ft_calloc.c \
-		./libft/ft_memset.c \
-		./libft/ft_split.c \
-		./libft/ft_strcmp.c \
-		./libft/ft_strdup.c \
-		./libft/ft_strlcpy.c \
-		./libft/ft_strjoin.c \
-		./libft/ft_strlen.c
-
-SRC =	./sources/ft_cmd.c \
-		./sources/ft_echo.c \
-		./sources/ft_exit.c \
-		./sources/ft_pwd.c \
-		./sources/main.c
-
-# Objects
-OBJ = $(addprefix $(OBJDIRNAME)/,$(SRC:.c=.o))
-LIB_OBJ = $(addprefix $(OBJDIRNAME)/,$(LIB:.c=.o))
 
 # Colors
 GREEN = \033[32m
@@ -58,47 +23,15 @@ END = \033[0m
 # Rules
 
 # All (make all)
-all: header $(NAME) footer
+all: 
+	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME)
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME)
+	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME)
 
-# Bonus (make bonus)
-bonus: header $(OBJ) $(LIB_OBJ) footer
-	@mkdir -p $(OBJDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
-	@printf '$(GREY) Creating $(END)$(GREEN)$(OBJDIRNAME)$(END)\n'
-	@printf '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)\n'
-	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ)
-
-# Clean (make clean)
-clean:
-	@printf '$(GREY) Removing $(END)$(RED)Objects$(END)\n'
-	@printf '$(GREY) Removing $(END)$(RED)Objects Folder$(END)\n'
-	@$(RM) $(OBJDIRNAME)
-
-# Clean (make fclean)
-fclean: clean
-	@printf '$(GREY) Removing $(END)$(RED)Program$(END)\n'
-	@$(RM) $(NAME)
-	@echo ""
-
-# Restart (make re)
-re: header 
-	$(MAKE) fclean
-	$(MAKE) all
-
-# Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
-	@mkdir -p $(OBJDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
-	@printf '$(GREY) Creating $(END)$(GREEN)$(OBJDIRNAME)$(END)\n'
-	@cc $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ)
-
-# Creating the objects
-$(OBJDIRNAME)/%.o: %.c
-	@mkdir -p $(dir $@)
-	@printf '$(GREY) Compiling $(END)$(GREEN)$<$(END)\n'
-	@cc $(CFLAGS) -o $@ -c $<
+bonus: 
+	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME)
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) bonus
+	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME)
 
 #	Header
 header:
@@ -131,19 +64,26 @@ footer:
 		@printf "$(GOLD)                   '\"'   '\"'$(END)\n"
 		@printf '              $(GREY)The compilation is$(END) $(GOLD)finish$(END)\n               $(GREY)Have a good $(END)$(GOLD)correction !$(END)\n'
 
-$(OBJDIRNAME)/libme.a:
-	@$(MAKE) --no-print-directory -C ./stdme/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libme.a
-
-$(OBJDIRNAME)/libgmr.a:
-	@$(MAKE) --no-print-directory -C ./parser/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
-
-
 pull:
 	@printf "$(GREEN)Pulling Submodules$(END)\n"
 	@git submodule init
 	@git submodule update
 
-#	Phony
-.PHONY: all bonus clean fclean re $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
+# Clean (make clean)
+clean:
+	@printf '$(GREY) Removing $(END)$(RED)Objects$(END)\n'
+	@printf '$(GREY) Removing $(END)$(RED)Objects Folder$(END)\n'
+	@$(RM) -r $(OBJDIRNAME)
 
--include	${OBJ:.o=.d}
+# Clean (make fclean)
+fclean: clean
+	@printf '$(GREY) Removing $(END)$(RED)Program$(END)\n'
+	@$(RM) $(NAME)
+	@echo ""
+
+# Restart (make re)
+re: header 
+	@$(MAKE) --no-print-directory fclean
+	@$(MAKE) --no-print-directory all
+#	phony
+.PHONY: all bonus clean fclean re
