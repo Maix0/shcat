@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 18:56:27 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 19:52:08 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ SRC =	./sources/ft_cmd.c \
 		./sources/node/node.c
 
 # Name
-NAME = minishell 
+NAME = minishell
 LIBDIRNAME = libft
 SRCDIRNAME = sources
 
@@ -54,9 +54,14 @@ RED = \033[0;31m
 GOLD = \033[38;5;220m
 END = \033[0m
 
-.PHONY: $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
+.PHONY: all bonus
 
-all: $(NAME)
+all:
+	@$(MAKE) -C ./stdme/ LIB_NAME="$(shell realpath ./stdme)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libme.a
+	@$(MAKE) -C ./parser/ LIB_NAME="$(shell realpath ./parser)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
+	@$(MAKE) -f./Minishell.mk $(NAME)
+
+__build_final: $(NAME)
 
 # Bonus (make bonus)
 bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
@@ -67,7 +72,7 @@ bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lme -lgmr
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
+$(NAME): $(OBJ) $(LIB_OBJ)
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
@@ -77,11 +82,6 @@ $(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 $(OBJDIRNAME)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@printf '$(GREY) Compiling $(END)$(GREEN)$<$(END)\n'
-	@cc $(CFLAGS) -o $@ -c $< 
-$(OBJDIRNAME)/libme.a:
-	@$(MAKE) --no-print-directory -C ./stdme/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libme.a
-
-$(OBJDIRNAME)/libgmr.a:
-	@$(MAKE) --no-print-directory -C ./parser/ LIB_NAME="$(realpath ./$(stdme))/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
+	@cc $(CFLAGS) -o $@ -c $<
 
 -include	${OBJ:.o=.d}

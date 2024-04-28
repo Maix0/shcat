@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/28 17:50:28 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/28 19:53:00 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,8 @@ GOLD = \033[38;5;220m
 END = \033[0m
 
 # Rules
+
+NAME = minishell
 
 # All (make all)
 all: 
@@ -71,13 +73,13 @@ pull:
 
 # Clean (make clean)
 clean:
-	@printf '$(GREY) Removing $(END)$(RED)Objects$(END)\n'
-	@printf '$(GREY) Removing $(END)$(RED)Objects Folder$(END)\n'
+	@echo -e '$(GREY) Removing $(END)$(RED)Objects$(END)'
+	@echo -e '$(GREY) Removing $(END)$(RED)Objects Folder$(END)'
 	@$(RM) -r $(OBJDIRNAME)
 
 # Clean (make fclean)
 fclean: clean
-	@printf '$(GREY) Removing $(END)$(RED)Program$(END)\n'
+	@echo -e '$(GREY) Removing $(END)$(RED)Program$(END)'
 	@$(RM) $(NAME)
 	@echo ""
 
