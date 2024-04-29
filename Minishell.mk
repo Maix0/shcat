@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/29 13:59:16 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/29 14:00:12 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ LIB =	./libft/ft_bzero.c \
 		./libft/ft_strlen.c
 
 SRC_DIR = ./sources
-SRC_DIR = ./output
+GEN_DIR = ./output
 
 SRC =	$(addprefix $(SRC_DIR)/,$(shell cat ./src.list)) $(addprefix $(GEN_DIR)/,$(shell cat ./gen.list))
 # Name
