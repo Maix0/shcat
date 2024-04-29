@@ -6,11 +6,11 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 20:00:24 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/29 14:31:52 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-BUILD_DIR		=	./build
+BUILD_DIR		=	../build
 SRC_DIR			=   ./
 
 BONUS_FLAGS		=
@@ -18,7 +18,7 @@ NAME			=	libgmr.a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror -g3 -MMD -I./includes
+CFLAGS			=	-Wall -Wextra -Werror -g3 -MMD -I./includes -I../includes -I../output/include
 
 include ./Filelist.mk
 

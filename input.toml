@@ -1,0 +1,46 @@
+[definition.vec]
+headers = ["stdme/generic_sources/header/vec_C__PREFIX__.h__TEMPLATE__"]
+sources = [
+	"stdme/generic_sources/src/vec_C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/vec_C__PREFIX___functions2.c__TEMPLATE__",
+	"stdme/generic_sources/src/vec_C__PREFIX___functions3.c__TEMPLATE__",
+]
+replace.C__TYPENAME__ = "type"
+replace.C__TYPEHEADER__ = "header_include"
+replace.C__PREFIX__ = "prefix"
+replace.C__PREFIXUP__ = "prefix"
+
+
+[definition.hashmap]
+headers = ["stdme/generic_sources/header/hashmap_C__PREFIX__.h__TEMPLATE__"]
+sources = [
+	"stdme/generic_sources/src/hashmap_C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/hashmap_C__PREFIX___utils.c__TEMPLATE__",
+]
+replace.C__VALTYPE__ = "type"
+replace.C__KEYTYPE__ = "type"
+replace.C__TYPEHEADER__ = "header_include"
+replace.C__PREFIX__ = "prefix"
+replace.C__PREFIXUP__ = "prefix"
+
+[definition.str_to_num]
+headers = []
+sources = [
+	"stdme/generic_sources/src/str_to_C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/str_to_C__PREFIX___utils.c__TEMPLATE__",
+]
+replace.C__TYPE__ = "type"
+replace.C__UNSIGNED_TYPE__ = "type"
+replace.C__PREFIX__ = "prefix"
+replace.C__MAX__ = "value"
+replace.C__MIN__ = "value"
+replace.C__ZERO__ = "value"
+replace.C__SIGNED_TYPE__ = "bool"
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_parser_range"
+replace.C__TYPEHEADER__ = '#include "parser/types/types_parser_range.h"'
+replace.C__PREFIX__ = "parser_range"
+replace.C__PREFIXUP__ = "PARSER_RANGE"

@@ -1,5 +1,3 @@
-#define _POSIX_C_SOURCE 200112L
-
 #include "./array.h"
 #include "./error_costs.h"
 #include "./language.h"
@@ -11,7 +9,7 @@
 #include "./subtree.h"
 #include "./tree.h"
 
-#include "api.h"
+#include "parser/api.h"
 #include <assert.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -19,7 +17,8 @@
 #include <stdio.h>
 #include <time.h>
 
-typedef Array(TSRange) ArrayRange;
+#include "me/vec/vec_parser_range.h"
+
 typedef uint64_t TSDuration;
 typedef uint64_t TSClock;
 
@@ -101,7 +100,7 @@ static const unsigned MAX_VERSION_COUNT = 6;
 static const unsigned MAX_VERSION_COUNT_OVERFLOW = 4;
 static const unsigned MAX_SUMMARY_DEPTH = 16;
 static const unsigned MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
-//static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
+// static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
 
 typedef struct
 {
@@ -132,7 +131,7 @@ struct TSParser
 	unsigned			   operation_count;
 	const volatile size_t *cancellation_flag;
 	Subtree				   old_tree;
-	ArrayRange			   included_range_differences;
+	t_vec_parser_range	   included_range_differences;
 	unsigned			   included_range_difference_index;
 	bool				   has_scanner_error;
 };
@@ -163,7 +162,7 @@ typedef struct
 // StringInput
 
 static const char *ts_string_input_read(void *_self, uint32_t byte,
-										TSPoint point, uint32_t *length)
+										t_point point, uint32_t *length)
 {
 	(void)point;
 	TSStringInput *self = (TSStringInput *)_self;
@@ -1994,7 +1993,7 @@ TSParser *ts_parser_new(void)
 	self->end_clock = 0;
 	self->operation_count = 0;
 	self->old_tree = NULL_SUBTREE;
-	self->included_range_differences = (ArrayRange)array_new();
+	self->included_range_differences = vec_parser_range_new(0, NULL);
 	self->included_range_difference_index = 0;
 	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	return self;
@@ -2011,7 +2010,7 @@ void ts_parser_delete(TSParser *self)
 	{
 		array_delete(&self->reduce_actions);
 	}
-	if (self->included_range_differences.contents)
+	if (self->included_range_differences.buffer)
 	{
 		array_delete(&self->included_range_differences);
 	}
@@ -2105,13 +2104,14 @@ void ts_parser_set_timeout_micros(TSParser *self, uint64_t timeout_micros)
 	self->timeout_duration = 0;
 }
 
-bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges,
+bool ts_parser_set_included_ranges(TSParser *self, const t_parser_range *ranges,
 								   uint32_t count)
 {
 	return ts_lexer_set_included_ranges(&self->lexer, ranges, count);
 }
 
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count)
+const t_parser_range *ts_parser_included_ranges(const TSParser *self,
+												uint32_t	   *count)
 {
 	return ts_lexer_included_ranges(&self->lexer, count);
 }
@@ -2148,7 +2148,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 		return NULL;
 
 	ts_lexer_set_input(&self->lexer, input);
-	array_clear(&self->included_range_differences);
+	self->included_range_differences.len = 0;
 	self->included_range_difference_index = 0;
 
 	if (ts_parser_has_outstanding_parse(self))
@@ -2221,11 +2221,11 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 		}
 
 		while (self->included_range_difference_index <
-			   self->included_range_differences.size)
+			   self->included_range_differences.len)
 		{
-			TSRange *range =
+			t_parser_range *range =
 				&self->included_range_differences
-					 .contents[self->included_range_difference_index];
+					 .buffer[self->included_range_difference_index];
 			if (range->end_byte <= position)
 			{
 				self->included_range_difference_index++;

@@ -1,4 +1,4 @@
-#include "api.h"
+#include "parser/api.h"
 
 #include "./tree_cursor.h"
 #include "./language.h"
@@ -259,7 +259,7 @@ bool ts_tree_cursor_goto_last_child(TSTreeCursor *self) {
 static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
   TSTreeCursor *_self,
   uint32_t goal_byte,
-  TSPoint goal_point
+  t_point goal_point
 ) {
   TreeCursor *self = (TreeCursor *)_self;
   uint32_t initial_size = self->stack.size;
@@ -302,7 +302,7 @@ int64_t ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor *self, uint32_t go
   return ts_tree_cursor_goto_first_child_for_byte_and_point(self, goal_byte, POINT_ZERO);
 }
 
-int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor *self, TSPoint goal_point) {
+int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor *self, t_point goal_point) {
   return ts_tree_cursor_goto_first_child_for_byte_and_point(self, 0, goal_point);
 }
 

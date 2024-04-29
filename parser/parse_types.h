@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/26 18:05:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/29 15:26:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,27 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef uint16_t t_state_id;
-typedef uint16_t t_symbol;
-typedef uint16_t t_field_id;
-
-typedef struct s_lexer t_lexer;
-
 #define ts_builtin_sym_end 0
 #define ts_builtin_sym_error -1
 
-struct s_lexer
-{
-	int32_t	 lookahead;
-	t_symbol result_symbol;
-	void (*advance)(t_lexer *, bool);
-	void (*mark_end)(t_lexer *);
-	uint32_t (*get_column)(t_lexer *);
-	bool (*is_at_included_range_start)(const t_lexer *);
-	bool (*eof)(const t_lexer *);
-};
-
-typedef struct s_lexer_state
-{
-	int32_t	   lookahead;
-	t_state_id state;
-	bool	   result;
-	bool	   skip;
-	bool	   eof;
-} t_lexer_state;
+#include "me/types.h"
+#include "parser/types/types_field_id.h"
+#include "parser/types/types_field_map_entry.h"
+#include "parser/types/types_field_map_slice.h"
+#include "parser/types/types_language.h"
+#include "parser/types/types_lex_modes.h"
+#include "parser/types/types_lexer.h"
+#include "parser/types/types_lexer_state.h"
+#include "parser/types/types_parse_action_entry.h"
+#include "parser/types/types_parse_action_type.h"
+#include "parser/types/types_parse_actions.h"
+#include "parser/types/types_parser_range.h"
+#include "parser/types/types_point.h"
+#include "parser/types/types_scanner.h"
+#include "parser/types/types_state_id.h"
+#include "parser/types/types_symbol.h"
+#include "parser/types/types_symbol_metadata.h"
+#include "parser/types/types_char_range.h"
 
 static inline bool lex_skip(t_state_id state_value, t_lexer *lexer,
 							t_lexer_state *s)
@@ -78,13 +71,6 @@ static inline bool lex_end_state(t_lexer *lexer, t_lexer_state *s)
 	return (false);
 };
 
-typedef struct
-{
-	t_field_id field_id;
-	uint8_t	   child_index;
-	bool	   inherited;
-} t_field_map_entry;
-
 static inline t_field_map_entry fmap_entry(t_field_id field_id,
 										   uint8_t child_index, bool inherited)
 {
@@ -95,13 +81,7 @@ static inline t_field_map_entry fmap_entry(t_field_id field_id,
 	});
 };
 
-typedef struct
-{
-	uint16_t index;
-	uint16_t length;
-} t_field_map_slice;
-
-static inline t_field_map_slice fmap_slice(uint16_t index, uint16_t length)
+static inline t_field_map_slice fmap_slice(t_u16 index, t_u16 length)
 {
 	return ((t_field_map_slice){
 		.index = index,
@@ -109,15 +89,8 @@ static inline t_field_map_slice fmap_slice(uint16_t index, uint16_t length)
 	});
 };
 
-typedef struct
-{
-	bool visible;
-	bool named;
-	bool supertype;
-} t_symbol_metadata;
-
 static inline t_symbol_metadata sym_metadata(bool visible, bool named,
-												bool supertype)
+											 bool supertype)
 {
 	return ((t_symbol_metadata){
 		.visible = visible,
@@ -125,48 +98,6 @@ static inline t_symbol_metadata sym_metadata(bool visible, bool named,
 		.supertype = supertype,
 	});
 };
-
-typedef enum
-{
-	ActionTypeShift,
-	ActionTypeReduce,
-	ActionTypeAccept,
-	ActionTypeRecover,
-} t_parse_action_type;
-
-typedef union {
-	struct
-	{
-		uint8_t	   type;
-		t_state_id state;
-		bool	   extra;
-		bool	   repetition;
-	} shift;
-	struct
-	{
-		uint8_t	 type;
-		uint8_t	 child_count;
-		t_symbol symbol;
-		int16_t	 dynamic_precedence;
-		uint16_t production_id;
-	} reduce;
-	uint8_t type;
-} t_parse_actions;
-
-typedef struct
-{
-	uint16_t lex_state;
-	uint16_t external_lex_state;
-} t_lex_modes;
-
-typedef union {
-	t_parse_actions action;
-	struct
-	{
-		uint8_t count;
-		bool	reusable;
-	} entry;
-} t_parse_action_entry;
 
 static inline t_parse_action_entry entry(uint8_t count, bool reusable)
 {
@@ -198,7 +129,7 @@ static inline t_parse_action_entry shift_extra(void)
 static inline t_parse_action_entry reduce(
 
 	t_symbol symbol, uint8_t child_count, int16_t dynamic_precedence,
-	uint16_t production_id)
+	t_u16 production_id)
 {
 	return (
 		(t_parse_action_entry){{.reduce = {
@@ -220,21 +151,15 @@ static inline t_parse_action_entry accept(void)
 	return ((t_parse_action_entry){{.type = ActionTypeAccept}});
 };
 
-typedef struct s_char_range
-{
-	int32_t start;
-	int32_t end;
-} t_char_range;
-
-static inline bool set_contains(t_char_range *ranges, uint32_t len,
+static inline bool set_contains(t_char_range *ranges, t_u32 len,
 								int32_t lookahead)
 {
-	uint32_t index = 0;
-	uint32_t size = len - index;
+	t_u32 index = 0;
+	t_u32 size = len - index;
 	while (size > 1)
 	{
-		uint32_t	  half_size = size / 2;
-		uint32_t	  mid_index = index + half_size;
+		t_u32		  half_size = size / 2;
+		t_u32		  mid_index = index + half_size;
 		t_char_range *range = &ranges[mid_index];
 		if (lookahead >= range->start && lookahead <= range->end)
 		{
@@ -250,16 +175,16 @@ static inline bool set_contains(t_char_range *ranges, uint32_t len,
 	return (lookahead >= range->start && lookahead <= range->end);
 };
 
-static inline bool advance_map_inner(uint32_t *map, uint32_t elems, t_lexer *l,
+static inline bool advance_map_inner(t_u32 *map, t_u32 elems, t_lexer *l,
 									 t_lexer_state *s)
 {
-	uint32_t i;
-	
+	t_u32 i;
+
 	(void)(l);
 	i = 0;
 	while (i < elems)
 	{
-		if (map[i] == (uint32_t)s->lookahead)
+		if (map[i] == (t_u32)s->lookahead)
 		{
 			s->state = map[i + 1];
 			return true;
@@ -269,8 +194,8 @@ static inline bool advance_map_inner(uint32_t *map, uint32_t elems, t_lexer *l,
 	return (false);
 };
 
-static inline t_lex_modes lex_mode_external(uint16_t lex_state,
-											uint16_t ext_lex_state)
+static inline t_lex_modes lex_mode_external(t_u16 lex_state,
+											t_u16 ext_lex_state)
 {
 	return ((t_lex_modes){
 		.lex_state = lex_state,
@@ -278,19 +203,19 @@ static inline t_lex_modes lex_mode_external(uint16_t lex_state,
 	});
 };
 
-static inline t_lex_modes lex_mode_normal(uint16_t lex_state)
+static inline t_lex_modes lex_mode_normal(t_u16 lex_state)
 {
 	return ((t_lex_modes){
 		.lex_state = lex_state,
 	});
 };
 
-static inline uint16_t actions(uint16_t val)
+static inline t_u16 actions(t_u16 val)
 {
 	return (val);
 };
 
-static inline uint16_t state(uint16_t val)
+static inline t_u16 state(t_u16 val)
 {
 	return (val);
 };

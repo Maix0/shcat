@@ -17,11 +17,11 @@ typedef struct {
 struct TSTree {
   Subtree root;
   const TSLanguage *language;
-  TSRange *included_ranges;
+  t_parser_range *included_ranges;
   unsigned included_range_count;
 };
 
-TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *, unsigned);
+TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const t_parser_range *, unsigned);
 TSNode ts_node_new(const TSTree *, const Subtree *, Length, TSSymbol);
 
 #ifdef __cplusplus

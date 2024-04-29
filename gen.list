@@ -1,0 +1,3 @@
+src/vec/vec_parser_range.c
+src/vec/vec_parser_range_functions2.c
+src/vec/vec_parser_range_functions3.c

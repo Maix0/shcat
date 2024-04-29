@@ -18,7 +18,7 @@
 
 static const int32_t BYTE_ORDER_MARK = 0xFEFF;
 
-static const TSRange DEFAULT_RANGE = {.start_point =
+static const t_parser_range DEFAULT_RANGE = {.start_point =
 										  {
 											  .row = 0,
 											  .column = 0,
@@ -121,7 +121,7 @@ static void ts_lexer_goto(Lexer *self, Length position)
 	bool found_included_range = false;
 	for (unsigned i = 0; i < self->included_range_count; i++)
 	{
-		TSRange *included_range = &self->included_ranges[i];
+		t_parser_range *included_range = &self->included_ranges[i];
 		if (included_range->end_byte > self->current_position.bytes &&
 			included_range->end_byte > included_range->start_byte)
 		{
@@ -159,7 +159,7 @@ static void ts_lexer_goto(Lexer *self, Length position)
 	else
 	{
 		self->current_included_range_index = self->included_range_count;
-		TSRange *last_included_range =
+		t_parser_range *last_included_range =
 			&self->included_ranges[self->included_range_count - 1];
 		self->current_position = (Length){
 			.bytes = last_included_range->end_byte,
@@ -188,7 +188,7 @@ static void ts_lexer__do_advance(Lexer *self, bool skip)
 		}
 	}
 
-	const TSRange *current_range =
+	const t_parser_range *current_range =
 		&self->included_ranges[self->current_included_range_index];
 	while (self->current_position.bytes >= current_range->end_byte ||
 		   current_range->end_byte == current_range->start_byte)
@@ -253,12 +253,12 @@ static void ts_lexer__mark_end(TSLexer *_self)
 		// If the lexer is right at the beginning of included range,
 		// then the token should be considered to end at the *end* of the
 		// previous included range, rather than here.
-		TSRange *current_included_range =
+		t_parser_range *current_included_range =
 			&self->included_ranges[self->current_included_range_index];
 		if (self->current_included_range_index > 0 &&
 			self->current_position.bytes == current_included_range->start_byte)
 		{
-			TSRange *previous_included_range = current_included_range - 1;
+			t_parser_range *previous_included_range = current_included_range - 1;
 			self->token_end_position = (Length){
 				previous_included_range->end_byte,
 				previous_included_range->end_point,
@@ -308,7 +308,7 @@ static bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
 	const Lexer *self = (const Lexer *)_self;
 	if (self->current_included_range_index < self->included_range_count)
 	{
-		TSRange *current_range =
+		t_parser_range *current_range =
 			&self->included_ranges[self->current_included_range_index];
 		return self->current_position.bytes == current_range->start_byte;
 	}
@@ -434,12 +434,12 @@ void ts_lexer_mark_end(Lexer *self)
 	ts_lexer__mark_end(&self->data);
 }
 
-bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
+bool ts_lexer_set_included_ranges(Lexer *self, const t_parser_range *ranges,
 								  uint32_t count)
 {
 	ranges = &DEFAULT_RANGE;
 	count = 1;
-	size_t size = count * sizeof(TSRange);
+	size_t size = count * sizeof(t_parser_range);
 	self->included_ranges = realloc(self->included_ranges, size);
 	memcpy(self->included_ranges, ranges, size);
 	self->included_range_count = count;
@@ -447,7 +447,7 @@ bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
 	return true;
 }
 
-TSRange *ts_lexer_included_ranges(const Lexer *self, uint32_t *count)
+t_parser_range *ts_lexer_included_ranges(const Lexer *self, uint32_t *count)
 {
 	*count = self->included_range_count;
 	return self->included_ranges;

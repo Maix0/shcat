@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "me/vec/vec_parser_range.h"
+
 /****************************/
 /* Section - ABI Versioning */
 /****************************/
@@ -51,24 +53,10 @@ typedef enum TSSymbolType
 	TSSymbolTypeAuxiliary,
 } TSSymbolType;
 
-typedef struct TSPoint
-{
-	uint32_t row;
-	uint32_t column;
-} TSPoint;
-
-typedef struct TSRange
-{
-	TSPoint	 start_point;
-	TSPoint	 end_point;
-	uint32_t start_byte;
-	uint32_t end_byte;
-} TSRange;
-
 typedef struct TSInput
 {
 	void *payload;
-	const char *(*read)(void *payload, uint32_t byte_index, TSPoint position,
+	const char *(*read)(void *payload, uint32_t byte_index, t_point position,
 						uint32_t *bytes_read);
 	TSInputEncoding encoding;
 } TSInput;
@@ -90,9 +78,9 @@ typedef struct TSInputEdit
 	uint32_t start_byte;
 	uint32_t old_end_byte;
 	uint32_t new_end_byte;
-	TSPoint	 start_point;
-	TSPoint	 old_end_point;
-	TSPoint	 new_end_point;
+	t_point	 start_point;
+	t_point	 old_end_point;
+	t_point	 new_end_point;
 } TSInputEdit;
 
 typedef struct TSNode
@@ -210,7 +198,7 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language);
  * will not be assigned, and this function will return `false`. On success,
  * this function returns `true`
  */
-bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges,
+bool ts_parser_set_included_ranges(TSParser *self, const t_parser_range *ranges,
 								   uint32_t count);
 
 /**
@@ -220,7 +208,8 @@ bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges,
  * it or write to it. The length of the array will be written to the given
  * `count` pointer.
  */
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count);
+const t_parser_range *ts_parser_included_ranges(const TSParser *self,
+												uint32_t	   *count);
 
 /**
  * Use the parser to parse some source code and create a syntax tree.
@@ -387,7 +376,7 @@ TSNode ts_tree_root_node(const TSTree *self);
  * shifted forward by the given offset.
  */
 TSNode ts_tree_root_node_with_offset(const TSTree *self, uint32_t offset_bytes,
-									 TSPoint offset_extent);
+									 t_point offset_extent);
 
 /**
  * Get the language that was used to parse the syntax tree.
@@ -399,7 +388,7 @@ const TSLanguage *ts_tree_language(const TSTree *self);
  *
  * The returned pointer must be freed by the caller.
  */
-TSRange *ts_tree_included_ranges(const TSTree *self, uint32_t *length);
+t_parser_range *ts_tree_included_ranges(const TSTree *self, uint32_t *length);
 
 /**
  * Edit the syntax tree to keep it in sync with source code that has been
@@ -425,8 +414,9 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit);
  * responsible for freeing it using `free`. The length of the array will be
  * written to the given `length` pointer.
  */
-TSRange *ts_tree_get_changed_ranges(const TSTree *old_tree,
-									const TSTree *new_tree, uint32_t *length);
+t_parser_range *ts_tree_get_changed_ranges(const TSTree *old_tree,
+										   const TSTree *new_tree,
+										   uint32_t		*length);
 
 /**
  * Write a DOT graph describing the syntax tree to the given file.
@@ -474,7 +464,7 @@ uint32_t ts_node_start_byte(TSNode self);
 /**
  * Get the node's start position in terms of rows and columns.
  */
-TSPoint ts_node_start_point(TSNode self);
+t_point ts_node_start_point(TSNode self);
 
 /**
  * Get the node's end byte.
@@ -484,7 +474,7 @@ uint32_t ts_node_end_byte(TSNode self);
 /**
  * Get the node's end position in terms of rows and columns.
  */
-TSPoint ts_node_end_point(TSNode self);
+t_point ts_node_end_point(TSNode self);
 
 /**
  * Get an S-expression representing the node as a string.
@@ -629,8 +619,8 @@ uint32_t ts_node_descendant_count(TSNode self);
  */
 TSNode ts_node_descendant_for_byte_range(TSNode self, uint32_t start,
 										 uint32_t end);
-TSNode ts_node_descendant_for_point_range(TSNode self, TSPoint start,
-										  TSPoint end);
+TSNode ts_node_descendant_for_point_range(TSNode self, t_point start,
+										  t_point end);
 
 /**
  * Get the smallest named node within this node that spans the given range
@@ -638,8 +628,8 @@ TSNode ts_node_descendant_for_point_range(TSNode self, TSPoint start,
  */
 TSNode ts_node_named_descendant_for_byte_range(TSNode self, uint32_t start,
 											   uint32_t end);
-TSNode ts_node_named_descendant_for_point_range(TSNode self, TSPoint start,
-												TSPoint end);
+TSNode ts_node_named_descendant_for_point_range(TSNode self, t_point start,
+												t_point end);
 
 /**
  * Edit the node to keep it in-sync with source code that has been edited.
@@ -790,7 +780,7 @@ uint32_t ts_tree_cursor_current_depth(const TSTreeCursor *self);
 int64_t ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor *self,
 												 uint32_t	   goal_byte);
 int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor *self,
-												  TSPoint		goal_point);
+												  t_point		goal_point);
 
 TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor *cursor);
 
@@ -976,8 +966,8 @@ void	 ts_query_cursor_set_match_limit(TSQueryCursor *self, uint32_t limit);
  */
 void ts_query_cursor_set_byte_range(TSQueryCursor *self, uint32_t start_byte,
 									uint32_t end_byte);
-void ts_query_cursor_set_point_range(TSQueryCursor *self, TSPoint start_point,
-									 TSPoint end_point);
+void ts_query_cursor_set_point_range(TSQueryCursor *self, t_point start_point,
+									 t_point end_point);
 
 /**
  * Advance to the next match of the currently running query.

@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "./point.h"
-#include "api.h"
+#include "parser/api.h"
 
 typedef struct {
   uint32_t bytes;
-  TSPoint extent;
+  t_point extent;
 } Length;
 
 static const Length LENGTH_UNDEFINED = {0, {0, 1}};

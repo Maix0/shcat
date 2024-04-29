@@ -1,5 +1,5 @@
 #include "./language.h"
-#include "api.h"
+#include "parser/api.h"
 #include <string.h>
 
 const TSLanguage *ts_language_copy(const TSLanguage *self) {

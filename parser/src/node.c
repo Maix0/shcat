@@ -37,8 +37,8 @@ uint32_t ts_node_start_byte(TSNode self) {
   return self.context[0];
 }
 
-TSPoint ts_node_start_point(TSNode self) {
-  return (TSPoint) {self.context[1], self.context[2]};
+t_point ts_node_start_point(TSNode self) {
+  return (t_point) {self.context[1], self.context[2]};
 }
 
 static inline uint32_t ts_node__alias(const TSNode *self) {
@@ -366,8 +366,8 @@ static inline TSNode ts_node__descendant_for_byte_range(
 
 static inline TSNode ts_node__descendant_for_point_range(
   TSNode self,
-  TSPoint range_start,
-  TSPoint range_end,
+  t_point range_start,
+  t_point range_end,
   bool include_anonymous
 ) {
   TSNode node = self;
@@ -380,7 +380,7 @@ static inline TSNode ts_node__descendant_for_point_range(
     TSNode child;
     NodeChildIterator iterator = ts_node_iterate_children(&node);
     while (ts_node_child_iterator_next(&iterator, &child)) {
-      TSPoint node_end = iterator.position.extent;
+      t_point node_end = iterator.position.extent;
 
       // The end of this node must extend far enough forward to touch
       // the end of the range and exceed the start of the range.
@@ -409,7 +409,7 @@ uint32_t ts_node_end_byte(TSNode self) {
   return ts_node_start_byte(self) + ts_subtree_size(ts_node__subtree(self)).bytes;
 }
 
-TSPoint ts_node_end_point(TSNode self) {
+t_point ts_node_end_point(TSNode self) {
   return point_add(ts_node_start_point(self), ts_subtree_size(ts_node__subtree(self)).extent);
 }
 
@@ -742,23 +742,23 @@ TSNode ts_node_named_descendant_for_byte_range(
 
 TSNode ts_node_descendant_for_point_range(
   TSNode self,
-  TSPoint start,
-  TSPoint end
+  t_point start,
+  t_point end
 ) {
   return ts_node__descendant_for_point_range(self, start, end, true);
 }
 
 TSNode ts_node_named_descendant_for_point_range(
   TSNode self,
-  TSPoint start,
-  TSPoint end
+  t_point start,
+  t_point end
 ) {
   return ts_node__descendant_for_point_range(self, start, end, false);
 }
 
 void ts_node_edit(TSNode *self, const TSInputEdit *edit) {
   uint32_t start_byte = ts_node_start_byte(*self);
-  TSPoint start_point = ts_node_start_point(*self);
+  t_point start_point = ts_node_start_point(*self);
 
   if (start_byte >= edit->old_end_byte) {
     start_byte = edit->new_end_byte + (start_byte - edit->old_end_byte);

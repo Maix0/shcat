@@ -1,6 +1,6 @@
 #define _POSIX_C_SOURCE 200112L
 
-#include "api.h"
+#include "parser/api.h"
 #include "./array.h"
 
 #include "./length.h"
@@ -10,13 +10,13 @@
 
 TSTree *ts_tree_new(
   Subtree root, const TSLanguage *language,
-  const TSRange *included_ranges, unsigned included_range_count
+  const t_parser_range *included_ranges, unsigned included_range_count
 ) {
   TSTree *result = malloc(sizeof(TSTree));
   result->root = root;
   result->language = ts_language_copy(language);
-  result->included_ranges = calloc(included_range_count, sizeof(TSRange));
-  memcpy(result->included_ranges, included_ranges, included_range_count * sizeof(TSRange));
+  result->included_ranges = calloc(included_range_count, sizeof(t_parser_range));
+  memcpy(result->included_ranges, included_ranges, included_range_count * sizeof(t_parser_range));
   result->included_range_count = included_range_count;
   return result;
 }
@@ -44,7 +44,7 @@ TSNode ts_tree_root_node(const TSTree *self) {
 TSNode ts_tree_root_node_with_offset(
   const TSTree *self,
   uint32_t offset_bytes,
-  TSPoint offset_extent
+  t_point offset_extent
 ) {
   Length offset = {offset_bytes, offset_extent};
   return ts_node_new(self, &self->root, length_add(offset, ts_subtree_padding(self->root)), 0);
@@ -56,7 +56,7 @@ const TSLanguage *ts_tree_language(const TSTree *self) {
 
 void ts_tree_edit(TSTree *self, const TSInputEdit *edit) {
   for (unsigned i = 0; i < self->included_range_count; i++) {
-    TSRange *range = &self->included_ranges[i];
+    t_parser_range *range = &self->included_ranges[i];
     if (range->end_byte >= edit->old_end_byte) {
       if (range->end_byte != UINT32_MAX) {
         range->end_byte = edit->new_end_byte + (range->end_byte - edit->old_end_byte);
@@ -94,10 +94,10 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit) {
   ts_subtree_pool_delete(&pool);
 }
 
-TSRange *ts_tree_included_ranges(const TSTree *self, uint32_t *length) {
+t_parser_range *ts_tree_included_ranges(const TSTree *self, uint32_t *length) {
   *length = self->included_range_count;
-  TSRange *ranges = calloc(self->included_range_count, sizeof(TSRange));
-  memcpy(ranges, self->included_ranges, self->included_range_count * sizeof(TSRange));
+  t_parser_range *ranges = calloc(self->included_range_count, sizeof(t_parser_range));
+  memcpy(ranges, self->included_ranges, self->included_range_count * sizeof(t_parser_range));
   return ranges;
 }
 
