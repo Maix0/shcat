@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/28 18:34:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/29 15:07:54 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # include <stdarg.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+
+# define PATH_FILES "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
 
 typedef struct s_utils
 {
