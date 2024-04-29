@@ -1,0 +1,12 @@
+CompileFlags: # Tweak the parse settings
+  Add:
+    - "-I/usr/include/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/vendor/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/mecstd/include/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/mecstd/vendor/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/mecstd/output/include/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/mecstd/generic_sources/header/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/includes/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/output/include/"
+    - "-I/home/maiboyer/Documents/ring-2/shcat/generic_sources/header/"
+

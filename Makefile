@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/28 19:53:00 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/29 13:46:41 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ GOLD = \033[38;5;220m
 END = \033[0m
 
 # Rules
-
+SRC_DIR = ./sources
 NAME = minishell
 
 # All (make all)
@@ -87,5 +87,8 @@ fclean: clean
 re: header 
 	@$(MAKE) --no-print-directory fclean
 	@$(MAKE) --no-print-directory all
+
+generate_filelist:
+	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./src.list
 #	phony
 .PHONY: all bonus clean fclean re

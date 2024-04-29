@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/29 13:33:59 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/29 13:46:19 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,13 +27,8 @@ LIB =	./libft/ft_bzero.c \
 		./libft/ft_strjoin.c \
 		./libft/ft_strlen.c
 
-SRC =	./sources/ft_cmd.c \
-		./sources/ft_echo.c \
-		./sources/ft_exit.c \
-		./sources/ft_pwd.c \
-		./sources/main.c \
-		./sources/node/node.c
-
+SRC_DIR = ./sources
+SRC =	$(addprefix $(SRC_DIR)/,$(shell cat ./src.list))
 # Name
 NAME = minishell
 LIBDIRNAME = libft
