@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/04/29 13:46:41 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/29 13:58:38 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ END = \033[0m
 
 # Rules
 SRC_DIR = ./sources
+GEN_DIR = ./output
 NAME = minishell
 
 # All (make all)
@@ -90,5 +91,6 @@ re: header
 
 generate_filelist:
 	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./src.list
+	@/usr/bin/env zsh -c "tree -iFf --noreport $(GEN_DIR) | rg '^$(GEN_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./gen.list
 #	phony
 .PHONY: all bonus clean fclean re
