@@ -8,11 +8,11 @@
 #include "./tree_cursor.h"
 #include "./tree.h"
 
-TSTree *ts_tree_new(
-  Subtree root, const TSLanguage *language,
+t_parse_tree *ts_tree_new(
+  Subtree root, const t_language *language,
   const t_parser_range *included_ranges, unsigned included_range_count
 ) {
-  TSTree *result = malloc(sizeof(TSTree));
+  t_parse_tree *result = malloc(sizeof(t_parse_tree));
   result->root = root;
   result->language = ts_language_copy(language);
   result->included_ranges = calloc(included_range_count, sizeof(t_parser_range));
@@ -21,12 +21,12 @@ TSTree *ts_tree_new(
   return result;
 }
 
-TSTree *ts_tree_copy(const TSTree *self) {
+t_parse_tree *ts_tree_copy(const t_parse_tree *self) {
   ts_subtree_retain(self->root);
   return ts_tree_new(self->root, self->language, self->included_ranges, self->included_range_count);
 }
 
-void ts_tree_delete(TSTree *self) {
+void ts_tree_delete(t_parse_tree *self) {
   if (!self) return;
 
   SubtreePool pool = ts_subtree_pool_new(0);
@@ -37,24 +37,24 @@ void ts_tree_delete(TSTree *self) {
   free(self);
 }
 
-TSNode ts_tree_root_node(const TSTree *self) {
+t_parse_node ts_tree_root_node(const t_parse_tree *self) {
   return ts_node_new(self, &self->root, ts_subtree_padding(self->root), 0);
 }
 
-TSNode ts_tree_root_node_with_offset(
-  const TSTree *self,
-  uint32_t offset_bytes,
+t_parse_node ts_tree_root_node_with_offset(
+  const t_parse_tree *self,
+  t_u32 offset_bytes,
   t_point offset_extent
 ) {
   Length offset = {offset_bytes, offset_extent};
   return ts_node_new(self, &self->root, length_add(offset, ts_subtree_padding(self->root)), 0);
 }
 
-const TSLanguage *ts_tree_language(const TSTree *self) {
+const t_language *ts_tree_language(const t_parse_tree *self) {
   return self->language;
 }
 
-void ts_tree_edit(TSTree *self, const TSInputEdit *edit) {
+void ts_tree_edit(t_parse_tree *self, const t_input_edit *edit) {
   for (unsigned i = 0; i < self->included_range_count; i++) {
     t_parser_range *range = &self->included_ranges[i];
     if (range->end_byte >= edit->old_end_byte) {
@@ -94,7 +94,7 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit) {
   ts_subtree_pool_delete(&pool);
 }
 
-t_parser_range *ts_tree_included_ranges(const TSTree *self, uint32_t *length) {
+t_parser_range *ts_tree_included_ranges(const t_parse_tree *self, t_u32 *length) {
   *length = self->included_range_count;
   t_parser_range *ranges = calloc(self->included_range_count, sizeof(t_parser_range));
   memcpy(ranges, self->included_ranges, self->included_range_count * sizeof(t_parser_range));
@@ -117,7 +117,7 @@ int _ts_dup(HANDLE handle) {
   return _open_osfhandle((intptr_t)dup_handle, 0);
 }
 
-void ts_tree_print_dot_graph(const TSTree *self, int fd) {
+void ts_tree_print_dot_graph(const t_parse_tree *self, int fd) {
   FILE *file = _fdopen(_ts_dup((HANDLE)_get_osfhandle(fd)), "a");
   ts_subtree_print_dot_graph(self->root, self->language, file);
   fclose(file);
@@ -131,7 +131,7 @@ int _ts_dup(int file_descriptor) {
   return dup(file_descriptor);
 }
 
-void ts_tree_print_dot_graph(const TSTree *self, int file_descriptor) {
+void ts_tree_print_dot_graph(const t_parse_tree *self, int file_descriptor) {
   FILE *file = fdopen(_ts_dup(file_descriptor), "a");
   ts_subtree_print_dot_graph(self->root, self->language, file);
   fclose(file);

@@ -7,7 +7,7 @@
 #include "parser/api.h"
 
 typedef struct {
-  uint32_t bytes;
+  t_u32 bytes;
   t_point extent;
 } Length;
 

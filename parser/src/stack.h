@@ -24,7 +24,7 @@ typedef Array(StackSlice) StackSliceArray;
 typedef struct {
   Length position;
   unsigned depth;
-  TSStateId state;
+  t_state_id state;
 } StackSummaryEntry;
 typedef Array(StackSummaryEntry) StackSummary;
 
@@ -35,11 +35,11 @@ Stack *ts_stack_new(SubtreePool *);
 void ts_stack_delete(Stack *);
 
 // Get the stack's current number of versions.
-uint32_t ts_stack_version_count(const Stack *);
+t_u32 ts_stack_version_count(const Stack *);
 
 // Get the state at the top of the given version of the stack. If the stack is
 // empty, this returns the initial state, 0.
-TSStateId ts_stack_state(const Stack *, StackVersion);
+t_state_id ts_stack_state(const Stack *, StackVersion);
 
 // Get the last external token associated with a given version of the stack.
 Subtree ts_stack_last_external_token(const Stack *, StackVersion);
@@ -55,14 +55,14 @@ Length ts_stack_position(const Stack *, StackVersion);
 // This transfers ownership of the tree to the Stack. Callers that
 // need to retain ownership of the tree for their own purposes should
 // first retain the tree.
-void ts_stack_push(Stack *, StackVersion, Subtree , bool, TSStateId);
+void ts_stack_push(Stack *, StackVersion, Subtree , bool, t_state_id);
 
 // Pop the given number of entries from the given version of the stack. This
 // operation can increase the number of stack versions by revealing multiple
 // versions which had previously been merged. It returns an array that
 // specifies the index of each revealed version and the trees that were
 // removed from that version.
-StackSliceArray ts_stack_pop_count(Stack *, StackVersion, uint32_t count);
+StackSliceArray ts_stack_pop_count(Stack *, StackVersion, t_u32 count);
 
 // Remove an error at the top of the given version of the stack.
 SubtreeArray ts_stack_pop_error(Stack *, StackVersion);
@@ -122,9 +122,9 @@ void ts_stack_remove_version(Stack *, StackVersion);
 
 void ts_stack_clear(Stack *);
 
-bool ts_stack_print_dot_graph(Stack *, const TSLanguage *, FILE *);
+bool ts_stack_print_dot_graph(Stack *, const t_language *, FILE *);
 
-typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
+typedef void (*StackIterateCallback)(void *, t_state_id, t_u32);
 
 #ifdef __cplusplus
 }

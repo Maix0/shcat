@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 14:45:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/29 14:46:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:24:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 
 typedef struct s_lexer
 {
-	t_u32		lookahead;
+	t_i32		lookahead;
 	t_symbol	result_symbol;
 	void		(*advance)(struct s_lexer *, bool);
 	void		(*mark_end)(struct s_lexer *);
-	t_u32		(*get_column)(struct s_lexer *);
+	t_i32		(*get_column)(struct s_lexer *);
 	bool		(*is_at_included_range_start)(const struct s_lexer *);
 	bool		(*eof)(const struct s_lexer *);
 }				t_lexer;
