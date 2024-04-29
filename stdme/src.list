@@ -72,6 +72,10 @@ num/u64/from_bytes
 num/u64/rotate
 num/u8/rotate
 num/usize/rotate
+os/pipe
+os/process
+os/process_inner
+os/process_inner2
 printf/formatter/char
 printf/formatter/decimal
 printf/formatter/hex

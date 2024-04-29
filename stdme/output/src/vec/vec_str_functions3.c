@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_u8.c                                  :+:      :+:    :+:   */
+/*   vec_str.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,19 +14,19 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/types.h"
-#include "me/vec/vec_u8.h"
+#include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_error vec_u8_push_front(t_vec_u8 *vec,
-								   t_u8	  element)
+t_error vec_str_push_front(t_vec_str *vec,
+								   t_str	  element)
 {
 	t_usize i;
 
 	if (vec->len == 0)
-		return (vec_u8_push(vec, element));
+		return (vec_str_push(vec, element));
 	i = vec->len - 1;
 	if (vec->capacity < vec->len + 1 &&
-		vec_u8_reserve(vec, 3 * vec->len / 2 + 1))
+		vec_str_reserve(vec, 3 * vec->len / 2 + 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -39,12 +39,12 @@ t_error vec_u8_push_front(t_vec_u8 *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_u8_pop_front(t_vec_u8 *vec, t_u8 *value)
+t_error vec_str_pop_front(t_vec_str *vec, t_str *value)
 {
 	t_usize i;
 
 	if (vec->len <= 1)
-		return (vec_u8_pop(vec, value));
+		return (vec_str_pop(vec, value));
 	i = 0;
 	*value = vec->buffer[0];
 	vec->len--;
@@ -57,9 +57,9 @@ t_error vec_u8_pop_front(t_vec_u8 *vec, t_u8 *value)
 	return (NO_ERROR);
 }
 
-void vec_u8_reverse(t_vec_u8 *vec)
+void vec_str_reverse(t_vec_str *vec)
 {
-	t_u8 temporary;
+	t_str temporary;
 	t_usize		  i;
 
 	i = 0;

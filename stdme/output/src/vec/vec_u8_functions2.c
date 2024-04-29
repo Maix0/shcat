@@ -17,9 +17,10 @@
 #include "me/vec/vec_u8.h"
 #include <stdlib.h>
 
-t_error	vec_u8_find(t_vec_u8 *vec, bool (*fn)(const t_u8 *), t_usize *index)
+t_error vec_u8_find(t_vec_u8 *vec,
+							 bool (*fn)(const t_u8 *), t_usize *index)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -36,10 +37,11 @@ t_error	vec_u8_find(t_vec_u8 *vec, bool (*fn)(const t_u8 *), t_usize *index)
 	return (ERROR);
 }
 
-t_error	vec_u8_find_starting(t_vec_u8 *vec, bool (*fn)(const t_u8 *),
-		t_usize starting_index, t_usize *index)
+t_error vec_u8_find_starting(t_vec_u8 *vec,
+									  bool (*fn)(const t_u8 *),
+									  t_usize starting_index, t_usize *index)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -56,9 +58,10 @@ t_error	vec_u8_find_starting(t_vec_u8 *vec, bool (*fn)(const t_u8 *),
 	return (ERROR);
 }
 
-t_error	vec_u8_all(t_vec_u8 *vec, bool (*fn)(const t_u8 *), bool *result)
+t_error vec_u8_all(t_vec_u8 *vec,
+							bool (*fn)(const t_u8 *), bool *result)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -73,9 +76,10 @@ t_error	vec_u8_all(t_vec_u8 *vec, bool (*fn)(const t_u8 *), bool *result)
 	return (ERROR);
 }
 
-t_error	vec_u8_any(t_vec_u8 *vec, bool (*fn)(const t_u8 *), bool *result)
+t_error vec_u8_any(t_vec_u8 *vec,
+							bool (*fn)(const t_u8 *), bool *result)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -90,13 +94,15 @@ t_error	vec_u8_any(t_vec_u8 *vec, bool (*fn)(const t_u8 *), bool *result)
 	return (ERROR);
 }
 
-void	vec_u8_iter(t_vec_u8 *vec, void (*fn)(t_usize index, t_u8 *value,
-			void *state), void *state)
+void vec_u8_iter(t_vec_u8 *vec,
+						  void (*fn)(t_usize index, t_u8 *value,
+									 void *state),
+						  void *state)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL)
-		return ;
+		return;
 	idx = 0;
 	while (idx < vec->len)
 	{

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_buf_str.c                                  :+:      :+:    :+:   */
+/*   vec_str.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,11 +14,11 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/types.h"
-#include "me/vec/vec_buf_str.h"
+#include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_error vec_buf_str_find(t_vec_buf_str *vec,
-							 bool (*fn)(const t_buffer_str *), t_usize *index)
+t_error vec_str_find(t_vec_str *vec,
+							 bool (*fn)(const t_str *), t_usize *index)
 {
 	t_usize idx;
 
@@ -37,8 +37,8 @@ t_error vec_buf_str_find(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
-									  bool (*fn)(const t_buffer_str *),
+t_error vec_str_find_starting(t_vec_str *vec,
+									  bool (*fn)(const t_str *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -58,8 +58,8 @@ t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_all(t_vec_buf_str *vec,
-							bool (*fn)(const t_buffer_str *), bool *result)
+t_error vec_str_all(t_vec_str *vec,
+							bool (*fn)(const t_str *), bool *result)
 {
 	t_usize idx;
 
@@ -76,8 +76,8 @@ t_error vec_buf_str_all(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_any(t_vec_buf_str *vec,
-							bool (*fn)(const t_buffer_str *), bool *result)
+t_error vec_str_any(t_vec_str *vec,
+							bool (*fn)(const t_str *), bool *result)
 {
 	t_usize idx;
 
@@ -94,8 +94,8 @@ t_error vec_buf_str_any(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-void vec_buf_str_iter(t_vec_buf_str *vec,
-						  void (*fn)(t_usize index, t_buffer_str *value,
+void vec_str_iter(t_vec_str *vec,
+						  void (*fn)(t_usize index, t_str *value,
 									 void *state),
 						  void *state)
 {
