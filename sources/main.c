@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 16:43:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 21:32:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,7 @@ void exec_shcat(t_utils *shcat)
 
 void ft_take_args(t_utils *shcat)
 {
-	t_i32 i;
 
-	i = 0;
 	while (1)
 	{
 		shcat->str_input = readline((t_const_str)shcat->name_shell);
@@ -85,17 +83,14 @@ void ft_take_args(t_utils *shcat)
 		exec_shcat(shcat);
 		add_history(shcat->str_input);
 		free(shcat->str_input);
-		i++;
 	}
 }
 
 void ft_find_path(t_str arge[], t_utils *utils)
 {
 	t_i32 i;
-	t_u8  check;
 
 	i = 0;
-	check = 0;
 	while (arge[i] != NULL)
 	{
 		if (arge[i][0] == 'P' && arge[i][1] == 'A' && arge[i][2] == 'T' &&

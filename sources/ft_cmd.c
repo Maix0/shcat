@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 20:26:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 15:30:52 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 21:31:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,9 @@ void	ft_other_cmd(t_utils *shcat, t_usize i, t_usize prev_i)
 	t_i32	options;
 	t_str	*args;
 	t_usize	k;
-	t_usize	tmp; 
 	// t_str	cmd;
 
 	k = prev_i;
-	tmp = prev_i;
 	args = (t_str *)malloc(sizeof(t_str) * (i + 2));
 	while (prev_i < i)
 	{
