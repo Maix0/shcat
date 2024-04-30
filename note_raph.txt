@@ -1,1 +1,0 @@
-Alors pour le coup, il faut que j'arrive a separer les strings par commande puis a chaque sep regarder les autres cmd (bisous lpb si tu passe par la ;))
