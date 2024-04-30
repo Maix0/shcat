@@ -5,7 +5,7 @@
 
 typedef struct {
   const Subtree *subtree;
-  Length position;
+  t_parse_length position;
   t_u32 child_index;
   t_u32 structural_child_index;
   t_u32 descendant_index;

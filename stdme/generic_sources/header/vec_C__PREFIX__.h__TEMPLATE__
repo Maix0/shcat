@@ -53,5 +53,6 @@ void	vec_C__PREFIX___iter(t_vec_C__PREFIX__ *vec,
 void	vec_C__PREFIX___reverse(t_vec_C__PREFIX__ *vec);
 void	vec_C__PREFIX___sort(t_vec_C__PREFIX__		  *vec,
 							 t_vec_C__PREFIX___sort_fn is_sorted);
+t_error vec_C__PREFIX___back(t_vec_C__PREFIX__ *vec, C__TYPENAME__ **out);
 
 #endif

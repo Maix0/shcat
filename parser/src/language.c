@@ -169,47 +169,47 @@ t_field_id ts_language_field_id_for_name(
   return 0;
 }
 
-TSLookaheadIterator *ts_lookahead_iterator_new(const t_language *self, t_state_id state) {
+t_lookahead_iterator *ts_lookahead_iterator_new(const t_language *self, t_state_id state) {
   if (state >= self->state_count) return NULL;
   LookaheadIterator *iterator = malloc(sizeof(LookaheadIterator));
   *iterator = ts_language_lookaheads(self, state);
-  return (TSLookaheadIterator *)iterator;
+  return (t_lookahead_iterator *)iterator;
 }
 
-void ts_lookahead_iterator_delete(TSLookaheadIterator *self) {
+void ts_lookahead_iterator_delete(t_lookahead_iterator *self) {
   free(self);
 }
 
-bool ts_lookahead_iterator_reset_state(TSLookaheadIterator * self, t_state_id state) {
+bool ts_lookahead_iterator_reset_state(t_lookahead_iterator * self, t_state_id state) {
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   if (state >= iterator->language->state_count) return false;
   *iterator = ts_language_lookaheads(iterator->language, state);
   return true;
 }
 
-const t_language *ts_lookahead_iterator_language(const TSLookaheadIterator *self) {
+const t_language *ts_lookahead_iterator_language(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return iterator->language;
 }
 
-bool ts_lookahead_iterator_reset(TSLookaheadIterator *self, const t_language *language, t_state_id state) {
+bool ts_lookahead_iterator_reset(t_lookahead_iterator *self, const t_language *language, t_state_id state) {
   if (state >= language->state_count) return false;
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   *iterator = ts_language_lookaheads(language, state);
   return true;
 }
 
-bool ts_lookahead_iterator_next(TSLookaheadIterator *self) {
+bool ts_lookahead_iterator_next(t_lookahead_iterator *self) {
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   return ts_lookahead_iterator__next(iterator);
 }
 
-t_symbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self) {
+t_symbol ts_lookahead_iterator_current_symbol(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return iterator->symbol;
 }
 
-const char *ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
+const char *ts_lookahead_iterator_current_symbol_name(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return ts_language_symbol_name(iterator->language, iterator->symbol);
 }

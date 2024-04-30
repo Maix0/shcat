@@ -6,10 +6,9 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/29 16:06:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 13:02:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "app/node.h"
 #include "me/string/str_len.h"
@@ -74,50 +73,58 @@ void	ft_find_path(t_str arge[], t_utils *utils)
 	utils->path = ft_split(PATH_FILES, ':');
 }
 
-TSLanguage *tree_sitter_bash(void);
+t_language *tree_sitter_bash(void);
 
-t_node parse_to_nodes(TSParser *parser, t_const_str input) {
-  TSTree *tree;
-  TSNode node;
-  t_node ret;
+t_node parse_to_nodes(t_parser *parser, t_const_str input)
+{
+	t_parse_tree *tree;
+	t_parse_node  node;
+	t_node		  ret;
 
-  tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
-  node = ts_tree_root_node(tree);
-  ret = build_node(node, input);
-  ts_tree_delete(tree);
-  return (ret);
+	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
+	node = ts_tree_root_node(tree);
+	ret = build_node(node, input);
+	ts_tree_delete(tree);
+	return (ret);
 }
 
-void print_node_data(t_node *t, t_usize depth) {
-  t_usize idx;
+void print_node_data(t_node *t, t_usize depth)
+{
+	t_usize idx;
 
-  idx = 0;
-  while (idx++ < depth)
-    printf("\t");
-  idx = 0;
-  printf("%s = %s\n", t->kind_str, node_getstr(t));
-  while (idx < t->childs_count)
-    print_node_data(&t->childs[idx++], depth + 1);
+	idx = 0;
+	while (idx++ < depth)
+		printf("\t");
+	idx = 0;
+	printf("%s = %s\n", t->kind_str, node_getstr(t));
+	while (idx < t->childs_count)
+		print_node_data(&t->childs[idx++], depth + 1);
 }
 
-typedef struct s_myparser {
-  TSParser *parser;
+typedef struct s_myparser
+{
+	t_parser *parser;
 } t_myparser;
 
-t_myparser create_myparser(void) {
-  TSLanguage *lang;
-  TSParser *parser;
+t_myparser create_myparser(void)
+{
+	t_language *lang;
+	t_parser   *parser;
 
-  lang = tree_sitter_bash();
-  parser = ts_parser_new();
-  ts_parser_set_language(parser, lang);
-  return ((t_myparser){.parser = parser});
+	lang = tree_sitter_bash();
+	parser = ts_parser_new();
+	ts_parser_set_language(parser, lang);
+	return ((t_myparser){.parser = parser});
 }
 
-void free_myparser(t_myparser self) { ts_parser_delete(self.parser); }
+void free_myparser(t_myparser self)
+{
+	ts_parser_delete(self.parser);
+}
 
-t_node parse_string(t_myparser *parser, t_const_str input) {
-  return (parse_to_nodes(parser->parser, input));
+t_node parse_string(t_myparser *parser, t_const_str input)
+{
+	return (parse_to_nodes(parser->parser, input));
 }
 
 t_i32	main(t_i32 argc, t_str argv[], t_str arge[])

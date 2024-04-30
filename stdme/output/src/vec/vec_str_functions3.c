@@ -71,3 +71,14 @@ void vec_str_reverse(t_vec_str *vec)
 		i++;
 	}
 }
+
+t_error vec_str_back(t_vec_str *vec, t_str **out)
+{
+	t_str *temporary;
+
+	if (out == NULL)
+		out = &temporary;
+	if (vec->len != 0)
+		return (*out = &vec->buffer[vec->len - 1], true);
+	return (false);
+}

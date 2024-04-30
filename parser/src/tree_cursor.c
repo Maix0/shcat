@@ -7,7 +7,7 @@
 typedef struct {
   Subtree parent;
   const t_parse_tree *tree;
-  Length position;
+  t_parse_length position;
   t_u32 child_index;
   t_u32 structural_child_index;
   t_u32 descendant_index;
@@ -101,12 +101,12 @@ static inline bool ts_tree_cursor_child_iterator_next(
 // can only be computed if `b` has zero rows. Otherwise, this function
 // returns `LENGTH_UNDEFINED`, and the caller needs to recompute
 // the position some other way.
-static inline Length length_backtrack(Length a, Length b) {
+static inline t_parse_length length_backtrack(t_parse_length a, t_parse_length b) {
   if (length_is_undefined(a) || b.extent.row != 0) {
     return LENGTH_UNDEFINED;
   }
 
-  Length result;
+  t_parse_length result;
   result.bytes = a.bytes - b.bytes;
   result.extent.row = a.extent.row;
   result.extent.column = a.extent.column - b.extent.column;
@@ -141,7 +141,7 @@ static inline bool ts_tree_cursor_child_iterator_previous(
   // unsigned can underflow so compare it to child_count
   if (self->child_index < self->parent.ptr->child_count) {
     Subtree previous_child = ts_subtree_children(self->parent)[self->child_index];
-    Length size = ts_subtree_size(previous_child);
+    t_parse_length size = ts_subtree_size(previous_child);
     self->position = length_backtrack(self->position, size);
   }
 
@@ -273,7 +273,7 @@ static inline t_i64 ts_tree_cursor_goto_first_child_for_byte_and_point(
     TreeCursorEntry entry;
     CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
     while (ts_tree_cursor_child_iterator_next(&iterator, &entry, &visible)) {
-      Length entry_end = length_add(entry.position, ts_subtree_size(*entry.subtree));
+      t_parse_length entry_end = length_add(entry.position, ts_subtree_size(*entry.subtree));
       bool at_goal = entry_end.bytes >= goal_byte && point_gte(entry_end.extent, goal_point);
       t_u32 visible_child_count = ts_subtree_visible_child_count(*entry.subtree);
       if (at_goal) {
@@ -374,7 +374,7 @@ TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(t_parse_tree_cursor
 
   // restore position from the parent node
   const TreeCursorEntry *parent = &self->stack.contents[self->stack.size - 2];
-  Length position = parent->position;
+  t_parse_length position = parent->position;
   t_u32 child_index = array_back(&self->stack)->child_index;
   const Subtree *children = ts_subtree_children((*(parent->subtree)));
 

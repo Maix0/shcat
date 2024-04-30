@@ -10,7 +10,7 @@ extern "C" {
 typedef struct {
   const Subtree *child;
   const Subtree *parent;
-  Length position;
+  t_parse_length position;
   t_symbol alias_symbol;
 } ParentCacheEntry;
 
@@ -22,7 +22,7 @@ struct t_parse_tree {
 };
 
 t_parse_tree *ts_tree_new(Subtree root, const t_language *language, const t_parser_range *, unsigned);
-t_parse_node ts_node_new(const t_parse_tree *, const Subtree *, Length, t_symbol);
+t_parse_node ts_node_new(const t_parse_tree *, const Subtree *, t_parse_length, t_symbol);
 
 #ifdef __cplusplus
 }

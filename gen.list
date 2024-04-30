@@ -1,3 +1,6 @@
+src/vec/vec_parser_heredoc.c
+src/vec/vec_parser_heredoc_functions2.c
+src/vec/vec_parser_heredoc_functions3.c
 src/vec/vec_parser_range.c
 src/vec/vec_parser_range_functions2.c
 src/vec/vec_parser_range_functions3.c

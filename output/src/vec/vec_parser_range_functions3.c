@@ -71,3 +71,14 @@ void vec_parser_range_reverse(t_vec_parser_range *vec)
 		i++;
 	}
 }
+
+t_error vec_parser_range_back(t_vec_parser_range *vec, t_parser_range **out)
+{
+	t_parser_range *temporary;
+
+	if (out == NULL)
+		out = &temporary;
+	if (vec->len != 0)
+		return (*out = &vec->buffer[vec->len - 1], true);
+	return (false);
+}

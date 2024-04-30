@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:54:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/31 15:34:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 14:14:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ bool				push_str_buffer(t_buffer_str *buf, t_const_str to_push);
 bool				push_str_char(t_buffer_str *buf, char to_push);
 void				str_clear(t_buffer_str *buf);
 t_buffer_str		alloc_new_buffer(t_usize capacity);
+t_error str_reserve(t_buffer_str *buf, t_usize size);
 
 static inline void	str_free(t_buffer_str buf)
 {

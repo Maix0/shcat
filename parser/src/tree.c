@@ -3,7 +3,7 @@
 #include "parser/api.h"
 #include "./array.h"
 
-#include "./length.h"
+#include "parser/parser_length.h"
 #include "./subtree.h"
 #include "./tree_cursor.h"
 #include "./tree.h"
@@ -46,7 +46,7 @@ t_parse_node ts_tree_root_node_with_offset(
   t_u32 offset_bytes,
   t_point offset_extent
 ) {
-  Length offset = {offset_bytes, offset_extent};
+  t_parse_length offset = {offset_bytes, offset_extent};
   return ts_node_new(self, &self->root, length_add(offset, ts_subtree_padding(self->root)), 0);
 }
 

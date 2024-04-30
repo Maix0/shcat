@@ -1,35 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   node.h                                             :+:      :+:    :+:   */
+/*   types_heredoc.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/28 18:35:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/30 13:02:06 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/04/30 13:47:07 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/04/30 13:48:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef TYPES_HEREDOC_H
+#define TYPES_HEREDOC_H
 
+#include "me/buffered_str/buf_str.h"
 #include "me/types.h"
-#include "parser/api.h"
 
-typedef struct s_node
+typedef struct s_heredoc
 {
-	t_u64		   kind;
-	const char	  *kind_str;
-	const char	  *input;
-	char		  *single_str;
-	t_usize		   start;
-	t_usize		   end;
-	t_usize		   childs_count;
-	struct s_node *childs;
-} t_node;
+	bool		 is_raw;
+	bool		 started;
+	bool		 allows_indent;
+	t_buffer_str delimiter;
+	t_buffer_str current_leading_word;
+} t_heredoc;
 
-t_node build_node(t_parse_node curr, t_const_str input);
-t_str  node_getstr(t_node *node);
-void   free_node(t_node t);
-
-#endif /* NODE_H */
+#endif /* TYPES_HEREDOC_H */

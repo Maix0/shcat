@@ -13,7 +13,7 @@
 #ifndef TREE_SITTER_LEXER_H_
 #define TREE_SITTER_LEXER_H_
 
-#include "./length.h"
+#include "parser/parser_length.h"
 #include "./parser.h"
 #include "./subtree.h"
 #include "parser/api.h"
@@ -26,14 +26,14 @@
 typedef struct s_liblexer
 {
 	t_lexer data;
-	Length	current_position;
-	Length	token_start_position;
-	Length	token_end_position;
+	t_parse_length	current_position;
+	t_parse_length	token_start_position;
+	t_parse_length	token_end_position;
 
 	t_parser_range *included_ranges;
 	const char	   *chunk;
-	TSInput			input;
-	TSLogger		logger;
+	t_parse_input			input;
+	t_parse_logger		logger;
 
 	t_u32 included_range_count;
 	t_u32 current_included_range_index;
@@ -47,8 +47,8 @@ typedef struct s_liblexer
 
 void			ts_lexer_init(t_liblexer *);
 void			ts_lexer_delete(t_liblexer *);
-void			ts_lexer_set_input(t_liblexer *, TSInput);
-void			ts_lexer_reset(t_liblexer *, Length);
+void			ts_lexer_set_input(t_liblexer *, t_parse_input);
+void			ts_lexer_reset(t_liblexer *, t_parse_length);
 void			ts_lexer_start(t_liblexer *);
 void			ts_lexer_finish(t_liblexer *, t_i32 *);
 void			ts_lexer_advance_to_end(t_liblexer *);

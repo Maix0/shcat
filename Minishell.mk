@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/29 14:08:10 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/30 14:19:46 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,7 @@ bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@printf '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)\n'
-	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lme -lgmr
+	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lgmr -lme
 
 # Dependences for all
 $(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
@@ -72,7 +72,7 @@ $(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@echo "$(GREY) Linking $(END)$(GREEN)$(NAME)$(END)"
-	@cc $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lme -lgmr
+	@cc $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lgmr -lme
 
 # Creating the objects
 $(OBJDIRNAME)/%.o: %.c

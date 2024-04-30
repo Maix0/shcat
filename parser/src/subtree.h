@@ -6,8 +6,7 @@
 
 #include "./array.h"
 #include "./error_costs.h"
-#include "./host.h"
-#include "./length.h"
+#include "parser/parser_length.h"
 #include "./parser.h"
 #include "parser/api.h"
 #include <limits.h>
@@ -75,8 +74,8 @@ struct s_subtree_inline_data
 typedef struct
 {
 	volatile t_u32 ref_count;
-	Length		   padding;
-	Length		   size;
+	t_parse_length		   padding;
+	t_parse_length		   size;
 	t_u32		   lookahead_bytes;
 	t_u32		   error_cost;
 	t_u32		   child_count;
@@ -159,14 +158,14 @@ void ts_subtree_array_reverse(SubtreeArray *);
 SubtreePool ts_subtree_pool_new(t_u32 capacity);
 void		ts_subtree_pool_delete(SubtreePool *);
 
-Subtree ts_subtree_new_leaf(SubtreePool *, t_symbol, Length, Length, t_u32,
+Subtree ts_subtree_new_leaf(SubtreePool *, t_symbol, t_parse_length, t_parse_length, t_u32,
 							t_state_id, bool, bool, bool, const t_language *);
-Subtree ts_subtree_new_error(SubtreePool *, t_i32, Length, Length, t_u32,
+Subtree ts_subtree_new_error(SubtreePool *, t_i32, t_parse_length, t_parse_length, t_u32,
 							 t_state_id, const t_language *);
 MutableSubtree ts_subtree_new_node(t_symbol, SubtreeArray *, unsigned,
 								   const t_language *);
 Subtree ts_subtree_new_error_node(SubtreeArray *, bool, const t_language *);
-Subtree ts_subtree_new_missing_leaf(SubtreePool *, t_symbol, Length, t_u32,
+Subtree ts_subtree_new_missing_leaf(SubtreePool *, t_symbol, t_parse_length, t_u32,
 									const t_language *);
 MutableSubtree ts_subtree_make_mut(SubtreePool *, Subtree);
 void		   ts_subtree_retain(Subtree);
@@ -271,11 +270,11 @@ static inline t_state_id ts_subtree_leaf_parse_state(Subtree self)
 	return self.ptr->first_leaf.parse_state;
 }
 
-static inline Length ts_subtree_padding(Subtree self)
+static inline t_parse_length ts_subtree_padding(Subtree self)
 {
 	if (self.data.is_inline)
 	{
-		Length result = {self.data.padding_bytes,
+		t_parse_length result = {self.data.padding_bytes,
 						 {self.data.padding_rows, self.data.padding_columns}};
 		return result;
 	}
@@ -285,11 +284,11 @@ static inline Length ts_subtree_padding(Subtree self)
 	}
 }
 
-static inline Length ts_subtree_size(Subtree self)
+static inline t_parse_length ts_subtree_size(Subtree self)
 {
 	if (self.data.is_inline)
 	{
-		Length result = {self.data.size_bytes, {0, self.data.size_bytes}};
+		t_parse_length result = {self.data.size_bytes, {0, self.data.size_bytes}};
 		return result;
 	}
 	else
@@ -298,7 +297,7 @@ static inline Length ts_subtree_size(Subtree self)
 	}
 }
 
-static inline Length ts_subtree_total_size(Subtree self)
+static inline t_parse_length ts_subtree_total_size(Subtree self)
 {
 	return length_add(ts_subtree_padding(self), ts_subtree_size(self));
 }

@@ -3,7 +3,7 @@
 #include "./subtree.h"
 #include "./array.h"
 #include "./stack.h"
-#include "./length.h"
+#include "parser/parser_length.h"
 #include <assert.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -28,7 +28,7 @@ typedef struct {
 
 struct StackNode {
   t_state_id state;
-  Length position;
+  t_parse_length position;
   StackLink links[MAX_LINK_COUNT];
   short unsigned int link_count;
   t_u32 ref_count;
@@ -464,7 +464,7 @@ t_state_id ts_stack_state(const Stack *self, StackVersion version) {
   return array_get(&self->heads, version)->node->state;
 }
 
-Length ts_stack_position(const Stack *self, StackVersion version) {
+t_parse_length ts_stack_position(const Stack *self, StackVersion version) {
   return array_get(&self->heads, version)->node->position;
 }
 

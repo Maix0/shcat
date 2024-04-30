@@ -22,7 +22,7 @@ typedef struct {
 typedef Array(StackSlice) StackSliceArray;
 
 typedef struct {
-  Length position;
+  t_parse_length position;
   unsigned depth;
   t_state_id state;
 } StackSummaryEntry;
@@ -48,7 +48,7 @@ Subtree ts_stack_last_external_token(const Stack *, StackVersion);
 void ts_stack_set_last_external_token(Stack *, StackVersion, Subtree );
 
 // Get the position of the given version of the stack within the document.
-Length ts_stack_position(const Stack *, StackVersion);
+t_parse_length ts_stack_position(const Stack *, StackVersion);
 
 // Push a tree and state onto the given version of the stack.
 //
