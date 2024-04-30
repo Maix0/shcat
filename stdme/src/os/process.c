@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/06 17:50:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 21:17:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,9 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
 t_error	find_binary(t_spawn_info *info, t_process *process)
 {
 	t_usize			p_idx;
-	t_str			*splitted_path;
 	t_buffer_str	s;
 
 	(void)(process);
-	splitted_path = NULL;
 	s = alloc_new_buffer(256);
 	if (str_start_with(info->binary_path, "/")
 		|| str_find_chr(info->binary_path, '/') != NULL)
