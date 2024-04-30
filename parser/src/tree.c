@@ -66,7 +66,7 @@ void ts_tree_edit(t_parse_tree *self, const t_input_edit *edit) {
         );
         if (range->end_byte < edit->new_end_byte) {
           range->end_byte = UINT32_MAX;
-          range->end_point = POINT_MAX;
+          range->end_point = point_val_max();
         }
       }
     } else if (range->end_byte > edit->start_byte) {
@@ -81,7 +81,7 @@ void ts_tree_edit(t_parse_tree *self, const t_input_edit *edit) {
       );
       if (range->start_byte < edit->new_end_byte) {
         range->start_byte = UINT32_MAX;
-        range->start_point = POINT_MAX;
+        range->start_point = point_val_max();
       }
     } else if (range->start_byte > edit->start_byte) {
       range->start_byte = edit->start_byte;

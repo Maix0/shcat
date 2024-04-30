@@ -1,7 +1,7 @@
 #ifndef TREE_SITTER_LENGTH_H_
 #define TREE_SITTER_LENGTH_H_
 
-#include "../src/point.h"
+#include "parser/point.h"
 #include "parser/api.h"
 #include <stdbool.h>
 #include <stdlib.h>
