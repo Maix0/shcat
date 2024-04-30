@@ -7,7 +7,6 @@
 #include "./array.h"
 #include "parser/error_costs.h"
 #include "parser/parser_length.h"
-#include "./parser.h"
 #include "parser/api.h"
 #include <limits.h>
 #include <stdbool.h>

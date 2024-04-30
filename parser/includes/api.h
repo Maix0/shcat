@@ -33,10 +33,10 @@
 /*******************/
 
 typedef struct s_parser			   t_parser;
-typedef struct t_parse_tree		   t_parse_tree;
-typedef struct t_query			   t_query;
-typedef struct t_query_cursor	   t_query_cursor;
-typedef struct t_lookahead_iterator t_lookahead_iterator;
+typedef struct s_parse_tree		   t_parse_tree;
+typedef struct s_query			   t_query;
+typedef struct s_query_cursor	   t_query_cursor;
+typedef struct s_lookahead_iterator t_lookahead_iterator;
 
 typedef enum t_input_encoding
 {

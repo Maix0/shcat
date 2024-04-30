@@ -1,7 +1,6 @@
 #ifndef TREE_SITTER_LANGUAGE_H_
 #define TREE_SITTER_LANGUAGE_H_
 
-#include "./parser.h"
 #include "./subtree.h"
 #include "parser/types/types_parse_action_type.h"
 #include "parser/types/types_state_id.h"
@@ -12,14 +11,14 @@
 #define LANGUAGE_VERSION_WITH_PRIMARY_STATES 14
 #define LANGUAGE_VERSION_USABLE_VIA_WASM 13
 
-typedef struct
+typedef struct s_table_entry
 {
 	const t_parse_actions *actions;
 	t_u32				   action_count;
 	bool				   is_reusable;
-} TableEntry;
+} t_table_entry;
 
-typedef struct
+typedef struct s_lookahead_iterator
 {
 	const t_language *language;
 	const t_u16		 *data;
@@ -34,17 +33,17 @@ typedef struct
 	t_symbol			   symbol;
 	t_state_id			   next_state;
 	t_u16				   action_count;
-} LookaheadIterator;
+} t_lookahead_iterator;
 
 void ts_language_table_entry(const t_language *, t_state_id, t_symbol,
-							 TableEntry *);
+							 t_table_entry *);
 
 t_symbol_metadata ts_language_symbol_metadata(const t_language *, t_symbol);
 
 t_symbol ts_language_public_symbol(const t_language *, t_symbol);
 
 t_state_id ts_language_next_state(const t_language *self, t_state_id state,
-								 t_symbol symbol);
+								  t_symbol symbol);
 
 static inline bool ts_language_is_symbol_external(const t_language *self,
 												  t_symbol			symbol)
@@ -54,10 +53,10 @@ static inline bool ts_language_is_symbol_external(const t_language *self,
 
 static inline const t_parse_actions *ts_language_actions(const t_language *self,
 														 t_state_id state,
-														 t_symbol  symbol,
-														 t_u32	  *count)
+														 t_symbol	symbol,
+														 t_u32	   *count)
 {
-	TableEntry entry;
+	t_table_entry entry;
 	ts_language_table_entry(self, state, symbol, &entry);
 	*count = entry.action_count;
 	return entry.actions;
@@ -67,7 +66,7 @@ static inline bool ts_language_has_reduce_action(const t_language *self,
 												 t_state_id		   state,
 												 t_symbol		   symbol)
 {
-	TableEntry entry;
+	t_table_entry entry;
 	ts_language_table_entry(self, state, symbol, &entry);
 	return entry.action_count > 0 && entry.actions[0].type == ActionTypeReduce;
 }
@@ -118,8 +117,8 @@ static inline bool ts_language_has_actions(const t_language *self,
 // all possible symbols and checking the parse table for each one.
 // For 'small' parse states, this exploits the structure of the
 // table to only visit the valid symbols.
-static inline LookaheadIterator ts_language_lookaheads(const t_language *self,
-													   t_state_id		 state)
+static inline t_lookahead_iterator ts_language_lookaheads(
+	const t_language *self, t_state_id state)
 {
 	bool		 is_small_state = state >= self->large_state_count;
 	const t_u16 *data;
@@ -137,7 +136,7 @@ static inline LookaheadIterator ts_language_lookaheads(const t_language *self,
 	{
 		data = &self->parse_table[state * self->symbol_count] - 1;
 	}
-	return (LookaheadIterator){
+	return (t_lookahead_iterator){
 		.language = self,
 		.data = data,
 		.group_end = group_end,
@@ -148,7 +147,7 @@ static inline LookaheadIterator ts_language_lookaheads(const t_language *self,
 	};
 }
 
-static inline bool ts_lookahead_iterator__next(LookaheadIterator *self)
+static inline bool ts_lookahead_iterator__next(t_lookahead_iterator *self)
 {
 	// For small parse states, valid symbols are listed explicitly,
 	// grouped by their value. There's no need to look up the actions
