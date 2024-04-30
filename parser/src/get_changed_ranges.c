@@ -13,7 +13,7 @@ static void ts_range_array_add(
   Length end
 ) {
   if (self->size > 0) {
-    TSRange *last_range = array_back(self);
+    t_range *last_range = array_back(self);
     if (start.bytes <= last_range->end_byte) {
       last_range->end_byte = end.bytes;
       last_range->end_point = end.extent;
@@ -22,7 +22,7 @@ static void ts_range_array_add(
   }
 
   if (start.bytes < end.bytes) {
-    TSRange range = { start.extent, end.extent, start.bytes, end.bytes };
+    t_range range = { start.extent, end.extent, start.bytes, end.bytes };
     array_push(self, range);
   }
 }
@@ -34,7 +34,7 @@ bool ts_range_array_intersects(
   uint32_t end_byte
 ) {
   for (unsigned i = start_index; i < self->size; i++) {
-    TSRange *range = &self->contents[i];
+    t_range *range = &self->contents[i];
     if (range->end_byte > start_byte) {
       if (range->start_byte >= end_byte) break;
       return true;
@@ -44,8 +44,8 @@ bool ts_range_array_intersects(
 }
 
 void ts_range_array_get_changed_ranges(
-  const TSRange *old_ranges, unsigned old_range_count,
-  const TSRange *new_ranges, unsigned new_range_count,
+  const t_range *old_ranges, unsigned old_range_count,
+  const t_range *new_ranges, unsigned new_range_count,
   TSRangeArray *differences
 ) {
   unsigned new_index = 0;
@@ -55,8 +55,8 @@ void ts_range_array_get_changed_ranges(
   bool in_new_range = false;
 
   while (old_index < old_range_count || new_index < new_range_count) {
-    const TSRange *old_range = &old_ranges[old_index];
-    const TSRange *new_range = &new_ranges[new_index];
+    const t_range *old_range = &old_ranges[old_index];
+    const t_range *new_range = &new_ranges[new_index];
 
     Length next_old_position;
     if (in_old_range) {
@@ -105,7 +105,7 @@ void ts_range_array_get_changed_ranges(
 
 typedef struct {
   TreeCursor cursor;
-  const TSLanguage *language;
+  const t_language *language;
   unsigned visible_depth;
   bool in_padding;
 } Iterator;
@@ -113,7 +113,7 @@ typedef struct {
 static Iterator iterator_new(
   TreeCursor *cursor,
   const Subtree *tree,
-  const TSLanguage *language
+  const t_language *language
 ) {
   array_clear(&cursor->stack);
   array_push(&cursor->stack, ((TreeCursorEntry) {
@@ -170,7 +170,7 @@ static bool iterator_tree_is_visible(const Iterator *self) {
 static void iterator_get_visible_state(
   const Iterator *self,
   Subtree *tree,
-  TSSymbol *alias_symbol,
+  t_symbol *alias_symbol,
   uint32_t *start_byte
 ) {
   uint32_t i = self->cursor.stack.size - 1;
@@ -309,8 +309,8 @@ static IteratorComparison iterator_compare(
   Subtree new_tree = NULL_SUBTREE;
   uint32_t old_start = 0;
   uint32_t new_start = 0;
-  TSSymbol old_alias_symbol = 0;
-  TSSymbol new_alias_symbol = 0;
+  t_symbol old_alias_symbol = 0;
+  t_symbol new_alias_symbol = 0;
   iterator_get_visible_state(old_iter, &old_tree, &old_alias_symbol, &old_start);
   iterator_get_visible_state(new_iter, &new_tree, &new_alias_symbol, &new_start);
 
@@ -357,9 +357,9 @@ static inline void iterator_print_state(Iterator *self) {
 unsigned ts_subtree_get_changed_ranges(
   const Subtree *old_tree, const Subtree *new_tree,
   TreeCursor *cursor1, TreeCursor *cursor2,
-  const TSLanguage *language,
+  const t_language *language,
   const TSRangeArray *included_range_differences,
-  TSRange **ranges
+  t_range **ranges
 ) {
   TSRangeArray results = array_new();
 
@@ -475,7 +475,7 @@ unsigned ts_subtree_get_changed_ranges(
     // Keep track of the current position in the included range differences
     // array in order to avoid scanning the entire array on each iteration.
     while (included_range_difference_index < included_range_differences->size) {
-      const TSRange *range = &included_range_differences->contents[
+      const t_range *range = &included_range_differences->contents[
         included_range_difference_index
       ];
       if (range->end_byte <= position.bytes) {

@@ -27,7 +27,7 @@ typedef struct {
 } StackLink;
 
 struct StackNode {
-  TSStateId state;
+  t_state_id state;
   Length position;
   StackLink links[MAX_LINK_COUNT];
   short unsigned int link_count;
@@ -139,7 +139,7 @@ static StackNode *stack_node_new(
   StackNode *previous_node,
   Subtree subtree,
   bool is_pending,
-  TSStateId state,
+  t_state_id state,
   StackNodeArray *pool
 ) {
   StackNode *node = pool->size > 0
@@ -460,7 +460,7 @@ uint32_t ts_stack_version_count(const Stack *self) {
   return self->heads.size;
 }
 
-TSStateId ts_stack_state(const Stack *self, StackVersion version) {
+t_state_id ts_stack_state(const Stack *self, StackVersion version) {
   return array_get(&self->heads, version)->node->state;
 }
 
@@ -503,7 +503,7 @@ void ts_stack_push(
   StackVersion version,
   Subtree subtree,
   bool pending,
-  TSStateId state
+  t_state_id state
 ) {
   StackHead *head = array_get(&self->heads, version);
   StackNode *new_node = stack_node_new(head->node, subtree, pending, state, &self->node_pool);
@@ -593,7 +593,7 @@ typedef struct {
 
 forceinline StackAction summarize_stack_callback(void *payload, const StackIterator *iterator) {
   SummarizeStackSession *session = payload;
-  TSStateId state = iterator->node->state;
+  t_state_id state = iterator->node->state;
   unsigned depth = iterator->subtree_count;
   if (depth > session->max_depth) return StackActionStop;
   for (unsigned i = session->summary->size - 1; i + 1 > 0; i--) {
@@ -764,7 +764,7 @@ void ts_stack_clear(Stack *self) {
   }));
 }
 
-bool ts_stack_print_dot_graph(Stack *self, const TSLanguage *language, FILE *f) {
+bool ts_stack_print_dot_graph(Stack *self, const t_language *language, FILE *f) {
   array_reserve(&self->iterators, 32);
   if (!f) f = stderr;
 

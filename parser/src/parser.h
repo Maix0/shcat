@@ -9,7 +9,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdlib.h>
 
-#define ts_builtin_sym_error ((TSSymbol)-1)
+#define ts_builtin_sym_error ((t_symbol)-1)
 #define ts_builtin_sym_end 0
 #define TREE_SITTER_SERIALIZATION_BUFFER_SIZE 1024
 
@@ -21,7 +21,7 @@ typedef struct TSLanguage TSLanguage;
 #endif
 
 typedef struct {
-  TSFieldId field_id;
+  t_field_id field_id;
   uint8_t child_index;
   bool inherited;
 } TSFieldMapEntry;
@@ -41,7 +41,7 @@ typedef struct TSLexer TSLexer;
 
 struct TSLexer {
   int32_t lookahead;
-  TSSymbol result_symbol;
+  t_symbol result_symbol;
   void (*advance)(TSLexer *, bool);
   void (*mark_end)(TSLexer *);
   uint32_t (*get_column)(TSLexer *);
@@ -59,14 +59,14 @@ typedef enum {
 typedef union {
   struct {
     uint8_t type;
-    TSStateId state;
+    t_state_id state;
     bool extra;
     bool repetition;
   } shift;
   struct {
     uint8_t type;
     uint8_t child_count;
-    TSSymbol symbol;
+    t_symbol symbol;
     int16_t dynamic_precedence;
     uint16_t production_id;
   } reduce;
@@ -91,7 +91,7 @@ typedef struct {
   int32_t end;
 } TSCharacterRange;
 
-struct TSLanguage {
+struct t_language {
   uint32_t version;
   uint32_t symbol_count;
   uint32_t alias_count;
@@ -111,23 +111,23 @@ struct TSLanguage {
   const TSFieldMapSlice *field_map_slices;
   const TSFieldMapEntry *field_map_entries;
   const TSSymbolMetadata *symbol_metadata;
-  const TSSymbol *public_symbol_map;
+  const t_symbol *public_symbol_map;
   const uint16_t *alias_map;
-  const TSSymbol *alias_sequences;
+  const t_symbol *alias_sequences;
   const TSLexMode *lex_modes;
-  bool (*lex_fn)(TSLexer *, TSStateId);
-  bool (*keyword_lex_fn)(TSLexer *, TSStateId);
-  TSSymbol keyword_capture_token;
+  bool (*lex_fn)(TSLexer *, t_state_id);
+  bool (*keyword_lex_fn)(TSLexer *, t_state_id);
+  t_symbol keyword_capture_token;
   struct {
     const bool *states;
-    const TSSymbol *symbol_map;
+    const t_symbol *symbol_map;
     void *(*create)(void);
     void (*destroy)(void *);
     bool (*scan)(void *, TSLexer *, const bool *symbol_whitelist);
     unsigned (*serialize)(void *, char *);
     void (*deserialize)(void *, const char *, unsigned);
   } external_scanner;
-  const TSStateId *primary_state_ids;
+  const t_state_id *primary_state_ids;
 };
 
 static inline bool set_contains(TSCharacterRange *ranges, uint32_t len, int32_t lookahead) {

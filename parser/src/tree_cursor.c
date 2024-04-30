@@ -6,12 +6,12 @@
 
 typedef struct {
   Subtree parent;
-  const TSTree *tree;
+  const t_tree *tree;
   Length position;
   uint32_t child_index;
   uint32_t structural_child_index;
   uint32_t descendant_index;
-  const TSSymbol *alias_sequence;
+  const t_symbol *alias_sequence;
 } CursorChildIterator;
 
 // CursorChildIterator
@@ -37,7 +37,7 @@ static inline CursorChildIterator ts_tree_cursor_iterate_children(const TreeCurs
   if (ts_subtree_child_count(*last_entry->subtree) == 0) {
     return (CursorChildIterator) {NULL_SUBTREE, self->tree, length_zero(), 0, 0, 0, NULL};
   }
-  const TSSymbol *alias_sequence = ts_language_alias_sequence(
+  const t_symbol *alias_sequence = ts_language_alias_sequence(
     self->tree->language,
     last_entry->subtree->ptr->production_id
   );
@@ -150,17 +150,17 @@ static inline bool ts_tree_cursor_child_iterator_previous(
 
 // TSTreeCursor - lifecycle
 
-TSTreeCursor ts_tree_cursor_new(TSNode node) {
-  TSTreeCursor self = {NULL, NULL, {0, 0, 0}};
+t_tree_cursor ts_tree_cursor_new(t_parse_node node) {
+  t_tree_cursor self = {NULL, NULL, {0, 0, 0}};
   ts_tree_cursor_init((TreeCursor *)&self, node);
   return self;
 }
 
-void ts_tree_cursor_reset(TSTreeCursor *_self, TSNode node) {
+void ts_tree_cursor_reset(t_tree_cursor *_self, t_parse_node node) {
   ts_tree_cursor_init((TreeCursor *)_self, node);
 }
 
-void ts_tree_cursor_init(TreeCursor *self, TSNode node) {
+void ts_tree_cursor_init(TreeCursor *self, t_parse_node node) {
   self->tree = node.tree;
   self->root_alias_symbol = node.context[3];
   array_clear(&self->stack);
@@ -176,14 +176,14 @@ void ts_tree_cursor_init(TreeCursor *self, TSNode node) {
   }));
 }
 
-void ts_tree_cursor_delete(TSTreeCursor *_self) {
+void ts_tree_cursor_delete(t_tree_cursor *_self) {
   TreeCursor *self = (TreeCursor *)_self;
   array_delete(&self->stack);
 }
 
 // TSTreeCursor - walking the tree
 
-TreeCursorStep ts_tree_cursor_goto_first_child_internal(TSTreeCursor *_self) {
+TreeCursorStep ts_tree_cursor_goto_first_child_internal(t_tree_cursor *_self) {
   TreeCursor *self = (TreeCursor *)_self;
   bool visible;
   TreeCursorEntry entry;
@@ -201,7 +201,7 @@ TreeCursorStep ts_tree_cursor_goto_first_child_internal(TSTreeCursor *_self) {
   return TreeCursorStepNone;
 }
 
-bool ts_tree_cursor_goto_first_child(TSTreeCursor *self) {
+bool ts_tree_cursor_goto_first_child(t_tree_cursor *self) {
   for (;;) {
     switch (ts_tree_cursor_goto_first_child_internal(self)) {
       case TreeCursorStepHidden:
@@ -215,7 +215,7 @@ bool ts_tree_cursor_goto_first_child(TSTreeCursor *self) {
   return false;
 }
 
-TreeCursorStep ts_tree_cursor_goto_last_child_internal(TSTreeCursor *_self) {
+TreeCursorStep ts_tree_cursor_goto_last_child_internal(t_tree_cursor *_self) {
   TreeCursor *self = (TreeCursor *)_self;
   bool visible;
   TreeCursorEntry entry;
@@ -242,7 +242,7 @@ TreeCursorStep ts_tree_cursor_goto_last_child_internal(TSTreeCursor *_self) {
   return TreeCursorStepNone;
 }
 
-bool ts_tree_cursor_goto_last_child(TSTreeCursor *self) {
+bool ts_tree_cursor_goto_last_child(t_tree_cursor *self) {
   for (;;) {
     switch (ts_tree_cursor_goto_last_child_internal(self)) {
       case TreeCursorStepHidden:
@@ -257,9 +257,9 @@ bool ts_tree_cursor_goto_last_child(TSTreeCursor *self) {
 }
 
 static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
-  TSTreeCursor *_self,
+  t_tree_cursor *_self,
   uint32_t goal_byte,
-  TSPoint goal_point
+  t_point goal_point
 ) {
   TreeCursor *self = (TreeCursor *)_self;
   uint32_t initial_size = self->stack.size;
@@ -298,16 +298,16 @@ static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
   return -1;
 }
 
-int64_t ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor *self, uint32_t goal_byte) {
+int64_t ts_tree_cursor_goto_first_child_for_byte(t_tree_cursor *self, uint32_t goal_byte) {
   return ts_tree_cursor_goto_first_child_for_byte_and_point(self, goal_byte, POINT_ZERO);
 }
 
-int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor *self, TSPoint goal_point) {
+int64_t ts_tree_cursor_goto_first_child_for_point(t_tree_cursor *self, t_point goal_point) {
   return ts_tree_cursor_goto_first_child_for_byte_and_point(self, 0, goal_point);
 }
 
 TreeCursorStep ts_tree_cursor_goto_sibling_internal(
-    TSTreeCursor *_self,
+    t_tree_cursor *_self,
     bool (*advance)(CursorChildIterator *, TreeCursorEntry *, bool *)) {
   TreeCursor *self = (TreeCursor *)_self;
   uint32_t initial_size = self->stack.size;
@@ -341,11 +341,11 @@ TreeCursorStep ts_tree_cursor_goto_sibling_internal(
   return TreeCursorStepNone;
 }
 
-TreeCursorStep ts_tree_cursor_goto_next_sibling_internal(TSTreeCursor *_self) {
+TreeCursorStep ts_tree_cursor_goto_next_sibling_internal(t_tree_cursor *_self) {
   return ts_tree_cursor_goto_sibling_internal(_self, ts_tree_cursor_child_iterator_next);
 }
 
-bool ts_tree_cursor_goto_next_sibling(TSTreeCursor *self) {
+bool ts_tree_cursor_goto_next_sibling(t_tree_cursor *self) {
   switch (ts_tree_cursor_goto_next_sibling_internal(self)) {
     case TreeCursorStepHidden:
       ts_tree_cursor_goto_first_child(self);
@@ -357,7 +357,7 @@ bool ts_tree_cursor_goto_next_sibling(TSTreeCursor *self) {
   }
 }
 
-TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(TSTreeCursor *_self) {
+TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(t_tree_cursor *_self) {
   // since subtracting across row loses column information, we may have to
   // restore it
   TreeCursor *self = (TreeCursor *)_self;
@@ -392,7 +392,7 @@ TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(TSTreeCursor *_self
   return step;
 }
 
-bool ts_tree_cursor_goto_previous_sibling(TSTreeCursor *self) {
+bool ts_tree_cursor_goto_previous_sibling(t_tree_cursor *self) {
   switch (ts_tree_cursor_goto_previous_sibling_internal(self)) {
     case TreeCursorStepHidden:
       ts_tree_cursor_goto_last_child(self);
@@ -404,7 +404,7 @@ bool ts_tree_cursor_goto_previous_sibling(TSTreeCursor *self) {
   }
 }
 
-bool ts_tree_cursor_goto_parent(TSTreeCursor *_self) {
+bool ts_tree_cursor_goto_parent(t_tree_cursor *_self) {
   TreeCursor *self = (TreeCursor *)_self;
   for (unsigned i = self->stack.size - 2; i + 1 > 0; i--) {
     if (ts_tree_cursor_is_entry_visible(self, i)) {
@@ -416,7 +416,7 @@ bool ts_tree_cursor_goto_parent(TSTreeCursor *_self) {
 }
 
 void ts_tree_cursor_goto_descendant(
-  TSTreeCursor *_self,
+  t_tree_cursor *_self,
   uint32_t goal_descendant_index
 ) {
   TreeCursor *self = (TreeCursor *)_self;
@@ -466,16 +466,16 @@ void ts_tree_cursor_goto_descendant(
   } while (did_descend);
 }
 
-uint32_t ts_tree_cursor_current_descendant_index(const TSTreeCursor *_self) {
+uint32_t ts_tree_cursor_current_descendant_index(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
   TreeCursorEntry *last_entry = array_back(&self->stack);
   return last_entry->descendant_index;
 }
 
-TSNode ts_tree_cursor_current_node(const TSTreeCursor *_self) {
+t_parse_node ts_tree_cursor_current_node(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
   TreeCursorEntry *last_entry = array_back(&self->stack);
-  TSSymbol alias_symbol = self->root_alias_symbol;
+  t_symbol alias_symbol = self->root_alias_symbol;
   if (self->stack.size > 1 && !ts_subtree_extra(*last_entry->subtree)) {
     TreeCursorEntry *parent_entry = &self->stack.contents[self->stack.size - 2];
     alias_symbol = ts_language_alias_at(
@@ -495,12 +495,12 @@ TSNode ts_tree_cursor_current_node(const TSTreeCursor *_self) {
 // Private - Get various facts about the current node that are needed
 // when executing tree queries.
 void ts_tree_cursor_current_status(
-  const TSTreeCursor *_self,
-  TSFieldId *field_id,
+  const t_tree_cursor *_self,
+  t_field_id *field_id,
   bool *has_later_siblings,
   bool *has_later_named_siblings,
   bool *can_have_later_siblings_with_this_field,
-  TSSymbol *supertypes,
+  t_symbol *supertypes,
   unsigned *supertype_count
 ) {
   const TreeCursor *self = (const TreeCursor *)_self;
@@ -517,7 +517,7 @@ void ts_tree_cursor_current_status(
     TreeCursorEntry *entry = &self->stack.contents[i];
     TreeCursorEntry *parent_entry = &self->stack.contents[i - 1];
 
-    const TSSymbol *alias_sequence = ts_language_alias_sequence(
+    const t_symbol *alias_sequence = ts_language_alias_sequence(
       self->tree->language,
       parent_entry->subtree->ptr->production_id
     );
@@ -532,7 +532,7 @@ void ts_tree_cursor_current_status(
         ts_subtree_symbol(subtree))
 
     // Stop walking up when a visible ancestor is found.
-    TSSymbol entry_symbol = subtree_symbol(
+    t_symbol entry_symbol = subtree_symbol(
       *entry->subtree,
       entry->structural_child_index
     );
@@ -614,7 +614,7 @@ void ts_tree_cursor_current_status(
   }
 }
 
-uint32_t ts_tree_cursor_current_depth(const TSTreeCursor *_self) {
+uint32_t ts_tree_cursor_current_depth(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
   uint32_t depth = 0;
   for (unsigned i = 1; i < self->stack.size; i++) {
@@ -625,12 +625,12 @@ uint32_t ts_tree_cursor_current_depth(const TSTreeCursor *_self) {
   return depth;
 }
 
-TSNode ts_tree_cursor_parent_node(const TSTreeCursor *_self) {
+t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
   for (int i = (int)self->stack.size - 2; i >= 0; i--) {
     TreeCursorEntry *entry = &self->stack.contents[i];
     bool is_visible = true;
-    TSSymbol alias_symbol = 0;
+    t_symbol alias_symbol = 0;
     if (i > 0) {
       TreeCursorEntry *parent_entry = &self->stack.contents[i - 1];
       alias_symbol = ts_language_alias_at(
@@ -652,7 +652,7 @@ TSNode ts_tree_cursor_parent_node(const TSTreeCursor *_self) {
   return ts_node_new(NULL, NULL, length_zero(), 0);
 }
 
-TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor *_self) {
+t_field_id ts_tree_cursor_current_field_id(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
 
   // Walk up the tree, visiting the current node and its invisible ancestors.
@@ -683,8 +683,8 @@ TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor *_self) {
   return 0;
 }
 
-const char *ts_tree_cursor_current_field_name(const TSTreeCursor *_self) {
-  TSFieldId id = ts_tree_cursor_current_field_id(_self);
+const char *ts_tree_cursor_current_field_name(const t_tree_cursor *_self) {
+  t_field_id id = ts_tree_cursor_current_field_id(_self);
   if (id) {
     const TreeCursor *self = (const TreeCursor *)_self;
     return self->tree->language->field_names[id];
@@ -693,9 +693,9 @@ const char *ts_tree_cursor_current_field_name(const TSTreeCursor *_self) {
   }
 }
 
-TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor *_cursor) {
+t_tree_cursor ts_tree_cursor_copy(const t_tree_cursor *_cursor) {
   const TreeCursor *cursor = (const TreeCursor *)_cursor;
-  TSTreeCursor res = {NULL, NULL, {0, 0}};
+  t_tree_cursor res = {NULL, NULL, {0, 0}};
   TreeCursor *copy = (TreeCursor *)&res;
   copy->tree = cursor->tree;
   copy->root_alias_symbol = cursor->root_alias_symbol;
@@ -704,7 +704,7 @@ TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor *_cursor) {
   return res;
 }
 
-void ts_tree_cursor_reset_to(TSTreeCursor *_dst, const TSTreeCursor *_src) {
+void ts_tree_cursor_reset_to(t_tree_cursor *_dst, const t_tree_cursor *_src) {
   const TreeCursor *cursor = (const TreeCursor *)_src;
   TreeCursor *copy = (TreeCursor *)_dst;
   copy->tree = cursor->tree;

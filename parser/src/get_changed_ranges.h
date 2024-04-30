@@ -8,11 +8,11 @@ extern "C" {
 #include "./tree_cursor.h"
 #include "./subtree.h"
 
-typedef Array(TSRange) TSRangeArray;
+typedef Array(t_range) TSRangeArray;
 
 void ts_range_array_get_changed_ranges(
-  const TSRange *old_ranges, unsigned old_range_count,
-  const TSRange *new_ranges, unsigned new_range_count,
+  const t_range *old_ranges, unsigned old_range_count,
+  const t_range *new_ranges, unsigned new_range_count,
   TSRangeArray *differences
 );
 
@@ -24,9 +24,9 @@ bool ts_range_array_intersects(
 unsigned ts_subtree_get_changed_ranges(
   const Subtree *old_tree, const Subtree *new_tree,
   TreeCursor *cursor1, TreeCursor *cursor2,
-  const TSLanguage *language,
+  const t_language *language,
   const TSRangeArray *included_range_differences,
-  TSRange **ranges
+  t_range **ranges
 );
 
 #ifdef __cplusplus

@@ -23,7 +23,7 @@
 
 static const int32_t BYTE_ORDER_MARK = 0xFEFF;
 
-static const TSRange DEFAULT_RANGE = {
+static const t_range DEFAULT_RANGE = {
   .start_point = {
     .row = 0,
     .column = 0,
@@ -127,7 +127,7 @@ static void ts_lexer_goto(Lexer *self, Length position) {
   // Move to the first valid position at or after the given position.
   bool found_included_range = false;
   for (unsigned i = 0; i < self->included_range_count; i++) {
-    TSRange *included_range = &self->included_ranges[i];
+    t_range *included_range = &self->included_ranges[i];
     if (
       included_range->end_byte > self->current_position.bytes &&
       included_range->end_byte > included_range->start_byte
@@ -163,7 +163,7 @@ static void ts_lexer_goto(Lexer *self, Length position) {
   // state - past the end of the included ranges.
   else {
     self->current_included_range_index = self->included_range_count;
-    TSRange *last_included_range = &self->included_ranges[self->included_range_count - 1];
+    t_range *last_included_range = &self->included_ranges[self->included_range_count - 1];
     self->current_position = (Length) {
       .bytes = last_included_range->end_byte,
       .extent = last_included_range->end_point,
@@ -186,7 +186,7 @@ static void ts_lexer__do_advance(Lexer *self, bool skip) {
     }
   }
 
-  const TSRange *current_range = &self->included_ranges[self->current_included_range_index];
+  const t_range *current_range = &self->included_ranges[self->current_included_range_index];
   while (
     self->current_position.bytes >= current_range->end_byte ||
     current_range->end_byte == current_range->start_byte
@@ -246,14 +246,14 @@ static void ts_lexer__mark_end(TSLexer *_self) {
     // If the lexer is right at the beginning of included range,
     // then the token should be considered to end at the *end* of the
     // previous included range, rather than here.
-    TSRange *current_included_range = &self->included_ranges[
+    t_range *current_included_range = &self->included_ranges[
       self->current_included_range_index
     ];
     if (
       self->current_included_range_index > 0 &&
       self->current_position.bytes == current_included_range->start_byte
     ) {
-      TSRange *previous_included_range = current_included_range - 1;
+      t_range *previous_included_range = current_included_range - 1;
       self->token_end_position = (Length) {
         previous_included_range->end_byte,
         previous_included_range->end_point,
@@ -296,7 +296,7 @@ static uint32_t ts_lexer__get_column(TSLexer *_self) {
 static bool ts_lexer__is_at_included_range_start(const TSLexer *_self) {
   const Lexer *self = (const Lexer *)_self;
   if (self->current_included_range_index < self->included_range_count) {
-    TSRange *current_range = &self->included_ranges[self->current_included_range_index];
+    t_range *current_range = &self->included_ranges[self->current_included_range_index];
     return self->current_position.bytes == current_range->start_byte;
   } else {
     return false;
@@ -336,7 +336,7 @@ void ts_lexer_delete(Lexer *self) {
   ts_free(self->included_ranges);
 }
 
-void ts_lexer_set_input(Lexer *self, TSInput input) {
+void ts_lexer_set_input(Lexer *self, t_input input) {
   self->input = input;
   ts_lexer__clear_chunk(self);
   ts_lexer_goto(self, self->current_position);
@@ -404,7 +404,7 @@ void ts_lexer_mark_end(Lexer *self) {
 
 bool ts_lexer_set_included_ranges(
   Lexer *self,
-  const TSRange *ranges,
+  const t_range *ranges,
   uint32_t count
 ) {
   if (count == 0 || !ranges) {
@@ -413,7 +413,7 @@ bool ts_lexer_set_included_ranges(
   } else {
     uint32_t previous_byte = 0;
     for (unsigned i = 0; i < count; i++) {
-      const TSRange *range = &ranges[i];
+      const t_range *range = &ranges[i];
       if (
         range->start_byte < previous_byte ||
         range->end_byte < range->start_byte
@@ -422,7 +422,7 @@ bool ts_lexer_set_included_ranges(
     }
   }
 
-  size_t size = count * sizeof(TSRange);
+  size_t size = count * sizeof(t_range);
   self->included_ranges = ts_realloc(self->included_ranges, size);
   memcpy(self->included_ranges, ranges, size);
   self->included_range_count = count;
@@ -430,7 +430,7 @@ bool ts_lexer_set_included_ranges(
   return true;
 }
 
-TSRange *ts_lexer_included_ranges(const Lexer *self, uint32_t *count) {
+t_range *ts_lexer_included_ranges(const Lexer *self, uint32_t *count) {
   *count = self->included_range_count;
   return self->included_ranges;
 }

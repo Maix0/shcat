@@ -10,7 +10,7 @@ extern "C" {
 
 typedef struct {
   uint32_t count;
-  TSSymbol symbol;
+  t_symbol symbol;
   int dynamic_precedence;
   unsigned short production_id;
 } ReduceAction;

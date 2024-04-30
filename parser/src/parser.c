@@ -87,11 +87,11 @@ typedef struct {
   uint32_t byte_index;
 } TokenCache;
 
-struct TSParser {
+struct t_parser {
   Lexer lexer;
   Stack *stack;
   SubtreePool tree_pool;
-  const TSLanguage *language;
+  const t_language *language;
   ReduceActionSet reduce_actions;
   Subtree finished_tree;
   SubtreeArray trailing_extras;
@@ -137,7 +137,7 @@ typedef struct {
 static const char *ts_string_input_read(
   void *_self,
   uint32_t byte,
-  TSPoint point,
+  t_point point,
   uint32_t *length
 ) {
   (void)point;
@@ -153,7 +153,7 @@ static const char *ts_string_input_read(
 
 // Parser - Private
 
-static void ts_parser__log(TSParser *self) {
+static void ts_parser__log(t_parser *self) {
   if (self->lexer.logger.log) {
     self->lexer.logger.log(
       self->lexer.logger.payload,
@@ -173,7 +173,7 @@ static void ts_parser__log(TSParser *self) {
 }
 
 static bool ts_parser__breakdown_top_of_stack(
-  TSParser *self,
+  t_parser *self,
   StackVersion version
 ) {
   bool did_break_down = false;
@@ -187,7 +187,7 @@ static bool ts_parser__breakdown_top_of_stack(
     pending = false;
     for (uint32_t i = 0; i < pop.size; i++) {
       StackSlice slice = pop.contents[i];
-      TSStateId state = ts_stack_state(self->stack, slice.version);
+      t_state_id state = ts_stack_state(self->stack, slice.version);
       Subtree parent = *array_front(&slice.subtrees);
 
       for (uint32_t j = 0, n = ts_subtree_child_count(parent); j < n; j++) {
@@ -221,9 +221,9 @@ static bool ts_parser__breakdown_top_of_stack(
 }
 
 static void ts_parser__breakdown_lookahead(
-  TSParser *self,
+  t_parser *self,
   Subtree *lookahead,
-  TSStateId state,
+  t_state_id state,
   ReusableNode *reusable_node
 ) {
   bool did_descend = false;
@@ -243,7 +243,7 @@ static void ts_parser__breakdown_lookahead(
 }
 
 static ErrorComparison ts_parser__compare_versions(
-  TSParser *self,
+  t_parser *self,
   ErrorStatus a,
   ErrorStatus b
 ) {
@@ -286,7 +286,7 @@ static ErrorComparison ts_parser__compare_versions(
 }
 
 static ErrorStatus ts_parser__version_status(
-  TSParser *self,
+  t_parser *self,
   StackVersion version
 ) {
   unsigned cost = ts_stack_error_cost(self->stack, version);
@@ -301,7 +301,7 @@ static ErrorStatus ts_parser__version_status(
 }
 
 static bool ts_parser__better_version_exists(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   bool is_in_error,
   unsigned cost
@@ -337,13 +337,13 @@ static bool ts_parser__better_version_exists(
   return false;
 }
 
-static bool ts_parser__call_main_lex_fn(TSParser *self, TSLexMode lex_mode) {
+static bool ts_parser__call_main_lex_fn(t_parser *self, TSLexMode lex_mode) {
 
     return self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
 
 }
 
-static bool ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode) {
+static bool ts_parser__call_keyword_lex_fn(t_parser *self, TSLexMode lex_mode) {
   (void)(lex_mode);
 
     return self->language->keyword_lex_fn(&self->lexer.data, 0);
@@ -351,7 +351,7 @@ static bool ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode) {
 }
 
 static void ts_parser__external_scanner_create(
-  TSParser *self
+  t_parser *self
 ) {
   if (self->language && self->language->external_scanner.states) {
 if (self->language->external_scanner.create) {
@@ -361,7 +361,7 @@ if (self->language->external_scanner.create) {
 }}
 
 static void ts_parser__external_scanner_destroy(
-  TSParser *self
+  t_parser *self
 ) {
   if (
     self->language &&
@@ -376,7 +376,7 @@ static void ts_parser__external_scanner_destroy(
 }
 
 static unsigned ts_parser__external_scanner_serialize(
-  TSParser *self
+  t_parser *self
 ) {
     uint32_t length = self->language->external_scanner.serialize(
       self->external_scanner_payload,
@@ -388,7 +388,7 @@ static unsigned ts_parser__external_scanner_serialize(
 }
 
 static void ts_parser__external_scanner_deserialize(
-  TSParser *self,
+  t_parser *self,
   Subtree external_token
 ) {
   const char *data = NULL;
@@ -408,8 +408,8 @@ static void ts_parser__external_scanner_deserialize(
 }
 
 static bool ts_parser__external_scanner_scan(
-  TSParser *self,
-  TSStateId external_lex_state
+  t_parser *self,
+  t_state_id external_lex_state
 ) {
   
     const bool *valid_external_tokens = ts_language_enabled_external_tokens(
@@ -425,14 +425,14 @@ static bool ts_parser__external_scanner_scan(
 }
 
 static bool ts_parser__can_reuse_first_leaf(
-  TSParser *self,
-  TSStateId state,
+  t_parser *self,
+  t_state_id state,
   Subtree tree,
   TableEntry *table_entry
 ) {
   TSLexMode current_lex_mode = self->language->lex_modes[state];
-  TSSymbol leaf_symbol = ts_subtree_leaf_symbol(tree);
-  TSStateId leaf_state = ts_subtree_leaf_parse_state(tree);
+  t_symbol leaf_symbol = ts_subtree_leaf_symbol(tree);
+  t_state_id leaf_state = ts_subtree_leaf_parse_state(tree);
   TSLexMode leaf_lex_mode = self->language->lex_modes[leaf_state];
 
   // At the end of a non-terminal extra node, the lexer normally returns
@@ -460,9 +460,9 @@ static bool ts_parser__can_reuse_first_leaf(
 }
 
 static Subtree ts_parser__lex(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
-  TSStateId parse_state
+  t_state_id parse_state
 ) {
   TSLexMode lex_mode = self->language->lex_modes[parse_state];
   if (lex_mode.lex_state == (uint16_t)-1) {
@@ -596,7 +596,7 @@ static Subtree ts_parser__lex(
     );
   } else {
     bool is_keyword = false;
-    TSSymbol symbol = self->lexer.data.result_symbol;
+    t_symbol symbol = self->lexer.data.result_symbol;
     Length padding = length_sub(self->lexer.token_start_position, start_position);
     Length size = length_sub(self->lexer.token_end_position, self->lexer.token_start_position);
     uint32_t lookahead_bytes = lookahead_end_byte - self->lexer.token_end_position.bytes;
@@ -651,8 +651,8 @@ static Subtree ts_parser__lex(
 }
 
 static Subtree ts_parser__get_cached_token(
-  TSParser *self,
-  TSStateId state,
+  t_parser *self,
+  t_state_id state,
   size_t position,
   Subtree last_external_token,
   TableEntry *table_entry
@@ -672,7 +672,7 @@ static Subtree ts_parser__get_cached_token(
 }
 
 static void ts_parser__set_cached_token(
-  TSParser *self,
+  t_parser *self,
   uint32_t byte_index,
   Subtree last_external_token,
   Subtree token
@@ -688,7 +688,7 @@ static void ts_parser__set_cached_token(
 }
 
 static bool ts_parser__has_included_range_difference(
-  const TSParser *self,
+  const t_parser *self,
   uint32_t start_position,
   uint32_t end_position
 ) {
@@ -701,9 +701,9 @@ static bool ts_parser__has_included_range_difference(
 }
 
 static Subtree ts_parser__reuse_node(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
-  TSStateId *state,
+  t_state_id *state,
   uint32_t position,
   Subtree last_external_token,
   TableEntry *table_entry
@@ -759,7 +759,7 @@ static Subtree ts_parser__reuse_node(
       continue;
     }
 
-    TSSymbol leaf_symbol = ts_subtree_leaf_symbol(result);
+    t_symbol leaf_symbol = ts_subtree_leaf_symbol(result);
     ts_language_table_entry(self->language, *state, leaf_symbol, table_entry);
     if (!ts_parser__can_reuse_first_leaf(self, *state, result, table_entry)) {
       LOG(
@@ -783,7 +783,7 @@ static Subtree ts_parser__reuse_node(
 //
 // The decision is based on the trees' error costs (if any), their dynamic precedence,
 // and finally, as a default, by a recursive comparison of the trees' symbols.
-static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right) {
+static bool ts_parser__select_tree(t_parser *self, Subtree left, Subtree right) {
   if (!left.ptr) return true;
   if (!right.ptr) return false;
 
@@ -831,7 +831,7 @@ static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right) 
 // Determine if a given tree's children should be replaced by an alternative
 // array of children.
 static bool ts_parser__select_children(
-  TSParser *self,
+  t_parser *self,
   Subtree left,
   const SubtreeArray *children
 ) {
@@ -856,9 +856,9 @@ static bool ts_parser__select_children(
 }
 
 static void ts_parser__shift(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
-  TSStateId state,
+  t_state_id state,
   Subtree lookahead,
   bool extra
 ) {
@@ -879,9 +879,9 @@ static void ts_parser__shift(
 }
 
 static StackVersion ts_parser__reduce(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
-  TSSymbol symbol,
+  t_symbol symbol,
   uint32_t count,
   int dynamic_precedence,
   uint16_t production_id,
@@ -957,8 +957,8 @@ static StackVersion ts_parser__reduce(
       }
     }
 
-    TSStateId state = ts_stack_state(self->stack, slice_version);
-    TSStateId next_state = ts_language_next_state(self->language, state, symbol);
+    t_state_id state = ts_stack_state(self->stack, slice_version);
+    t_state_id next_state = ts_language_next_state(self->language, state, symbol);
     if (end_of_non_terminal_extra && next_state == state) {
       parent.ptr->extra = true;
     }
@@ -994,7 +994,7 @@ static StackVersion ts_parser__reduce(
 }
 
 static void ts_parser__accept(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   Subtree lookahead
 ) {
@@ -1047,9 +1047,9 @@ static void ts_parser__accept(
 }
 
 static bool ts_parser__do_all_potential_reductions(
-  TSParser *self,
+  t_parser *self,
   StackVersion starting_version,
-  TSSymbol lookahead_symbol
+  t_symbol lookahead_symbol
 ) {
   uint32_t initial_version_count = ts_stack_version_count(self->stack);
 
@@ -1068,11 +1068,11 @@ static bool ts_parser__do_all_potential_reductions(
     }
     if (merged) continue;
 
-    TSStateId state = ts_stack_state(self->stack, version);
+    t_state_id state = ts_stack_state(self->stack, version);
     bool has_shift_action = false;
     array_clear(&self->reduce_actions);
 
-    TSSymbol first_symbol, end_symbol;
+    t_symbol first_symbol, end_symbol;
     if (lookahead_symbol != 0) {
       first_symbol = lookahead_symbol;
       end_symbol = lookahead_symbol + 1;
@@ -1081,7 +1081,7 @@ static bool ts_parser__do_all_potential_reductions(
       end_symbol = self->language->token_count;
     }
 
-    for (TSSymbol symbol = first_symbol; symbol < end_symbol; symbol++) {
+    for (t_symbol symbol = first_symbol; symbol < end_symbol; symbol++) {
       TableEntry entry;
       ts_language_table_entry(self->language, state, symbol, &entry);
       for (uint32_t j = 0; j < entry.action_count; j++) {
@@ -1137,10 +1137,10 @@ static bool ts_parser__do_all_potential_reductions(
 }
 
 static bool ts_parser__recover_to_state(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   unsigned depth,
-  TSStateId goal_state
+  t_state_id goal_state
 ) {
   StackSliceArray pop = ts_stack_pop_count(self->stack, version, depth);
   StackVersion previous_version = STACK_VERSION_NONE;
@@ -1196,7 +1196,7 @@ static bool ts_parser__recover_to_state(
 }
 
 static void ts_parser__recover(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   Subtree lookahead
 ) {
@@ -1373,7 +1373,7 @@ static void ts_parser__recover(
 }
 
 static void ts_parser__handle_error(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   Subtree lookahead
 ) {
@@ -1391,13 +1391,13 @@ static void ts_parser__handle_error(
   bool did_insert_missing_token = false;
   for (StackVersion v = version; v < version_count;) {
     if (!did_insert_missing_token) {
-      TSStateId state = ts_stack_state(self->stack, v);
+      t_state_id state = ts_stack_state(self->stack, v);
       for (
-        TSSymbol missing_symbol = 1;
+        t_symbol missing_symbol = 1;
         missing_symbol < (uint16_t)self->language->token_count;
         missing_symbol++
       ) {
-        TSStateId state_after_missing_symbol = ts_language_next_state(
+        t_state_id state_after_missing_symbol = ts_language_next_state(
           self->language, state, missing_symbol
         );
         if (state_after_missing_symbol == 0 || state_after_missing_symbol == state) {
@@ -1471,11 +1471,11 @@ static void ts_parser__handle_error(
 }
 
 static bool ts_parser__advance(
-  TSParser *self,
+  t_parser *self,
   StackVersion version,
   bool allow_node_reuse
 ) {
-  TSStateId state = ts_stack_state(self->stack, version);
+  t_state_id state = ts_stack_state(self->stack, version);
   uint32_t position = ts_stack_position(self->stack, version).bytes;
   Subtree last_external_token = ts_stack_last_external_token(self->stack, version);
 
@@ -1548,7 +1548,7 @@ static bool ts_parser__advance(
       switch (action.type) {
         case TSParseActionTypeShift: {
           if (action.shift.repetition) break;
-          TSStateId next_state;
+          t_state_id next_state;
           if (action.shift.extra) {
             next_state = state;
             LOG("shift_extra");
@@ -1688,7 +1688,7 @@ static bool ts_parser__advance(
   }
 }
 
-static unsigned ts_parser__condense_stack(TSParser *self) {
+static unsigned ts_parser__condense_stack(t_parser *self) {
   bool made_changes = false;
   unsigned min_error_cost = UINT_MAX;
   for (StackVersion i = 0; i < ts_stack_version_count(self->stack); i++) {
@@ -1788,7 +1788,7 @@ static unsigned ts_parser__condense_stack(TSParser *self) {
   return min_error_cost;
 }
 
-static bool ts_parser_has_outstanding_parse(TSParser *self) {
+static bool ts_parser_has_outstanding_parse(t_parser *self) {
   return (
     self->external_scanner_payload ||
     ts_stack_state(self->stack, 0) != 1 ||
@@ -1798,8 +1798,8 @@ static bool ts_parser_has_outstanding_parse(TSParser *self) {
 
 // Parser - Public
 
-TSParser *ts_parser_new(void) {
-  TSParser *self = ts_calloc(1, sizeof(TSParser));
+t_parser *ts_parser_new(void) {
+  t_parser *self = ts_calloc(1, sizeof(t_parser));
   ts_lexer_init(&self->lexer);
   array_init(&self->reduce_actions);
   array_reserve(&self->reduce_actions, 4);
@@ -1822,7 +1822,7 @@ TSParser *ts_parser_new(void) {
   return self;
 }
 
-void ts_parser_delete(TSParser *self) {
+void ts_parser_delete(t_parser *self) {
   if (!self) return;
 
   ts_parser_set_language(self, NULL);
@@ -1847,11 +1847,11 @@ void ts_parser_delete(TSParser *self) {
   ts_free(self);
 }
 
-const TSLanguage *ts_parser_language(const TSParser *self) {
+const t_language *ts_parser_language(const t_parser *self) {
   return self->language;
 }
 
-bool ts_parser_set_language(TSParser *self, const TSLanguage *language) {
+bool ts_parser_set_language(t_parser *self, const t_language *language) {
   ts_parser_reset(self);
   ts_language_delete(self->language);
   self->language = NULL;
@@ -1869,15 +1869,15 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language) {
   return true;
 }
 
-TSLogger ts_parser_logger(const TSParser *self) {
+t_logger ts_parser_logger(const t_parser *self) {
   return self->lexer.logger;
 }
 
-void ts_parser_set_logger(TSParser *self, TSLogger logger) {
+void ts_parser_set_logger(t_parser *self, t_logger logger) {
   self->lexer.logger = logger;
 }
 
-void ts_parser_print_dot_graphs(TSParser *self, int fd) {
+void ts_parser_print_dot_graphs(t_parser *self, int fd) {
   if (self->dot_graph_file) {
     fclose(self->dot_graph_file);
   }
@@ -1893,35 +1893,35 @@ void ts_parser_print_dot_graphs(TSParser *self, int fd) {
   }
 }
 
-const size_t *ts_parser_cancellation_flag(const TSParser *self) {
+const size_t *ts_parser_cancellation_flag(const t_parser *self) {
   return (const size_t *)self->cancellation_flag;
 }
 
-void ts_parser_set_cancellation_flag(TSParser *self, const size_t *flag) {
+void ts_parser_set_cancellation_flag(t_parser *self, const size_t *flag) {
   self->cancellation_flag = (const volatile size_t *)flag;
 }
 
-uint64_t ts_parser_timeout_micros(const TSParser *self) {
+uint64_t ts_parser_timeout_micros(const t_parser *self) {
   return duration_to_micros(self->timeout_duration);
 }
 
-void ts_parser_set_timeout_micros(TSParser *self, uint64_t timeout_micros) {
+void ts_parser_set_timeout_micros(t_parser *self, uint64_t timeout_micros) {
   self->timeout_duration = duration_from_micros(timeout_micros);
 }
 
 bool ts_parser_set_included_ranges(
-  TSParser *self,
-  const TSRange *ranges,
+  t_parser *self,
+  const t_range *ranges,
   uint32_t count
 ) {
   return ts_lexer_set_included_ranges(&self->lexer, ranges, count);
 }
 
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count) {
+const t_range *ts_parser_included_ranges(const t_parser *self, uint32_t *count) {
   return ts_lexer_included_ranges(&self->lexer, count);
 }
 
-void ts_parser_reset(TSParser *self) {
+void ts_parser_reset(t_parser *self) {
   ts_parser__external_scanner_destroy(self);
 
   if (self->old_tree.ptr) {
@@ -1941,12 +1941,12 @@ void ts_parser_reset(TSParser *self) {
   self->has_scanner_error = false;
 }
 
-TSTree *ts_parser_parse(
-  TSParser *self,
-  const TSTree *old_tree,
-  TSInput input
+t_tree *ts_parser_parse(
+  t_parser *self,
+  const t_tree *old_tree,
+  t_input input
 ) {
-  TSTree *result = NULL;
+  t_tree *result = NULL;
   if (!self->language || !input.read) return NULL;
 
   
@@ -1973,7 +1973,7 @@ TSTree *ts_parser_parse(
       LOG("parse_after_edit");
       LOG_TREE(self->old_tree);
       for (unsigned i = 0; i < self->included_range_differences.size; i++) {
-        TSRange *range = &self->included_range_differences.contents[i];
+        t_range *range = &self->included_range_differences.contents[i];
         LOG("different_included_range %u - %u", range->start_byte, range->end_byte);
       }
     } else {
@@ -2037,7 +2037,7 @@ TSTree *ts_parser_parse(
     }
 
     while (self->included_range_difference_index < self->included_range_differences.size) {
-      TSRange *range = &self->included_range_differences.contents[self->included_range_difference_index];
+      t_range *range = &self->included_range_differences.contents[self->included_range_difference_index];
       if (range->end_byte <= position) {
         self->included_range_difference_index++;
       } else {
@@ -2064,24 +2064,24 @@ exit:
   return result;
 }
 
-TSTree *ts_parser_parse_string(
-  TSParser *self,
-  const TSTree *old_tree,
+t_tree *ts_parser_parse_string(
+  t_parser *self,
+  const t_tree *old_tree,
   const char *string,
   uint32_t length
 ) {
   return ts_parser_parse_string_encoding(self, old_tree, string, length, TSInputEncodingUTF8);
 }
 
-TSTree *ts_parser_parse_string_encoding(
-  TSParser *self,
-  const TSTree *old_tree,
+t_tree *ts_parser_parse_string_encoding(
+  t_parser *self,
+  const t_tree *old_tree,
   const char *string,
   uint32_t length,
-  TSInputEncoding encoding
+  t_input_encoding encoding
 ) {
   TSStringInput input = {string, length};
-  return ts_parser_parse(self, old_tree, (TSInput) {
+  return ts_parser_parse(self, old_tree, (t_input) {
     &input,
     ts_string_input_read,
     encoding,

@@ -24,7 +24,7 @@ typedef Array(StackSlice) StackSliceArray;
 typedef struct {
   Length position;
   unsigned depth;
-  TSStateId state;
+  t_state_id state;
 } StackSummaryEntry;
 typedef Array(StackSummaryEntry) StackSummary;
 
@@ -39,7 +39,7 @@ uint32_t ts_stack_version_count(const Stack *);
 
 // Get the state at the top of the given version of the stack. If the stack is
 // empty, this returns the initial state, 0.
-TSStateId ts_stack_state(const Stack *, StackVersion);
+t_state_id ts_stack_state(const Stack *, StackVersion);
 
 // Get the last external token associated with a given version of the stack.
 Subtree ts_stack_last_external_token(const Stack *, StackVersion);
@@ -55,7 +55,7 @@ Length ts_stack_position(const Stack *, StackVersion);
 // This transfers ownership of the tree to the Stack. Callers that
 // need to retain ownership of the tree for their own purposes should
 // first retain the tree.
-void ts_stack_push(Stack *, StackVersion, Subtree , bool, TSStateId);
+void ts_stack_push(Stack *, StackVersion, Subtree , bool, t_state_id);
 
 // Pop the given number of entries from the given version of the stack. This
 // operation can increase the number of stack versions by revealing multiple
@@ -122,9 +122,9 @@ void ts_stack_remove_version(Stack *, StackVersion);
 
 void ts_stack_clear(Stack *);
 
-bool ts_stack_print_dot_graph(Stack *, const TSLanguage *, FILE *);
+bool ts_stack_print_dot_graph(Stack *, const t_language *, FILE *);
 
-typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
+typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
 
 #ifdef __cplusplus
 }

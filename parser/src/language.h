@@ -20,37 +20,37 @@ typedef struct {
 } TableEntry;
 
 typedef struct {
-  const TSLanguage *language;
+  const t_language *language;
   const uint16_t *data;
   const uint16_t *group_end;
-  TSStateId state;
+  t_state_id state;
   uint16_t table_value;
   uint16_t section_index;
   uint16_t group_count;
   bool is_small_state;
 
   const TSParseAction *actions;
-  TSSymbol symbol;
-  TSStateId next_state;
+  t_symbol symbol;
+  t_state_id next_state;
   uint16_t action_count;
 } LookaheadIterator;
 
-void ts_language_table_entry(const TSLanguage *, TSStateId, TSSymbol, TableEntry *);
+void ts_language_table_entry(const t_language *, t_state_id, t_symbol, TableEntry *);
 
-TSSymbolMetadata ts_language_symbol_metadata(const TSLanguage *, TSSymbol);
+TSSymbolMetadata ts_language_symbol_metadata(const t_language *, t_symbol);
 
-TSSymbol ts_language_public_symbol(const TSLanguage *, TSSymbol);
+t_symbol ts_language_public_symbol(const t_language *, t_symbol);
 
-TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state, TSSymbol symbol);
+t_state_id ts_language_next_state(const t_language *self, t_state_id state, t_symbol symbol);
 
-static inline bool ts_language_is_symbol_external(const TSLanguage *self, TSSymbol symbol) {
+static inline bool ts_language_is_symbol_external(const t_language *self, t_symbol symbol) {
   return 0 < symbol && symbol < self->external_token_count + 1;
 }
 
 static inline const TSParseAction *ts_language_actions(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol,
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol,
   uint32_t *count
 ) {
   TableEntry entry;
@@ -60,9 +60,9 @@ static inline const TSParseAction *ts_language_actions(
 }
 
 static inline bool ts_language_has_reduce_action(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol
 ) {
   TableEntry entry;
   ts_language_table_entry(self, state, symbol, &entry);
@@ -77,9 +77,9 @@ static inline bool ts_language_has_reduce_action(
 // states, this requires searching through the symbol groups to find
 // the given symbol.
 static inline uint16_t ts_language_lookup(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol
 ) {
   if (state >= self->large_state_count) {
     uint32_t index = self->small_parse_table_map[state - self->large_state_count];
@@ -99,9 +99,9 @@ static inline uint16_t ts_language_lookup(
 }
 
 static inline bool ts_language_has_actions(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol
 ) {
   return ts_language_lookup(self, state, symbol) != 0;
 }
@@ -113,8 +113,8 @@ static inline bool ts_language_has_actions(
 // For 'small' parse states, this exploits the structure of the
 // table to only visit the valid symbols.
 static inline LookaheadIterator ts_language_lookaheads(
-  const TSLanguage *self,
-  TSStateId state
+  const t_language *self,
+  t_state_id state
 ) {
   bool is_small_state = state >= self->large_state_count;
   const uint16_t *data;
@@ -186,8 +186,8 @@ static inline bool ts_lookahead_iterator__next(LookaheadIterator *self) {
 // Whether the state is a "primary state". If this returns false, it indicates that there exists
 // another state that behaves identically to this one with respect to query analysis.
 static inline bool ts_language_state_is_primary(
-  const TSLanguage *self,
-  TSStateId state
+  const t_language *self,
+  t_state_id state
 ) {
   if (self->version >= LANGUAGE_VERSION_WITH_PRIMARY_STATES) {
     return state == self->primary_state_ids[state];
@@ -197,7 +197,7 @@ static inline bool ts_language_state_is_primary(
 }
 
 static inline const bool *ts_language_enabled_external_tokens(
-  const TSLanguage *self,
+  const t_language *self,
   unsigned external_scanner_state
 ) {
   if (external_scanner_state == 0) {
@@ -207,8 +207,8 @@ static inline const bool *ts_language_enabled_external_tokens(
   }
 }
 
-static inline const TSSymbol *ts_language_alias_sequence(
-  const TSLanguage *self,
+static inline const t_symbol *ts_language_alias_sequence(
+  const t_language *self,
   uint32_t production_id
 ) {
   return production_id ?
@@ -216,8 +216,8 @@ static inline const TSSymbol *ts_language_alias_sequence(
     NULL;
 }
 
-static inline TSSymbol ts_language_alias_at(
-  const TSLanguage *self,
+static inline t_symbol ts_language_alias_at(
+  const t_language *self,
   uint32_t production_id,
   uint32_t child_index
 ) {
@@ -227,7 +227,7 @@ static inline TSSymbol ts_language_alias_at(
 }
 
 static inline void ts_language_field_map(
-  const TSLanguage *self,
+  const t_language *self,
   uint32_t production_id,
   const TSFieldMapEntry **start,
   const TSFieldMapEntry **end
@@ -244,17 +244,17 @@ static inline void ts_language_field_map(
 }
 
 static inline void ts_language_aliases_for_symbol(
-  const TSLanguage *self,
-  TSSymbol original_symbol,
-  const TSSymbol **start,
-  const TSSymbol **end
+  const t_language *self,
+  t_symbol original_symbol,
+  const t_symbol **start,
+  const t_symbol **end
 ) {
   *start = &self->public_symbol_map[original_symbol];
   *end = *start + 1;
 
   unsigned idx = 0;
   for (;;) {
-    TSSymbol symbol = self->alias_map[idx++];
+    t_symbol symbol = self->alias_map[idx++];
     if (symbol == 0 || symbol > original_symbol) break;
     uint16_t count = self->alias_map[idx++];
     if (symbol == original_symbol) {
@@ -267,9 +267,9 @@ static inline void ts_language_aliases_for_symbol(
 }
 
 static inline void ts_language_write_symbol_as_dot_string(
-  const TSLanguage *self,
+  const t_language *self,
   FILE *f,
-  TSSymbol symbol
+  t_symbol symbol
 ) {
   const char *name = ts_language_symbol_name(self, symbol);
   for (const char *chr = name; *chr; chr++) {

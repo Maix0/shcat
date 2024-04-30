@@ -12,9 +12,9 @@ typedef struct {
 } TreeCursorEntry;
 
 typedef struct {
-  const TSTree *tree;
+  const t_tree *tree;
   Array(TreeCursorEntry) stack;
-  TSSymbol root_alias_symbol;
+  t_symbol root_alias_symbol;
 } TreeCursor;
 
 typedef enum {
@@ -23,26 +23,26 @@ typedef enum {
   TreeCursorStepVisible,
 } TreeCursorStep;
 
-void ts_tree_cursor_init(TreeCursor *, TSNode);
+void ts_tree_cursor_init(TreeCursor *, t_parse_node);
 void ts_tree_cursor_current_status(
-  const TSTreeCursor *,
-  TSFieldId *,
+  const t_tree_cursor *,
+  t_field_id *,
   bool *,
   bool *,
   bool *,
-  TSSymbol *,
+  t_symbol *,
   unsigned *
 );
 
-TreeCursorStep ts_tree_cursor_goto_first_child_internal(TSTreeCursor *);
-TreeCursorStep ts_tree_cursor_goto_next_sibling_internal(TSTreeCursor *);
+TreeCursorStep ts_tree_cursor_goto_first_child_internal(t_tree_cursor *);
+TreeCursorStep ts_tree_cursor_goto_next_sibling_internal(t_tree_cursor *);
 
-static inline Subtree ts_tree_cursor_current_subtree(const TSTreeCursor *_self) {
+static inline Subtree ts_tree_cursor_current_subtree(const t_tree_cursor *_self) {
   const TreeCursor *self = (const TreeCursor *)_self;
   TreeCursorEntry *last_entry = array_back(&self->stack);
   return *last_entry->subtree;
 }
 
-TSNode ts_tree_cursor_parent_node(const TSTreeCursor *);
+t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *);
 
 #endif  // TREE_SITTER_TREE_CURSOR_H_

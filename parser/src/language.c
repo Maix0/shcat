@@ -3,34 +3,34 @@
 #include "./api.h"
 #include <string.h>
 
-const TSLanguage *ts_language_copy(const TSLanguage *self) {
+const t_language *ts_language_copy(const t_language *self) {
   return self;
 }
 
-void ts_language_delete(const TSLanguage *self) {
+void ts_language_delete(const t_language *self) {
   (void)(self);
 }
 
-uint32_t ts_language_symbol_count(const TSLanguage *self) {
+uint32_t ts_language_symbol_count(const t_language *self) {
   return self->symbol_count + self->alias_count;
 }
 
-uint32_t ts_language_state_count(const TSLanguage *self) {
+uint32_t ts_language_state_count(const t_language *self) {
   return self->state_count;
 }
 
-uint32_t ts_language_version(const TSLanguage *self) {
+uint32_t ts_language_version(const t_language *self) {
   return self->version;
 }
 
-uint32_t ts_language_field_count(const TSLanguage *self) {
+uint32_t ts_language_field_count(const t_language *self) {
   return self->field_count;
 }
 
 void ts_language_table_entry(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol,
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol,
   TableEntry *result
 ) {
   if (symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat) {
@@ -48,8 +48,8 @@ void ts_language_table_entry(
 }
 
 TSSymbolMetadata ts_language_symbol_metadata(
-  const TSLanguage *self,
-  TSSymbol symbol
+  const t_language *self,
+  t_symbol symbol
 ) {
   if (symbol == ts_builtin_sym_error)  {
     return (TSSymbolMetadata) {.visible = true, .named = true};
@@ -60,18 +60,18 @@ TSSymbolMetadata ts_language_symbol_metadata(
   }
 }
 
-TSSymbol ts_language_public_symbol(
-  const TSLanguage *self,
-  TSSymbol symbol
+t_symbol ts_language_public_symbol(
+  const t_language *self,
+  t_symbol symbol
 ) {
   if (symbol == ts_builtin_sym_error) return symbol;
   return self->public_symbol_map[symbol];
 }
 
-TSStateId ts_language_next_state(
-  const TSLanguage *self,
-  TSStateId state,
-  TSSymbol symbol
+t_state_id ts_language_next_state(
+  const t_language *self,
+  t_state_id state,
+  t_symbol symbol
 ) {
   if (symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat) {
     return 0;
@@ -91,8 +91,8 @@ TSStateId ts_language_next_state(
 }
 
 const char *ts_language_symbol_name(
-  const TSLanguage *self,
-  TSSymbol symbol
+  const t_language *self,
+  t_symbol symbol
 ) {
   if (symbol == ts_builtin_sym_error) {
     return "ERROR";
@@ -105,15 +105,15 @@ const char *ts_language_symbol_name(
   }
 }
 
-TSSymbol ts_language_symbol_for_name(
-  const TSLanguage *self,
+t_symbol ts_language_symbol_for_name(
+  const t_language *self,
   const char *string,
   uint32_t length,
   bool is_named
 ) {
   if (!strncmp(string, "ERROR", length)) return ts_builtin_sym_error;
   uint16_t count = (uint16_t)ts_language_symbol_count(self);
-  for (TSSymbol i = 0; i < count; i++) {
+  for (t_symbol i = 0; i < count; i++) {
     TSSymbolMetadata metadata = ts_language_symbol_metadata(self, i);
     if ((!metadata.visible && !metadata.supertype) || metadata.named != is_named) continue;
     const char *symbol_name = self->symbol_names[i];
@@ -124,9 +124,9 @@ TSSymbol ts_language_symbol_for_name(
   return 0;
 }
 
-TSSymbolType ts_language_symbol_type(
-  const TSLanguage *self,
-  TSSymbol symbol
+t_symbol_type ts_language_symbol_type(
+  const t_language *self,
+  t_symbol symbol
 ) {
   TSSymbolMetadata metadata = ts_language_symbol_metadata(self, symbol);
   if (metadata.named && metadata.visible) {
@@ -139,8 +139,8 @@ TSSymbolType ts_language_symbol_type(
 }
 
 const char *ts_language_field_name_for_id(
-  const TSLanguage *self,
-  TSFieldId id
+  const t_language *self,
+  t_field_id id
 ) {
   uint32_t count = ts_language_field_count(self);
   if (count && id <= count) {
@@ -150,13 +150,13 @@ const char *ts_language_field_name_for_id(
   }
 }
 
-TSFieldId ts_language_field_id_for_name(
-  const TSLanguage *self,
+t_field_id ts_language_field_id_for_name(
+  const t_language *self,
   const char *name,
   uint32_t name_length
 ) {
   uint16_t count = (uint16_t)ts_language_field_count(self);
-  for (TSSymbol i = 1; i < count + 1; i++) {
+  for (t_symbol i = 1; i < count + 1; i++) {
     switch (strncmp(name, self->field_names[i], name_length)) {
       case 0:
         if (self->field_names[i][name_length] == 0) return i;
@@ -170,47 +170,47 @@ TSFieldId ts_language_field_id_for_name(
   return 0;
 }
 
-TSLookaheadIterator *ts_lookahead_iterator_new(const TSLanguage *self, TSStateId state) {
+t_lookahead_iterator *ts_lookahead_iterator_new(const t_language *self, t_state_id state) {
   if (state >= self->state_count) return NULL;
   LookaheadIterator *iterator = ts_malloc(sizeof(LookaheadIterator));
   *iterator = ts_language_lookaheads(self, state);
-  return (TSLookaheadIterator *)iterator;
+  return (t_lookahead_iterator *)iterator;
 }
 
-void ts_lookahead_iterator_delete(TSLookaheadIterator *self) {
+void ts_lookahead_iterator_delete(t_lookahead_iterator *self) {
   ts_free(self);
 }
 
-bool ts_lookahead_iterator_reset_state(TSLookaheadIterator * self, TSStateId state) {
+bool ts_lookahead_iterator_reset_state(t_lookahead_iterator * self, t_state_id state) {
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   if (state >= iterator->language->state_count) return false;
   *iterator = ts_language_lookaheads(iterator->language, state);
   return true;
 }
 
-const TSLanguage *ts_lookahead_iterator_language(const TSLookaheadIterator *self) {
+const t_language *ts_lookahead_iterator_language(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return iterator->language;
 }
 
-bool ts_lookahead_iterator_reset(TSLookaheadIterator *self, const TSLanguage *language, TSStateId state) {
+bool ts_lookahead_iterator_reset(t_lookahead_iterator *self, const t_language *language, t_state_id state) {
   if (state >= language->state_count) return false;
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   *iterator = ts_language_lookaheads(language, state);
   return true;
 }
 
-bool ts_lookahead_iterator_next(TSLookaheadIterator *self) {
+bool ts_lookahead_iterator_next(t_lookahead_iterator *self) {
   LookaheadIterator *iterator = (LookaheadIterator *)self;
   return ts_lookahead_iterator__next(iterator);
 }
 
-TSSymbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self) {
+t_symbol ts_lookahead_iterator_current_symbol(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return iterator->symbol;
 }
 
-const char *ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
+const char *ts_lookahead_iterator_current_symbol_name(const t_lookahead_iterator *self) {
   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
   return ts_language_symbol_name(iterator->language, iterator->symbol);
 }
