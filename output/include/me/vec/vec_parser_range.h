@@ -53,5 +53,6 @@ void	vec_parser_range_iter(t_vec_parser_range *vec,
 void	vec_parser_range_reverse(t_vec_parser_range *vec);
 void	vec_parser_range_sort(t_vec_parser_range		  *vec,
 							 t_vec_parser_range_sort_fn is_sorted);
+t_error vec_parser_range_back(t_vec_parser_range *vec, t_parser_range **out);
 
 #endif

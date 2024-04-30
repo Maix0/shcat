@@ -53,5 +53,6 @@ void	vec_buf_str_iter(t_vec_buf_str *vec,
 void	vec_buf_str_reverse(t_vec_buf_str *vec);
 void	vec_buf_str_sort(t_vec_buf_str		  *vec,
 							 t_vec_buf_str_sort_fn is_sorted);
+t_error vec_buf_str_back(t_vec_buf_str *vec, t_buffer_str **out);
 
 #endif

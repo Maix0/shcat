@@ -16,6 +16,7 @@ blx/sprite/get_pixel
 blx/sprite/new_image
 blx/sprite/sprite_draw_onto_sprite
 buffered_str/mod
+buffered_str/push_char
 char/isalnum
 char/isalpha
 char/isascii

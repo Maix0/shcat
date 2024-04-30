@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:52:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 20:05:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 14:14:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,32 @@
 #include "me/types.h"
 #include <stdlib.h>
 
-bool	push_str_buffer(t_buffer_str *buf, t_const_str to_push)
+t_error str_reserve(t_buffer_str *buf, t_usize size)
 {
-	t_usize	to_push_len;
 	t_str	temp_buffer;
-	t_usize	new_capacity;
+	t_usize new_capacity;
+
+	if (buf == NULL)
+		return (ERROR);
+	while (size > buf->capacity)
+	{
+		new_capacity = (buf->capacity * 3) / 2 + 1;
+		temp_buffer = mem_alloc(new_capacity);
+		if (temp_buffer == NULL)
+			return (true);
+		str_l_copy(temp_buffer, buf->buf, new_capacity);
+		free(buf->buf);
+		buf->buf = temp_buffer;
+		buf->capacity = new_capacity;
+	}
+	return (NO_ERROR);
+}
+
+bool push_str_buffer(t_buffer_str *buf, t_const_str to_push)
+{
+	t_usize to_push_len;
+	t_str	temp_buffer;
+	t_usize new_capacity;
 
 	if (buf == NULL || to_push == NULL)
 		return (true);
@@ -44,26 +65,26 @@ bool	push_str_buffer(t_buffer_str *buf, t_const_str to_push)
 	return (false);
 }
 
-bool	push_str_char(t_buffer_str *buf, char to_push)
+bool push_str_char(t_buffer_str *buf, char to_push)
 {
-	char	push_str[2];
+	char push_str[2];
 
 	push_str[0] = to_push;
 	push_str[1] = 0;
 	return (push_str_buffer(buf, push_str));
 }
 
-void	str_clear(t_buffer_str *buf)
+void str_clear(t_buffer_str *buf)
 {
 	mem_set_zero(buf->buf, buf->capacity);
 	buf->len = 0;
-	return ;
+	return;
 }
 
-t_buffer_str	alloc_new_buffer(t_usize capacity)
+t_buffer_str alloc_new_buffer(t_usize capacity)
 {
-	t_buffer_str	out;
-	t_str			buf;
+	t_buffer_str out;
+	t_str		 buf;
 
 	if (capacity == 0)
 		capacity = 16;

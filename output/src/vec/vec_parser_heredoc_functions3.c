@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_buf_str.c                                  :+:      :+:    :+:   */
+/*   vec_parser_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,19 +14,19 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/types.h"
-#include "me/vec/vec_buf_str.h"
+#include "me/vec/vec_parser_heredoc.h"
 #include <stdlib.h>
 
-t_error vec_buf_str_push_front(t_vec_buf_str *vec,
-								   t_buffer_str	  element)
+t_error vec_parser_heredoc_push_front(t_vec_parser_heredoc *vec,
+								   t_heredoc	  element)
 {
 	t_usize i;
 
 	if (vec->len == 0)
-		return (vec_buf_str_push(vec, element));
+		return (vec_parser_heredoc_push(vec, element));
 	i = vec->len - 1;
 	if (vec->capacity < vec->len + 1 &&
-		vec_buf_str_reserve(vec, 3 * vec->len / 2 + 1))
+		vec_parser_heredoc_reserve(vec, 3 * vec->len / 2 + 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -39,12 +39,12 @@ t_error vec_buf_str_push_front(t_vec_buf_str *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_buffer_str *value)
+t_error vec_parser_heredoc_pop_front(t_vec_parser_heredoc *vec, t_heredoc *value)
 {
 	t_usize i;
 
 	if (vec->len <= 1)
-		return (vec_buf_str_pop(vec, value));
+		return (vec_parser_heredoc_pop(vec, value));
 	i = 0;
 	*value = vec->buffer[0];
 	vec->len--;
@@ -57,9 +57,9 @@ t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_buffer_str *value)
 	return (NO_ERROR);
 }
 
-void vec_buf_str_reverse(t_vec_buf_str *vec)
+void vec_parser_heredoc_reverse(t_vec_parser_heredoc *vec)
 {
-	t_buffer_str temporary;
+	t_heredoc temporary;
 	t_usize		  i;
 
 	i = 0;
@@ -72,9 +72,9 @@ void vec_buf_str_reverse(t_vec_buf_str *vec)
 	}
 }
 
-t_error vec_buf_str_back(t_vec_buf_str *vec, t_buffer_str **out)
+t_error vec_parser_heredoc_back(t_vec_parser_heredoc *vec, t_heredoc **out)
 {
-	t_buffer_str *temporary;
+	t_heredoc *temporary;
 
 	if (out == NULL)
 		out = &temporary;

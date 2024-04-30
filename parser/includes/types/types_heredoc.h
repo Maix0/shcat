@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   types_scanner_ctx.h                                :+:      :+:    :+:   */
+/*   types_heredoc.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/30 13:41:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/30 13:50:24 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/04/30 13:47:07 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/04/30 13:48:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TYPES_SCANNER_CTX_H
-#define TYPES_SCANNER_CTX_H
+#ifndef TYPES_HEREDOC_H
+#define TYPES_HEREDOC_H
 
+#include "me/buffered_str/buf_str.h"
 #include "me/types.h"
-#include "me/vec/vec_parser_heredoc.h"
 
-typedef struct s_scanner_ctx
+typedef struct s_heredoc
 {
-	t_u8				 last_glob_paren_depth;
-	bool				 ext_was_in_double_quote;
-	bool				 ext_saw_outside_quote;
-	t_vec_parser_heredoc heredocs;
-} t_scanner_ctx;
+	bool		 is_raw;
+	bool		 started;
+	bool		 allows_indent;
+	t_buffer_str delimiter;
+	t_buffer_str current_leading_word;
+} t_heredoc;
 
-#endif /* TYPES_SCANNER_CTX_H */
+#endif /* TYPES_HEREDOC_H */

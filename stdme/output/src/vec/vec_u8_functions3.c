@@ -71,3 +71,14 @@ void vec_u8_reverse(t_vec_u8 *vec)
 		i++;
 	}
 }
+
+t_error vec_u8_back(t_vec_u8 *vec, t_u8 **out)
+{
+	t_u8 *temporary;
+
+	if (out == NULL)
+		out = &temporary;
+	if (vec->len != 0)
+		return (*out = &vec->buffer[vec->len - 1], true);
+	return (false);
+}

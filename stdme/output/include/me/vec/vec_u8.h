@@ -53,5 +53,6 @@ void	vec_u8_iter(t_vec_u8 *vec,
 void	vec_u8_reverse(t_vec_u8 *vec);
 void	vec_u8_sort(t_vec_u8		  *vec,
 							 t_vec_u8_sort_fn is_sorted);
+t_error vec_u8_back(t_vec_u8 *vec, t_u8 **out);
 
 #endif

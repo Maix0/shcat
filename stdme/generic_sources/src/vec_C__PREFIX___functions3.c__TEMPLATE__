@@ -71,3 +71,14 @@ void vec_C__PREFIX___reverse(t_vec_C__PREFIX__ *vec)
 		i++;
 	}
 }
+
+t_error vec_C__PREFIX___back(t_vec_C__PREFIX__ *vec, C__TYPENAME__ **out)
+{
+	C__TYPENAME__ *temporary;
+
+	if (out == NULL)
+		out = &temporary;
+	if (vec->len != 0)
+		return (*out = &vec->buffer[vec->len - 1], true);
+	return (false);
+}
