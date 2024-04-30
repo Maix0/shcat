@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/29 15:07:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 15:42:51 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define MINISHELL_H
 
 # include "me/types.h"
+# include "app/node.h"
 
 # include <unistd.h>
 # include <fcntl.h>
@@ -29,13 +30,20 @@
 
 # define PATH_FILES "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
 
+typedef struct s_myparser
+{
+	t_parser *parser;
+} t_myparser;
+
 typedef struct s_utils
 {
-	t_str	name_shell;
-	t_str	str_input;
-	t_str	*strs_input;
-	t_str	*path;
-	t_str	*envp;
+	t_str		name_shell;
+	t_str		str_input;
+	t_str		*strs_input;	
+	t_str		*path;
+	t_str		*envp;
+	t_myparser	parser;
+	t_node		current_node;
 }			t_utils;
 
 t_i32	main(t_i32 argc, t_str argv[], t_str arge[]);
