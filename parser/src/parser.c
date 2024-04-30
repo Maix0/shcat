@@ -367,11 +367,7 @@ static bool ts_parser__better_version_exists(t_parser	 *self,
 		return true;
 	}
 
-<<<<<<< HEAD
 	t_parse_length position = ts_stack_position(self->stack, version);
-=======
-	t_parse_length		   position = ts_stack_position(self->stack, version);
->>>>>>> master
 	t_error_status status = {
 		.cost = cost,
 		.is_in_error = is_in_error,
@@ -510,7 +506,6 @@ static Subtree ts_parser__lex(t_parser *self, StackVersion version,
 		return NULL_SUBTREE;
 	}
 
-<<<<<<< HEAD
 	const t_parse_length start_position =
 		ts_stack_position(self->stack, version);
 	const Subtree external_token =
@@ -526,31 +521,11 @@ static Subtree ts_parser__lex(t_parser *self, StackVersion version,
 	t_i32		   lookahead_end_byte = 0;
 	t_i32		   external_scanner_state_len = 0;
 	bool		   external_scanner_state_changed = false;
-=======
-	const t_parse_length  start_position = ts_stack_position(self->stack, version);
-	const Subtree external_token =
-		ts_stack_last_external_token(self->stack, version);
-
-	bool	 found_external_token = false;
-	bool	 error_mode = parse_state == ERROR_STATE;
-	bool	 skipped_error = false;
-	bool	 called_get_column = false;
-	t_i32	 first_error_character = 0;
-	t_parse_length	 error_start_position = length_zero();
-	t_parse_length	 error_end_position = length_zero();
-	t_i32 lookahead_end_byte = 0;
-	t_i32 external_scanner_state_len = 0;
-	bool	 external_scanner_state_changed = false;
->>>>>>> master
+	bool		   found_token;
 	ts_lexer_reset(&self->lexer, start_position);
 
 	for (;;)
 	{
-<<<<<<< HEAD
-		bool		   found_token = false;
-=======
-		bool   found_token = false;
->>>>>>> master
 		t_parse_length current_position = self->lexer.current_position;
 
 		if (lex_mode.external_lex_state != 0)
@@ -652,25 +627,17 @@ static Subtree ts_parser__lex(t_parser *self, StackVersion version,
 	Subtree result;
 	if (skipped_error)
 	{
-<<<<<<< HEAD
 		t_parse_length padding =
 			length_sub(error_start_position, start_position);
 		t_parse_length size =
 			length_sub(error_end_position, error_start_position);
 		t_u32 lookahead_bytes = lookahead_end_byte - error_end_position.bytes;
-=======
-		t_parse_length	 padding = length_sub(error_start_position, start_position);
-		t_parse_length	 size = length_sub(error_end_position, error_start_position);
-		t_u32 lookahead_bytes =
-			lookahead_end_byte - error_end_position.bytes;
->>>>>>> master
 		result = ts_subtree_new_error(&self->tree_pool, first_error_character,
 									  padding, size, lookahead_bytes,
 									  parse_state, self->language);
 	}
 	else
 	{
-<<<<<<< HEAD
 		bool		   is_keyword = false;
 		t_symbol	   symbol = self->lexer.data.result_symbol;
 		t_parse_length padding =
@@ -678,15 +645,6 @@ static Subtree ts_parser__lex(t_parser *self, StackVersion version,
 		t_parse_length size = length_sub(self->lexer.token_end_position,
 										 self->lexer.token_start_position);
 		t_u32		   lookahead_bytes =
-=======
-		bool	 is_keyword = false;
-		t_symbol symbol = self->lexer.data.result_symbol;
-		t_parse_length	 padding =
-			length_sub(self->lexer.token_start_position, start_position);
-		t_parse_length	 size = length_sub(self->lexer.token_end_position,
-								   self->lexer.token_start_position);
-		t_u32 lookahead_bytes =
->>>>>>> master
 			lookahead_end_byte - self->lexer.token_end_position.bytes;
 
 		if (found_external_token)
@@ -1343,19 +1301,11 @@ static bool ts_parser__recover_to_state(t_parser *self, StackVersion version,
 static void ts_parser__recover(t_parser *self, StackVersion version,
 							   Subtree lookahead)
 {
-<<<<<<< HEAD
 	bool		   did_recover = false;
 	unsigned	   previous_version_count = ts_stack_version_count(self->stack);
 	t_parse_length position = ts_stack_position(self->stack, version);
 	StackSummary  *summary = ts_stack_get_summary(self->stack, version);
 	unsigned	   node_count_since_error =
-=======
-	bool		  did_recover = false;
-	unsigned	  previous_version_count = ts_stack_version_count(self->stack);
-	t_parse_length		  position = ts_stack_position(self->stack, version);
-	StackSummary *summary = ts_stack_get_summary(self->stack, version);
-	unsigned	  node_count_since_error =
->>>>>>> master
 		ts_stack_node_count_since_error(self->stack, version);
 	unsigned current_error_cost = ts_stack_error_cost(self->stack, version);
 
@@ -1567,13 +1517,8 @@ static void ts_parser__handle_error(t_parser *self, StackVersion version,
 	// lookahead. After skipping one or more invalid tokens, the parser might
 	// find a token that would have allowed a reduction to take place.
 	ts_parser__do_all_potential_reductions(self, version, 0);
-<<<<<<< HEAD
 	t_u32		   version_count = ts_stack_version_count(self->stack);
 	t_parse_length position = ts_stack_position(self->stack, version);
-=======
-	t_u32 version_count = ts_stack_version_count(self->stack);
-	t_parse_length	 position = ts_stack_position(self->stack, version);
->>>>>>> master
 
 	// Push a discontinuity onto the stack. Merge all of the stack versions that
 	// were created in the previous step.
@@ -2198,12 +2143,8 @@ void ts_parser_reset(t_parser *self)
 	self->has_scanner_error = false;
 }
 
-<<<<<<< HEAD
 t_parse_tree *ts_parser_parse(t_parser *self, const t_parse_tree *old_tree,
 							  t_parse_input input)
-=======
-t_parse_tree *ts_parser_parse(t_parser *self, const t_parse_tree *old_tree, t_parse_input input)
->>>>>>> master
 {
 	t_parse_tree *result = NULL;
 	old_tree = NULL;
@@ -2324,16 +2265,10 @@ t_parse_tree *ts_parser_parse_string(t_parser			*self,
 										   InputEncoding8);
 }
 
-<<<<<<< HEAD
 t_parse_tree *ts_parser_parse_string_encoding(t_parser			 *self,
 											  const t_parse_tree *old_tree,
 											  const char *string, t_u32 length,
 											  t_input_encoding encoding)
-=======
-t_parse_tree *ts_parser_parse_string_encoding(t_parser *self, const t_parse_tree *old_tree,
-										const char *string, t_u32 length,
-										t_input_encoding encoding)
->>>>>>> master
 {
 	t_string_input input = {string, length};
 	return ts_parser_parse(self, old_tree,

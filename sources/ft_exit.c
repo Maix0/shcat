@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/13 20:15:37 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 16:07:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,7 @@ void	ft_free_strs(t_str *strs)
 
 void	ft_free_utils(t_utils *s)
 {
-	if (s->name_shell)
-		ft_free(s->name_shell);
-	if (s->str_input)
-		ft_free(s->str_input);
-	if (s->strs_input)
-		ft_free_strs(s->strs_input);
-	if (s->path)
-		ft_free_strs(s->path);
-	free(s);
+	(void)(s);
 }
 
 void	ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 13:02:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:06:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,7 @@ void ft_take_args(t_utils *shcat)
     shcat->strs_input = ft_split(shcat->str_input, ' ');
     if (!shcat->strs_input)
       exit(1);
-    ft_check(shcat, shcat->strs_input);
     add_history(shcat->str_input);
-    ft_free_strs(shcat->strs_input);
     free(shcat->str_input);
     i++;
   }
