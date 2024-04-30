@@ -14,7 +14,7 @@
 #define LEXER_H
 
 #include "me/types.h"
-#include "parser/api.h"
+#include "./api.h"
 #include "parser/parser_length.h"
 #include "parser/types/types_lexer.h"
 

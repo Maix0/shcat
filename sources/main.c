@@ -6,15 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 16:15:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:43:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
 #include "app/node.h"
 #include "me/string/str_len.h"
 #include "parser/api.h"
-#include "parser/parser.h"
-#include "../includes/minishell.h"
 
 void print_node_data(t_node *t, t_usize depth)
 {
@@ -32,8 +31,8 @@ void print_node_data(t_node *t, t_usize depth)
 t_node parse_to_nodes(t_parser *parser, t_const_str input)
 {
 	t_parse_tree *tree;
-	t_parse_node  node;
-	t_node		  ret;
+	t_parse_node	node;
+	t_node	ret;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
 	node = ts_tree_root_node(tree);
@@ -46,25 +45,27 @@ t_node parse_str(t_myparser *parser, t_const_str input)
 	return (parse_to_nodes(parser->parser, input));
 }
 
-void ft_check(t_utils *shcat, char **input) {
-  t_usize i;
-  t_usize prev_i;
+void ft_check(t_utils *shcat, char **input)
+{
+	t_usize i;
+	t_usize prev_i;
 
-  i = 0;
-  prev_i = 0;
-  while (input[i] != NULL) {
-    if (ft_strcmp(input[i], "exit") == 0)
-      ft_exit(shcat, 0);
-    else if (ft_strcmp(input[i], "pwd") == 0)
-      ft_pwd();
-    else
-      ft_other_cmd(shcat, i, prev_i);
-    prev_i = i;
-    i++;
-  }
+	i = 0;
+	prev_i = 0;
+	while (input[i] != NULL)
+	{
+		if (ft_strcmp(input[i], "exit") == 0)
+			ft_exit(shcat, 0);
+		else if (ft_strcmp(input[i], "pwd") == 0)
+			ft_pwd();
+		else
+			ft_other_cmd(shcat, i, prev_i);
+		prev_i = i;
+		i++;
+	}
 }
 
-void exec_shcat(t_utils  *shcat)
+void exec_shcat(t_utils *shcat)
 {
 	print_node_data(&shcat->current_node, 0);
 	free_node(shcat->current_node);
@@ -72,34 +73,36 @@ void exec_shcat(t_utils  *shcat)
 
 void ft_take_args(t_utils *shcat)
 {
-  t_i32 i;
+	t_i32 i;
 
-  i = 0;
-  while (1) {
-    shcat->str_input = readline((t_const_str)shcat->name_shell);
-    if (!shcat->str_input)
-      ft_exit(shcat, 0);
-	shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
-    exec_shcat(shcat);
-	add_history(shcat->str_input);
-    free(shcat->str_input);
-    i++;
-  }
+	i = 0;
+	while (1)
+	{
+		shcat->str_input = readline((t_const_str)shcat->name_shell);
+		if (!shcat->str_input)
+			ft_exit(shcat, 0);
+		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
+		exec_shcat(shcat);
+		add_history(shcat->str_input);
+		free(shcat->str_input);
+		i++;
+	}
 }
 
-void	ft_find_path(t_str arge[], t_utils *utils)
+void ft_find_path(t_str arge[], t_utils *utils)
 {
-	t_i32	i;
-	t_u8	check;
+	t_i32 i;
+	t_u8  check;
 
 	i = 0;
 	check = 0;
 	while (arge[i] != NULL)
 	{
-		if (arge[i][0] == 'P' && arge[i][1] == 'A' && arge[i][2] == 'T' && arge[i][3] == 'H' && arge[i][4] == '=')
+		if (arge[i][0] == 'P' && arge[i][1] == 'A' && arge[i][2] == 'T' &&
+			arge[i][3] == 'H' && arge[i][4] == '=')
 		{
 			utils->path = ft_split(arge[i] + 5, ':');
-			return ;
+			return;
 		}
 		i++;
 	}
@@ -107,9 +110,6 @@ void	ft_find_path(t_str arge[], t_utils *utils)
 }
 
 t_language *tree_sitter_bash(void);
-
-
-
 
 t_myparser create_myparser(void)
 {
@@ -127,10 +127,9 @@ void free_myparser(t_myparser self)
 	ts_parser_delete(self.parser);
 }
 
-
-t_i32	main(t_i32 argc, t_str argv[], t_str arge[])
+t_i32 main(t_i32 argc, t_str argv[], t_str arge[])
 {
-	t_utils		utils;
+	t_utils utils;
 
 	(void)argc;
 	(void)argv;
