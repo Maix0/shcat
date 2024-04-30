@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 21:32:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 22:05:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,14 +122,15 @@ void free_myparser(t_myparser self)
 	ts_parser_delete(self.parser);
 }
 
-t_i32 main(t_i32 argc, t_str argv[], t_str arge[])
+t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
 	t_utils utils;
 
 	(void)argc;
 	(void)argv;
+	(void)envp;
 	utils.parser = create_myparser();
-	ft_find_path(arge, &utils);
+	//ft_find_path(arge, &utils);
 	utils.name_shell = "42sh > ";
 	ft_take_args(&utils);
 }

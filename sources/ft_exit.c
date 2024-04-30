@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 16:16:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 22:03:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void ft_free_utils(t_utils *s)
 	(void)(s);
 	if (s->str_input)
 		free(s->str_input);
+	if (s->path)
+		ft_free_strs(s->path);
 	ts_parser_delete(s->parser.parser);
 }
 
