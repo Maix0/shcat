@@ -299,7 +299,7 @@ static inline t_i64 ts_tree_cursor_goto_first_child_for_byte_and_point(
 }
 
 t_i64 ts_tree_cursor_goto_first_child_for_byte(t_parse_tree_cursor *self, t_u32 goal_byte) {
-  return ts_tree_cursor_goto_first_child_for_byte_and_point(self, goal_byte, POINT_ZERO);
+  return ts_tree_cursor_goto_first_child_for_byte_and_point(self, goal_byte, point_val_zero());
 }
 
 t_i64 ts_tree_cursor_goto_first_child_for_point(t_parse_tree_cursor *self, t_point goal_point) {

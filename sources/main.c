@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 15:46:55 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 16:15:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void ft_check(t_utils *shcat, char **input) {
 void exec_shcat(t_utils  *shcat)
 {
 	print_node_data(&shcat->current_node, 0);
+	free_node(shcat->current_node);
 }
 
 void ft_take_args(t_utils *shcat)
@@ -81,7 +82,6 @@ void ft_take_args(t_utils *shcat)
 	shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
     exec_shcat(shcat);
 	add_history(shcat->str_input);
-    ft_free_strs(shcat->strs_input);
     free(shcat->str_input);
     i++;
   }
@@ -138,7 +138,4 @@ t_i32	main(t_i32 argc, t_str argv[], t_str arge[])
 	ft_find_path(arge, &utils);
 	utils.name_shell = "42sh > ";
 	ft_take_args(&utils);
-	// node = parse_string(&parser, "banane \"$VAR\"'truc'");
-	// print_node_data(&node, 0);
-	// free_node(node);
 }

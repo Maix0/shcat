@@ -2,7 +2,7 @@
 #define TREE_SITTER_PARSER_H_
 
 #include "../parse_types.h"
-#include "./lexer.h"
+#include "parser/lexer.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>

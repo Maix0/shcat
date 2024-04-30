@@ -6,22 +6,22 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/13 20:15:37 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 16:16:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_free(void *ptr)
+void ft_free(void *ptr)
 {
 	if (!ptr)
 		free(ptr);
 	ptr = NULL;
 }
 
-void	ft_free_strs(t_str *strs)
+void ft_free_strs(t_str *strs)
 {
-	t_usize	i;
+	t_usize i;
 
 	i = 0;
 	while (strs[i])
@@ -32,20 +32,15 @@ void	ft_free_strs(t_str *strs)
 	ft_free(strs);
 }
 
-void	ft_free_utils(t_utils *s)
+void ft_free_utils(t_utils *s)
 {
-	if (s->name_shell)
-		ft_free(s->name_shell);
+	(void)(s);
 	if (s->str_input)
-		ft_free(s->str_input);
-	if (s->strs_input)
-		ft_free_strs(s->strs_input);
-	if (s->path)
-		ft_free_strs(s->path);
-	free(s);
+		free(s->str_input);
+	ts_parser_delete(s->parser.parser);
 }
 
-void	ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)
+void ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)
 {
 	if (maiboyerlpb != NULL)
 		ft_free_utils(maiboyerlpb);

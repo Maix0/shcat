@@ -52,3 +52,11 @@ replace.C__TYPENAME__ = "t_heredoc"
 replace.C__TYPEHEADER__ = '#include "parser/types/types_heredoc.h"'
 replace.C__PREFIX__ = "parser_heredoc"
 replace.C__PREFIXUP__ = "PARSER_HEREDOC"
+
+[[create.vec]]
+sources_output = "src/vec/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_reduce_action"
+replace.C__TYPEHEADER__ = '#include "parser/types/types_reduce_action.h"'
+replace.C__PREFIX__ = "reduce_action"
+replace.C__PREFIXUP__ = "REDUCE_ACTION"
