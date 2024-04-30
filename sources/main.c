@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 16:06:00 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:15:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,36 @@
 #include "parser/api.h"
 #include "parser/parser.h"
 #include "../includes/minishell.h"
+
+void print_node_data(t_node *t, t_usize depth)
+{
+	t_usize idx;
+
+	idx = 0;
+	while (idx++ < depth)
+		printf("\t");
+	idx = 0;
+	printf("%s = %s\n", t->kind_str, node_getstr(t));
+	while (idx < t->childs_count)
+		print_node_data(&t->childs[idx++], depth + 1);
+}
+
+t_node parse_to_nodes(t_parser *parser, t_const_str input)
+{
+	t_parse_tree *tree;
+	t_parse_node  node;
+	t_node		  ret;
+
+	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
+	node = ts_tree_root_node(tree);
+	ret = build_node(node, input);
+	ts_tree_delete(tree);
+	return (ret);
+}
+t_node parse_str(t_myparser *parser, t_const_str input)
+{
+	return (parse_to_nodes(parser->parser, input));
+}
 
 void ft_check(t_utils *shcat, char **input) {
   t_usize i;
@@ -34,6 +64,12 @@ void ft_check(t_utils *shcat, char **input) {
   }
 }
 
+void exec_shcat(t_utils  *shcat)
+{
+	print_node_data(&shcat->current_node, 0);
+	free_node(shcat->current_node);
+}
+
 void ft_take_args(t_utils *shcat)
 {
   t_i32 i;
@@ -43,10 +79,9 @@ void ft_take_args(t_utils *shcat)
     shcat->str_input = readline((t_const_str)shcat->name_shell);
     if (!shcat->str_input)
       ft_exit(shcat, 0);
-    shcat->strs_input = ft_split(shcat->str_input, ' ');
-    if (!shcat->strs_input)
-      exit(1);
-    add_history(shcat->str_input);
+	shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
+    exec_shcat(shcat);
+	add_history(shcat->str_input);
     free(shcat->str_input);
     i++;
   }
@@ -73,36 +108,8 @@ void	ft_find_path(t_str arge[], t_utils *utils)
 
 t_language *tree_sitter_bash(void);
 
-t_node parse_to_nodes(t_parser *parser, t_const_str input)
-{
-	t_parse_tree *tree;
-	t_parse_node  node;
-	t_node		  ret;
 
-	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
-	node = ts_tree_root_node(tree);
-	ret = build_node(node, input);
-	ts_tree_delete(tree);
-	return (ret);
-}
 
-void print_node_data(t_node *t, t_usize depth)
-{
-	t_usize idx;
-
-	idx = 0;
-	while (idx++ < depth)
-		printf("\t");
-	idx = 0;
-	printf("%s = %s\n", t->kind_str, node_getstr(t));
-	while (idx < t->childs_count)
-		print_node_data(&t->childs[idx++], depth + 1);
-}
-
-typedef struct s_myparser
-{
-	t_parser *parser;
-} t_myparser;
 
 t_myparser create_myparser(void)
 {
@@ -120,24 +127,15 @@ void free_myparser(t_myparser self)
 	ts_parser_delete(self.parser);
 }
 
-t_node parse_string(t_myparser *parser, t_const_str input)
-{
-	return (parse_to_nodes(parser->parser, input));
-}
 
 t_i32	main(t_i32 argc, t_str argv[], t_str arge[])
 {
-	// t_myparser	parser;
-	// t_node		node;
 	t_utils		utils;
 
 	(void)argc;
 	(void)argv;
+	utils.parser = create_myparser();
 	ft_find_path(arge, &utils);
 	utils.name_shell = "42sh > ";
 	ft_take_args(&utils);
-	// parser = create_myparser();
-	// node = parse_string(&parser, "banane \"$VAR\"'truc'");
-	// print_node_data(&node, 0);
-	// free_node(node);
 }

@@ -6,38 +6,11 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 20:26:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/13 20:37:13 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/30 15:30:52 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-char	*ft_check_cmds(t_utils *utils, char *command)
-{
-	size_t  i;
-	char	*str;
-
-	i = 0;
-	str = NULL;
-	if (access(command, X_OK) != -1)
-		return (command);
-	else if (ft_strlen(command) != 1)
-	{
-		while (utils->path[i] != NULL)
-		{
-			if (str)
-				ft_free(str);
-			str = ft_strjoin(utils->path[i], command);
-			if (str == NULL)
-				ft_exit(utils, 1);
-			else if (access(str, F_OK) == -1 || access(str, X_OK) == -1)
-				i++;
-			else
-				return (str);
-	}
-}
-return (ft_exit(utils, 1), NULL);
-}
 
 void	ft_exec_cmd(t_utils *utils, t_str cmd, t_str cmd_args[])
 {
@@ -56,7 +29,7 @@ void	ft_other_cmd(t_utils *shcat, t_usize i, t_usize prev_i)
 	t_str	*args;
 	t_usize	k;
 	t_usize	tmp; 
-	t_str	cmd;
+	// t_str	cmd;
 
 	k = prev_i;
 	tmp = prev_i;
@@ -70,12 +43,12 @@ void	ft_other_cmd(t_utils *shcat, t_usize i, t_usize prev_i)
 		k++;
 	}
 	args[k] = NULL;
-	cmd = ft_check_cmds(shcat, ft_strjoin("/", args[tmp]));
+	// cmd = ft_check_cmds(shcat, args[tmp]);
 	options = 0;
 	pid = fork();
 	if (pid == -1)
 		ft_exit(shcat, 1);
-	if (pid == 0)
-		ft_exec_cmd(shcat, cmd, args);
+	// if (pid == 0)
+	// 	ft_exec_cmd(shcat, cmd, args);
 	waitpid(pid, NULL, options);
 }

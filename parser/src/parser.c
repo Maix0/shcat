@@ -2011,13 +2011,9 @@ void ts_parser_delete(t_parser *self)
 	ts_parser_set_language(self, NULL);
 	ts_stack_delete(self->stack);
 	if (self->reduce_actions.buffer)
-	{
-		array_delete(&self->reduce_actions);
-	}
+		vec_reduce_action_free(self->reduce_actions);
 	if (self->included_range_differences.buffer)
-	{
 		array_delete(&self->included_range_differences);
-	}
 	if (self->old_tree.ptr)
 	{
 		ts_subtree_release(&self->tree_pool, self->old_tree);
