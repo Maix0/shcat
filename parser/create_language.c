@@ -6,11 +6,10 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 17:15:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:37:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/parser.h"
 #include "./static/headers/constants.h"
 #include "./static/headers/symbols.h"
 #include "./parse_types.h"

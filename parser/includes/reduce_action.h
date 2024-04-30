@@ -15,7 +15,7 @@
 
 #include "me/types.h"
 #include "me/vec/vec_reduce_action.h"
-#include "parser/api.h"
+#include "./api.h"
 #include "parser/types/types_reduce_action.h"
 
 static inline void ts_reduce_action_set_add(t_vec_reduce_action *self,

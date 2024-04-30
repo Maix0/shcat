@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/30 13:35:56 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/04/30 17:20:27 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/inc
 
 include ./Filelist.mk
 
+SRC_FILES		+= ./src/lib ./src/scanner 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
 OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
 DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
@@ -77,4 +78,4 @@ re:
 generate_filelist:
 	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*)\.c\$$' --replace '\$$1' | sort -u" > ./source_files.list
 
--include $(DEPS)
+# -include $(DEPS)

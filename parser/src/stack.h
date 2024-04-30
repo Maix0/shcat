@@ -7,7 +7,7 @@ extern "C" {
 
 #include "./array.h"
 #include "./subtree.h"
-#include "parser/error_costs.h"
+#include "./error_costs.h"
 #include <stdio.h>
 
 typedef struct Stack Stack;
@@ -22,9 +22,9 @@ typedef struct {
 typedef Array(StackSlice) StackSliceArray;
 
 typedef struct {
-  t_parse_length position;
+  Length position;
   unsigned depth;
-  t_state_id state;
+  TSStateId state;
 } StackSummaryEntry;
 typedef Array(StackSummaryEntry) StackSummary;
 
@@ -35,11 +35,11 @@ Stack *ts_stack_new(SubtreePool *);
 void ts_stack_delete(Stack *);
 
 // Get the stack's current number of versions.
-t_u32 ts_stack_version_count(const Stack *);
+uint32_t ts_stack_version_count(const Stack *);
 
 // Get the state at the top of the given version of the stack. If the stack is
 // empty, this returns the initial state, 0.
-t_state_id ts_stack_state(const Stack *, StackVersion);
+TSStateId ts_stack_state(const Stack *, StackVersion);
 
 // Get the last external token associated with a given version of the stack.
 Subtree ts_stack_last_external_token(const Stack *, StackVersion);
@@ -48,21 +48,21 @@ Subtree ts_stack_last_external_token(const Stack *, StackVersion);
 void ts_stack_set_last_external_token(Stack *, StackVersion, Subtree );
 
 // Get the position of the given version of the stack within the document.
-t_parse_length ts_stack_position(const Stack *, StackVersion);
+Length ts_stack_position(const Stack *, StackVersion);
 
 // Push a tree and state onto the given version of the stack.
 //
 // This transfers ownership of the tree to the Stack. Callers that
 // need to retain ownership of the tree for their own purposes should
 // first retain the tree.
-void ts_stack_push(Stack *, StackVersion, Subtree , bool, t_state_id);
+void ts_stack_push(Stack *, StackVersion, Subtree , bool, TSStateId);
 
 // Pop the given number of entries from the given version of the stack. This
 // operation can increase the number of stack versions by revealing multiple
 // versions which had previously been merged. It returns an array that
 // specifies the index of each revealed version and the trees that were
 // removed from that version.
-StackSliceArray ts_stack_pop_count(Stack *, StackVersion, t_u32 count);
+StackSliceArray ts_stack_pop_count(Stack *, StackVersion, uint32_t count);
 
 // Remove an error at the top of the given version of the stack.
 SubtreeArray ts_stack_pop_error(Stack *, StackVersion);
@@ -122,9 +122,9 @@ void ts_stack_remove_version(Stack *, StackVersion);
 
 void ts_stack_clear(Stack *);
 
-bool ts_stack_print_dot_graph(Stack *, const t_language *, FILE *);
+bool ts_stack_print_dot_graph(Stack *, const TSLanguage *, FILE *);
 
-typedef void (*StackIterateCallback)(void *, t_state_id, t_u32);
+typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
 
 #ifdef __cplusplus
 }

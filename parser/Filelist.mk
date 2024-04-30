@@ -4376,13 +4376,4 @@ static/unique_symbols_map/unique_symbols_map_2	\
 static/lex_funcs/lex_normal/state_helper	\
 static/lex_funcs/lex_normal/state_helper2	\
 static/lex_funcs/lex_keywords/state_0_bis	\
-static/lex_funcs/lex_keywords/state_4_bis	\
-src/language	\
-src/lexer	\
-src/node	\
-src/parser	\
-src/scanner	\
-src/stack	\
-src/subtree	\
-src/tree	\
-src/tree_cursor	\
+static/lex_funcs/lex_keywords/state_4_bis
