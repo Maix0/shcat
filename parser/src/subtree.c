@@ -7,7 +7,7 @@
 
 #include "./array.h"
 
-#include "./error_costs.h"
+#include "parser/error_costs.h"
 #include "./language.h"
 #include "parser/parser_length.h"
 #include "./subtree.h"

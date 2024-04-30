@@ -5,7 +5,7 @@
 #include "parser/types/types_symbol.h"
 
 #include "./array.h"
-#include "./error_costs.h"
+#include "parser/error_costs.h"
 #include "parser/parser_length.h"
 #include "./parser.h"
 #include "parser/api.h"
