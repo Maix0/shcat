@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 18:53:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/30 16:26:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 	idx = 0;
 	while (idx < count)
 	{
-		child = ts_node_named_child(parent, idx);
+		child = ts_node_child(parent, idx);
 		ret[idx] = build_node(child, input);
 		idx++;
 	}
@@ -47,7 +47,7 @@ t_node build_node(t_parse_node curr, t_const_str input)
 	out.end = ts_node_end_byte(curr);
 	out.input = input;
 	out.single_str = NULL;
-	out.childs_count = ts_node_named_child_count(curr);
+	out.childs_count = ts_node_child_count(curr);
 	if (out.childs_count == 0)
 		out.childs = NULL;
 	else
