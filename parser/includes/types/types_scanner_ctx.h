@@ -1,35 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   node.h                                             :+:      :+:    :+:   */
+/*   types_scanner_ctx.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/28 18:35:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/30 13:02:06 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/04/30 13:41:02 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/04/30 13:41:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NODE_H
-#define NODE_H
+#ifndef TYPES_SCANNER_CTX_H
+#define TYPES_SCANNER_CTX_H
 
 #include "me/types.h"
-#include "parser/api.h"
 
-typedef struct s_node
+typedef struct s_scanner_ctx
 {
-	t_u64		   kind;
-	const char	  *kind_str;
-	const char	  *input;
-	char		  *single_str;
-	t_usize		   start;
-	t_usize		   end;
-	t_usize		   childs_count;
-	struct s_node *childs;
-} t_node;
+	t_u8 last_glob_paren_depth;
+	bool ext_was_in_double_quote;
+	bool ext_saw_outside_quote;
+	// Array(t_heredoc) heredocs;
+} t_scanner_ctx;
 
-t_node build_node(t_parse_node curr, t_const_str input);
-t_str  node_getstr(t_node *node);
-void   free_node(t_node t);
-
-#endif /* NODE_H */
+#endif /* TYPES_SCANNER_CTX_H */

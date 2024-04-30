@@ -1,11 +1,11 @@
 #include "array.h"
-#include "parser.h"
 #include "parser/types/types_lexer.h"
+#include "parser/types/types_scanner.h"
+#include "parser/types/types_scanner_ctx.h"
 
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
-#include <wctype.h>
 
 #define TREE_SITTER_SERIALIZATION_BUFFER_SIZE 1024
 
@@ -65,14 +65,6 @@ static inline t_heredoc heredoc_new(void)
 	});
 }
 
-typedef struct s_scanner
-{
-	t_u8 last_glob_paren_depth;
-	bool	ext_was_in_double_quote;
-	bool	ext_saw_outside_quote;
-	Array(t_heredoc) heredocs;
-} t_scanner;
-
 static inline void advance(t_lexer *lexer)
 {
 	lexer->advance(lexer, false);
@@ -119,8 +111,8 @@ static inline void reset(t_scanner *scanner)
 
 static unsigned serialize(t_scanner *scanner, char *buffer)
 {
-	t_u32   size;
-	t_u32   i;
+	t_u32	   size;
+	t_u32	   i;
 	t_heredoc *heredoc;
 
 	size = 0;
@@ -153,10 +145,10 @@ static unsigned serialize(t_scanner *scanner, char *buffer)
 
 static void deserialize(t_scanner *scanner, const char *buffer, unsigned length)
 {
-	t_u32   size;
-	t_u32   heredoc_count;
+	t_u32	   size;
+	t_u32	   heredoc_count;
 	t_heredoc *heredoc;
-	t_u32   i;
+	t_u32	   i;
 
 	size = 0;
 	if (length == 0)
@@ -205,7 +197,7 @@ static void deserialize(t_scanner *scanner, const char *buffer, unsigned length)
  */
 static bool advance_word(t_lexer *lexer, t_string *unquoted_word)
 {
-	bool	empty;
+	bool  empty;
 	t_i32 quote;
 
 	quote = 0;
@@ -449,11 +441,11 @@ static bool regex_scan(t_scanner *scanner, t_lexer *lexer,
 		{
 			typedef struct
 			{
-				bool	 done;
-				bool	 advanced_once;
-				bool	 found_non_alnumdollarunderdash;
-				bool	 last_was_escape;
-				bool	 in_single_quote;
+				bool  done;
+				bool  advanced_once;
+				bool  found_non_alnumdollarunderdash;
+				bool  last_was_escape;
+				bool  in_single_quote;
 				t_u32 paren_depth;
 				t_u32 bracket_depth;
 				t_u32 brace_depth;
@@ -793,8 +785,8 @@ static bool extglob_pattern_scan(t_scanner *scanner, t_lexer *lexer,
 
 			typedef struct
 			{
-				bool	 done;
-				bool	 saw_non_alphadot;
+				bool  done;
+				bool  saw_non_alphadot;
 				t_u32 paren_depth;
 				t_u32 bracket_depth;
 				t_u32 brace_depth;
@@ -930,7 +922,7 @@ static bool expansion_word_scan(t_scanner *scanner, t_lexer *lexer,
 								const bool *valid_symbols)
 {
 	(void)(scanner);
-	
+
 	if (valid_symbols[EXPANSION_WORD])
 	{
 		bool advanced_once = false;
@@ -1027,14 +1019,14 @@ static bool expansion_word_scan(t_scanner *scanner, t_lexer *lexer,
 			advance(lexer);
 		}
 	}
-    return (false);
+	return (false);
 }
 
 static bool brace_start_scan(t_scanner *scanner, t_lexer *lexer,
 							 const bool *valid_symbols)
 {
 	(void)(scanner);
-	
+
 	if (valid_symbols[BRACE_START] && !in_error_recovery(valid_symbols))
 	{
 		while (isspace(lexer->lookahead))

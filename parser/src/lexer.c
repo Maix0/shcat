@@ -1,5 +1,5 @@
 #include "./lexer.h"
-#include "./length.h"
+#include "parser/parser_length.h"
 #include "./subtree.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -12,7 +12,7 @@
 					 " character:'%c'"                                         \
 													: message " character:%d", \
 				 character);                                                   \
-		self->logger.log(self->logger.payload, TSLogTypeLex,                   \
+		self->logger.log(self->logger.payload, LogTypeLex,                   \
 						 self->debug_buffer);                                  \
 	}
 
@@ -113,7 +113,7 @@ static void ts_lexer__get_lookahead(t_liblexer *self)
 	}
 }
 
-static void ts_lexer_goto(t_liblexer *self, Length position)
+static void ts_lexer_goto(t_liblexer *self, t_parse_length position)
 {
 	self->current_position = position;
 
@@ -127,7 +127,7 @@ static void ts_lexer_goto(t_liblexer *self, Length position)
 		{
 			if (included_range->start_byte >= self->current_position.bytes)
 			{
-				self->current_position = (Length){
+				self->current_position = (t_parse_length){
 					.bytes = included_range->start_byte,
 					.extent = included_range->start_point,
 				};
@@ -161,7 +161,7 @@ static void ts_lexer_goto(t_liblexer *self, Length position)
 		self->current_included_range_index = self->included_range_count;
 		t_parser_range *last_included_range =
 			&self->included_ranges[self->included_range_count - 1];
-		self->current_position = (Length){
+		self->current_position = (t_parse_length){
 			.bytes = last_included_range->end_byte,
 			.extent = last_included_range->end_point,
 		};
@@ -200,7 +200,7 @@ static void ts_lexer__do_advance(t_liblexer *self, bool skip)
 		if (self->current_included_range_index < self->included_range_count)
 		{
 			current_range++;
-			self->current_position = (Length){
+			self->current_position = (t_parse_length){
 				current_range->start_byte,
 				current_range->start_point,
 			};
@@ -260,7 +260,7 @@ static void ts_lexer__mark_end(t_lexer *_self)
 		{
 			t_parser_range *previous_included_range =
 				current_included_range - 1;
-			self->token_end_position = (Length){
+			self->token_end_position = (t_parse_length){
 				previous_included_range->end_byte,
 				previous_included_range->end_point,
 			};
@@ -355,7 +355,7 @@ void ts_lexer_delete(t_liblexer *self)
 	free(self->included_ranges);
 }
 
-void ts_lexer_set_input(t_liblexer *self, TSInput input)
+void ts_lexer_set_input(t_liblexer *self, t_parse_input input)
 {
 	self->input = input;
 	ts_lexer__clear_chunk(self);
@@ -364,7 +364,7 @@ void ts_lexer_set_input(t_liblexer *self, TSInput input)
 
 // Move the lexer to the given position. This doesn't do any work
 // if the parser is already at the given position.
-void ts_lexer_reset(t_liblexer *self, Length position)
+void ts_lexer_reset(t_liblexer *self, t_parse_length position)
 {
 	if (position.bytes != self->current_position.bytes)
 	{

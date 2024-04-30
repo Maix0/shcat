@@ -36,13 +36,13 @@ typedef struct s_parser			   t_parser;
 typedef struct t_parse_tree		   t_parse_tree;
 typedef struct t_query			   t_query;
 typedef struct t_query_cursor	   t_query_cursor;
-typedef struct TSLookaheadIterator TSLookaheadIterator;
+typedef struct t_lookahead_iterator t_lookahead_iterator;
 
-typedef enum TSInputEncoding
+typedef enum t_input_encoding
 {
-	TSInputEncodingUTF8,
-	TSInputEncodingUTF16,
-} TSInputEncoding;
+	InputEncoding8,
+	InputEncoding16,
+} t_input_encoding;
 
 typedef enum t_symbol_type
 {
@@ -51,25 +51,25 @@ typedef enum t_symbol_type
 	SymbolTypeAuxiliary,
 } t_symbol_type;
 
-typedef struct TSInput
+typedef struct t_parse_input
 {
 	void *payload;
 	const char *(*read)(void *payload, t_u32 byte_index, t_point position,
 						t_u32 *bytes_read);
-	TSInputEncoding encoding;
-} TSInput;
+	t_input_encoding encoding;
+} t_parse_input;
 
-typedef enum TSLogType
+typedef enum t_parse_log_type
 {
-	TSLogTypeParse,
-	TSLogTypeLex,
-} TSLogType;
+	LogTypeParse,
+	LogTypeLex,
+} t_parse_log_type;
 
-typedef struct TSLogger
+typedef struct t_parse_logger
 {
 	void *payload;
-	void (*log)(void *payload, TSLogType log_type, const char *buffer);
-} TSLogger;
+	void (*log)(void *payload, t_parse_log_type log_type, const char *buffer);
+} t_parse_logger;
 
 typedef struct t_input_edit
 {
@@ -101,14 +101,14 @@ typedef struct t_queryCapture
 	t_u32		 index;
 } t_queryCapture;
 
-typedef enum TSQuantifier
+typedef enum t_parse_quantifier
 {
-	TSQuantifierZero = 0, // must match the array initialization value
-	TSQuantifierZeroOrOne,
-	TSQuantifierZeroOrMore,
-	TSQuantifierOne,
-	TSQuantifierOneOrMore,
-} TSQuantifier;
+	ParseQuantifierZero = 0, // must match the array initialization value
+	ParseQuantifierZeroOrOne,
+	ParseQuantifierZeroOrMore,
+	ParseQuantifierOne,
+	ParseQuantifierOneOrMore,
+} t_parse_quantifier;
 
 typedef struct t_query_match
 {
@@ -221,7 +221,7 @@ const t_parser_range *ts_parser_included_ranges(const t_parser *self,
  a
  * way that exactly matches the source code changes.
  *
- * The [`TSInput`] parameter lets you specify how to read the text. It has
+ * The [`t_parse_input`] parameter lets you specify how to read the text. It has
  the
  * following three fields:
  * 1. [`read`]: A function to retrieve a chunk of text at a given byte
@@ -237,7 +237,7 @@ const t_parser_range *ts_parser_included_ranges(const t_parser *self,
  invocation
  *    of the [`read`] function.
  * 3. [`encoding`]: An indication of how the text is encoded. Either
- *    `TSInputEncodingUTF8` or `TSInputEncodingUTF16`.
+ *    `InputEncoding8` or `InputEncoding16`.
  *
  * This function returns a syntax tree on success, and `NULL` on failure.
  There
@@ -259,13 +259,13 @@ const t_parser_range *ts_parser_included_ranges(const t_parser *self,
  with
  *    the same arguments.
  *
- * [`read`]: TSInput::read
- * [`payload`]: TSInput::payload
- * [`encoding`]: TSInput::encoding
- * [`bytes_read`]: TSInput::read
+ * [`read`]: t_parse_input::read
+ * [`payload`]: t_parse_input::payload
+ * [`encoding`]: t_parse_input::encoding
+ * [`bytes_read`]: t_parse_input::read
  */
 t_parse_tree *ts_parser_parse(t_parser *self, const t_parse_tree *old_tree,
-							  TSInput input);
+							  t_parse_input input);
 
 /**
  * Use the parser to parse some source code stored in one contiguous buffer.
@@ -286,7 +286,7 @@ t_parse_tree *ts_parser_parse_string(t_parser			*self,
 t_parse_tree *ts_parser_parse_string_encoding(t_parser			 *self,
 											  const t_parse_tree *old_tree,
 											  const char *string, t_u32 length,
-											  TSInputEncoding encoding);
+											  t_input_encoding encoding);
 
 /**
  * Instruct the parser to start the next parse from the beginning.
@@ -334,12 +334,12 @@ const size_t *ts_parser_cancellation_flag(const t_parser *self);
  * was previously assigned, the caller is responsible for releasing any
  * memory owned by the previous logger.
  */
-void ts_parser_set_logger(t_parser *self, TSLogger logger);
+void ts_parser_set_logger(t_parser *self, t_parse_logger logger);
 
 /**
  * Get the parser's current logger.
  */
-TSLogger ts_parser_logger(const t_parser *self);
+t_parse_logger ts_parser_logger(const t_parser *self);
 
 /**
  * Set the file descriptor to which the parser should write debugging graphs
@@ -888,7 +888,7 @@ const char *ts_query_capture_name_for_id(const t_query *self, t_u32 index,
  * with a numeric id based on the order that it appeared in the query's
  * source.
  */
-TSQuantifier ts_query_capture_quantifier_for_id(const t_query *self,
+t_parse_quantifier ts_query_capture_quantifier_for_id(const t_query *self,
 												t_u32		   pattern_index,
 												t_u32		   capture_index);
 
@@ -1110,13 +1110,13 @@ t_state_id ts_language_next_state(const t_language *self, t_state_id state,
  * lookahead iterator created on the previous non-extra leaf node may be
  * appropriate.
  */
-TSLookaheadIterator *ts_lookahead_iterator_new(const t_language *self,
+t_lookahead_iterator *ts_lookahead_iterator_new(const t_language *self,
 											   t_state_id		 state);
 
 /**
  * Delete a lookahead iterator freeing all the memory used.
  */
-void ts_lookahead_iterator_delete(TSLookaheadIterator *self);
+void ts_lookahead_iterator_delete(t_lookahead_iterator *self);
 
 /**
  * Reset the lookahead iterator to another state.
@@ -1124,7 +1124,7 @@ void ts_lookahead_iterator_delete(TSLookaheadIterator *self);
  * This returns `true` if the iterator was reset to the given state and
  * `false` otherwise.
  */
-bool ts_lookahead_iterator_reset_state(TSLookaheadIterator *self,
+bool ts_lookahead_iterator_reset_state(t_lookahead_iterator *self,
 									   t_state_id			state);
 
 /**
@@ -1133,33 +1133,33 @@ bool ts_lookahead_iterator_reset_state(TSLookaheadIterator *self,
  * This returns `true` if the language was set successfully and `false`
  * otherwise.
  */
-bool ts_lookahead_iterator_reset(TSLookaheadIterator *self,
+bool ts_lookahead_iterator_reset(t_lookahead_iterator *self,
 								 const t_language *language, t_state_id state);
 
 /**
  * Get the current language of the lookahead iterator.
  */
 const t_language *ts_lookahead_iterator_language(
-	const TSLookaheadIterator *self);
+	const t_lookahead_iterator *self);
 
 /**
  * Advance the lookahead iterator to the next symbol.
  *
  * This returns `true` if there is a new symbol and `false` otherwise.
  */
-bool ts_lookahead_iterator_next(TSLookaheadIterator *self);
+bool ts_lookahead_iterator_next(t_lookahead_iterator *self);
 
 /**
  * Get the current symbol of the lookahead iterator;
  */
-t_symbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self);
+t_symbol ts_lookahead_iterator_current_symbol(const t_lookahead_iterator *self);
 
 /**
  * Get the current symbol type of the lookahead iterator as a null
  * terminated string.
  */
 const char *ts_lookahead_iterator_current_symbol_name(
-	const TSLookaheadIterator *self);
+	const t_lookahead_iterator *self);
 
 /**********************************/
 /* Section - Global Configuration */

@@ -9,15 +9,15 @@
 
 #include "./error_costs.h"
 #include "./language.h"
-#include "./length.h"
+#include "parser/parser_length.h"
 #include "./subtree.h"
 #include <stddef.h>
 
 typedef struct
 {
-	Length start;
-	Length old_end;
-	Length new_end;
+	t_parse_length start;
+	t_parse_length old_end;
+	t_parse_length new_end;
 } Edit;
 
 #define TS_MAX_INLINE_TREE_LENGTH UINT8_MAX
@@ -193,7 +193,7 @@ static void ts_subtree_pool_free(SubtreePool *self, SubtreeHeapData *tree)
 
 // Subtree
 
-static inline bool ts_subtree_can_inline(Length padding, Length size,
+static inline bool ts_subtree_can_inline(t_parse_length padding, t_parse_length size,
 										 t_u32 lookahead_bytes)
 {
 	return padding.bytes < TS_MAX_INLINE_TREE_LENGTH &&
@@ -204,8 +204,8 @@ static inline bool ts_subtree_can_inline(Length padding, Length size,
 		   lookahead_bytes < 16;
 }
 
-Subtree ts_subtree_new_leaf(SubtreePool *pool, t_symbol symbol, Length padding,
-							Length size, t_u32 lookahead_bytes,
+Subtree ts_subtree_new_leaf(SubtreePool *pool, t_symbol symbol, t_parse_length padding,
+							t_parse_length size, t_u32 lookahead_bytes,
 							t_state_id parse_state, bool has_external_tokens,
 							bool depends_on_column, bool is_keyword,
 							const t_language *language)
@@ -283,7 +283,7 @@ void ts_subtree_set_symbol(MutableSubtree *self, t_symbol symbol,
 }
 
 Subtree ts_subtree_new_error(SubtreePool *pool, t_i32 lookahead_char,
-							 Length padding, Length size,
+							 t_parse_length padding, t_parse_length size,
 							 t_u32 bytes_scanned, t_state_id parse_state,
 							 const t_language *language)
 {
@@ -654,7 +654,7 @@ Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra,
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
 Subtree ts_subtree_new_missing_leaf(SubtreePool *pool, t_symbol symbol,
-									Length padding, t_u32 lookahead_bytes,
+									t_parse_length padding, t_u32 lookahead_bytes,
 									const t_language *language)
 {
 	Subtree result =
@@ -807,9 +807,9 @@ Subtree ts_subtree_edit(Subtree self, const t_input_edit *inpt_edit,
 		bool is_pure_insertion = edit.old_end.bytes == edit.start.bytes;
 		bool invalidate_first_row = ts_subtree_depends_on_column(*entry.tree);
 
-		Length	 size = ts_subtree_size(*entry.tree);
-		Length	 padding = ts_subtree_padding(*entry.tree);
-		Length	 total_size = length_add(padding, size);
+		t_parse_length	 size = ts_subtree_size(*entry.tree);
+		t_parse_length	 padding = ts_subtree_padding(*entry.tree);
+		t_parse_length	 total_size = length_add(padding, size);
 		t_u32 lookahead_bytes = ts_subtree_lookahead_bytes(*entry.tree);
 		t_u32 end_byte = total_size.bytes + lookahead_bytes;
 		if (edit.start.bytes > end_byte ||
@@ -895,12 +895,12 @@ Subtree ts_subtree_edit(Subtree self, const t_input_edit *inpt_edit,
 		ts_subtree_set_has_changes(&result);
 		*entry.tree = ts_subtree_from_mut(result);
 
-		Length child_left, child_right = length_zero();
+		t_parse_length child_left, child_right = length_zero();
 		for (t_u32 i = 0, n = ts_subtree_child_count(*entry.tree); i < n;
 			 i++)
 		{
 			Subtree *child = &ts_subtree_children(*entry.tree)[i];
-			Length	 child_size = ts_subtree_total_size(*child);
+			t_parse_length	 child_size = ts_subtree_total_size(*child);
 			child_left = child_right;
 			child_right = length_add(child_left, child_size);
 

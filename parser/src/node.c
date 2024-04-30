@@ -7,7 +7,7 @@ typedef struct
 {
 	Subtree				parent;
 	const t_parse_tree *tree;
-	Length				position;
+	t_parse_length				position;
 	t_u32				child_index;
 	t_u32				structural_child_index;
 	const t_symbol	   *alias_sequence;
@@ -16,7 +16,7 @@ typedef struct
 // t_parse_node - constructors
 
 t_parse_node ts_node_new(const t_parse_tree *tree, const Subtree *subtree,
-						 Length position, t_symbol alias)
+						 t_parse_length position, t_symbol alias)
 {
 	return (t_parse_node){
 		{position.bytes, position.extent.row, position.extent.column, alias},

@@ -16,13 +16,13 @@
 #include "me/string/str_l_copy.h"
 #include "parser/api.h"
 
-t_node build_node(TSNode curr, t_const_str input);
+t_node build_node(t_parse_node curr, t_const_str input);
 
-t_node *build_childs(TSNode parent, t_const_str input, t_usize count)
+t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 {
 	t_node *ret;
 	t_usize idx;
-	TSNode	child;
+	t_parse_node	child;
 
 	ret = mem_alloc_array(sizeof(*ret), count);
 	if (ret == NULL)
@@ -37,7 +37,7 @@ t_node *build_childs(TSNode parent, t_const_str input, t_usize count)
 	return (ret);
 }
 
-t_node build_node(TSNode curr, t_const_str input)
+t_node build_node(t_parse_node curr, t_const_str input)
 {
 	t_node out;
 
