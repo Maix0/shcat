@@ -4056,6 +4056,8 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 			}
 		}
 	}
+	if (made_changes)
+		(void)(made_changes);
 	return min_error_cost;
 }
 

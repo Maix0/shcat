@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 #include "./api.h"
-=======
-#include "./array.h"
-#include "./parser.h"
->>>>>>> master
 
 #include <assert.h>
 #include <ctype.h>
