@@ -270,7 +270,7 @@ typedef struct s_parse_node
 
 typedef struct s_tree_cursor_entry
 {
-	const union t_subtree *subtree;
+	const union u_subtree *subtree;
 	t_length				position;
 	uint32_t				child_index;
 	uint32_t				structural_child_index;
@@ -529,7 +529,7 @@ typedef struct
 		char  short_data[24];
 	};
 	uint32_t length;
-} ExternalScannerState;
+} t_external_scanner_state;
 
 // A compact representation of a subtree.
 //
@@ -648,7 +648,7 @@ typedef struct s_subtree_heap_data
 
 		// External terminal subtrees (`child_count == 0 &&
 		// has_external_tokens`)
-		ExternalScannerState external_scanner_state;
+		t_external_scanner_state external_scanner_state;
 
 		// Error terminal subtrees (`child_count == 0 && symbol ==
 		// ts_builtin_sym_error`)
@@ -657,13 +657,13 @@ typedef struct s_subtree_heap_data
 } t_subtree_heap_data;
 
 // The fundamental building block of a syntax tree.
-typedef union t_subtree {
+typedef union u_subtree {
 	t_subtree_inline_data	   data;
 	const t_subtree_heap_data *ptr;
 } t_subtree;
 
 // Like t_subtree, but mutable.
-typedef union t_mutable_subtree {
+typedef union u_mutable_subtree {
 	t_subtree_inline_data data;
 	t_subtree_heap_data	 *ptr;
 } t_mutable_subtree;
@@ -679,7 +679,7 @@ typedef struct
 
 typedef Array(t_parse_range) t_range_array;
 
-typedef union t_parse_action {
+typedef union u_parse_action {
 	struct
 	{
 		uint8_t	   type;
@@ -751,7 +751,7 @@ typedef enum e_parse_action_type
 	TSParseActionTypeRecover,
 } t_parse_action_type;
 
-typedef union t_parse_action_entry {
+typedef union u_parse_action_entry {
 	t_parse_action action;
 	struct
 	{
@@ -1533,12 +1533,12 @@ void ts_stack_clear(t_stack *);
 
 typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
 
-void		ts_external_scanner_state_init(ExternalScannerState *, const char *,
+void		ts_external_scanner_state_init(t_external_scanner_state *, const char *,
 										   unsigned);
-const char *ts_external_scanner_state_data(const ExternalScannerState *);
-bool		ts_external_scanner_state_eq(const ExternalScannerState *self,
+const char *ts_external_scanner_state_data(const t_external_scanner_state *);
+bool		ts_external_scanner_state_eq(const t_external_scanner_state *self,
 										 const char *, unsigned);
-void		ts_external_scanner_state_delete(ExternalScannerState *self);
+void		ts_external_scanner_state_delete(t_external_scanner_state *self);
 
 void ts_subtree_array_copy(t_subtree_array, t_subtree_array *);
 void ts_subtree_array_clear(t_subtree_pool *, t_subtree_array *);
@@ -1575,7 +1575,7 @@ t_subtree ts_subtree_edit(t_subtree, const t_input_edit *edit,
 char	 *ts_subtree_string(t_subtree, t_symbol, bool, const t_language *,
 							bool include_all);
 t_subtree ts_subtree_last_external_token(t_subtree);
-const ExternalScannerState *ts_subtree_external_scanner_state(t_subtree self);
+const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self);
 bool ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
 
 #define SUBTREE_GET(self, name)                                                \
