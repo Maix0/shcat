@@ -1,5 +1,4 @@
-#include "./array.h"
-#include "./parser.h"
+#include "./api.h"
 
 #include <assert.h>
 #include <ctype.h>
