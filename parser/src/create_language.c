@@ -6,6 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
+<<<<<<< HEAD:parser/src/create_language.c
 /*   Updated: 2024/05/01 15:52:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -13,6 +14,15 @@
 #include "../static/headers/constants.h"
 #include "../static/headers/symbols.h"
 #include "../parse_types.h"
+=======
+/*   Updated: 2024/04/30 16:37:30 by maiboyer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "./static/headers/constants.h"
+#include "./static/headers/symbols.h"
+#include "./parse_types.h"
+>>>>>>> master:parser/create_language.c
 
 const uint16_t			   *create_parse_table(void);
 const uint16_t			   *create_small_parse_table(void);
