@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void ts_parser_delete(TSParser *self);
+void ts_parser_delete(t_first_parser *self);
 
 void ft_free(void *ptr)
 {

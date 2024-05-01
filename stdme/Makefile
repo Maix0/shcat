@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/04/28 20:00:43 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/01 20:31:58 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -52,23 +52,19 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@printf \\n$(COL_GRAY)Building\ Output\ $(COL_WHITE)$(COL_BOLD)%-28s$(COL_RESET)\  \
-		$(NAME)
+	@echo -e "$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)"
 	@#$(CC) $(INCLUDES) $(OBJ) $(CFLAGS) -o $(NAME)
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
-	@printf $(COL_GREEN)done$(COL_RESET)\\n
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@printf $(COL_GRAY)Building\ $(COL_BOLD)$(COL_WHITE)%-50s\  $(LIB_NAME)$<
+	@echo -e "$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)"
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
-	@printf $(COL_RESET)$(COL_GREEN)done$(COL_RESET)\\n
 
 $(BUILD_DIR)/%.o: $(GENERIC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@printf $(COL_GRAY)Building\ $(COL_BOLD)$(COL_WHITE)%-50s\  $(LIB_NAME)$<
+	@echo -e "$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)"
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
-	@printf $(COL_RESET)$(COL_GREEN)done$(COL_RESET)\\n
 
 clean:
 	@- $(foreach LIB,$(LIBS), \

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/04 17:29:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 19:42:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:30:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 char	*str_find_rev_chr(t_const_str str, char chr)
 {
-	t_usize	index;
+	t_isize	index;
 
 	if (str == NULL)
 		return (NULL);

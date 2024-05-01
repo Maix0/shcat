@@ -15,13 +15,13 @@
 #include "me/string/str_len.h"
 #include "parser/api.h"
 
-TSParser *ts_parser_new();
-void	  ts_tree_delete(TSTree *);
-TSNode	  ts_tree_root_node(TSTree *);
-TSTree	 *ts_parser_parse_string(TSParser *, TSTree *oldtree, t_const_str input,
+t_first_parser *ts_parser_new();
+void	  ts_tree_delete(t_first_tree *);
+t_parse_node	  ts_tree_root_node(t_first_tree *);
+t_first_tree	 *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree, t_const_str input,
 								 t_usize len);
-void	  ts_parser_delete(TSParser *self);
-void	  ts_parser_set_language(TSParser *self, TSLanguage *lang);
+void	  ts_parser_delete(t_first_parser *self);
+void	  ts_parser_set_language(t_first_parser *self, t_language *lang);
 
 void print_node_data(t_node *t, t_usize depth)
 {
@@ -36,10 +36,10 @@ void print_node_data(t_node *t, t_usize depth)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
 
-t_node parse_to_nodes(TSParser *parser, t_const_str input)
+t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 {
-	TSTree *tree;
-	TSNode	node;
+	t_first_tree *tree;
+	t_parse_node	node;
 	t_node	ret;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
@@ -112,12 +112,12 @@ void ft_find_path(t_str arge[], t_utils *utils)
 	utils->path = ft_split(PATH_FILES, ':');
 }
 
-TSLanguage *tree_sitter_bash(void);
+t_language *tree_sitter_bash(void);
 
 t_parser create_myparser(void)
 {
-	TSLanguage *lang;
-	TSParser   *parser;
+	t_language *lang;
+	t_first_parser   *parser;
 
 	lang = tree_sitter_bash();
 	parser = ts_parser_new();
