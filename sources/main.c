@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/04/30 16:43:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/01 10:36:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@
 #include "app/node.h"
 #include "me/string/str_len.h"
 #include "parser/api.h"
+
+TSParser *ts_parser_new();
+void	  ts_tree_delete(TSTree *);
+TSNode	  ts_tree_root_node(TSTree *);
+TSTree	 *ts_parser_parse_string(TSParser *, TSTree *oldtree, t_const_str input,
+								 t_usize len);
+void	  ts_parser_delete(TSParser *self);
+void	  ts_parser_set_language(TSParser *self, TSLanguage *lang);
 
 void print_node_data(t_node *t, t_usize depth)
 {
@@ -28,10 +36,10 @@ void print_node_data(t_node *t, t_usize depth)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
 
-t_node parse_to_nodes(t_parser *parser, t_const_str input)
+t_node parse_to_nodes(TSParser *parser, t_const_str input)
 {
-	t_parse_tree *tree;
-	t_parse_node	node;
+	TSTree *tree;
+	TSNode	node;
 	t_node	ret;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
@@ -40,7 +48,7 @@ t_node parse_to_nodes(t_parser *parser, t_const_str input)
 	ts_tree_delete(tree);
 	return (ret);
 }
-t_node parse_str(t_myparser *parser, t_const_str input)
+t_node parse_str(t_parser *parser, t_const_str input)
 {
 	return (parse_to_nodes(parser->parser, input));
 }
@@ -73,9 +81,7 @@ void exec_shcat(t_utils *shcat)
 
 void ft_take_args(t_utils *shcat)
 {
-	t_i32 i;
 
-	i = 0;
 	while (1)
 	{
 		shcat->str_input = readline((t_const_str)shcat->name_shell);
@@ -85,17 +91,14 @@ void ft_take_args(t_utils *shcat)
 		exec_shcat(shcat);
 		add_history(shcat->str_input);
 		free(shcat->str_input);
-		i++;
 	}
 }
 
 void ft_find_path(t_str arge[], t_utils *utils)
 {
 	t_i32 i;
-	t_u8  check;
 
 	i = 0;
-	check = 0;
 	while (arge[i] != NULL)
 	{
 		if (arge[i][0] == 'P' && arge[i][1] == 'A' && arge[i][2] == 'T' &&
@@ -109,32 +112,34 @@ void ft_find_path(t_str arge[], t_utils *utils)
 	utils->path = ft_split(PATH_FILES, ':');
 }
 
-t_language *tree_sitter_bash(void);
+TSLanguage *tree_sitter_bash(void);
 
-t_myparser create_myparser(void)
+t_parser create_myparser(void)
 {
-	t_language *lang;
-	t_parser   *parser;
+	TSLanguage *lang;
+	TSParser   *parser;
 
 	lang = tree_sitter_bash();
 	parser = ts_parser_new();
 	ts_parser_set_language(parser, lang);
-	return ((t_myparser){.parser = parser});
+	return ((t_parser){.parser = parser});
 }
 
-void free_myparser(t_myparser self)
+void free_myparser(t_parser self)
 {
 	ts_parser_delete(self.parser);
 }
 
-t_i32 main(t_i32 argc, t_str argv[], t_str arge[])
+t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
 	t_utils utils;
 
 	(void)argc;
 	(void)argv;
+	(void)envp;
+	utils = (t_utils){};
 	utils.parser = create_myparser();
-	ft_find_path(arge, &utils);
+	// ft_find_path(arge, &utils);
 	utils.name_shell = "42sh > ";
 	ft_take_args(&utils);
 }

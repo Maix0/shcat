@@ -1,5 +1,5 @@
 SRC_FILES = \
-create_language	\
+src/create_language	\
 static/alias_sequences/alias_sequences_0	\
 static/create/create_alias_sequences	\
 static/create/create_external_scanner_states	\

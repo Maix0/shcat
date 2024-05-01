@@ -30,10 +30,10 @@
 
 # define PATH_FILES "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
 
-typedef struct s_myparser
+typedef struct s_parser
 {
-	t_parser *parser;
-} t_myparser;
+	TSParser *parser;
+} t_parser;
 
 typedef struct s_utils
 {
@@ -42,7 +42,7 @@ typedef struct s_utils
 	t_str		*strs_input;	
 	t_str		*path;
 	t_str		*envp;
-	t_myparser	parser;
+	t_parser	parser;
 	t_node		current_node;
 }			t_utils;
 
