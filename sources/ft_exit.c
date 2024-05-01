@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+void ts_parser_delete(TSParser *self);
+
 void ft_free(void *ptr)
 {
 	if (!ptr)

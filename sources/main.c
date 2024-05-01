@@ -15,6 +15,14 @@
 #include "me/string/str_len.h"
 #include "parser/api.h"
 
+TSParser *ts_parser_new();
+void	  ts_tree_delete(TSTree *);
+TSNode	  ts_tree_root_node(TSTree *);
+TSTree	 *ts_parser_parse_string(TSParser *, TSTree *oldtree, t_const_str input,
+								 t_usize len);
+void	  ts_parser_delete(TSParser *self);
+void	  ts_parser_set_language(TSParser *self, TSLanguage *lang);
+
 void print_node_data(t_node *t, t_usize depth)
 {
 	t_usize idx;
@@ -28,10 +36,10 @@ void print_node_data(t_node *t, t_usize depth)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
 
-t_node parse_to_nodes(t_parser *parser, t_const_str input)
+t_node parse_to_nodes(TSParser *parser, t_const_str input)
 {
-	t_parse_tree *tree;
-	t_parse_node	node;
+	TSTree *tree;
+	TSNode	node;
 	t_node	ret;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
@@ -40,7 +48,7 @@ t_node parse_to_nodes(t_parser *parser, t_const_str input)
 	ts_tree_delete(tree);
 	return (ret);
 }
-t_node parse_str(t_myparser *parser, t_const_str input)
+t_node parse_str(t_parser *parser, t_const_str input)
 {
 	return (parse_to_nodes(parser->parser, input));
 }
@@ -104,20 +112,20 @@ void ft_find_path(t_str arge[], t_utils *utils)
 	utils->path = ft_split(PATH_FILES, ':');
 }
 
-t_language *tree_sitter_bash(void);
+TSLanguage *tree_sitter_bash(void);
 
-t_myparser create_myparser(void)
+t_parser create_myparser(void)
 {
-	t_language *lang;
-	t_parser   *parser;
+	TSLanguage *lang;
+	TSParser   *parser;
 
 	lang = tree_sitter_bash();
 	parser = ts_parser_new();
 	ts_parser_set_language(parser, lang);
-	return ((t_myparser){.parser = parser});
+	return ((t_parser){.parser = parser});
 }
 
-void free_myparser(t_myparser self)
+void free_myparser(t_parser self)
 {
 	ts_parser_delete(self.parser);
 }
@@ -131,7 +139,7 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	(void)envp;
 	utils = (t_utils){};
 	utils.parser = create_myparser();
-	//ft_find_path(arge, &utils);
+	// ft_find_path(arge, &utils);
 	utils.name_shell = "42sh > ";
 	ft_take_args(&utils);
 }

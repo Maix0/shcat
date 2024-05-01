@@ -28,7 +28,7 @@ typedef struct s_node
 	struct s_node *childs;
 } t_node;
 
-t_node build_node(t_parse_node curr, t_const_str input);
+t_node build_node(TSNode curr, t_const_str input);
 t_str  node_getstr(t_node *node);
 void   free_node(t_node t);
 
