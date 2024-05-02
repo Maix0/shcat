@@ -6,22 +6,23 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/01 10:36:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/02 14:18:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "app/node.h"
+#include "app/signal_handler.h"
 #include "me/string/str_len.h"
 #include "parser/api.h"
 
 t_first_parser *ts_parser_new();
-void	  ts_tree_delete(t_first_tree *);
-t_parse_node	  ts_tree_root_node(t_first_tree *);
-t_first_tree	 *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree, t_const_str input,
-								 t_usize len);
-void	  ts_parser_delete(t_first_parser *self);
-void	  ts_parser_set_language(t_first_parser *self, t_language *lang);
+void			ts_tree_delete(t_first_tree *);
+t_parse_node	ts_tree_root_node(t_first_tree *);
+t_first_tree   *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree,
+									   t_const_str input, t_usize len);
+void			ts_parser_delete(t_first_parser *self);
+void			ts_parser_set_language(t_first_parser *self, t_language *lang);
 
 void print_node_data(t_node *t, t_usize depth)
 {
@@ -31,7 +32,7 @@ void print_node_data(t_node *t, t_usize depth)
 	while (idx++ < depth)
 		printf("\t");
 	idx = 0;
-	printf("%s = %s\n", t->kind_str, node_getstr(t));
+	printf("%s(%llu) = %s\n", t->kind_str, t->kind, node_getstr(t));
 	while (idx < t->childs_count)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
@@ -39,8 +40,8 @@ void print_node_data(t_node *t, t_usize depth)
 t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 {
 	t_first_tree *tree;
-	t_parse_node	node;
-	t_node	ret;
+	t_parse_node  node;
+	t_node		  ret;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
 	node = ts_tree_root_node(tree);
@@ -116,8 +117,8 @@ t_language *tree_sitter_bash(void);
 
 t_parser create_myparser(void)
 {
-	t_language *lang;
-	t_first_parser   *parser;
+	t_language	   *lang;
+	t_first_parser *parser;
 
 	lang = tree_sitter_bash();
 	parser = ts_parser_new();
@@ -137,9 +138,15 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	(void)argc;
 	(void)argv;
 	(void)envp;
+	if (install_signal())
+		return (1);
 	utils = (t_utils){};
 	utils.parser = create_myparser();
-	// ft_find_path(arge, &utils);
-	utils.name_shell = "42sh > ";
+	utils.name_shell = "\001\x1B[93m\002"
+					   "42sh"
+					   "\001\x1B[32m\002"
+					   ">"
+					   "\001\x1B[0m\002"
+					   "$ ";
 	ft_take_args(&utils);
 }
