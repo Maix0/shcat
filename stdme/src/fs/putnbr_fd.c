@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 12:45:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 19:42:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:29:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ static void	me_inner(t_u64 nb, t_str out, t_usize *idx)
 void	me_putnbr_fd(t_i32 n, t_file file)
 {
 	t_usize	idx;
-	t_u64	nb;
+	t_i64	nb;
 	char	out[15];
 
-	nb = (t_u64)n;
+	nb = (t_i64)n;
 	idx = 0;
 	if (nb < 0)
 	{

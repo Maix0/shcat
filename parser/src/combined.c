@@ -1,26 +1,28 @@
 #include "./api.h"
 
-uint32_t ts_node_end_byte(TSNode self);
-TSNode	 ts_node_parent(TSNode self);
-bool	 ts_node_is_null(TSNode self);
-uint32_t ts_node_child_count(TSNode self);
-TSNode	 ts_tree_root_node(const TSTree *self);
-TSNode	 ts_node_child_containing_descendant(TSNode self, TSNode subnode);
-void	 ts_parser_reset(TSParser *self);
-bool	 ts_parser_set_language(TSParser *self, const TSLanguage *language);
-void	 ts_query_delete(TSQuery *self);
-void	 ts_tree_cursor_delete(TSTreeCursor *_self);
-void	 ts_tree_cursor_reset(TSTreeCursor *_self, TSNode node);
-bool	 ts_tree_cursor_goto_parent(TSTreeCursor *_self);
-TSNode	 ts_tree_cursor_current_node(const TSTreeCursor *_self);
+uint32_t	 ts_node_end_byte(t_parse_node self);
+t_parse_node ts_node_parent(t_parse_node self);
+bool		 ts_node_is_null(t_parse_node self);
+uint32_t	 ts_node_child_count(t_parse_node self);
+t_parse_node ts_tree_root_node(const t_first_tree *self);
+t_parse_node ts_node_child_containing_descendant(t_parse_node self,
+												 t_parse_node subnode);
+void		 ts_parser_reset(t_first_parser *self);
+bool ts_parser_set_language(t_first_parser *self, const t_language *language);
+void ts_query_delete(t_parse_query *self);
+void ts_tree_cursor_delete(t_tree_cursor *_self);
+void ts_tree_cursor_reset(t_tree_cursor *_self, t_parse_node node);
+bool ts_tree_cursor_goto_parent(t_tree_cursor *_self);
+t_parse_node ts_tree_cursor_current_node(const t_tree_cursor *_self);
 
 // #define DEBUG_GET_CHANGED_RANGES
 
-static void ts_range_array_add(TSRangeArray *self, Length start, Length end)
+static void ts_range_array_add(t_range_array *self, t_length start,
+							   t_length end)
 {
 	if (self->size > 0)
 	{
-		TSRange *last_range = array_back(self);
+		t_parse_range *last_range = array_back(self);
 		if (start.bytes <= last_range->end_byte)
 		{
 			last_range->end_byte = end.bytes;
@@ -31,17 +33,18 @@ static void ts_range_array_add(TSRangeArray *self, Length start, Length end)
 
 	if (start.bytes < end.bytes)
 	{
-		TSRange range = {start.extent, end.extent, start.bytes, end.bytes};
+		t_parse_range range = {start.extent, end.extent, start.bytes,
+							   end.bytes};
 		array_push(self, range);
 	}
 }
 
-bool ts_range_array_intersects(const TSRangeArray *self, unsigned start_index,
+bool ts_range_array_intersects(const t_range_array *self, unsigned start_index,
 							   uint32_t start_byte, uint32_t end_byte)
 {
 	for (unsigned i = start_index; i < self->size; i++)
 	{
-		TSRange *range = &self->contents[i];
+		t_parse_range *range = &self->contents[i];
 		if (range->end_byte > start_byte)
 		{
 			if (range->start_byte >= end_byte)
@@ -52,49 +55,49 @@ bool ts_range_array_intersects(const TSRangeArray *self, unsigned start_index,
 	return false;
 }
 
-void ts_range_array_get_changed_ranges(const TSRange *old_ranges,
-									   unsigned		  old_range_count,
-									   const TSRange *new_ranges,
-									   unsigned		  new_range_count,
-									   TSRangeArray	 *differences)
+void ts_range_array_get_changed_ranges(const t_parse_range *old_ranges,
+									   unsigned				old_range_count,
+									   const t_parse_range *new_ranges,
+									   unsigned				new_range_count,
+									   t_range_array	   *differences)
 {
 	unsigned new_index = 0;
 	unsigned old_index = 0;
-	Length	 current_position = length_zero();
+	t_length current_position = length_zero();
 	bool	 in_old_range = false;
 	bool	 in_new_range = false;
 
 	while (old_index < old_range_count || new_index < new_range_count)
 	{
-		const TSRange *old_range = &old_ranges[old_index];
-		const TSRange *new_range = &new_ranges[new_index];
+		const t_parse_range *old_range = &old_ranges[old_index];
+		const t_parse_range *new_range = &new_ranges[new_index];
 
-		Length next_old_position;
+		t_length next_old_position;
 		if (in_old_range)
 		{
 			next_old_position =
-				(Length){old_range->end_byte, old_range->end_point};
+				(t_length){old_range->end_byte, old_range->end_point};
 		}
 		else if (old_index < old_range_count)
 		{
 			next_old_position =
-				(Length){old_range->start_byte, old_range->start_point};
+				(t_length){old_range->start_byte, old_range->start_point};
 		}
 		else
 		{
 			next_old_position = LENGTH_MAX;
 		}
 
-		Length next_new_position;
+		t_length next_new_position;
 		if (in_new_range)
 		{
 			next_new_position =
-				(Length){new_range->end_byte, new_range->end_point};
+				(t_length){new_range->end_byte, new_range->end_point};
 		}
 		else if (new_index < new_range_count)
 		{
 			next_new_position =
-				(Length){new_range->start_byte, new_range->start_point};
+				(t_length){new_range->start_byte, new_range->start_point};
 		}
 		else
 		{
@@ -143,25 +146,25 @@ void ts_range_array_get_changed_ranges(const TSRange *old_ranges,
 	}
 }
 
-typedef struct
+typedef struct s_iterator
 {
-	TreeCursor		  cursor;
-	const TSLanguage *language;
+	t_tree_cursor	  cursor;
+	const t_language *language;
 	unsigned		  visible_depth;
 	bool			  in_padding;
-} Iterator;
+} t_iterator;
 
-static Iterator iterator_new(TreeCursor *cursor, const Subtree *tree,
-							 const TSLanguage *language)
+static t_iterator iterator_new(t_tree_cursor *cursor, const t_subtree *tree,
+							 const t_language *language)
 {
 	array_clear(&cursor->stack);
-	array_push(&cursor->stack, ((TreeCursorEntry){
+	array_push(&cursor->stack, ((t_tree_cursor_entry){
 								   .subtree = tree,
 								   .position = length_zero(),
 								   .child_index = 0,
 								   .structural_child_index = 0,
 							   }));
-	return (Iterator){
+	return (t_iterator){
 		.cursor = *cursor,
 		.language = language,
 		.visible_depth = 1,
@@ -169,14 +172,14 @@ static Iterator iterator_new(TreeCursor *cursor, const Subtree *tree,
 	};
 }
 
-static bool iterator_done(Iterator *self)
+static bool iterator_done(t_iterator *self)
 {
 	return self->cursor.stack.size == 0;
 }
 
-static Length iterator_start_position(Iterator *self)
+static t_length iterator_start_position(t_iterator *self)
 {
-	TreeCursorEntry entry = *array_back(&self->cursor.stack);
+	t_tree_cursor_entry entry = *array_back(&self->cursor.stack);
 	if (self->in_padding)
 	{
 		return entry.position;
@@ -187,10 +190,10 @@ static Length iterator_start_position(Iterator *self)
 	}
 }
 
-static Length iterator_end_position(Iterator *self)
+static t_length iterator_end_position(t_iterator *self)
 {
-	TreeCursorEntry entry = *array_back(&self->cursor.stack);
-	Length			result =
+	t_tree_cursor_entry entry = *array_back(&self->cursor.stack);
+	t_length			result =
 		length_add(entry.position, ts_subtree_padding(*entry.subtree));
 	if (self->in_padding)
 	{
@@ -202,14 +205,14 @@ static Length iterator_end_position(Iterator *self)
 	}
 }
 
-static bool iterator_tree_is_visible(const Iterator *self)
+static bool iterator_tree_is_visible(const t_iterator *self)
 {
-	TreeCursorEntry entry = *array_back(&self->cursor.stack);
+	t_tree_cursor_entry entry = *array_back(&self->cursor.stack);
 	if (ts_subtree_visible(*entry.subtree))
 		return true;
 	if (self->cursor.stack.size > 1)
 	{
-		Subtree parent =
+		t_subtree parent =
 			*self->cursor.stack.contents[self->cursor.stack.size - 2].subtree;
 		return ts_language_alias_at(self->language, parent.ptr->production_id,
 									entry.structural_child_index) != 0;
@@ -217,8 +220,8 @@ static bool iterator_tree_is_visible(const Iterator *self)
 	return false;
 }
 
-static void iterator_get_visible_state(const Iterator *self, Subtree *tree,
-									   TSSymbol *alias_symbol,
+static void iterator_get_visible_state(const t_iterator *self, t_subtree *tree,
+									   t_symbol *alias_symbol,
 									   uint32_t *start_byte)
 {
 	uint32_t i = self->cursor.stack.size - 1;
@@ -232,11 +235,12 @@ static void iterator_get_visible_state(const Iterator *self, Subtree *tree,
 
 	for (; i + 1 > 0; i--)
 	{
-		TreeCursorEntry entry = self->cursor.stack.contents[i];
+		t_tree_cursor_entry entry = self->cursor.stack.contents[i];
 
 		if (i > 0)
 		{
-			const Subtree *parent = self->cursor.stack.contents[i - 1].subtree;
+			const t_subtree *parent =
+				self->cursor.stack.contents[i - 1].subtree;
 			*alias_symbol =
 				ts_language_alias_at(self->language, parent->ptr->production_id,
 									 entry.structural_child_index);
@@ -251,7 +255,7 @@ static void iterator_get_visible_state(const Iterator *self, Subtree *tree,
 	}
 }
 
-static void iterator_ascend(Iterator *self)
+static void iterator_ascend(t_iterator *self)
 {
 	if (iterator_done(self))
 		return;
@@ -262,7 +266,7 @@ static void iterator_ascend(Iterator *self)
 	self->cursor.stack.size--;
 }
 
-static bool iterator_descend(Iterator *self, uint32_t goal_position)
+static bool iterator_descend(t_iterator *self, uint32_t goal_position)
 {
 	if (self->in_padding)
 		return false;
@@ -271,22 +275,22 @@ static bool iterator_descend(Iterator *self, uint32_t goal_position)
 	do
 	{
 		did_descend = false;
-		TreeCursorEntry entry = *array_back(&self->cursor.stack);
-		Length			position = entry.position;
-		uint32_t		structural_child_index = 0;
+		t_tree_cursor_entry entry = *array_back(&self->cursor.stack);
+		t_length			position = entry.position;
+		uint32_t			structural_child_index = 0;
 		for (uint32_t i = 0, n = ts_subtree_child_count(*entry.subtree); i < n;
 			 i++)
 		{
-			const Subtree *child = &ts_subtree_children(*entry.subtree)[i];
-			Length		   child_left =
+			const t_subtree *child = &ts_subtree_children(*entry.subtree)[i];
+			t_length		 child_left =
 				length_add(position, ts_subtree_padding(*child));
-			Length child_right =
+			t_length child_right =
 				length_add(child_left, ts_subtree_size(*child));
 
 			if (child_right.bytes > goal_position)
 			{
 				array_push(&self->cursor.stack,
-						   ((TreeCursorEntry){
+						   ((t_tree_cursor_entry){
 							   .subtree = child,
 							   .position = position,
 							   .child_index = i,
@@ -319,7 +323,7 @@ static bool iterator_descend(Iterator *self, uint32_t goal_position)
 	return false;
 }
 
-static void iterator_advance(Iterator *self)
+static void iterator_advance(t_iterator *self)
 {
 	if (self->in_padding)
 	{
@@ -339,24 +343,24 @@ static void iterator_advance(Iterator *self)
 	{
 		if (iterator_tree_is_visible(self))
 			self->visible_depth--;
-		TreeCursorEntry entry = array_pop(&self->cursor.stack);
+		t_tree_cursor_entry entry = array_pop(&self->cursor.stack);
 		if (iterator_done(self))
 			return;
 
-		const Subtree *parent = array_back(&self->cursor.stack)->subtree;
-		uint32_t	   child_index = entry.child_index + 1;
+		const t_subtree *parent = array_back(&self->cursor.stack)->subtree;
+		uint32_t		 child_index = entry.child_index + 1;
 		if (ts_subtree_child_count(*parent) > child_index)
 		{
-			Length	 position = length_add(entry.position,
-										   ts_subtree_total_size(*entry.subtree));
+			t_length position = length_add(
+				entry.position, ts_subtree_total_size(*entry.subtree));
 			uint32_t structural_child_index = entry.structural_child_index;
 			if (!ts_subtree_extra(*entry.subtree))
 				structural_child_index++;
-			const Subtree *next_child =
+			const t_subtree *next_child =
 				&ts_subtree_children(*parent)[child_index];
 
 			array_push(&self->cursor.stack,
-					   ((TreeCursorEntry){
+					   ((t_tree_cursor_entry){
 						   .subtree = next_child,
 						   .position = position,
 						   .child_index = child_index,
@@ -383,22 +387,22 @@ static void iterator_advance(Iterator *self)
 	}
 }
 
-typedef enum
+typedef enum e_iterator_comparison
 {
 	IteratorDiffers,
 	IteratorMayDiffer,
 	IteratorMatches,
-} IteratorComparison;
+} t_iterator_comparison;
 
-static IteratorComparison iterator_compare(const Iterator *old_iter,
-										   const Iterator *new_iter)
+static t_iterator_comparison iterator_compare(const t_iterator *old_iter,
+										   const t_iterator *new_iter)
 {
-	Subtree	 old_tree = NULL_SUBTREE;
-	Subtree	 new_tree = NULL_SUBTREE;
-	uint32_t old_start = 0;
-	uint32_t new_start = 0;
-	TSSymbol old_alias_symbol = 0;
-	TSSymbol new_alias_symbol = 0;
+	t_subtree old_tree = NULL_SUBTREE;
+	t_subtree new_tree = NULL_SUBTREE;
+	uint32_t  old_start = 0;
+	uint32_t  new_start = 0;
+	t_symbol  old_alias_symbol = 0;
+	t_symbol  new_alias_symbol = 0;
 	iterator_get_visible_state(old_iter, &old_tree, &old_alias_symbol,
 							   &old_start);
 	iterator_get_visible_state(new_iter, &new_tree, &new_alias_symbol,
@@ -433,12 +437,12 @@ static IteratorComparison iterator_compare(const Iterator *old_iter,
 }
 
 #ifdef DEBUG_GET_CHANGED_RANGES
-static inline void iterator_print_state(Iterator *self)
+static inline void iterator_print_state(t_iterator *self)
 {
-	TreeCursorEntry entry = *array_back(&self->cursor.stack);
-	TSPoint			start = iterator_start_position(self).extent;
-	TSPoint			end = iterator_end_position(self).extent;
-	const char	   *name = ts_language_symbol_name(
+	t_tree_cursor_entry entry = *array_back(&self->cursor.stack);
+	t_point				start = iterator_start_position(self).extent;
+	t_point				end = iterator_end_position(self).extent;
+	const char		   *name = ts_language_symbol_name(
 		self->language, ts_subtree_symbol(*entry.subtree));
 	printf("(%-25s %s\t depth:%u [%u, %u] - [%u, %u])", name,
 		   self->in_padding ? "(p)" : "   ", self->visible_depth, start.row + 1,
@@ -447,19 +451,19 @@ static inline void iterator_print_state(Iterator *self)
 #endif
 
 unsigned ts_subtree_get_changed_ranges(
-	const Subtree *old_tree, const Subtree *new_tree, TreeCursor *cursor1,
-	TreeCursor *cursor2, const TSLanguage *language,
-	const TSRangeArray *included_range_differences, TSRange **ranges)
+	const t_subtree *old_tree, const t_subtree *new_tree,
+	t_tree_cursor *cursor1, t_tree_cursor *cursor2, const t_language *language,
+	const t_range_array *included_range_differences, t_parse_range **ranges)
 {
-	TSRangeArray results = array_new();
+	t_range_array results = array_new();
 
-	Iterator old_iter = iterator_new(cursor1, old_tree, language);
-	Iterator new_iter = iterator_new(cursor2, new_tree, language);
+	t_iterator old_iter = iterator_new(cursor1, old_tree, language);
+	t_iterator new_iter = iterator_new(cursor2, new_tree, language);
 
 	unsigned included_range_difference_index = 0;
 
-	Length position = iterator_start_position(&old_iter);
-	Length next_position = iterator_start_position(&new_iter);
+	t_length position = iterator_start_position(&old_iter);
+	t_length next_position = iterator_start_position(&new_iter);
 	if (position.bytes < next_position.bytes)
 	{
 		ts_range_array_add(&results, position, next_position);
@@ -483,7 +487,7 @@ unsigned ts_subtree_get_changed_ranges(
 #endif
 
 		// Compare the old and new subtrees.
-		IteratorComparison comparison = iterator_compare(&old_iter, &new_iter);
+		t_iterator_comparison comparison = iterator_compare(&old_iter, &new_iter);
 
 		// Even if the two subtrees appear to be identical, they could differ
 		// internally if they contain a range of text that was previously
@@ -573,7 +577,7 @@ unsigned ts_subtree_get_changed_ranges(
 		while (included_range_difference_index <
 			   included_range_differences->size)
 		{
-			const TSRange *range =
+			const t_parse_range *range =
 				&included_range_differences
 					 ->contents[included_range_difference_index];
 			if (range->end_byte <= position.bytes)
@@ -587,8 +591,8 @@ unsigned ts_subtree_get_changed_ranges(
 		}
 	} while (!iterator_done(&old_iter) && !iterator_done(&new_iter));
 
-	Length old_size = ts_subtree_total_size(*old_tree);
-	Length new_size = ts_subtree_total_size(*new_tree);
+	t_length old_size = ts_subtree_total_size(*old_tree);
+	t_length new_size = ts_subtree_total_size(*new_tree);
 	if (old_size.bytes < new_size.bytes)
 	{
 		ts_range_array_add(&results, old_size, new_size);
@@ -604,38 +608,38 @@ unsigned ts_subtree_get_changed_ranges(
 	return results.size;
 }
 
-const TSLanguage *ts_language_copy(const TSLanguage *self)
+const t_language *ts_language_copy(const t_language *self)
 {
 	return self;
 }
 
-void ts_language_delete(const TSLanguage *self)
+void ts_language_delete(const t_language *self)
 {
 	(void)(self);
 }
 
-uint32_t ts_language_symbol_count(const TSLanguage *self)
+uint32_t ts_language_symbol_count(const t_language *self)
 {
 	return self->symbol_count + self->alias_count;
 }
 
-uint32_t ts_language_state_count(const TSLanguage *self)
+uint32_t ts_language_state_count(const t_language *self)
 {
 	return self->state_count;
 }
 
-uint32_t ts_language_version(const TSLanguage *self)
+uint32_t ts_language_version(const t_language *self)
 {
 	return self->version;
 }
 
-uint32_t ts_language_field_count(const TSLanguage *self)
+uint32_t ts_language_field_count(const t_language *self)
 {
 	return self->field_count;
 }
 
-void ts_language_table_entry(const TSLanguage *self, TSStateId state,
-							 TSSymbol symbol, TableEntry *result)
+void ts_language_table_entry(const t_language *self, t_state_id state,
+							 t_symbol symbol, t_table_entry *result)
 {
 	if (symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat)
 	{
@@ -647,23 +651,23 @@ void ts_language_table_entry(const TSLanguage *self, TSStateId state,
 	{
 		assert(symbol < self->token_count);
 		uint32_t action_index = ts_language_lookup(self, state, symbol);
-		const TSParseActionEntry *entry = &self->parse_actions[action_index];
+		const t_parse_action_entry *entry = &self->parse_actions[action_index];
 		result->action_count = entry->entry.count;
 		result->is_reusable = entry->entry.reusable;
-		result->actions = (const TSParseAction *)(entry + 1);
+		result->actions = (const t_parse_action *)(entry + 1);
 	}
 }
 
-TSSymbolMetadata ts_language_symbol_metadata(const TSLanguage *self,
-											 TSSymbol		   symbol)
+t_symbol_metadata ts_language_symbol_metadata(const t_language *self,
+											  t_symbol			symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 	{
-		return (TSSymbolMetadata){.visible = true, .named = true};
+		return (t_symbol_metadata){.visible = true, .named = true};
 	}
 	else if (symbol == ts_builtin_sym_error_repeat)
 	{
-		return (TSSymbolMetadata){.visible = false, .named = false};
+		return (t_symbol_metadata){.visible = false, .named = false};
 	}
 	else
 	{
@@ -671,15 +675,15 @@ TSSymbolMetadata ts_language_symbol_metadata(const TSLanguage *self,
 	}
 }
 
-TSSymbol ts_language_public_symbol(const TSLanguage *self, TSSymbol symbol)
+t_symbol ts_language_public_symbol(const t_language *self, t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 		return symbol;
 	return self->public_symbol_map[symbol];
 }
 
-TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state,
-								 TSSymbol symbol)
+t_state_id ts_language_next_state(const t_language *self, t_state_id state,
+								  t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat)
 	{
@@ -687,12 +691,12 @@ TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state,
 	}
 	else if (symbol < self->token_count)
 	{
-		uint32_t			 count;
-		const TSParseAction *actions =
+		uint32_t			  count;
+		const t_parse_action *actions =
 			ts_language_actions(self, state, symbol, &count);
 		if (count > 0)
 		{
-			TSParseAction action = actions[count - 1];
+			t_parse_action action = actions[count - 1];
 			if (action.type == TSParseActionTypeShift)
 			{
 				return action.shift.extra ? state : action.shift.state;
@@ -706,7 +710,7 @@ TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state,
 	}
 }
 
-const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
+const char *ts_language_symbol_name(const t_language *self, t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 	{
@@ -726,15 +730,15 @@ const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
 	}
 }
 
-TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string,
+t_symbol ts_language_symbol_for_name(const t_language *self, const char *string,
 									 uint32_t length, bool is_named)
 {
 	if (!strncmp(string, "ERROR", length))
 		return ts_builtin_sym_error;
 	uint16_t count = (uint16_t)ts_language_symbol_count(self);
-	for (TSSymbol i = 0; i < count; i++)
+	for (t_symbol i = 0; i < count; i++)
 	{
-		TSSymbolMetadata metadata = ts_language_symbol_metadata(self, i);
+		t_symbol_metadata metadata = ts_language_symbol_metadata(self, i);
 		if ((!metadata.visible && !metadata.supertype) ||
 			metadata.named != is_named)
 			continue;
@@ -747,9 +751,9 @@ TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string,
 	return 0;
 }
 
-TSSymbolType ts_language_symbol_type(const TSLanguage *self, TSSymbol symbol)
+t_symbol_type ts_language_symbol_type(const t_language *self, t_symbol symbol)
 {
-	TSSymbolMetadata metadata = ts_language_symbol_metadata(self, symbol);
+	t_symbol_metadata metadata = ts_language_symbol_metadata(self, symbol);
 	if (metadata.named && metadata.visible)
 	{
 		return TSSymbolTypeRegular;
@@ -764,7 +768,7 @@ TSSymbolType ts_language_symbol_type(const TSLanguage *self, TSSymbol symbol)
 	}
 }
 
-const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
+const char *ts_language_field_name_for_id(const t_language *self, t_field_id id)
 {
 	uint32_t count = ts_language_field_count(self);
 	if (count && id <= count)
@@ -777,11 +781,11 @@ const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
 	}
 }
 
-TSFieldId ts_language_field_id_for_name(const TSLanguage *self,
-										const char *name, uint32_t name_length)
+t_field_id ts_language_field_id_for_name(const t_language *self,
+										 const char *name, uint32_t name_length)
 {
 	uint16_t count = (uint16_t)ts_language_field_count(self);
-	for (TSSymbol i = 1; i < count + 1; i++)
+	for (t_symbol i = 1; i < count + 1; i++)
 	{
 		switch (strncmp(name, self->field_names[i], name_length))
 		{
@@ -798,94 +802,94 @@ TSFieldId ts_language_field_id_for_name(const TSLanguage *self,
 	return 0;
 }
 
-TSLookaheadIterator *ts_lookahead_iterator_new(const TSLanguage *self,
-											   TSStateId		 state)
+t_lookahead_iterator *ts_lookahead_iterator_new(const t_language *self,
+												t_state_id		  state)
 {
 	if (state >= self->state_count)
 		return NULL;
-	LookaheadIterator *iterator = malloc(sizeof(LookaheadIterator));
+	t_lookahead_iterator *iterator = malloc(sizeof(t_lookahead_iterator));
 	*iterator = ts_language_lookaheads(self, state);
-	return (TSLookaheadIterator *)iterator;
+	return (t_lookahead_iterator *)iterator;
 }
 
-void ts_lookahead_iterator_delete(TSLookaheadIterator *self)
+void ts_lookahead_iterator_delete(t_lookahead_iterator *self)
 {
 	free(self);
 }
 
-bool ts_lookahead_iterator_reset_state(TSLookaheadIterator *self,
-									   TSStateId			state)
+bool ts_lookahead_iterator_reset_state(t_lookahead_iterator *self,
+									   t_state_id			 state)
 {
-	LookaheadIterator *iterator = (LookaheadIterator *)self;
+	t_lookahead_iterator *iterator = (t_lookahead_iterator *)self;
 	if (state >= iterator->language->state_count)
 		return false;
 	*iterator = ts_language_lookaheads(iterator->language, state);
 	return true;
 }
 
-const TSLanguage *ts_lookahead_iterator_language(
-	const TSLookaheadIterator *self)
+const t_language *ts_lookahead_iterator_language(
+	const t_lookahead_iterator *self)
 {
-	const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+	const t_lookahead_iterator *iterator = (const t_lookahead_iterator *)self;
 	return iterator->language;
 }
 
-bool ts_lookahead_iterator_reset(TSLookaheadIterator *self,
-								 const TSLanguage *language, TSStateId state)
+bool ts_lookahead_iterator_reset(t_lookahead_iterator *self,
+								 const t_language *language, t_state_id state)
 {
 	if (state >= language->state_count)
 		return false;
-	LookaheadIterator *iterator = (LookaheadIterator *)self;
+	t_lookahead_iterator *iterator = (t_lookahead_iterator *)self;
 	*iterator = ts_language_lookaheads(language, state);
 	return true;
 }
 
-bool ts_lookahead_iterator_next(TSLookaheadIterator *self)
+bool ts_lookahead_iterator_next(t_lookahead_iterator *self)
 {
-	LookaheadIterator *iterator = (LookaheadIterator *)self;
+	t_lookahead_iterator *iterator = (t_lookahead_iterator *)self;
 	return ts_lookahead_iterator__next(iterator);
 }
 
-TSSymbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self)
+t_symbol ts_lookahead_iterator_current_symbol(const t_lookahead_iterator *self)
 {
-	const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+	const t_lookahead_iterator *iterator = (const t_lookahead_iterator *)self;
 	return iterator->symbol;
 }
 
 const char *ts_lookahead_iterator_current_symbol_name(
-	const TSLookaheadIterator *self)
+	const t_lookahead_iterator *self)
 {
-	const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+	const t_lookahead_iterator *iterator = (const t_lookahead_iterator *)self;
 	return ts_language_symbol_name(iterator->language, iterator->symbol);
 }
 
 static const int32_t BYTE_ORDER_MARK = 0xFEFF;
 
-static const TSRange DEFAULT_RANGE = {.start_point =
-										  {
-											  .row = 0,
-											  .column = 0,
-										  },
-									  .end_point =
-										  {
-											  .row = UINT32_MAX,
-											  .column = UINT32_MAX,
-										  },
-									  .start_byte = 0,
-									  .end_byte = UINT32_MAX};
+static const t_parse_range DEFAULT_RANGE = {.start_point =
+												{
+													.row = 0,
+													.column = 0,
+												},
+											.end_point =
+												{
+													.row = UINT32_MAX,
+													.column = UINT32_MAX,
+												},
+											.start_byte = 0,
+											.end_byte = UINT32_MAX};
 
 // Check if the lexer has reached EOF. This state is stored
 // by setting the lexer's `current_included_range_index` such that
 // it has consumed all of its available ranges.
-static bool ts_lexer__eof(const TSLexer *_self)
+static bool ts_lexer__eof(const t_lexer_data *_self)
 {
-	Lexer *self = (Lexer *)_self;
+	t_lexer *self = (t_lexer *)_self;
 	return self->current_included_range_index == self->included_range_count;
 }
 
 // Clear the currently stored chunk of source code, because the lexer's
 // position has changed.
-static void ts_lexer__clear_chunk(Lexer *self)
+static void ts_lexer__clear_chunk(t_lexer *self)
 {
 	self->chunk = NULL;
 	self->chunk_size = 0;
@@ -894,7 +898,7 @@ static void ts_lexer__clear_chunk(Lexer *self)
 
 // Call the lexer's input callback to obtain a new chunk of source code
 // for the current position.
-static void ts_lexer__get_chunk(Lexer *self)
+static void ts_lexer__get_chunk(t_lexer *self)
 {
 	self->chunk_start = self->current_position.bytes;
 	self->chunk =
@@ -909,18 +913,18 @@ static void ts_lexer__get_chunk(Lexer *self)
 
 uint32_t ascii_decode(const uint8_t *chunk, uint32_t size, int32_t *codepoint)
 {
-  (void)(size);
-  *(uint8_t *)codepoint = *chunk;
-  return (1);
+	(void)(size);
+	*(uint8_t *)codepoint = *chunk;
+	return (1);
 }
 
 typedef uint32_t (*UnicodeDecodeFunction)(const uint8_t *chunk, uint32_t size,
-									  int32_t *codepoint);
+										  int32_t *codepoint);
 
 // Decode the next unicode character in the current chunk of source code.
 // This assumes that the lexer has already retrieved a chunk of source
 // code that spans the current position.
-static void ts_lexer__get_lookahead(Lexer *self)
+static void ts_lexer__get_lookahead(t_lexer *self)
 {
 	uint32_t position_in_chunk =
 		self->current_position.bytes - self->chunk_start;
@@ -954,7 +958,7 @@ static void ts_lexer__get_lookahead(Lexer *self)
 	}
 }
 
-static void ts_lexer_goto(Lexer *self, Length position)
+static void ts_lexer_goto(t_lexer *self, t_length position)
 {
 	self->current_position = position;
 
@@ -962,13 +966,13 @@ static void ts_lexer_goto(Lexer *self, Length position)
 	bool found_included_range = false;
 	for (unsigned i = 0; i < self->included_range_count; i++)
 	{
-		TSRange *included_range = &self->included_ranges[i];
+		t_parse_range *included_range = &self->included_ranges[i];
 		if (included_range->end_byte > self->current_position.bytes &&
 			included_range->end_byte > included_range->start_byte)
 		{
 			if (included_range->start_byte >= self->current_position.bytes)
 			{
-				self->current_position = (Length){
+				self->current_position = (t_length){
 					.bytes = included_range->start_byte,
 					.extent = included_range->start_point,
 				};
@@ -1000,9 +1004,9 @@ static void ts_lexer_goto(Lexer *self, Length position)
 	else
 	{
 		self->current_included_range_index = self->included_range_count;
-		TSRange *last_included_range =
+		t_parse_range *last_included_range =
 			&self->included_ranges[self->included_range_count - 1];
-		self->current_position = (Length){
+		self->current_position = (t_length){
 			.bytes = last_included_range->end_byte,
 			.extent = last_included_range->end_point,
 		};
@@ -1013,7 +1017,7 @@ static void ts_lexer_goto(Lexer *self, Length position)
 }
 
 // Intended to be called only from functions that control logging.
-static void ts_lexer__do_advance(Lexer *self, bool skip)
+static void ts_lexer__do_advance(t_lexer *self, bool skip)
 {
 	if (self->lookahead_size)
 	{
@@ -1029,7 +1033,7 @@ static void ts_lexer__do_advance(Lexer *self, bool skip)
 		}
 	}
 
-	const TSRange *current_range =
+	const t_parse_range *current_range =
 		&self->included_ranges[self->current_included_range_index];
 	while (self->current_position.bytes >= current_range->end_byte ||
 		   current_range->end_byte == current_range->start_byte)
@@ -1041,7 +1045,7 @@ static void ts_lexer__do_advance(Lexer *self, bool skip)
 		if (self->current_included_range_index < self->included_range_count)
 		{
 			current_range++;
-			self->current_position = (Length){
+			self->current_position = (t_length){
 				current_range->start_byte,
 				current_range->start_point,
 			};
@@ -1076,9 +1080,9 @@ static void ts_lexer__do_advance(Lexer *self, bool skip)
 
 // Advance to the next character in the source code, retrieving a new
 // chunk of source code if needed.
-static void ts_lexer__advance(TSLexer *_self, bool skip)
+static void ts_lexer__advance(t_lexer_data *_self, bool skip)
 {
-	Lexer *self = (Lexer *)_self;
+	t_lexer *self = (t_lexer *)_self;
 	if (!self->chunk)
 		return;
 
@@ -1094,21 +1098,21 @@ static void ts_lexer__advance(TSLexer *_self, bool skip)
 
 // Mark that a token match has completed. This can be called multiple
 // times if a longer match is found later.
-static void ts_lexer__mark_end(TSLexer *_self)
+static void ts_lexer__mark_end(t_lexer_data *_self)
 {
-	Lexer *self = (Lexer *)_self;
+	t_lexer *self = (t_lexer *)_self;
 	if (!ts_lexer__eof(&self->data))
 	{
 		// If the lexer is right at the beginning of included range,
 		// then the token should be considered to end at the *end* of the
 		// previous included range, rather than here.
-		TSRange *current_included_range =
+		t_parse_range *current_included_range =
 			&self->included_ranges[self->current_included_range_index];
 		if (self->current_included_range_index > 0 &&
 			self->current_position.bytes == current_included_range->start_byte)
 		{
-			TSRange *previous_included_range = current_included_range - 1;
-			self->token_end_position = (Length){
+			t_parse_range *previous_included_range = current_included_range - 1;
+			self->token_end_position = (t_length){
 				previous_included_range->end_byte,
 				previous_included_range->end_point,
 			};
@@ -1118,9 +1122,9 @@ static void ts_lexer__mark_end(TSLexer *_self)
 	self->token_end_position = self->current_position;
 }
 
-static uint32_t ts_lexer__get_column(TSLexer *_self)
+static uint32_t ts_lexer__get_column(t_lexer_data *_self)
 {
-	Lexer *self = (Lexer *)_self;
+	t_lexer *self = (t_lexer *)_self;
 
 	uint32_t goal_byte = self->current_position.bytes;
 
@@ -1152,12 +1156,12 @@ static uint32_t ts_lexer__get_column(TSLexer *_self)
 // Is the lexer at a boundary between two disjoint included ranges of
 // source code? This is exposed as an API because some languages' external
 // scanners need to perform custom actions at these boundaries.
-static bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
+static bool ts_lexer__is_at_included_range_start(const t_lexer_data *_self)
 {
-	const Lexer *self = (const Lexer *)_self;
+	const t_lexer *self = (const t_lexer *)_self;
 	if (self->current_included_range_index < self->included_range_count)
 	{
-		TSRange *current_range =
+		t_parse_range *current_range =
 			&self->included_ranges[self->current_included_range_index];
 		return self->current_position.bytes == current_range->start_byte;
 	}
@@ -1167,9 +1171,9 @@ static bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
 	}
 }
 
-void ts_lexer_init(Lexer *self)
+void ts_lexer_init(t_lexer *self)
 {
-	*self = (Lexer){
+	*self = (t_lexer){
 		.data =
 			{
 				// The lexer's methods are stored as struct fields so that
@@ -1198,12 +1202,12 @@ void ts_lexer_init(Lexer *self)
 	ts_lexer_set_included_ranges(self, NULL, 0);
 }
 
-void ts_lexer_delete(Lexer *self)
+void ts_lexer_delete(t_lexer *self)
 {
 	free(self->included_ranges);
 }
 
-void ts_lexer_set_input(Lexer *self, TSInput input)
+void ts_lexer_set_input(t_lexer *self, t_parse_input input)
 {
 	self->input = input;
 	ts_lexer__clear_chunk(self);
@@ -1212,7 +1216,7 @@ void ts_lexer_set_input(Lexer *self, TSInput input)
 
 // Move the lexer to the given position. This doesn't do any work
 // if the parser is already at the given position.
-void ts_lexer_reset(Lexer *self, Length position)
+void ts_lexer_reset(t_lexer *self, t_length position)
 {
 	if (position.bytes != self->current_position.bytes)
 	{
@@ -1220,7 +1224,7 @@ void ts_lexer_reset(Lexer *self, Length position)
 	}
 }
 
-void ts_lexer_start(Lexer *self)
+void ts_lexer_start(t_lexer *self)
 {
 	self->token_start_position = self->current_position;
 	self->token_end_position = LENGTH_UNDEFINED;
@@ -1238,7 +1242,7 @@ void ts_lexer_start(Lexer *self)
 	}
 }
 
-void ts_lexer_finish(Lexer *self, uint32_t *lookahead_end_byte)
+void ts_lexer_finish(t_lexer *self, uint32_t *lookahead_end_byte)
 {
 	if (length_is_undefined(self->token_end_position))
 	{
@@ -1271,7 +1275,7 @@ void ts_lexer_finish(Lexer *self, uint32_t *lookahead_end_byte)
 	}
 }
 
-void ts_lexer_advance_to_end(Lexer *self)
+void ts_lexer_advance_to_end(t_lexer *self)
 {
 	while (self->chunk)
 	{
@@ -1279,12 +1283,12 @@ void ts_lexer_advance_to_end(Lexer *self)
 	}
 }
 
-void ts_lexer_mark_end(Lexer *self)
+void ts_lexer_mark_end(t_lexer *self)
 {
 	ts_lexer__mark_end(&self->data);
 }
 
-bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
+bool ts_lexer_set_included_ranges(t_lexer *self, const t_parse_range *ranges,
 								  uint32_t count)
 {
 	if (count == 0 || !ranges)
@@ -1297,7 +1301,7 @@ bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
 		uint32_t previous_byte = 0;
 		for (unsigned i = 0; i < count; i++)
 		{
-			const TSRange *range = &ranges[i];
+			const t_parse_range *range = &ranges[i];
 			if (range->start_byte < previous_byte ||
 				range->end_byte < range->start_byte)
 				return false;
@@ -1305,7 +1309,7 @@ bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
 		}
 	}
 
-	size_t size = count * sizeof(TSRange);
+	size_t size = count * sizeof(t_parse_range);
 	self->included_ranges = realloc(self->included_ranges, size);
 	memcpy(self->included_ranges, ranges, size);
 	self->included_range_count = count;
@@ -1313,7 +1317,7 @@ bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges,
 	return true;
 }
 
-TSRange *ts_lexer_included_ranges(const Lexer *self, uint32_t *count)
+t_parse_range *ts_lexer_included_ranges(const t_lexer *self, uint32_t *count)
 {
 	*count = self->included_range_count;
 	return self->included_ranges;
@@ -1321,68 +1325,69 @@ TSRange *ts_lexer_included_ranges(const Lexer *self, uint32_t *count)
 
 #undef LOG
 
-typedef struct
+typedef struct s_node_child_iterator
 {
-	Subtree			parent;
-	const TSTree   *tree;
-	Length			position;
-	uint32_t		child_index;
-	uint32_t		structural_child_index;
-	const TSSymbol *alias_sequence;
-} NodeChildIterator;
+	t_subtree			parent;
+	const t_first_tree *tree;
+	t_length			position;
+	uint32_t			child_index;
+	uint32_t			structural_child_index;
+	const t_symbol	   *alias_sequence;
+} t_node_child_iterator;
 
-// TSNode - constructors
+// t_parse_node - constructors
 
-TSNode ts_node_new(const TSTree *tree, const Subtree *subtree, Length position,
-				   TSSymbol alias)
+t_parse_node ts_node_new(const t_first_tree *tree, const t_subtree *subtree,
+						 t_length position, t_symbol alias)
 {
-	return (TSNode){
+	return (t_parse_node){
 		{position.bytes, position.extent.row, position.extent.column, alias},
 		subtree,
 		tree,
 	};
 }
 
-static inline TSNode ts_node__null(void)
+static inline t_parse_node ts_node__null(void)
 {
 	return ts_node_new(NULL, NULL, length_zero(), 0);
 }
 
-// TSNode - accessors
+// t_parse_node - accessors
 
-uint32_t ts_node_start_byte(TSNode self)
+uint32_t ts_node_start_byte(t_parse_node self)
 {
 	return self.context[0];
 }
 
-TSPoint ts_node_start_point(TSNode self)
+t_point ts_node_start_point(t_parse_node self)
 {
-	return (TSPoint){self.context[1], self.context[2]};
+	return (t_point){self.context[1], self.context[2]};
 }
 
-static inline uint32_t ts_node__alias(const TSNode *self)
+static inline uint32_t ts_node__alias(const t_parse_node *self)
 {
 	return self->context[3];
 }
 
-static inline Subtree ts_node__subtree(TSNode self)
+static inline t_subtree ts_node__subtree(t_parse_node self)
 {
-	return *(const Subtree *)self.id;
+	return *(const t_subtree *)self.id;
 }
 
-// NodeChildIterator
+// t_node_child_iterator
 
-static inline NodeChildIterator ts_node_iterate_children(const TSNode *node)
+static inline t_node_child_iterator ts_node_iterate_children(
+	const t_parse_node *node)
 {
-	Subtree subtree = ts_node__subtree(*node);
+	t_subtree subtree = ts_node__subtree(*node);
 	if (ts_subtree_child_count(subtree) == 0)
 	{
-		return (NodeChildIterator){
+		return (t_node_child_iterator){
 			NULL_SUBTREE, node->tree, length_zero(), 0, 0, NULL};
 	}
-	const TSSymbol *alias_sequence = ts_language_alias_sequence(
+	const t_symbol *alias_sequence = ts_language_alias_sequence(
 		node->tree->language, subtree.ptr->production_id);
-	return (NodeChildIterator){
+	return (t_node_child_iterator){
 		.tree = node->tree,
 		.parent = subtree,
 		.position = {ts_node_start_byte(*node), ts_node_start_point(*node)},
@@ -1392,19 +1397,19 @@ static inline NodeChildIterator ts_node_iterate_children(const TSNode *node)
 	};
 }
 
-static inline bool ts_node_child_iterator_done(NodeChildIterator *self)
+static inline bool ts_node_child_iterator_done(t_node_child_iterator *self)
 {
 	return self->child_index == self->parent.ptr->child_count;
 }
 
-static inline bool ts_node_child_iterator_next(NodeChildIterator *self,
-											   TSNode			 *result)
+static inline bool ts_node_child_iterator_next(t_node_child_iterator *self,
+											   t_parse_node		 *result)
 {
 	if (!self->parent.ptr || ts_node_child_iterator_done(self))
 		return false;
-	const Subtree *child =
+	const t_subtree *child =
 		&ts_subtree_children(self->parent)[self->child_index];
-	TSSymbol alias_symbol = 0;
+	t_symbol alias_symbol = 0;
 	if (!ts_subtree_extra(*child))
 	{
 		if (self->alias_sequence)
@@ -1423,18 +1428,19 @@ static inline bool ts_node_child_iterator_next(NodeChildIterator *self,
 	return true;
 }
 
-// TSNode - private
+// t_parse_node - private
 
-static inline bool ts_node__is_relevant(TSNode self, bool include_anonymous)
+static inline bool ts_node__is_relevant(t_parse_node self,
+										bool		 include_anonymous)
 {
-	Subtree tree = ts_node__subtree(self);
+	t_subtree tree = ts_node__subtree(self);
 	if (include_anonymous)
 	{
 		return ts_subtree_visible(tree) || ts_node__alias(&self);
 	}
 	else
 	{
-		TSSymbol alias = ts_node__alias(&self);
+		t_symbol alias = ts_node__alias(&self);
 		if (alias)
 		{
 			return ts_language_symbol_metadata(self.tree->language, alias)
@@ -1447,10 +1453,10 @@ static inline bool ts_node__is_relevant(TSNode self, bool include_anonymous)
 	}
 }
 
-static inline uint32_t ts_node__relevant_child_count(TSNode self,
-													 bool	include_anonymous)
+static inline uint32_t ts_node__relevant_child_count(t_parse_node self,
+													 bool include_anonymous)
 {
-	Subtree tree = ts_node__subtree(self);
+	t_subtree tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)
 	{
 		if (include_anonymous)
@@ -1468,19 +1474,20 @@ static inline uint32_t ts_node__relevant_child_count(TSNode self,
 	}
 }
 
-static inline TSNode ts_node__child(TSNode self, uint32_t child_index,
-									bool include_anonymous)
+static inline t_parse_node ts_node__child(t_parse_node self,
+										  uint32_t	   child_index,
+										  bool		   include_anonymous)
 {
-	TSNode result = self;
-	bool   did_descend = true;
+	t_parse_node result = self;
+	bool		 did_descend = true;
 
 	while (did_descend)
 	{
 		did_descend = false;
 
-		TSNode			  child;
+		t_parse_node	  child;
 		uint32_t		  index = 0;
-		NodeChildIterator iterator = ts_node_iterate_children(&result);
+		t_node_child_iterator iterator = ts_node_iterate_children(&result);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			if (ts_node__is_relevant(child, include_anonymous))
@@ -1511,12 +1518,12 @@ static inline TSNode ts_node__child(TSNode self, uint32_t child_index,
 	return ts_node__null();
 }
 
-static bool ts_subtree_has_trailing_empty_descendant(Subtree self,
-													 Subtree other)
+static bool ts_subtree_has_trailing_empty_descendant(t_subtree self,
+													 t_subtree other)
 {
 	for (unsigned i = ts_subtree_child_count(self) - 1; i + 1 > 0; i--)
 	{
-		Subtree child = ts_subtree_children(self)[i];
+		t_subtree child = ts_subtree_children(self)[i];
 		if (ts_subtree_total_bytes(child) > 0)
 			break;
 		if (child.ptr == other.ptr ||
@@ -1528,24 +1535,25 @@ static bool ts_subtree_has_trailing_empty_descendant(Subtree self,
 	return false;
 }
 
-static inline TSNode ts_node__prev_sibling(TSNode self, bool include_anonymous)
+static inline t_parse_node ts_node__prev_sibling(t_parse_node self,
+												 bool		  include_anonymous)
 {
-	Subtree	 self_subtree = ts_node__subtree(self);
-	bool	 self_is_empty = ts_subtree_total_bytes(self_subtree) == 0;
-	uint32_t target_end_byte = ts_node_end_byte(self);
+	t_subtree self_subtree = ts_node__subtree(self);
+	bool	  self_is_empty = ts_subtree_total_bytes(self_subtree) == 0;
+	uint32_t  target_end_byte = ts_node_end_byte(self);
 
-	TSNode node = ts_node_parent(self);
-	TSNode earlier_node = ts_node__null();
-	bool   earlier_node_is_relevant = false;
+	t_parse_node node = ts_node_parent(self);
+	t_parse_node earlier_node = ts_node__null();
+	bool		 earlier_node_is_relevant = false;
 
 	while (!ts_node_is_null(node))
 	{
-		TSNode earlier_child = ts_node__null();
-		bool   earlier_child_is_relevant = false;
-		bool   found_child_containing_target = false;
+		t_parse_node earlier_child = ts_node__null();
+		bool		 earlier_child_is_relevant = false;
+		bool		 found_child_containing_target = false;
 
-		TSNode			  child;
-		NodeChildIterator iterator = ts_node_iterate_children(&node);
+		t_parse_node	  child;
+		t_node_child_iterator iterator = ts_node_iterate_children(&node);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			if (child.id == self.id)
@@ -1609,22 +1617,23 @@ static inline TSNode ts_node__prev_sibling(TSNode self, bool include_anonymous)
 	return ts_node__null();
 }
 
-static inline TSNode ts_node__next_sibling(TSNode self, bool include_anonymous)
+static inline t_parse_node ts_node__next_sibling(t_parse_node self,
+												 bool		  include_anonymous)
 {
 	uint32_t target_end_byte = ts_node_end_byte(self);
 
-	TSNode node = ts_node_parent(self);
-	TSNode later_node = ts_node__null();
-	bool   later_node_is_relevant = false;
+	t_parse_node node = ts_node_parent(self);
+	t_parse_node later_node = ts_node__null();
+	bool		 later_node_is_relevant = false;
 
 	while (!ts_node_is_null(node))
 	{
-		TSNode later_child = ts_node__null();
-		bool   later_child_is_relevant = false;
-		TSNode child_containing_target = ts_node__null();
+		t_parse_node later_child = ts_node__null();
+		bool		 later_child_is_relevant = false;
+		t_parse_node child_containing_target = ts_node__null();
 
-		TSNode			  child;
-		NodeChildIterator iterator = ts_node_iterate_children(&node);
+		t_parse_node	  child;
+		t_node_child_iterator iterator = ts_node_iterate_children(&node);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			if (iterator.position.bytes < target_end_byte)
@@ -1681,18 +1690,19 @@ static inline TSNode ts_node__next_sibling(TSNode self, bool include_anonymous)
 	return ts_node__null();
 }
 
-static inline TSNode ts_node__first_child_for_byte(TSNode self, uint32_t goal,
-												   bool include_anonymous)
+static inline t_parse_node ts_node__first_child_for_byte(t_parse_node self,
+														 uint32_t	  goal,
+														 bool include_anonymous)
 {
-	TSNode node = self;
-	bool   did_descend = true;
+	t_parse_node node = self;
+	bool		 did_descend = true;
 
 	while (did_descend)
 	{
 		did_descend = false;
 
-		TSNode			  child;
-		NodeChildIterator iterator = ts_node_iterate_children(&node);
+		t_parse_node	  child;
+		t_node_child_iterator iterator = ts_node_iterate_children(&node);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			if (ts_node_end_byte(child) > goal)
@@ -1714,21 +1724,20 @@ static inline TSNode ts_node__first_child_for_byte(TSNode self, uint32_t goal,
 	return ts_node__null();
 }
 
-static inline TSNode ts_node__descendant_for_byte_range(TSNode	 self,
-														uint32_t range_start,
-														uint32_t range_end,
-														bool include_anonymous)
+static inline t_parse_node ts_node__descendant_for_byte_range(
+	t_parse_node self, uint32_t range_start, uint32_t range_end,
+	bool include_anonymous)
 {
-	TSNode node = self;
-	TSNode last_visible_node = self;
+	t_parse_node node = self;
+	t_parse_node last_visible_node = self;
 
 	bool did_descend = true;
 	while (did_descend)
 	{
 		did_descend = false;
 
-		TSNode			  child;
-		NodeChildIterator iterator = ts_node_iterate_children(&node);
+		t_parse_node	  child;
+		t_node_child_iterator iterator = ts_node_iterate_children(&node);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			uint32_t node_end = iterator.position.bytes;
@@ -1758,24 +1767,23 @@ static inline TSNode ts_node__descendant_for_byte_range(TSNode	 self,
 	return last_visible_node;
 }
 
-static inline TSNode ts_node__descendant_for_point_range(TSNode	 self,
-														 TSPoint range_start,
-														 TSPoint range_end,
-														 bool include_anonymous)
+static inline t_parse_node ts_node__descendant_for_point_range(
+	t_parse_node self, t_point range_start, t_point range_end,
+	bool include_anonymous)
 {
-	TSNode node = self;
-	TSNode last_visible_node = self;
+	t_parse_node node = self;
+	t_parse_node last_visible_node = self;
 
 	bool did_descend = true;
 	while (did_descend)
 	{
 		did_descend = false;
 
-		TSNode			  child;
-		NodeChildIterator iterator = ts_node_iterate_children(&node);
+		t_parse_node	  child;
+		t_node_child_iterator iterator = ts_node_iterate_children(&node);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
-			TSPoint node_end = iterator.position.extent;
+			t_point node_end = iterator.position.extent;
 
 			// The end of this node must extend far enough forward to touch
 			// the end of the range and exceed the start of the range.
@@ -1802,117 +1810,117 @@ static inline TSNode ts_node__descendant_for_point_range(TSNode	 self,
 	return last_visible_node;
 }
 
-// TSNode - public
+// t_parse_node - public
 
-uint32_t ts_node_end_byte(TSNode self)
+uint32_t ts_node_end_byte(t_parse_node self)
 {
 	return ts_node_start_byte(self) +
 		   ts_subtree_size(ts_node__subtree(self)).bytes;
 }
 
-TSPoint ts_node_end_point(TSNode self)
+t_point ts_node_end_point(t_parse_node self)
 {
 	return point_add(ts_node_start_point(self),
 					 ts_subtree_size(ts_node__subtree(self)).extent);
 }
 
-TSSymbol ts_node_symbol(TSNode self)
+t_symbol ts_node_symbol(t_parse_node self)
 {
-	TSSymbol symbol = ts_node__alias(&self);
+	t_symbol symbol = ts_node__alias(&self);
 	if (!symbol)
 		symbol = ts_subtree_symbol(ts_node__subtree(self));
 	return ts_language_public_symbol(self.tree->language, symbol);
 }
 
-const char *ts_node_type(TSNode self)
+const char *ts_node_type(t_parse_node self)
 {
-	TSSymbol symbol = ts_node__alias(&self);
+	t_symbol symbol = ts_node__alias(&self);
 	if (!symbol)
 		symbol = ts_subtree_symbol(ts_node__subtree(self));
 	return ts_language_symbol_name(self.tree->language, symbol);
 }
 
-const TSLanguage *ts_node_language(TSNode self)
+const t_language *ts_node_language(t_parse_node self)
 {
 	return self.tree->language;
 }
 
-TSSymbol ts_node_grammar_symbol(TSNode self)
+t_symbol ts_node_grammar_symbol(t_parse_node self)
 {
 	return ts_subtree_symbol(ts_node__subtree(self));
 }
 
-const char *ts_node_grammar_type(TSNode self)
+const char *ts_node_grammar_type(t_parse_node self)
 {
-	TSSymbol symbol = ts_subtree_symbol(ts_node__subtree(self));
+	t_symbol symbol = ts_subtree_symbol(ts_node__subtree(self));
 	return ts_language_symbol_name(self.tree->language, symbol);
 }
 
-char *ts_node_string(TSNode self)
+char *ts_node_string(t_parse_node self)
 {
-	TSSymbol alias_symbol = ts_node__alias(&self);
+	t_symbol alias_symbol = ts_node__alias(&self);
 	return ts_subtree_string(
 		ts_node__subtree(self), alias_symbol,
 		ts_language_symbol_metadata(self.tree->language, alias_symbol).visible,
 		self.tree->language, false);
 }
 
-bool ts_node_eq(TSNode self, TSNode other)
+bool ts_node_eq(t_parse_node self, t_parse_node other)
 {
 	return self.tree == other.tree && self.id == other.id;
 }
 
-bool ts_node_is_null(TSNode self)
+bool ts_node_is_null(t_parse_node self)
 {
 	return self.id == 0;
 }
 
-bool ts_node_is_extra(TSNode self)
+bool ts_node_is_extra(t_parse_node self)
 {
 	return ts_subtree_extra(ts_node__subtree(self));
 }
 
-bool ts_node_is_named(TSNode self)
+bool ts_node_is_named(t_parse_node self)
 {
-	TSSymbol alias = ts_node__alias(&self);
+	t_symbol alias = ts_node__alias(&self);
 	return alias ? ts_language_symbol_metadata(self.tree->language, alias).named
 				 : ts_subtree_named(ts_node__subtree(self));
 }
 
-bool ts_node_is_missing(TSNode self)
+bool ts_node_is_missing(t_parse_node self)
 {
 	return ts_subtree_missing(ts_node__subtree(self));
 }
 
-bool ts_node_has_changes(TSNode self)
+bool ts_node_has_changes(t_parse_node self)
 {
 	return ts_subtree_has_changes(ts_node__subtree(self));
 }
 
-bool ts_node_has_error(TSNode self)
+bool ts_node_has_error(t_parse_node self)
 {
 	return ts_subtree_error_cost(ts_node__subtree(self)) > 0;
 }
 
-bool ts_node_is_error(TSNode self)
+bool ts_node_is_error(t_parse_node self)
 {
-	TSSymbol symbol = ts_node_symbol(self);
+	t_symbol symbol = ts_node_symbol(self);
 	return symbol == ts_builtin_sym_error;
 }
 
-uint32_t ts_node_descendant_count(TSNode self)
+uint32_t ts_node_descendant_count(t_parse_node self)
 {
 	return ts_subtree_visible_descendant_count(ts_node__subtree(self)) + 1;
 }
 
-TSStateId ts_node_parse_state(TSNode self)
+t_state_id ts_node_parse_state(t_parse_node self)
 {
 	return ts_subtree_parse_state(ts_node__subtree(self));
 }
 
-TSStateId ts_node_next_parse_state(TSNode self)
+t_state_id ts_node_next_parse_state(t_parse_node self)
 {
-	const TSLanguage *language = self.tree->language;
+	const t_language *language = self.tree->language;
 	uint16_t		  state = ts_node_parse_state(self);
 	if (state == TS_TREE_STATE_NONE)
 	{
@@ -1922,15 +1930,16 @@ TSStateId ts_node_next_parse_state(TSNode self)
 	return ts_language_next_state(language, state, symbol);
 }
 
-TSNode ts_node_parent(TSNode self)
+t_parse_node ts_node_parent(t_parse_node self)
 {
-	TSNode node = ts_tree_root_node(self.tree);
+	t_parse_node node = ts_tree_root_node(self.tree);
 	if (node.id == self.id)
 		return ts_node__null();
 
 	while (true)
 	{
-		TSNode next_node = ts_node_child_containing_descendant(node, self);
+		t_parse_node next_node =
+			ts_node_child_containing_descendant(node, self);
 		if (ts_node_is_null(next_node))
 			break;
 		node = next_node;
@@ -1939,14 +1948,15 @@ TSNode ts_node_parent(TSNode self)
 	return node;
 }
 
-TSNode ts_node_child_containing_descendant(TSNode self, TSNode subnode)
+t_parse_node ts_node_child_containing_descendant(t_parse_node self,
+												 t_parse_node subnode)
 {
 	uint32_t start_byte = ts_node_start_byte(subnode);
 	uint32_t end_byte = ts_node_end_byte(subnode);
 
 	do
 	{
-		NodeChildIterator iter = ts_node_iterate_children(&self);
+		t_node_child_iterator iter = ts_node_iterate_children(&self);
 		do
 		{
 			if (!ts_node_child_iterator_next(&iter, &self) ||
@@ -1961,23 +1971,23 @@ TSNode ts_node_child_containing_descendant(TSNode self, TSNode subnode)
 	return self;
 }
 
-TSNode ts_node_child(TSNode self, uint32_t child_index)
+t_parse_node ts_node_child(t_parse_node self, uint32_t child_index)
 {
 	return ts_node__child(self, child_index, true);
 }
 
-TSNode ts_node_named_child(TSNode self, uint32_t child_index)
+t_parse_node ts_node_named_child(t_parse_node self, uint32_t child_index)
 {
 	return ts_node__child(self, child_index, false);
 }
 
-TSNode ts_node_child_by_field_id(TSNode self, TSFieldId field_id)
+t_parse_node ts_node_child_by_field_id(t_parse_node self, t_field_id field_id)
 {
 recur:
 	if (!field_id || ts_node_child_count(self) == 0)
 		return ts_node__null();
 
-	const TSFieldMapEntry *field_map, *field_map_end;
+	const t_field_map_entry *field_map, *field_map_end;
 	ts_language_field_map(self.tree->language,
 						  ts_node__subtree(self).ptr->production_id, &field_map,
 						  &field_map_end);
@@ -1999,8 +2009,8 @@ recur:
 			return ts_node__null();
 	}
 
-	TSNode			  child;
-	NodeChildIterator iterator = ts_node_iterate_children(&self);
+	t_parse_node	  child;
+	t_node_child_iterator iterator = ts_node_iterate_children(&self);
 	while (ts_node_child_iterator_next(&iterator, &child))
 	{
 		if (!ts_subtree_extra(ts_node__subtree(child)))
@@ -2025,7 +2035,8 @@ recur:
 				// the field, continue searching subsequent children.
 				else
 				{
-					TSNode result = ts_node_child_by_field_id(child, field_id);
+					t_parse_node result =
+						ts_node_child_by_field_id(child, field_id);
 					if (result.id)
 						return result;
 					field_map++;
@@ -2060,9 +2071,9 @@ recur:
 }
 
 static inline const char *ts_node__field_name_from_language(
-	TSNode self, uint32_t structural_child_index)
+	t_parse_node self, uint32_t structural_child_index)
 {
-	const TSFieldMapEntry *field_map, *field_map_end;
+	const t_field_map_entry *field_map, *field_map_end;
 	ts_language_field_map(self.tree->language,
 						  ts_node__subtree(self).ptr->production_id, &field_map,
 						  &field_map_end);
@@ -2077,19 +2088,20 @@ static inline const char *ts_node__field_name_from_language(
 	return NULL;
 }
 
-const char *ts_node_field_name_for_child(TSNode self, uint32_t child_index)
+const char *ts_node_field_name_for_child(t_parse_node self,
+										 uint32_t	  child_index)
 {
-	TSNode		result = self;
-	bool		did_descend = true;
-	const char *inherited_field_name = NULL;
+	t_parse_node result = self;
+	bool		 did_descend = true;
+	const char	*inherited_field_name = NULL;
 
 	while (did_descend)
 	{
 		did_descend = false;
 
-		TSNode			  child;
+		t_parse_node	  child;
 		uint32_t		  index = 0;
-		NodeChildIterator iterator = ts_node_iterate_children(&result);
+		t_node_child_iterator iterator = ts_node_iterate_children(&result);
 		while (ts_node_child_iterator_next(&iterator, &child))
 		{
 			if (ts_node__is_relevant(child, true))
@@ -2133,17 +2145,17 @@ const char *ts_node_field_name_for_child(TSNode self, uint32_t child_index)
 	return NULL;
 }
 
-TSNode ts_node_child_by_field_name(TSNode self, const char *name,
-								   uint32_t name_length)
+t_parse_node ts_node_child_by_field_name(t_parse_node self, const char *name,
+										 uint32_t name_length)
 {
-	TSFieldId field_id =
+	t_field_id field_id =
 		ts_language_field_id_for_name(self.tree->language, name, name_length);
 	return ts_node_child_by_field_id(self, field_id);
 }
 
-uint32_t ts_node_child_count(TSNode self)
+uint32_t ts_node_child_count(t_parse_node self)
 {
-	Subtree tree = ts_node__subtree(self);
+	t_subtree tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)
 	{
 		return tree.ptr->visible_child_count;
@@ -2154,9 +2166,9 @@ uint32_t ts_node_child_count(TSNode self)
 	}
 }
 
-uint32_t ts_node_named_child_count(TSNode self)
+uint32_t ts_node_named_child_count(t_parse_node self)
 {
-	Subtree tree = ts_node__subtree(self);
+	t_subtree tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)
 	{
 		return tree.ptr->named_child_count;
@@ -2167,64 +2179,67 @@ uint32_t ts_node_named_child_count(TSNode self)
 	}
 }
 
-TSNode ts_node_next_sibling(TSNode self)
+t_parse_node ts_node_next_sibling(t_parse_node self)
 {
 	return ts_node__next_sibling(self, true);
 }
 
-TSNode ts_node_next_named_sibling(TSNode self)
+t_parse_node ts_node_next_named_sibling(t_parse_node self)
 {
 	return ts_node__next_sibling(self, false);
 }
 
-TSNode ts_node_prev_sibling(TSNode self)
+t_parse_node ts_node_prev_sibling(t_parse_node self)
 {
 	return ts_node__prev_sibling(self, true);
 }
 
-TSNode ts_node_prev_named_sibling(TSNode self)
+t_parse_node ts_node_prev_named_sibling(t_parse_node self)
 {
 	return ts_node__prev_sibling(self, false);
 }
 
-TSNode ts_node_first_child_for_byte(TSNode self, uint32_t byte)
+t_parse_node ts_node_first_child_for_byte(t_parse_node self, uint32_t byte)
 {
 	return ts_node__first_child_for_byte(self, byte, true);
 }
 
-TSNode ts_node_first_named_child_for_byte(TSNode self, uint32_t byte)
+t_parse_node ts_node_first_named_child_for_byte(t_parse_node self,
+												uint32_t	 byte)
 {
 	return ts_node__first_child_for_byte(self, byte, false);
 }
 
-TSNode ts_node_descendant_for_byte_range(TSNode self, uint32_t start,
-										 uint32_t end)
+t_parse_node ts_node_descendant_for_byte_range(t_parse_node self,
+											   uint32_t start, uint32_t end)
 {
 	return ts_node__descendant_for_byte_range(self, start, end, true);
 }
 
-TSNode ts_node_named_descendant_for_byte_range(TSNode self, uint32_t start,
-											   uint32_t end)
+t_parse_node ts_node_named_descendant_for_byte_range(t_parse_node self,
+													 uint32_t	  start,
+													 uint32_t	  end)
 {
 	return ts_node__descendant_for_byte_range(self, start, end, false);
 }
 
-TSNode ts_node_descendant_for_point_range(TSNode self, TSPoint start,
-										  TSPoint end)
+t_parse_node ts_node_descendant_for_point_range(t_parse_node self,
+												t_point start, t_point end)
 {
 	return ts_node__descendant_for_point_range(self, start, end, true);
 }
 
-TSNode ts_node_named_descendant_for_point_range(TSNode self, TSPoint start,
-												TSPoint end)
+t_parse_node ts_node_named_descendant_for_point_range(t_parse_node self,
+													  t_point	   start,
+													  t_point	   end)
 {
 	return ts_node__descendant_for_point_range(self, start, end, false);
 }
 
-void ts_node_edit(TSNode *self, const TSInputEdit *edit)
+void ts_node_edit(t_parse_node *self, const t_input_edit *edit)
 {
 	uint32_t start_byte = ts_node_start_byte(*self);
-	TSPoint	 start_point = ts_node_start_point(*self);
+	t_point	 start_point = ts_node_start_point(*self);
 
 	if (start_byte >= edit->old_end_byte)
 	{
@@ -2253,68 +2268,68 @@ static const unsigned MAX_SUMMARY_DEPTH = 16;
 static const unsigned MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
 static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
 
-typedef struct
+typedef struct s_token_cache
 {
-	Subtree	 token;
-	Subtree	 last_external_token;
-	uint32_t byte_index;
-} TokenCache;
+	t_subtree token;
+	t_subtree last_external_token;
+	uint32_t  byte_index;
+} t_token_cache;
 
-struct TSParser
+struct s_first_parser
 {
-	Lexer				   lexer;
-	Stack				  *stack;
-	SubtreePool			   tree_pool;
-	const TSLanguage	  *language;
-	ReduceActionSet		   reduce_actions;
-	Subtree				   finished_tree;
-	SubtreeArray		   trailing_extras;
-	SubtreeArray		   trailing_extras2;
-	SubtreeArray		   scratch_trees;
-	TokenCache			   token_cache;
-	ReusableNode		   reusable_node;
+	t_lexer				   lexer;
+	t_stack				  *stack;
+	t_subtree_pool		   tree_pool;
+	const t_language	  *language;
+	t_reduce_action_set	   reduce_actions;
+	t_subtree			   finished_tree;
+	t_subtree_array		   trailing_extras;
+	t_subtree_array		   trailing_extras2;
+	t_subtree_array		   scratch_trees;
+	t_token_cache			   token_cache;
+	t_reusable_node		   reusable_node;
 	void				  *external_scanner_payload;
-	TSClock				   end_clock;
-	TSDuration			   timeout_duration;
+	t_parser_clock		   end_clock;
+	t_parser_duration	   timeout_duration;
 	unsigned			   accept_count;
 	unsigned			   operation_count;
 	const volatile size_t *cancellation_flag;
-	Subtree				   old_tree;
-	TSRangeArray		   included_range_differences;
+	t_subtree			   old_tree;
+	t_range_array		   included_range_differences;
 	unsigned			   included_range_difference_index;
 	bool				   has_scanner_error;
 };
 
-typedef struct
+typedef struct s_error_status
 {
 	unsigned cost;
 	unsigned node_count;
 	int		 dynamic_precedence;
 	bool	 is_in_error;
-} ErrorStatus;
+} t_error_status;
 
-typedef enum
+typedef enum e_error_comparaison
 {
 	ErrorComparisonTakeLeft,
 	ErrorComparisonPreferLeft,
 	ErrorComparisonNone,
 	ErrorComparisonPreferRight,
 	ErrorComparisonTakeRight,
-} ErrorComparison;
+} t_error_comparaison;
 
-typedef struct
+typedef struct s_string_input
 {
 	const char *string;
 	uint32_t	length;
-} TSStringInput;
+} t_string_input;
 
 // StringInput
 
 static const char *ts_string_input_read(void *_self, uint32_t byte,
-										TSPoint point, uint32_t *length)
+										t_point point, uint32_t *length)
 {
 	(void)point;
-	TSStringInput *self = (TSStringInput *)_self;
+	t_string_input *self = (t_string_input *)_self;
 	if (byte >= self->length)
 	{
 		*length = 0;
@@ -2329,15 +2344,15 @@ static const char *ts_string_input_read(void *_self, uint32_t byte,
 
 // Parser - Private
 
-static bool ts_parser__breakdown_top_of_stack(TSParser	  *self,
-											  StackVersion version)
+static bool ts_parser__breakdown_top_of_stack(t_first_parser *self,
+											  t_stack_version version)
 {
 	bool did_break_down = false;
 	bool pending = false;
 
 	do
 	{
-		StackSliceArray pop = ts_stack_pop_pending(self->stack, version);
+		t_stack_slice_array pop = ts_stack_pop_pending(self->stack, version);
 		if (!pop.size)
 			break;
 
@@ -2345,13 +2360,13 @@ static bool ts_parser__breakdown_top_of_stack(TSParser	  *self,
 		pending = false;
 		for (uint32_t i = 0; i < pop.size; i++)
 		{
-			StackSlice slice = pop.contents[i];
-			TSStateId  state = ts_stack_state(self->stack, slice.version);
-			Subtree	   parent = *array_front(&slice.subtrees);
+			t_stack_slice slice = pop.contents[i];
+			t_state_id	  state = ts_stack_state(self->stack, slice.version);
+			t_subtree	  parent = *array_front(&slice.subtrees);
 
 			for (uint32_t j = 0, n = ts_subtree_child_count(parent); j < n; j++)
 			{
-				Subtree child = ts_subtree_children(parent)[j];
+				t_subtree child = ts_subtree_children(parent)[j];
 				pending = ts_subtree_child_count(child) > 0;
 
 				if (ts_subtree_is_error(child))
@@ -2371,7 +2386,7 @@ static bool ts_parser__breakdown_top_of_stack(TSParser	  *self,
 
 			for (uint32_t j = 1; j < slice.subtrees.size; j++)
 			{
-				Subtree tree = slice.subtrees.contents[j];
+				t_subtree tree = slice.subtrees.contents[j];
 				ts_stack_push(self->stack, slice.version, tree, false, state);
 			}
 
@@ -2383,12 +2398,13 @@ static bool ts_parser__breakdown_top_of_stack(TSParser	  *self,
 	return did_break_down;
 }
 
-static void ts_parser__breakdown_lookahead(TSParser *self, Subtree *lookahead,
-										   TSStateId	 state,
-										   ReusableNode *reusable_node)
+static void ts_parser__breakdown_lookahead(t_first_parser  *self,
+										   t_subtree	   *lookahead,
+										   t_state_id		state,
+										   t_reusable_node *reusable_node)
 {
-	bool	did_descend = false;
-	Subtree tree = reusable_node_tree(reusable_node);
+	bool	  did_descend = false;
+	t_subtree tree = reusable_node_tree(reusable_node);
 	while (ts_subtree_child_count(tree) > 0 &&
 		   ts_subtree_parse_state(tree) != state)
 	{
@@ -2405,8 +2421,8 @@ static void ts_parser__breakdown_lookahead(TSParser *self, Subtree *lookahead,
 	}
 }
 
-static ErrorComparison ts_parser__compare_versions(TSParser	  *self,
-												   ErrorStatus a, ErrorStatus b)
+static t_error_comparaison ts_parser__compare_versions(t_first_parser *self,
+												   t_error_status a, t_error_status b)
 {
 	(void)self;
 	if (!a.is_in_error && b.is_in_error)
@@ -2464,14 +2480,14 @@ static ErrorComparison ts_parser__compare_versions(TSParser	  *self,
 	return ErrorComparisonNone;
 }
 
-static ErrorStatus ts_parser__version_status(TSParser	 *self,
-											 StackVersion version)
+static t_error_status ts_parser__version_status(t_first_parser *self,
+											 t_stack_version version)
 {
 	unsigned cost = ts_stack_error_cost(self->stack, version);
 	bool	 is_paused = ts_stack_is_paused(self->stack, version);
 	if (is_paused)
 		cost += ERROR_COST_PER_SKIPPED_TREE;
-	return (ErrorStatus){
+	return (t_error_status){
 		.cost = cost,
 		.node_count = ts_stack_node_count_since_error(self->stack, version),
 		.dynamic_precedence = ts_stack_dynamic_precedence(self->stack, version),
@@ -2479,8 +2495,8 @@ static ErrorStatus ts_parser__version_status(TSParser	 *self,
 			is_paused || ts_stack_state(self->stack, version) == ERROR_STATE};
 }
 
-static bool ts_parser__better_version_exists(TSParser	 *self,
-											 StackVersion version,
+static bool ts_parser__better_version_exists(t_first_parser *self,
+											 t_stack_version version,
 											 bool is_in_error, unsigned cost)
 {
 	if (self->finished_tree.ptr &&
@@ -2489,21 +2505,21 @@ static bool ts_parser__better_version_exists(TSParser	 *self,
 		return true;
 	}
 
-	Length		position = ts_stack_position(self->stack, version);
-	ErrorStatus status = {
+	t_length	position = ts_stack_position(self->stack, version);
+	t_error_status status = {
 		.cost = cost,
 		.is_in_error = is_in_error,
 		.dynamic_precedence = ts_stack_dynamic_precedence(self->stack, version),
 		.node_count = ts_stack_node_count_since_error(self->stack, version),
 	};
 
-	for (StackVersion i = 0, n = ts_stack_version_count(self->stack); i < n;
+	for (t_stack_version i = 0, n = ts_stack_version_count(self->stack); i < n;
 		 i++)
 	{
 		if (i == version || !ts_stack_is_active(self->stack, i) ||
 			ts_stack_position(self->stack, i).bytes < position.bytes)
 			continue;
-		ErrorStatus status_i = ts_parser__version_status(self, i);
+		t_error_status status_i = ts_parser__version_status(self, i);
 		switch (ts_parser__compare_versions(self, status, status_i))
 		{
 		case ErrorComparisonTakeRight:
@@ -2520,19 +2536,21 @@ static bool ts_parser__better_version_exists(TSParser	 *self,
 	return false;
 }
 
-static bool ts_parser__call_main_lex_fn(TSParser *self, TSLexMode lex_mode)
+static bool ts_parser__call_main_lex_fn(t_first_parser *self,
+										t_lex_mode		lex_mode)
 {
 	return self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
 }
 
-static bool ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode)
+static bool ts_parser__call_keyword_lex_fn(t_first_parser *self,
+										   t_lex_mode	   lex_mode)
 {
 
-  (void)(lex_mode);
+	(void)(lex_mode);
 	return self->language->keyword_lex_fn(&self->lexer.data, 0);
 }
 
-static void ts_parser__external_scanner_create(TSParser *self)
+static void ts_parser__external_scanner_create(t_first_parser *self)
 {
 	if (self->language && self->language->external_scanner.states)
 	{
@@ -2544,7 +2562,7 @@ static void ts_parser__external_scanner_create(TSParser *self)
 	}
 }
 
-static void ts_parser__external_scanner_destroy(TSParser *self)
+static void ts_parser__external_scanner_destroy(t_first_parser *self)
 {
 	if (self->language && self->external_scanner_payload &&
 		self->language->external_scanner.destroy)
@@ -2555,7 +2573,7 @@ static void ts_parser__external_scanner_destroy(TSParser *self)
 	self->external_scanner_payload = NULL;
 }
 
-static unsigned ts_parser__external_scanner_serialize(TSParser *self)
+static unsigned ts_parser__external_scanner_serialize(t_first_parser *self)
 {
 
 	uint32_t length = self->language->external_scanner.serialize(
@@ -2564,8 +2582,8 @@ static unsigned ts_parser__external_scanner_serialize(TSParser *self)
 	return length;
 }
 
-static void ts_parser__external_scanner_deserialize(TSParser *self,
-													Subtree	  external_token)
+static void ts_parser__external_scanner_deserialize(t_first_parser *self,
+													t_subtree external_token)
 {
 	const char *data = NULL;
 	uint32_t	length = 0;
@@ -2580,8 +2598,8 @@ static void ts_parser__external_scanner_deserialize(TSParser *self,
 												 data, length);
 }
 
-static bool ts_parser__external_scanner_scan(TSParser *self,
-											 TSStateId external_lex_state)
+static bool ts_parser__external_scanner_scan(t_first_parser *self,
+											 t_state_id		 external_lex_state)
 {
 
 	const bool *valid_external_tokens =
@@ -2591,14 +2609,14 @@ static bool ts_parser__external_scanner_scan(TSParser *self,
 												 valid_external_tokens);
 }
 
-static bool ts_parser__can_reuse_first_leaf(TSParser *self, TSStateId state,
-											Subtree		tree,
-											TableEntry *table_entry)
+static bool ts_parser__can_reuse_first_leaf(t_first_parser *self,
+											t_state_id state, t_subtree tree,
+											t_table_entry *table_entry)
 {
-	TSLexMode current_lex_mode = self->language->lex_modes[state];
-	TSSymbol  leaf_symbol = ts_subtree_leaf_symbol(tree);
-	TSStateId leaf_state = ts_subtree_leaf_parse_state(tree);
-	TSLexMode leaf_lex_mode = self->language->lex_modes[leaf_state];
+	t_lex_mode current_lex_mode = self->language->lex_modes[state];
+	t_symbol   leaf_symbol = ts_subtree_leaf_symbol(tree);
+	t_state_id leaf_state = ts_subtree_leaf_parse_state(tree);
+	t_lex_mode leaf_lex_mode = self->language->lex_modes[leaf_state];
 
 	// At the end of a non-terminal extra node, the lexer normally returns
 	// NULL, which indicates that the parser should look for a reduce action
@@ -2610,7 +2628,7 @@ static bool ts_parser__can_reuse_first_leaf(TSParser *self, TSStateId state,
 	// If the token was created in a state with the same set of lookaheads, it
 	// is reusable.
 	if (table_entry->action_count > 0 &&
-		memcmp(&leaf_lex_mode, &current_lex_mode, sizeof(TSLexMode)) == 0 &&
+		memcmp(&leaf_lex_mode, &current_lex_mode, sizeof(t_lex_mode)) == 0 &&
 		(leaf_symbol != self->language->keyword_capture_token ||
 		 (!ts_subtree_is_keyword(tree) &&
 		  ts_subtree_parse_state(tree) == state)))
@@ -2625,31 +2643,32 @@ static bool ts_parser__can_reuse_first_leaf(TSParser *self, TSStateId state,
 	return current_lex_mode.external_lex_state == 0 && table_entry->is_reusable;
 }
 
-const ExternalScannerState *ts_subtree_external_scanner_state(Subtree self) {
-  static const ExternalScannerState empty_state = {{.short_data = {0}}, .length = 0};
-  if (
-    self.ptr &&
-    !self.data.is_inline &&
-    self.ptr->has_external_tokens &&
-    self.ptr->child_count == 0
-  ) {
-    return &self.ptr->external_scanner_state;
-  } else {
-    return &empty_state;
-  }
+const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self)
+{
+	static const t_external_scanner_state empty_state = {{.short_data = {0}},
+													 .length = 0};
+	if (self.ptr && !self.data.is_inline && self.ptr->has_external_tokens &&
+		self.ptr->child_count == 0)
+	{
+		return &self.ptr->external_scanner_state;
+	}
+	else
+	{
+		return &empty_state;
+	}
 }
 
-static Subtree ts_parser__lex(TSParser *self, StackVersion version,
-							  TSStateId parse_state)
+static t_subtree ts_parser__lex(t_first_parser *self, t_stack_version version,
+								t_state_id parse_state)
 {
-	TSLexMode lex_mode = self->language->lex_modes[parse_state];
+	t_lex_mode lex_mode = self->language->lex_modes[parse_state];
 	if (lex_mode.lex_state == (uint16_t)-1)
 	{
 		return NULL_SUBTREE;
 	}
 
-	const Length  start_position = ts_stack_position(self->stack, version);
-	const Subtree external_token =
+	const t_length	start_position = ts_stack_position(self->stack, version);
+	const t_subtree external_token =
 		ts_stack_last_external_token(self->stack, version);
 
 	bool	 found_external_token = false;
@@ -2657,8 +2676,8 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 	bool	 skipped_error = false;
 	bool	 called_get_column = false;
 	int32_t	 first_error_character = 0;
-	Length	 error_start_position = length_zero();
-	Length	 error_end_position = length_zero();
+	t_length error_start_position = length_zero();
+	t_length error_end_position = length_zero();
 	uint32_t lookahead_end_byte = 0;
 	uint32_t external_scanner_state_len = 0;
 	bool	 external_scanner_state_changed = false;
@@ -2666,8 +2685,8 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 
 	for (;;)
 	{
-		bool   found_token = false;
-		Length current_position = self->lexer.current_position;
+		bool	 found_token = false;
+		t_length current_position = self->lexer.current_position;
 
 		if (lex_mode.external_lex_state != 0)
 		{
@@ -2754,11 +2773,11 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 		error_end_position = self->lexer.current_position;
 	}
 
-	Subtree result;
+	t_subtree result;
 	if (skipped_error)
 	{
-		Length	 padding = length_sub(error_start_position, start_position);
-		Length	 size = length_sub(error_end_position, error_start_position);
+		t_length padding = length_sub(error_start_position, start_position);
+		t_length size = length_sub(error_end_position, error_start_position);
 		uint32_t lookahead_bytes =
 			lookahead_end_byte - error_end_position.bytes;
 		result = ts_subtree_new_error(&self->tree_pool, first_error_character,
@@ -2768,10 +2787,10 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 	else
 	{
 		bool	 is_keyword = false;
-		TSSymbol symbol = self->lexer.data.result_symbol;
-		Length	 padding =
+		t_symbol symbol = self->lexer.data.result_symbol;
+		t_length padding =
 			length_sub(self->lexer.token_start_position, start_position);
-		Length	 size = length_sub(self->lexer.token_end_position,
+		t_length size = length_sub(self->lexer.token_end_position,
 								   self->lexer.token_start_position);
 		uint32_t lookahead_bytes =
 			lookahead_end_byte - self->lexer.token_end_position.bytes;
@@ -2804,7 +2823,7 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 
 		if (found_external_token)
 		{
-			MutableSubtree mut_result = ts_subtree_to_mut_unsafe(result);
+			t_mutable_subtree mut_result = ts_subtree_to_mut_unsafe(result);
 			ts_external_scanner_state_init(
 				&mut_result.ptr->external_scanner_state,
 				self->lexer.debug_buffer, external_scanner_state_len);
@@ -2815,12 +2834,12 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version,
 	return result;
 }
 
-static Subtree ts_parser__get_cached_token(TSParser *self, TSStateId state,
-										   size_t	   position,
-										   Subtree	   last_external_token,
-										   TableEntry *table_entry)
+static t_subtree ts_parser__get_cached_token(t_first_parser *self,
+											 t_state_id state, size_t position,
+											 t_subtree		last_external_token,
+											 t_table_entry *table_entry)
 {
-	TokenCache *cache = &self->token_cache;
+	t_token_cache *cache = &self->token_cache;
 	if (cache->token.ptr && cache->byte_index == position &&
 		ts_subtree_external_scanner_state_eq(cache->last_external_token,
 											 last_external_token))
@@ -2837,11 +2856,12 @@ static Subtree ts_parser__get_cached_token(TSParser *self, TSStateId state,
 	return NULL_SUBTREE;
 }
 
-static void ts_parser__set_cached_token(TSParser *self, uint32_t byte_index,
-										Subtree last_external_token,
-										Subtree token)
+static void ts_parser__set_cached_token(t_first_parser *self,
+										uint32_t		byte_index,
+										t_subtree		last_external_token,
+										t_subtree		token)
 {
-	TokenCache *cache = &self->token_cache;
+	t_token_cache *cache = &self->token_cache;
 	if (token.ptr)
 		ts_subtree_retain(token);
 	if (last_external_token.ptr)
@@ -2855,7 +2875,7 @@ static void ts_parser__set_cached_token(TSParser *self, uint32_t byte_index,
 	cache->last_external_token = last_external_token;
 }
 
-static bool ts_parser__has_included_range_difference(const TSParser *self,
+static bool ts_parser__has_included_range_difference(const t_first_parser *self,
 													 uint32_t start_position,
 													 uint32_t end_position)
 {
@@ -2864,12 +2884,13 @@ static bool ts_parser__has_included_range_difference(const TSParser *self,
 									 start_position, end_position);
 }
 
-static Subtree ts_parser__reuse_node(TSParser *self, StackVersion version,
-									 TSStateId *state, uint32_t position,
-									 Subtree	 last_external_token,
-									 TableEntry *table_entry)
+static t_subtree ts_parser__reuse_node(t_first_parser *self,
+									   t_stack_version version,
+									   t_state_id *state, uint32_t position,
+									   t_subtree	  last_external_token,
+									   t_table_entry *table_entry)
 {
-	Subtree result;
+	t_subtree result;
 	while ((result = reusable_node_tree(&self->reusable_node)).ptr)
 	{
 		uint32_t byte_offset = reusable_node_byte_offset(&self->reusable_node);
@@ -2938,7 +2959,7 @@ static Subtree ts_parser__reuse_node(TSParser *self, StackVersion version,
 			continue;
 		}
 
-		TSSymbol leaf_symbol = ts_subtree_leaf_symbol(result);
+		t_symbol leaf_symbol = ts_subtree_leaf_symbol(result);
 		ts_language_table_entry(self->language, *state, leaf_symbol,
 								table_entry);
 		if (!ts_parser__can_reuse_first_leaf(self, *state, result, table_entry))
@@ -2958,7 +2979,8 @@ static Subtree ts_parser__reuse_node(TSParser *self, StackVersion version,
 // The decision is based on the trees' error costs (if any), their dynamic
 // precedence, and finally, as a default, by a recursive comparison of the
 // trees' symbols.
-static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right)
+static bool ts_parser__select_tree(t_first_parser *self, t_subtree left,
+								   t_subtree right)
 {
 	if (!left.ptr)
 		return true;
@@ -3005,8 +3027,8 @@ static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right)
 
 // Determine if a given tree's children should be replaced by an alternative
 // array of children.
-static bool ts_parser__select_children(TSParser *self, Subtree left,
-									   const SubtreeArray *children)
+static bool ts_parser__select_children(t_first_parser *self, t_subtree left,
+									   const t_subtree_array *children)
 {
 	array_assign(&self->scratch_trees, children);
 
@@ -3014,21 +3036,21 @@ static bool ts_parser__select_children(TSParser *self, Subtree left,
 	// not perform any allocation except for possibly growing the array to make
 	// room for its own heap data. The scratch tree is never explicitly
 	// released, so the same 'scratch trees' array can be reused again later.
-	MutableSubtree scratch_tree = ts_subtree_new_node(
+	t_mutable_subtree scratch_tree = ts_subtree_new_node(
 		ts_subtree_symbol(left), &self->scratch_trees, 0, self->language);
 
 	return ts_parser__select_tree(self, left,
 								  ts_subtree_from_mut(scratch_tree));
 }
 
-static void ts_parser__shift(TSParser *self, StackVersion version,
-							 TSStateId state, Subtree lookahead, bool extra)
+static void ts_parser__shift(t_first_parser *self, t_stack_version version,
+							 t_state_id state, t_subtree lookahead, bool extra)
 {
-	bool	is_leaf = ts_subtree_child_count(lookahead) == 0;
-	Subtree subtree_to_push = lookahead;
+	bool	  is_leaf = ts_subtree_child_count(lookahead) == 0;
+	t_subtree subtree_to_push = lookahead;
 	if (extra != ts_subtree_extra(lookahead) && is_leaf)
 	{
-		MutableSubtree result =
+		t_mutable_subtree result =
 			ts_subtree_make_mut(&self->tree_pool, lookahead);
 		ts_subtree_set_extra(&result, extra);
 		subtree_to_push = ts_subtree_from_mut(result);
@@ -3043,11 +3065,10 @@ static void ts_parser__shift(TSParser *self, StackVersion version,
 	}
 }
 
-static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
-									  TSSymbol symbol, uint32_t count,
-									  int	   dynamic_precedence,
-									  uint16_t production_id, bool is_fragile,
-									  bool end_of_non_terminal_extra)
+static t_stack_version ts_parser__reduce(
+	t_first_parser *self, t_stack_version version, t_symbol symbol,
+	uint32_t count, int dynamic_precedence, uint16_t production_id,
+	bool is_fragile, bool end_of_non_terminal_extra)
 {
 	uint32_t initial_version_count = ts_stack_version_count(self->stack);
 
@@ -3056,12 +3077,12 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 	// path back through the stack. For each path, create a new parent node to
 	// contain the popped children, and push it onto the stack in place of the
 	// children.
-	StackSliceArray pop = ts_stack_pop_count(self->stack, version, count);
-	uint32_t		removed_version_count = 0;
+	t_stack_slice_array pop = ts_stack_pop_count(self->stack, version, count);
+	uint32_t			removed_version_count = 0;
 	for (uint32_t i = 0; i < pop.size; i++)
 	{
-		StackSlice	 slice = pop.contents[i];
-		StackVersion slice_version = slice.version - removed_version_count;
+		t_stack_slice	slice = pop.contents[i];
+		t_stack_version slice_version = slice.version - removed_version_count;
 
 		// This is where new versions are added to the parse stack. The versions
 		// will all be sorted and truncated at the end of the outer parsing
@@ -3074,7 +3095,7 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 			removed_version_count++;
 			while (i + 1 < pop.size)
 			{
-				StackSlice next_slice = pop.contents[i + 1];
+				t_stack_slice next_slice = pop.contents[i + 1];
 				if (next_slice.version != slice.version)
 					break;
 				ts_subtree_array_delete(&self->tree_pool, &next_slice.subtrees);
@@ -3086,11 +3107,11 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 		// Extra tokens on top of the stack should not be included in this new
 		// parent node. They will be re-pushed onto the stack after the parent
 		// node is created and pushed.
-		SubtreeArray children = slice.subtrees;
+		t_subtree_array children = slice.subtrees;
 		ts_subtree_array_remove_trailing_extras(&children,
 												&self->trailing_extras);
 
-		MutableSubtree parent = ts_subtree_new_node(
+		t_mutable_subtree parent = ts_subtree_new_node(
 			symbol, &children, production_id, self->language);
 
 		// This pop operation may have caused multiple stack versions to
@@ -3099,12 +3120,12 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 		// children, and delete the rest of the tree arrays.
 		while (i + 1 < pop.size)
 		{
-			StackSlice next_slice = pop.contents[i + 1];
+			t_stack_slice next_slice = pop.contents[i + 1];
 			if (next_slice.version != slice.version)
 				break;
 			i++;
 
-			SubtreeArray next_slice_children = next_slice.subtrees;
+			t_subtree_array next_slice_children = next_slice.subtrees;
 			ts_subtree_array_remove_trailing_extras(&next_slice_children,
 													&self->trailing_extras2);
 
@@ -3126,8 +3147,8 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 			}
 		}
 
-		TSStateId state = ts_stack_state(self->stack, slice_version);
-		TSStateId next_state =
+		t_state_id state = ts_stack_state(self->stack, slice_version);
+		t_state_id next_state =
 			ts_language_next_state(self->language, state, symbol);
 		if (end_of_non_terminal_extra && next_state == state)
 		{
@@ -3155,7 +3176,7 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 						  self->trailing_extras.contents[j], false, next_state);
 		}
 
-		for (StackVersion j = 0; j < slice_version; j++)
+		for (t_stack_version j = 0; j < slice_version; j++)
 		{
 			if (j == version)
 				continue;
@@ -3173,26 +3194,26 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version,
 			   : STACK_VERSION_NONE;
 }
 
-static void ts_parser__accept(TSParser *self, StackVersion version,
-							  Subtree lookahead)
+static void ts_parser__accept(t_first_parser *self, t_stack_version version,
+							  t_subtree lookahead)
 {
 	assert(ts_subtree_is_eof(lookahead));
 	ts_stack_push(self->stack, version, lookahead, false, 1);
 
-	StackSliceArray pop = ts_stack_pop_all(self->stack, version);
+	t_stack_slice_array pop = ts_stack_pop_all(self->stack, version);
 	for (uint32_t i = 0; i < pop.size; i++)
 	{
-		SubtreeArray trees = pop.contents[i].subtrees;
+		t_subtree_array trees = pop.contents[i].subtrees;
 
-		Subtree root = NULL_SUBTREE;
+		t_subtree root = NULL_SUBTREE;
 		for (uint32_t j = trees.size - 1; j + 1 > 0; j--)
 		{
-			Subtree tree = trees.contents[j];
+			t_subtree tree = trees.contents[j];
 			if (!ts_subtree_extra(tree))
 			{
 				assert(!tree.data.is_inline);
-				uint32_t	   child_count = ts_subtree_child_count(tree);
-				const Subtree *children = ts_subtree_children(tree);
+				uint32_t		 child_count = ts_subtree_child_count(tree);
+				const t_subtree *children = ts_subtree_children(tree);
 				for (uint32_t k = 0; k < child_count; k++)
 				{
 					ts_subtree_retain(children[k]);
@@ -3232,12 +3253,13 @@ static void ts_parser__accept(TSParser *self, StackVersion version,
 }
 
 static bool ts_parser__do_all_potential_reductions(
-	TSParser *self, StackVersion starting_version, TSSymbol lookahead_symbol)
+	t_first_parser *self, t_stack_version starting_version,
+	t_symbol lookahead_symbol)
 {
 	uint32_t initial_version_count = ts_stack_version_count(self->stack);
 
-	bool		 can_shift_lookahead_symbol = false;
-	StackVersion version = starting_version;
+	bool			can_shift_lookahead_symbol = false;
+	t_stack_version version = starting_version;
 	for (unsigned i = 0; true; i++)
 	{
 		uint32_t version_count = ts_stack_version_count(self->stack);
@@ -3245,7 +3267,7 @@ static bool ts_parser__do_all_potential_reductions(
 			break;
 
 		bool merged = false;
-		for (StackVersion j = initial_version_count; j < version; j++)
+		for (t_stack_version j = initial_version_count; j < version; j++)
 		{
 			if (ts_stack_merge(self->stack, j, version))
 			{
@@ -3256,11 +3278,11 @@ static bool ts_parser__do_all_potential_reductions(
 		if (merged)
 			continue;
 
-		TSStateId state = ts_stack_state(self->stack, version);
-		bool	  has_shift_action = false;
+		t_state_id state = ts_stack_state(self->stack, version);
+		bool	   has_shift_action = false;
 		array_clear(&self->reduce_actions);
 
-		TSSymbol first_symbol, end_symbol;
+		t_symbol first_symbol, end_symbol;
 		if (lookahead_symbol != 0)
 		{
 			first_symbol = lookahead_symbol;
@@ -3272,13 +3294,13 @@ static bool ts_parser__do_all_potential_reductions(
 			end_symbol = self->language->token_count;
 		}
 
-		for (TSSymbol symbol = first_symbol; symbol < end_symbol; symbol++)
+		for (t_symbol symbol = first_symbol; symbol < end_symbol; symbol++)
 		{
-			TableEntry entry;
+			t_table_entry entry;
 			ts_language_table_entry(self->language, state, symbol, &entry);
 			for (uint32_t j = 0; j < entry.action_count; j++)
 			{
-				TSParseAction action = entry.actions[j];
+				t_parse_action action = entry.actions[j];
 				switch (action.type)
 				{
 				case TSParseActionTypeShift:
@@ -3290,7 +3312,7 @@ static bool ts_parser__do_all_potential_reductions(
 					if (action.reduce.child_count > 0)
 						ts_reduce_action_set_add(
 							&self->reduce_actions,
-							(ReduceAction){
+							(t_reduce_action){
 								.symbol = action.reduce.symbol,
 								.count = action.reduce.child_count,
 								.dynamic_precedence =
@@ -3304,10 +3326,10 @@ static bool ts_parser__do_all_potential_reductions(
 			}
 		}
 
-		StackVersion reduction_version = STACK_VERSION_NONE;
+		t_stack_version reduction_version = STACK_VERSION_NONE;
 		for (uint32_t j = 0; j < self->reduce_actions.size; j++)
 		{
-			ReduceAction action = self->reduce_actions.contents[j];
+			t_reduce_action action = self->reduce_actions.contents[j];
 
 			reduction_version = ts_parser__reduce(
 				self, version, action.symbol, action.count,
@@ -3342,15 +3364,16 @@ static bool ts_parser__do_all_potential_reductions(
 	return can_shift_lookahead_symbol;
 }
 
-static bool ts_parser__recover_to_state(TSParser *self, StackVersion version,
-										unsigned depth, TSStateId goal_state)
+static bool ts_parser__recover_to_state(t_first_parser *self,
+										t_stack_version version, unsigned depth,
+										t_state_id goal_state)
 {
-	StackSliceArray pop = ts_stack_pop_count(self->stack, version, depth);
-	StackVersion	previous_version = STACK_VERSION_NONE;
+	t_stack_slice_array pop = ts_stack_pop_count(self->stack, version, depth);
+	t_stack_version		previous_version = STACK_VERSION_NONE;
 
 	for (unsigned i = 0; i < pop.size; i++)
 	{
-		StackSlice slice = pop.contents[i];
+		t_stack_slice slice = pop.contents[i];
 
 		if (slice.version == previous_version)
 		{
@@ -3367,13 +3390,13 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version,
 			continue;
 		}
 
-		SubtreeArray error_trees =
+		t_subtree_array error_trees =
 			ts_stack_pop_error(self->stack, slice.version);
 		if (error_trees.size > 0)
 		{
 			assert(error_trees.size == 1);
-			Subtree	 error_tree = error_trees.contents[0];
-			uint32_t error_child_count = ts_subtree_child_count(error_tree);
+			t_subtree error_tree = error_trees.contents[0];
+			uint32_t  error_child_count = ts_subtree_child_count(error_tree);
 			if (error_child_count > 0)
 			{
 				array_splice(&slice.subtrees, 0, 0, error_child_count,
@@ -3391,8 +3414,8 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version,
 
 		if (slice.subtrees.size > 0)
 		{
-			Subtree error = ts_subtree_new_error_node(&slice.subtrees, true,
-													  self->language);
+			t_subtree error = ts_subtree_new_error_node(&slice.subtrees, true,
+														self->language);
 			ts_stack_push(self->stack, slice.version, error, false, goal_state);
 		}
 		else
@@ -3402,7 +3425,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version,
 
 		for (unsigned j = 0; j < self->trailing_extras.size; j++)
 		{
-			Subtree tree = self->trailing_extras.contents[j];
+			t_subtree tree = self->trailing_extras.contents[j];
 			ts_stack_push(self->stack, slice.version, tree, false, goal_state);
 		}
 
@@ -3412,14 +3435,14 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version,
 	return previous_version != STACK_VERSION_NONE;
 }
 
-static void ts_parser__recover(TSParser *self, StackVersion version,
-							   Subtree lookahead)
+static void ts_parser__recover(t_first_parser *self, t_stack_version version,
+							   t_subtree lookahead)
 {
-	bool		  did_recover = false;
-	unsigned	  previous_version_count = ts_stack_version_count(self->stack);
-	Length		  position = ts_stack_position(self->stack, version);
-	StackSummary *summary = ts_stack_get_summary(self->stack, version);
-	unsigned	  node_count_since_error =
+	bool	 did_recover = false;
+	unsigned previous_version_count = ts_stack_version_count(self->stack);
+	t_length position = ts_stack_position(self->stack, version);
+	t_stack_summary *summary = ts_stack_get_summary(self->stack, version);
+	unsigned		 node_count_since_error =
 		ts_stack_node_count_since_error(self->stack, version);
 	unsigned current_error_cost = ts_stack_error_cost(self->stack, version);
 
@@ -3442,7 +3465,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version,
 	{
 		for (unsigned i = 0; i < summary->size; i++)
 		{
-			StackSummaryEntry entry = summary->contents[i];
+			t_stack_summary_entry entry = summary->contents[i];
 
 			if (entry.state == ERROR_STATE)
 				continue;
@@ -3529,8 +3552,8 @@ static void ts_parser__recover(TSParser *self, StackVersion version,
 	// wrap everything in an ERROR node and terminate.
 	if (ts_subtree_is_eof(lookahead))
 	{
-		SubtreeArray children = array_new();
-		Subtree		 parent =
+		t_subtree_array children = array_new();
+		t_subtree		parent =
 			ts_subtree_new_error_node(&children, false, self->language);
 		ts_stack_push(self->stack, version, parent, false, 1);
 		ts_parser__accept(self, version, lookahead);
@@ -3553,23 +3576,23 @@ static void ts_parser__recover(TSParser *self, StackVersion version,
 
 	// If the current lookahead token is an extra token, mark it as extra. This
 	// means it won't be counted in error cost calculations.
-	unsigned			 n;
-	const TSParseAction *actions = ts_language_actions(
+	unsigned			  n;
+	const t_parse_action *actions = ts_language_actions(
 		self->language, 1, ts_subtree_symbol(lookahead), &n);
 	if (n > 0 && actions[n - 1].type == TSParseActionTypeShift &&
 		actions[n - 1].shift.extra)
 	{
-		MutableSubtree mutable_lookahead =
+		t_mutable_subtree mutable_lookahead =
 			ts_subtree_make_mut(&self->tree_pool, lookahead);
 		ts_subtree_set_extra(&mutable_lookahead, true);
 		lookahead = ts_subtree_from_mut(mutable_lookahead);
 	}
 
 	// Wrap the lookahead token in an ERROR.
-	SubtreeArray children = array_new();
+	t_subtree_array children = array_new();
 	array_reserve(&children, 1);
 	array_push(&children, lookahead);
-	MutableSubtree error_repeat = ts_subtree_new_node(
+	t_mutable_subtree error_repeat = ts_subtree_new_node(
 		ts_builtin_sym_error_repeat, &children, 0, self->language);
 
 	// If other tokens have already been skipped, so there is already an ERROR
@@ -3577,7 +3600,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version,
 	// two ERRORs together into one larger ERROR.
 	if (node_count_since_error > 0)
 	{
-		StackSliceArray pop = ts_stack_pop_count(self->stack, version, 1);
+		t_stack_slice_array pop = ts_stack_pop_count(self->stack, version, 1);
 
 		// TODO: Figure out how to make this condition occur.
 		// See https://github.com/atom/atom/issues/18450#issuecomment-439579778
@@ -3617,8 +3640,9 @@ static void ts_parser__recover(TSParser *self, StackVersion version,
 	}
 }
 
-static void ts_parser__handle_error(TSParser *self, StackVersion version,
-									Subtree lookahead)
+static void ts_parser__handle_error(t_first_parser *self,
+									t_stack_version version,
+									t_subtree		lookahead)
 {
 	uint32_t previous_version_count = ts_stack_version_count(self->stack);
 
@@ -3627,21 +3651,21 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version,
 	// find a token that would have allowed a reduction to take place.
 	ts_parser__do_all_potential_reductions(self, version, 0);
 	uint32_t version_count = ts_stack_version_count(self->stack);
-	Length	 position = ts_stack_position(self->stack, version);
+	t_length position = ts_stack_position(self->stack, version);
 
 	// Push a discontinuity onto the stack. Merge all of the stack versions that
 	// were created in the previous step.
 	bool did_insert_missing_token = false;
-	for (StackVersion v = version; v < version_count;)
+	for (t_stack_version v = version; v < version_count;)
 	{
 		if (!did_insert_missing_token)
 		{
-			TSStateId state = ts_stack_state(self->stack, v);
-			for (TSSymbol missing_symbol = 1;
+			t_state_id state = ts_stack_state(self->stack, v);
+			for (t_symbol missing_symbol = 1;
 				 missing_symbol < (uint16_t)self->language->token_count;
 				 missing_symbol++)
 			{
-				TSStateId state_after_missing_symbol = ts_language_next_state(
+				t_state_id state_after_missing_symbol = ts_language_next_state(
 					self->language, state, missing_symbol);
 				if (state_after_missing_symbol == 0 ||
 					state_after_missing_symbol == state)
@@ -3659,15 +3683,15 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version,
 					// assigned to position it within the next included range.
 					ts_lexer_reset(&self->lexer, position);
 					ts_lexer_mark_end(&self->lexer);
-					Length padding =
+					t_length padding =
 						length_sub(self->lexer.token_end_position, position);
 					uint32_t lookahead_bytes =
 						ts_subtree_total_bytes(lookahead) +
 						ts_subtree_lookahead_bytes(lookahead);
 
-					StackVersion version_with_missing_tree =
+					t_stack_version version_with_missing_tree =
 						ts_stack_copy_version(self->stack, v);
-					Subtree missing_tree = ts_subtree_new_missing_leaf(
+					t_subtree missing_tree = ts_subtree_new_missing_leaf(
 						&self->tree_pool, missing_symbol, padding,
 						lookahead_bytes, self->language);
 					ts_stack_push(self->stack, version_with_missing_tree,
@@ -3712,17 +3736,17 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version,
 	ts_parser__recover(self, version, lookahead);
 }
 
-static bool ts_parser__advance(TSParser *self, StackVersion version,
+static bool ts_parser__advance(t_first_parser *self, t_stack_version version,
 							   bool allow_node_reuse)
 {
-	TSStateId state = ts_stack_state(self->stack, version);
-	uint32_t  position = ts_stack_position(self->stack, version).bytes;
-	Subtree	  last_external_token =
+	t_state_id state = ts_stack_state(self->stack, version);
+	uint32_t   position = ts_stack_position(self->stack, version).bytes;
+	t_subtree  last_external_token =
 		ts_stack_last_external_token(self->stack, version);
 
-	bool	   did_reuse = true;
-	Subtree	   lookahead = NULL_SUBTREE;
-	TableEntry table_entry = {.action_count = 0};
+	bool		  did_reuse = true;
+	t_subtree	  lookahead = NULL_SUBTREE;
+	t_table_entry table_entry = {.action_count = 0};
 
 	// If possible, reuse a node from the previous syntax tree.
 	if (allow_node_reuse)
@@ -3782,17 +3806,17 @@ static bool ts_parser__advance(TSParser *self, StackVersion version,
 		// an ambiguous state. REDUCE actions always create a new stack
 		// version, whereas SHIFT actions update the existing stack version
 		// and terminate this loop.
-		StackVersion last_reduction_version = STACK_VERSION_NONE;
+		t_stack_version last_reduction_version = STACK_VERSION_NONE;
 		for (uint32_t i = 0; i < table_entry.action_count; i++)
 		{
-			TSParseAction action = table_entry.actions[i];
+			t_parse_action action = table_entry.actions[i];
 
 			switch (action.type)
 			{
 			case TSParseActionTypeShift: {
 				if (action.shift.repetition)
 					break;
-				TSStateId next_state;
+				t_state_id next_state;
 				if (action.shift.extra)
 				{
 					next_state = state;
@@ -3818,9 +3842,9 @@ static bool ts_parser__advance(TSParser *self, StackVersion version,
 			}
 
 			case TSParseActionTypeReduce: {
-				bool		 is_fragile = table_entry.action_count > 1;
-				bool		 end_of_non_terminal_extra = lookahead.ptr == NULL;
-				StackVersion reduction_version = ts_parser__reduce(
+				bool is_fragile = table_entry.action_count > 1;
+				bool end_of_non_terminal_extra = lookahead.ptr == NULL;
+				t_stack_version reduction_version = ts_parser__reduce(
 					self, version, action.reduce.symbol,
 					action.reduce.child_count, action.reduce.dynamic_precedence,
 					action.reduce.production_id, is_fragile,
@@ -3902,7 +3926,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version,
 			if (table_entry.action_count > 0)
 			{
 
-				MutableSubtree mutable_lookahead =
+				t_mutable_subtree mutable_lookahead =
 					ts_subtree_make_mut(&self->tree_pool, lookahead);
 				ts_subtree_set_symbol(&mutable_lookahead,
 									  self->language->keyword_capture_token,
@@ -3945,11 +3969,11 @@ static bool ts_parser__advance(TSParser *self, StackVersion version,
 	}
 }
 
-static unsigned ts_parser__condense_stack(TSParser *self)
+static unsigned ts_parser__condense_stack(t_first_parser *self)
 {
 	bool	 made_changes = false;
 	unsigned min_error_cost = UINT_MAX;
-	for (StackVersion i = 0; i < ts_stack_version_count(self->stack); i++)
+	for (t_stack_version i = 0; i < ts_stack_version_count(self->stack); i++)
 	{
 		// Prune any versions that have been marked for removal.
 		if (ts_stack_is_halted(self->stack, i))
@@ -3961,7 +3985,7 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 
 		// Keep track of the minimum error cost of any stack version so
 		// that it can be returned.
-		ErrorStatus status_i = ts_parser__version_status(self, i);
+		t_error_status status_i = ts_parser__version_status(self, i);
 		if (!status_i.is_in_error && status_i.cost < min_error_cost)
 		{
 			min_error_cost = status_i.cost;
@@ -3970,9 +3994,9 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 		// Examine each pair of stack versions, removing any versions that
 		// are clearly worse than another version. Ensure that the versions
 		// are ordered from most promising to least promising.
-		for (StackVersion j = 0; j < i; j++)
+		for (t_stack_version j = 0; j < i; j++)
 		{
-			ErrorStatus status_j = ts_parser__version_status(self, j);
+			t_error_status status_j = ts_parser__version_status(self, j);
 
 			switch (ts_parser__compare_versions(self, status_j, status_i))
 			{
@@ -4030,8 +4054,8 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 	if (ts_stack_version_count(self->stack) > 0)
 	{
 		bool has_unpaused_version = false;
-		for (StackVersion i = 0, n = ts_stack_version_count(self->stack); i < n;
-			 i++)
+		for (t_stack_version i = 0, n = ts_stack_version_count(self->stack);
+			 i < n; i++)
 		{
 			if (ts_stack_is_paused(self->stack, i))
 			{
@@ -4039,7 +4063,7 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 					self->accept_count < MAX_VERSION_COUNT)
 				{
 					min_error_cost = ts_stack_error_cost(self->stack, i);
-					Subtree lookahead = ts_stack_resume(self->stack, i);
+					t_subtree lookahead = ts_stack_resume(self->stack, i);
 					ts_parser__handle_error(self, i, lookahead);
 					has_unpaused_version = true;
 				}
@@ -4056,10 +4080,12 @@ static unsigned ts_parser__condense_stack(TSParser *self)
 			}
 		}
 	}
+	if (made_changes)
+		(void)(made_changes);
 	return min_error_cost;
 }
 
-static bool ts_parser_has_outstanding_parse(TSParser *self)
+static bool ts_parser_has_outstanding_parse(t_first_parser *self)
 {
 	return (self->external_scanner_payload ||
 			ts_stack_state(self->stack, 0) != 1 ||
@@ -4068,9 +4094,9 @@ static bool ts_parser_has_outstanding_parse(TSParser *self)
 
 // Parser - Public
 
-TSParser *ts_parser_new(void)
+t_first_parser *ts_parser_new(void)
 {
-	TSParser *self = calloc(1, sizeof(TSParser));
+	t_first_parser *self = calloc(1, sizeof(t_first_parser));
 	ts_lexer_init(&self->lexer);
 	array_init(&self->reduce_actions);
 	array_reserve(&self->reduce_actions, 4);
@@ -4086,13 +4112,13 @@ TSParser *ts_parser_new(void)
 	self->end_clock = 0;
 	self->operation_count = 0;
 	self->old_tree = NULL_SUBTREE;
-	self->included_range_differences = (TSRangeArray)array_new();
+	self->included_range_differences = (t_range_array)array_new();
 	self->included_range_difference_index = 0;
 	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	return self;
 }
 
-void ts_parser_delete(TSParser *self)
+void ts_parser_delete(t_first_parser *self)
 {
 	if (!self)
 		return;
@@ -4122,12 +4148,12 @@ void ts_parser_delete(TSParser *self)
 	free(self);
 }
 
-const TSLanguage *ts_parser_language(const TSParser *self)
+const t_language *ts_parser_language(const t_first_parser *self)
 {
 	return self->language;
 }
 
-bool ts_parser_set_language(TSParser *self, const TSLanguage *language)
+bool ts_parser_set_language(t_first_parser *self, const t_language *language)
 {
 	ts_parser_reset(self);
 	ts_language_delete(self->language);
@@ -4137,56 +4163,57 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language)
 	return true;
 }
 
-TSLogger ts_parser_logger(const TSParser *self)
+t_parse_logger ts_parser_logger(const t_first_parser *self)
 {
 	return self->lexer.logger;
 }
 
-void ts_parser_set_logger(TSParser *self, TSLogger logger)
+void ts_parser_set_logger(t_first_parser *self, t_parse_logger logger)
 {
 	self->lexer.logger = logger;
 }
 
-void ts_parser_print_dot_graphs(TSParser *self, int fd)
+void ts_parser_print_dot_graphs(t_first_parser *self, int fd)
 {
 	(void)(self);
 	(void)(fd);
 }
 
-const size_t *ts_parser_cancellation_flag(const TSParser *self)
+const size_t *ts_parser_cancellation_flag(const t_first_parser *self)
 {
 	return (const size_t *)self->cancellation_flag;
 }
 
-void ts_parser_set_cancellation_flag(TSParser *self, const size_t *flag)
+void ts_parser_set_cancellation_flag(t_first_parser *self, const size_t *flag)
 {
 	self->cancellation_flag = (const volatile size_t *)flag;
 }
 
-uint64_t ts_parser_timeout_micros(const TSParser *self)
+uint64_t ts_parser_timeout_micros(const t_first_parser *self)
 {
-  (void)(self);
+	(void)(self);
 	return 0;
 }
 
-void ts_parser_set_timeout_micros(TSParser *self, uint64_t timeout_micros)
+void ts_parser_set_timeout_micros(t_first_parser *self, uint64_t timeout_micros)
 {
-  (void)(timeout_micros);
+	(void)(timeout_micros);
 	self->timeout_duration = 0;
 }
 
-bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges,
-								   uint32_t count)
+bool ts_parser_set_included_ranges(t_first_parser	   *self,
+								   const t_parse_range *ranges, uint32_t count)
 {
 	return ts_lexer_set_included_ranges(&self->lexer, ranges, count);
 }
 
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count)
+const t_parse_range *ts_parser_included_ranges(const t_first_parser *self,
+											   uint32_t				*count)
 {
 	return ts_lexer_included_ranges(&self->lexer, count);
 }
 
-void ts_parser_reset(TSParser *self)
+void ts_parser_reset(t_first_parser *self)
 {
 	ts_parser__external_scanner_destroy(self);
 	if (self->old_tree.ptr)
@@ -4208,9 +4235,10 @@ void ts_parser_reset(TSParser *self)
 	self->has_scanner_error = false;
 }
 
-TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
+t_first_tree *ts_parser_parse(t_first_parser	 *self,
+							  const t_first_tree *old_tree, t_parse_input input)
 {
-	TSTree *result = NULL;
+	t_first_tree *result = NULL;
 	if (!self->language || !input.read)
 		return NULL;
 
@@ -4248,9 +4276,9 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 	uint32_t position = 0, last_position = 0, version_count = 0;
 	do
 	{
-		for (StackVersion version = 0;
+		for (t_stack_version version = 0;
 			 version_count = ts_stack_version_count(self->stack),
-						  version < version_count;
+							 version < version_count;
 			 version++)
 		{
 			bool allow_node_reuse = version_count == 1;
@@ -4293,7 +4321,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 		while (self->included_range_difference_index <
 			   self->included_range_differences.size)
 		{
-			TSRange *range =
+			t_parse_range *range =
 				&self->included_range_differences
 					 .contents[self->included_range_difference_index];
 			if (range->end_byte <= position)
@@ -4320,24 +4348,29 @@ exit:
 	return result;
 }
 
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree,
-										const char *string, uint32_t length,
-										TSInputEncoding encoding);
+t_first_tree *ts_parser_parse_string_encoding(t_first_parser	 *self,
+											  const t_first_tree *old_tree,
+											  const char		 *string,
+											  uint32_t			  length,
+											  t_input_encoding	  encoding);
 
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree,
-							   const char *string, uint32_t length)
+t_first_tree *ts_parser_parse_string(t_first_parser		*self,
+									 const t_first_tree *old_tree,
+									 const char *string, uint32_t length)
 {
 	return ts_parser_parse_string_encoding(self, old_tree, string, length,
 										   TSInputEncodingUTF8);
 }
 
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree,
-										const char *string, uint32_t length,
-										TSInputEncoding encoding)
+t_first_tree *ts_parser_parse_string_encoding(t_first_parser	 *self,
+											  const t_first_tree *old_tree,
+											  const char		 *string,
+											  uint32_t			  length,
+											  t_input_encoding	  encoding)
 {
-	TSStringInput input = {string, length};
+	t_string_input input = {string, length};
 	return ts_parser_parse(self, old_tree,
-						   (TSInput){
+						   (t_parse_input){
 							   &input,
 							   ts_string_input_read,
 							   encoding,
@@ -4345,20 +4378,20 @@ TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree,
 }
 
 /*
- * Stream - A sequence of unicode characters derived from a UTF8 string.
+ * t_stream - A sequence of unicode characters derived from a UTF8 string.
  * This struct is used in parsing queries from S-expressions.
  */
-typedef struct
+typedef struct s_stream
 {
 	const char *input;
 	const char *start;
 	const char *end;
 	int32_t		next;
 	uint8_t		next_size;
-} Stream;
+} t_stream;
 
 /*
- * QueryStep - A step in the process of matching a query. Each node within
+ * t_query_step - A step in the process of matching a query. Each node within
  * a query S-expression corresponds to one of these steps. An entire pattern
  * is represented as a sequence of these steps. The basic properties of a
  * node are represented by these fields:
@@ -4412,55 +4445,55 @@ typedef struct
  *     detect that a capture can safely be returned from a match that has not
  *     even completed  yet.
  */
-typedef struct
+typedef struct s_query_step
 {
-	TSSymbol  symbol;
-	TSSymbol  supertype_symbol;
-	TSFieldId field;
-	uint16_t  capture_ids[MAX_STEP_CAPTURE_COUNT];
-	uint16_t  depth;
-	uint16_t  alternative_index;
-	uint16_t  negated_field_list_id;
-	bool	  is_named : 1;
-	bool	  is_immediate : 1;
-	bool	  is_last_child : 1;
-	bool	  is_pass_through : 1;
-	bool	  is_dead_end : 1;
-	bool	  alternative_is_immediate : 1;
-	bool	  contains_captures : 1;
-	bool	  root_pattern_guaranteed : 1;
-	bool	  parent_pattern_guaranteed : 1;
-} QueryStep;
+	t_symbol   symbol;
+	t_symbol   supertype_symbol;
+	t_field_id field;
+	uint16_t   capture_ids[MAX_STEP_CAPTURE_COUNT];
+	uint16_t   depth;
+	uint16_t   alternative_index;
+	uint16_t   negated_field_list_id;
+	bool	   is_named : 1;
+	bool	   is_immediate : 1;
+	bool	   is_last_child : 1;
+	bool	   is_pass_through : 1;
+	bool	   is_dead_end : 1;
+	bool	   alternative_is_immediate : 1;
+	bool	   contains_captures : 1;
+	bool	   root_pattern_guaranteed : 1;
+	bool	   parent_pattern_guaranteed : 1;
+} t_query_step;
 
 /*
- * Slice - A slice of an external array. Within a query, capture names,
+ * t_slice - A slice of an external array. Within a query, capture names,
  * literal string values, and predicate step information are stored in three
  * contiguous arrays. Individual captures, string values, and predicates are
  * represented as slices of these three arrays.
  */
-typedef struct
+typedef struct s_slice
 {
 	uint32_t offset;
 	uint32_t length;
-} Slice;
+} t_slice;
 
 /*
- * SymbolTable - a two-way mapping of strings to ids.
+ * t_symbol_table - a two-way mapping of strings to ids.
  */
-typedef struct
+typedef struct s_symbol_table
 {
 	Array(char) characters;
-	Array(Slice) slices;
-} SymbolTable;
+	Array(t_slice) slices;
+} t_symbol_table;
 
 /**
  * CaptureQuantififers - a data structure holding the quantifiers of pattern
  * captures.
  */
-typedef Array(uint8_t) CaptureQuantifiers;
+typedef Array(uint8_t) t_capture_quantifiers;
 
 /*
- * PatternEntry - Information about the starting point for matching a particular
+ * t_pattern_entry - Information about the starting point for matching a particular
  * pattern. These entries are stored in a 'pattern map' - a sorted array that
  * makes it possible to efficiently lookup patterns based on the symbol for
  * their first step. The entry consists of the following fields:
@@ -4471,30 +4504,30 @@ typedef Array(uint8_t) CaptureQuantifiers;
  * property affects decisions about whether or not to start the pattern for
  * nodes outside of a QueryCursor's range restriction.
  */
-typedef struct
+typedef struct s_pattern_entry
 {
 	uint16_t step_index;
 	uint16_t pattern_index;
 	bool	 is_rooted;
-} PatternEntry;
+} t_pattern_entry;
 
-typedef struct
+typedef struct s_query_pattern
 {
-	Slice	 steps;
-	Slice	 predicate_steps;
+	t_slice	 steps;
+	t_slice	 predicate_steps;
 	uint32_t start_byte;
 	bool	 is_non_local;
-} QueryPattern;
+} t_query_pattern;
 
-typedef struct
+typedef struct s_step_offset
 {
 	uint32_t byte_offset;
 	uint16_t step_index;
-} StepOffset;
+} t_step_offset;
 
 /*
- * QueryState - The state of an in-progress match of a particular pattern
- * in a query. While executing, a `TSQueryCursor` must keep track of a number
+ * t_query_state - The state of an in-progress match of a particular pattern
+ * in a query. While executing, a `t_query_cursor` must keep track of a number
  * of possible in-progress matches. Each of those possible matches is
  * represented as one of these states. Fields:
  * - `id` - A numeric id that is exposed to the public API. This allows the
@@ -4506,7 +4539,7 @@ typedef struct
  * - `consumed_capture_count` - The number of captures from this match that
  *    have already been returned.
  * - `capture_list_id` - A numeric id that can be used to retrieve the state's
- *    list of captures from the `CaptureListPool`.
+ *    list of captures from the `t_capture_list_pool`.
  * - `seeking_immediate_match` - A flag that indicates that the state's next
  *    step must be matched by the very next sibling. This is used when
  *    processing repetitions.
@@ -4517,7 +4550,7 @@ typedef struct
  *    it is clear that there can be no other alternative match with more
  * captures.
  */
-typedef struct
+typedef struct s_query_state
 {
 	uint32_t id;
 	uint32_t capture_list_id;
@@ -4529,20 +4562,20 @@ typedef struct
 	bool	 has_in_progress_alternatives : 1;
 	bool	 dead : 1;
 	bool	 needs_parent : 1;
-} QueryState;
+} t_query_state;
 
-typedef Array(TSQueryCapture) CaptureList;
+typedef Array(t_query_capture) t_capture_list;
 
 /*
- * CaptureListPool - A collection of *lists* of captures. Each query state needs
+ * t_capture_list_pool - A collection of *lists* of captures. Each query state needs
  * to maintain its own list of captures. To avoid repeated allocations, this
  * struct maintains a fixed set of capture lists, and keeps track of which ones
  * are currently in use by a query state.
  */
-typedef struct
+typedef struct s_capture_list_pool
 {
-	Array(CaptureList) list;
-	CaptureList empty_list;
+	Array(t_capture_list) list;
+	t_capture_list empty_list;
 	// The maximum number of capture lists that we are allowed to allocate. We
 	// never allow `list` to allocate more entries than this, dropping pending
 	// matches if needed to stay under the limit.
@@ -4552,113 +4585,113 @@ typedef struct
 	// allocate any new ones. We use an invalid value (UINT32_MAX) for a capture
 	// list's length to indicate that it's not in use.
 	uint32_t free_capture_list_count;
-} CaptureListPool;
+} t_capture_list_pool;
 
 /*
- * AnalysisState - The state needed for walking the parse table when analyzing
+ * t_analysis_state - The state needed for walking the parse table when analyzing
  * a query pattern, to determine at which steps the pattern might fail to match.
- */
-typedef struct
+ */ 
+typedef struct s_analysis_state_entry
 {
-	TSStateId parse_state;
-	TSSymbol  parent_symbol;
-	uint16_t  child_index;
-	TSFieldId field_id : 15;
-	bool	  done : 1;
-} AnalysisStateEntry;
+	t_state_id parse_state;
+	t_symbol   parent_symbol;
+	uint16_t   child_index;
+	t_field_id field_id : 15;
+	bool	   done : 1;
+} t_analysis_state_entry;
 
-typedef struct
+typedef struct s_analysis_state
 {
-	AnalysisStateEntry stack[MAX_ANALYSIS_STATE_DEPTH];
+	t_analysis_state_entry stack[MAX_ANALYSIS_STATE_DEPTH];
 	uint16_t		   depth;
 	uint16_t		   step_index;
-	TSSymbol		   root_symbol;
-} AnalysisState;
+	t_symbol		   root_symbol;
+} t_analysis_state;
 
-typedef Array(AnalysisState *) AnalysisStateSet;
+typedef Array(t_analysis_state *) t_analysis_state_set;
 
-typedef struct
+typedef struct s_query_analysis
 {
-	AnalysisStateSet states;
-	AnalysisStateSet next_states;
-	AnalysisStateSet deeper_states;
-	AnalysisStateSet state_pool;
+	t_analysis_state_set states;
+	t_analysis_state_set next_states;
+	t_analysis_state_set deeper_states;
+	t_analysis_state_set state_pool;
 	Array(uint16_t) final_step_indices;
-	Array(TSSymbol) finished_parent_symbols;
+	Array(t_symbol) finished_parent_symbols;
 	bool did_abort;
-} QueryAnalysis;
+} t_query_analysis;
 
 /*
- * AnalysisSubgraph - A subset of the states in the parse table that are used
+ * t_analysis_subgraph - A subset of the states in the parse table that are used
  * in constructing nodes with a certain symbol. Each state is accompanied by
  * some information about the possible node that could be produced in
  * downstream states.
  */
-typedef struct
+typedef struct s_analysis_subgraph_node
 {
-	TSStateId state;
-	uint16_t  production_id;
-	uint8_t	  child_index : 7;
-	bool	  done : 1;
-} AnalysisSubgraphNode;
+	t_state_id state;
+	uint16_t   production_id;
+	uint8_t	   child_index : 7;
+	bool	   done : 1;
+} t_analysis_subgraph_node;
 
-typedef struct
+typedef struct s_analysis_subgraph
 {
-	TSSymbol symbol;
-	Array(TSStateId) start_states;
-	Array(AnalysisSubgraphNode) nodes;
-} AnalysisSubgraph;
+	t_symbol symbol;
+	Array(t_state_id) start_states;
+	Array(t_analysis_subgraph_node) nodes;
+} t_analysis_subgraph;
 
-typedef Array(AnalysisSubgraph) AnalysisSubgraphArray;
+typedef Array(t_analysis_subgraph) t_analysis_subgraph_array;
 
 /*
- * StatePredecessorMap - A map that stores the predecessors of each parse state.
+ * t_state_predecessor_map - A map that stores the predecessors of each parse state.
  * This is used during query analysis to determine which parse states can lead
  * to which reduce actions.
  */
-typedef struct
+typedef struct s_state_predecessor_map
 {
-	TSStateId *contents;
-} StatePredecessorMap;
+	t_state_id *contents;
+} t_state_predecessor_map;
 
 /*
- * TSQuery - A tree query, compiled from a string of S-expressions. The query
- * itself is immutable. The mutable state used in the process of executing the
- * query is stored in a `TSQueryCursor`.
+ * t_parse_query - A tree query, compiled from a string of S-expressions. The
+ * query itself is immutable. The mutable state used in the process of executing
+ * the query is stored in a `t_query_cursor`.
  */
-struct TSQuery
+struct s_parse_query
 {
-	SymbolTable captures;
-	SymbolTable predicate_values;
-	Array(CaptureQuantifiers) capture_quantifiers;
-	Array(QueryStep) steps;
-	Array(PatternEntry) pattern_map;
-	Array(TSQueryPredicateStep) predicate_steps;
-	Array(QueryPattern) patterns;
-	Array(StepOffset) step_offsets;
-	Array(TSFieldId) negated_fields;
+	t_symbol_table captures;
+	t_symbol_table predicate_values;
+	Array(t_capture_quantifiers) capture_quantifiers;
+	Array(t_query_step) steps;
+	Array(t_pattern_entry) pattern_map;
+	Array(t_query_predicate_step) predicate_steps;
+	Array(t_query_pattern) patterns;
+	Array(t_step_offset) step_offsets;
+	Array(t_field_id) negated_fields;
 	Array(char) string_buffer;
-	Array(TSSymbol) repeat_symbols_with_rootless_patterns;
-	const TSLanguage *language;
+	Array(t_symbol) repeat_symbols_with_rootless_patterns;
+	const t_language *language;
 	uint16_t		  wildcard_root_pattern_count;
 };
 
 /*
- * TSQueryCursor - A stateful struct used to execute a query on a tree.
+ * t_query_cursor - A stateful struct used to execute a query on a tree.
  */
-struct TSQueryCursor
+struct s_query_cursor
 {
-	const TSQuery *query;
-	TSTreeCursor   cursor;
-	Array(QueryState) states;
-	Array(QueryState) finished_states;
-	CaptureListPool capture_list_pool;
+	const t_parse_query *query;
+	t_tree_cursor		 cursor;
+	Array(t_query_state) states;
+	Array(t_query_state) finished_states;
+	t_capture_list_pool capture_list_pool;
 	uint32_t		depth;
 	uint32_t		max_start_depth;
 	uint32_t		start_byte;
 	uint32_t		end_byte;
-	TSPoint			start_point;
-	TSPoint			end_point;
+	t_point			start_point;
+	t_point			end_point;
 	uint32_t		next_state_id;
 	bool			on_visible_node;
 	bool			ascending;
@@ -4666,17 +4699,17 @@ struct TSQueryCursor
 	bool			did_exceed_match_limit;
 };
 
-static const TSQueryError PARENT_DONE = -1;
-static const uint16_t	  PATTERN_DONE_MARKER = UINT16_MAX;
-static const uint16_t	  NONE = UINT16_MAX;
-static const TSSymbol	  WILDCARD_SYMBOL = 0;
+static const t_query_error PARENT_DONE = -1;
+static const uint16_t	   PATTERN_DONE_MARKER = UINT16_MAX;
+static const uint16_t	   NONE = UINT16_MAX;
+static const t_symbol	   WILDCARD_SYMBOL = 0;
 
 /**********
- * Stream
+ * t_stream
  **********/
 
 // Advance to the next unicode code point in the stream.
-static bool stream_advance(Stream *self)
+static bool stream_advance(t_stream *self)
 {
 	self->input += self->next_size;
 	if (self->input < self->end)
@@ -4700,16 +4733,16 @@ static bool stream_advance(Stream *self)
 
 // Reset the stream to the given input position, represented as a pointer
 // into the input string.
-static void stream_reset(Stream *self, const char *input)
+static void stream_reset(t_stream *self, const char *input)
 {
 	self->input = input;
 	self->next_size = 0;
 	stream_advance(self);
 }
 
-static Stream stream_new(const char *string, uint32_t length)
+static t_stream stream_new(const char *string, uint32_t length)
 {
-	Stream self = {
+	t_stream self = {
 		.next = 0,
 		.input = string,
 		.start = string,
@@ -4719,7 +4752,7 @@ static Stream stream_new(const char *string, uint32_t length)
 	return self;
 }
 
-static void stream_skip_whitespace(Stream *self)
+static void stream_skip_whitespace(t_stream *self)
 {
 	for (;;)
 	{
@@ -4744,12 +4777,12 @@ static void stream_skip_whitespace(Stream *self)
 	}
 }
 
-static bool stream_is_ident_start(Stream *self)
+static bool stream_is_ident_start(t_stream *self)
 {
 	return isalnum(self->next) || self->next == '_' || self->next == '-';
 }
 
-static void stream_scan_identifier(Stream *stream)
+static void stream_scan_identifier(t_stream *stream)
 {
 	do
 	{
@@ -4759,18 +4792,18 @@ static void stream_scan_identifier(Stream *stream)
 			 stream->next == '?' || stream->next == '!');
 }
 
-static uint32_t stream_offset(Stream *self)
+static uint32_t stream_offset(t_stream *self)
 {
 	return (uint32_t)(self->input - self->start);
 }
 
 /******************
- * CaptureListPool
+ * t_capture_list_pool
  ******************/
 
-static CaptureListPool capture_list_pool_new(void)
+static t_capture_list_pool capture_list_pool_new(void)
 {
-	return (CaptureListPool){
+	return (t_capture_list_pool){
 		.list = array_new(),
 		.empty_list = array_new(),
 		.max_capture_list_count = UINT32_MAX,
@@ -4778,7 +4811,7 @@ static CaptureListPool capture_list_pool_new(void)
 	};
 }
 
-static void capture_list_pool_reset(CaptureListPool *self)
+static void capture_list_pool_reset(t_capture_list_pool *self)
 {
 	for (uint16_t i = 0; i < (uint16_t)self->list.size; i++)
 	{
@@ -4788,7 +4821,7 @@ static void capture_list_pool_reset(CaptureListPool *self)
 	self->free_capture_list_count = self->list.size;
 }
 
-static void capture_list_pool_delete(CaptureListPool *self)
+static void capture_list_pool_delete(t_capture_list_pool *self)
 {
 	for (uint16_t i = 0; i < (uint16_t)self->list.size; i++)
 	{
@@ -4797,7 +4830,7 @@ static void capture_list_pool_delete(CaptureListPool *self)
 	array_delete(&self->list);
 }
 
-static const CaptureList *capture_list_pool_get(const CaptureListPool *self,
+static const t_capture_list *capture_list_pool_get(const t_capture_list_pool *self,
 												uint16_t			   id)
 {
 	if (id >= self->list.size)
@@ -4805,14 +4838,14 @@ static const CaptureList *capture_list_pool_get(const CaptureListPool *self,
 	return &self->list.contents[id];
 }
 
-static CaptureList *capture_list_pool_get_mut(CaptureListPool *self,
+static t_capture_list *capture_list_pool_get_mut(t_capture_list_pool *self,
 											  uint16_t		   id)
 {
 	assert(id < self->list.size);
 	return &self->list.contents[id];
 }
 
-static bool capture_list_pool_is_empty(const CaptureListPool *self)
+static bool capture_list_pool_is_empty(const t_capture_list_pool *self)
 {
 	// The capture list pool is empty if all allocated lists are in use, and we
 	// have reached the maximum allowed number of allocated lists.
@@ -4820,7 +4853,7 @@ static bool capture_list_pool_is_empty(const CaptureListPool *self)
 		   self->list.size >= self->max_capture_list_count;
 }
 
-static uint16_t capture_list_pool_acquire(CaptureListPool *self)
+static uint16_t capture_list_pool_acquire(t_capture_list_pool *self)
 {
 	// First see if any already allocated capture list is currently unused.
 	if (self->free_capture_list_count > 0)
@@ -4843,13 +4876,13 @@ static uint16_t capture_list_pool_acquire(CaptureListPool *self)
 	{
 		return NONE;
 	}
-	CaptureList list;
+	t_capture_list list;
 	array_init(&list);
 	array_push(&self->list, list);
 	return i;
 }
 
-static void capture_list_pool_release(CaptureListPool *self, uint16_t id)
+static void capture_list_pool_release(t_capture_list_pool *self, uint16_t id)
 {
 	if (id >= self->list.size)
 		return;
@@ -4861,7 +4894,7 @@ static void capture_list_pool_release(CaptureListPool *self, uint16_t id)
  * Quantifiers
  **************/
 
-static TSQuantifier quantifier_mul(TSQuantifier left, TSQuantifier right)
+static t_quantifier quantifier_mul(t_quantifier left, t_quantifier right)
 {
 	switch (left)
 	{
@@ -4912,7 +4945,7 @@ static TSQuantifier quantifier_mul(TSQuantifier left, TSQuantifier right)
 							 // covered above!
 }
 
-static TSQuantifier quantifier_join(TSQuantifier left, TSQuantifier right)
+static t_quantifier quantifier_join(t_quantifier left, t_quantifier right)
 {
 	switch (left)
 	{
@@ -4976,7 +5009,7 @@ static TSQuantifier quantifier_join(TSQuantifier left, TSQuantifier right)
 							 // covered above!
 }
 
-static TSQuantifier quantifier_add(TSQuantifier left, TSQuantifier right)
+static t_quantifier quantifier_add(t_quantifier left, t_quantifier right)
 {
 	switch (left)
 	{
@@ -5028,42 +5061,42 @@ static TSQuantifier quantifier_add(TSQuantifier left, TSQuantifier right)
 }
 
 // Create new capture quantifiers structure
-static CaptureQuantifiers capture_quantifiers_new(void)
+static t_capture_quantifiers capture_quantifiers_new(void)
 {
-	return (CaptureQuantifiers)array_new();
+	return (t_capture_quantifiers)array_new();
 }
 
 // Delete capture quantifiers structure
-static void capture_quantifiers_delete(CaptureQuantifiers *self)
+static void capture_quantifiers_delete(t_capture_quantifiers *self)
 {
 	array_delete(self);
 }
 
 // Clear capture quantifiers structure
-static void capture_quantifiers_clear(CaptureQuantifiers *self)
+static void capture_quantifiers_clear(t_capture_quantifiers *self)
 {
 	array_clear(self);
 }
 
 // Replace capture quantifiers with the given quantifiers
-static void capture_quantifiers_replace(CaptureQuantifiers *self,
-										CaptureQuantifiers *quantifiers)
+static void capture_quantifiers_replace(t_capture_quantifiers *self,
+										t_capture_quantifiers *quantifiers)
 {
 	array_clear(self);
 	array_push_all(self, quantifiers);
 }
 
 // Return capture quantifier for the given capture id
-static TSQuantifier capture_quantifier_for_id(const CaptureQuantifiers *self,
+static t_quantifier capture_quantifier_for_id(const t_capture_quantifiers *self,
 											  uint16_t					id)
 {
 	return (self->size <= id) ? TSQuantifierZero
-							  : (TSQuantifier)*array_get(self, id);
+							  : (t_quantifier)*array_get(self, id);
 }
 
 // Add the given quantifier to the current value for id
-static void capture_quantifiers_add_for_id(CaptureQuantifiers *self,
-										   uint16_t id, TSQuantifier quantifier)
+static void capture_quantifiers_add_for_id(t_capture_quantifiers *self,
+										   uint16_t id, t_quantifier quantifier)
 {
 	if (self->size <= id)
 	{
@@ -5071,12 +5104,12 @@ static void capture_quantifiers_add_for_id(CaptureQuantifiers *self,
 	}
 	uint8_t *own_quantifier = array_get(self, id);
 	*own_quantifier =
-		(uint8_t)quantifier_add((TSQuantifier)*own_quantifier, quantifier);
+		(uint8_t)quantifier_add((t_quantifier)*own_quantifier, quantifier);
 }
 
 // Point-wise add the given quantifiers to the current values
-static void capture_quantifiers_add_all(CaptureQuantifiers *self,
-										CaptureQuantifiers *quantifiers)
+static void capture_quantifiers_add_all(t_capture_quantifiers *self,
+										t_capture_quantifiers *quantifiers)
 {
 	if (self->size < quantifiers->size)
 	{
@@ -5086,27 +5119,27 @@ static void capture_quantifiers_add_all(CaptureQuantifiers *self,
 	{
 		uint8_t *quantifier = array_get(quantifiers, id);
 		uint8_t *own_quantifier = array_get(self, id);
-		*own_quantifier = (uint8_t)quantifier_add((TSQuantifier)*own_quantifier,
-												  (TSQuantifier)*quantifier);
+		*own_quantifier = (uint8_t)quantifier_add((t_quantifier)*own_quantifier,
+												  (t_quantifier)*quantifier);
 	}
 }
 
 // Join the given quantifier with the current values
-static void capture_quantifiers_mul(CaptureQuantifiers *self,
-									TSQuantifier		quantifier)
+static void capture_quantifiers_mul(t_capture_quantifiers *self,
+									t_quantifier		quantifier)
 {
 	for (uint16_t id = 0; id < (uint16_t)self->size; id++)
 	{
 		uint8_t *own_quantifier = array_get(self, id);
 		*own_quantifier =
-			(uint8_t)quantifier_mul((TSQuantifier)*own_quantifier, quantifier);
+			(uint8_t)quantifier_mul((t_quantifier)*own_quantifier, quantifier);
 	}
 }
 
 // Point-wise join the quantifiers from a list of alternatives with the current
 // values
-static void capture_quantifiers_join_all(CaptureQuantifiers *self,
-										 CaptureQuantifiers *quantifiers)
+static void capture_quantifiers_join_all(t_capture_quantifiers *self,
+										 t_capture_quantifiers *quantifiers)
 {
 	if (self->size < quantifiers->size)
 	{
@@ -5117,40 +5150,40 @@ static void capture_quantifiers_join_all(CaptureQuantifiers *self,
 		uint8_t *quantifier = array_get(quantifiers, id);
 		uint8_t *own_quantifier = array_get(self, id);
 		*own_quantifier = (uint8_t)quantifier_join(
-			(TSQuantifier)*own_quantifier, (TSQuantifier)*quantifier);
+			(t_quantifier)*own_quantifier, (t_quantifier)*quantifier);
 	}
 	for (uint32_t id = quantifiers->size; id < self->size; id++)
 	{
 		uint8_t *own_quantifier = array_get(self, id);
 		*own_quantifier = (uint8_t)quantifier_join(
-			(TSQuantifier)*own_quantifier, TSQuantifierZero);
+			(t_quantifier)*own_quantifier, TSQuantifierZero);
 	}
 }
 
 /**************
- * SymbolTable
+ * t_symbol_table
  **************/
 
-static SymbolTable symbol_table_new(void)
+static t_symbol_table symbol_table_new(void)
 {
-	return (SymbolTable){
+	return (t_symbol_table){
 		.characters = array_new(),
 		.slices = array_new(),
 	};
 }
 
-static void symbol_table_delete(SymbolTable *self)
+static void symbol_table_delete(t_symbol_table *self)
 {
 	array_delete(&self->characters);
 	array_delete(&self->slices);
 }
 
-static int symbol_table_id_for_name(const SymbolTable *self, const char *name,
+static int symbol_table_id_for_name(const t_symbol_table *self, const char *name,
 									uint32_t length)
 {
 	for (unsigned i = 0; i < self->slices.size; i++)
 	{
-		Slice slice = self->slices.contents[i];
+		t_slice slice = self->slices.contents[i];
 		if (slice.length == length &&
 			!strncmp(&self->characters.contents[slice.offset], name, length))
 			return i;
@@ -5158,21 +5191,21 @@ static int symbol_table_id_for_name(const SymbolTable *self, const char *name,
 	return -1;
 }
 
-static const char *symbol_table_name_for_id(const SymbolTable *self,
+static const char *symbol_table_name_for_id(const t_symbol_table *self,
 											uint16_t id, uint32_t *length)
 {
-	Slice slice = self->slices.contents[id];
+	t_slice slice = self->slices.contents[id];
 	*length = slice.length;
 	return &self->characters.contents[slice.offset];
 }
 
-static uint16_t symbol_table_insert_name(SymbolTable *self, const char *name,
+static uint16_t symbol_table_insert_name(t_symbol_table *self, const char *name,
 										 uint32_t length)
 {
 	int id = symbol_table_id_for_name(self, name, length);
 	if (id >= 0)
 		return (uint16_t)id;
-	Slice slice = {
+	t_slice slice = {
 		.offset = self->characters.size,
 		.length = length,
 	};
@@ -5184,13 +5217,13 @@ static uint16_t symbol_table_insert_name(SymbolTable *self, const char *name,
 }
 
 /************
- * QueryStep
+ * t_query_step
  ************/
 
-static QueryStep query_step__new(TSSymbol symbol, uint16_t depth,
+static t_query_step query_step__new(t_symbol symbol, uint16_t depth,
 								 bool is_immediate)
 {
-	QueryStep step = {
+	t_query_step step = {
 		.symbol = symbol,
 		.depth = depth,
 		.field = 0,
@@ -5212,7 +5245,7 @@ static QueryStep query_step__new(TSSymbol symbol, uint16_t depth,
 	return step;
 }
 
-static void query_step__add_capture(QueryStep *self, uint16_t capture_id)
+static void query_step__add_capture(t_query_step *self, uint16_t capture_id)
 {
 	for (unsigned i = 0; i < MAX_STEP_CAPTURE_COUNT; i++)
 	{
@@ -5224,7 +5257,7 @@ static void query_step__add_capture(QueryStep *self, uint16_t capture_id)
 	}
 }
 
-static void query_step__remove_capture(QueryStep *self, uint16_t capture_id)
+static void query_step__remove_capture(t_query_step *self, uint16_t capture_id)
 {
 	for (unsigned i = 0; i < MAX_STEP_CAPTURE_COUNT; i++)
 	{
@@ -5245,30 +5278,30 @@ static void query_step__remove_capture(QueryStep *self, uint16_t capture_id)
 }
 
 /**********************
- * StatePredecessorMap
+ * t_state_predecessor_map
  **********************/
 
-static inline StatePredecessorMap state_predecessor_map_new(
-	const TSLanguage *language)
+static inline t_state_predecessor_map state_predecessor_map_new(
+	const t_language *language)
 {
-	return (StatePredecessorMap){
+	return (t_state_predecessor_map){
 		.contents = calloc((size_t)language->state_count *
 							   (MAX_STATE_PREDECESSOR_COUNT + 1),
-						   sizeof(TSStateId)),
+						   sizeof(t_state_id)),
 	};
 }
 
-static inline void state_predecessor_map_delete(StatePredecessorMap *self)
+static inline void state_predecessor_map_delete(t_state_predecessor_map *self)
 {
 	free(self->contents);
 }
 
-static inline void state_predecessor_map_add(StatePredecessorMap *self,
-											 TSStateId			  state,
-											 TSStateId			  predecessor)
+static inline void state_predecessor_map_add(t_state_predecessor_map *self,
+											 t_state_id			  state,
+											 t_state_id			  predecessor)
 {
-	size_t	   index = (size_t)state * (MAX_STATE_PREDECESSOR_COUNT + 1);
-	TSStateId *count = &self->contents[index];
+	size_t		index = (size_t)state * (MAX_STATE_PREDECESSOR_COUNT + 1);
+	t_state_id *count = &self->contents[index];
 	if (*count == 0 || (*count < MAX_STATE_PREDECESSOR_COUNT &&
 						self->contents[index + *count] != predecessor))
 	{
@@ -5277,8 +5310,8 @@ static inline void state_predecessor_map_add(StatePredecessorMap *self,
 	}
 }
 
-static inline const TSStateId *state_predecessor_map_get(
-	const StatePredecessorMap *self, TSStateId state, unsigned *count)
+static inline const t_state_id *state_predecessor_map_get(
+	const t_state_predecessor_map *self, t_state_id state, unsigned *count)
 {
 	size_t index = (size_t)state * (MAX_STATE_PREDECESSOR_COUNT + 1);
 	*count = self->contents[index];
@@ -5286,15 +5319,15 @@ static inline const TSStateId *state_predecessor_map_get(
 }
 
 /****************
- * AnalysisState
+ * t_analysis_state
  ****************/
 
-static unsigned analysis_state__recursion_depth(const AnalysisState *self)
+static unsigned analysis_state__recursion_depth(const t_analysis_state *self)
 {
 	unsigned result = 0;
 	for (unsigned i = 0; i < self->depth; i++)
 	{
-		TSSymbol symbol = self->stack[i].parent_symbol;
+		t_symbol symbol = self->stack[i].parent_symbol;
 		for (unsigned j = 0; j < i; j++)
 		{
 			if (self->stack[j].parent_symbol == symbol)
@@ -5307,8 +5340,8 @@ static unsigned analysis_state__recursion_depth(const AnalysisState *self)
 	return result;
 }
 
-static inline int analysis_state__compare_position(AnalysisState *const *self,
-												   AnalysisState *const *other)
+static inline int analysis_state__compare_position(t_analysis_state *const *self,
+												   t_analysis_state *const *other)
 {
 	for (unsigned i = 0; i < (*self)->depth; i++)
 	{
@@ -5328,8 +5361,8 @@ static inline int analysis_state__compare_position(AnalysisState *const *self,
 	return 0;
 }
 
-static inline int analysis_state__compare(AnalysisState *const *self,
-										  AnalysisState *const *other)
+static inline int analysis_state__compare(t_analysis_state *const *self,
+										  t_analysis_state *const *other)
 {
 	int result = analysis_state__compare_position(self, other);
 	if (result != 0)
@@ -5352,7 +5385,7 @@ static inline int analysis_state__compare(AnalysisState *const *self,
 	return 0;
 }
 
-static inline AnalysisStateEntry *analysis_state__top(AnalysisState *self)
+static inline t_analysis_state_entry *analysis_state__top(t_analysis_state *self)
 {
 	if (self->depth == 0)
 	{
@@ -5361,8 +5394,8 @@ static inline AnalysisStateEntry *analysis_state__top(AnalysisState *self)
 	return &self->stack[self->depth - 1];
 }
 
-static inline bool analysis_state__has_supertype(AnalysisState *self,
-												 TSSymbol		symbol)
+static inline bool analysis_state__has_supertype(t_analysis_state *self,
+												 t_symbol		symbol)
 {
 	for (unsigned i = 0; i < self->depth; i++)
 	{
@@ -5373,22 +5406,22 @@ static inline bool analysis_state__has_supertype(AnalysisState *self,
 }
 
 /******************
- * AnalysisStateSet
+ * t_analysis_state_set
  ******************/
 
-// Obtains an `AnalysisState` instance, either by consuming one from this set's
+// Obtains an `t_analysis_state` instance, either by consuming one from this set's
 // object pool, or by cloning one from scratch.
-static inline AnalysisState *analysis_state_pool__clone_or_reuse(
-	AnalysisStateSet *self, AnalysisState *borrowed_item)
+static inline t_analysis_state *analysis_state_pool__clone_or_reuse(
+	t_analysis_state_set *self, t_analysis_state *borrowed_item)
 {
-	AnalysisState *new_item;
+	t_analysis_state *new_item;
 	if (self->size)
 	{
 		new_item = array_pop(self);
 	}
 	else
 	{
-		new_item = malloc(sizeof(AnalysisState));
+		new_item = malloc(sizeof(t_analysis_state));
 	}
 	*new_item = *borrowed_item;
 	return new_item;
@@ -5401,15 +5434,15 @@ static inline AnalysisState *analysis_state_pool__clone_or_reuse(
 // The caller retains ownership of the passed-in memory. However, the clone that
 // is created by this function will be managed by the state set.
 static inline void analysis_state_set__insert_sorted(
-	AnalysisStateSet *self, AnalysisStateSet *pool,
-	AnalysisState *borrowed_item)
+	t_analysis_state_set *self, t_analysis_state_set *pool,
+	t_analysis_state *borrowed_item)
 {
 	unsigned index, exists;
 	array_search_sorted_with(self, analysis_state__compare, &borrowed_item,
 							 &index, &exists);
 	if (!exists)
 	{
-		AnalysisState *new_item =
+		t_analysis_state *new_item =
 			analysis_state_pool__clone_or_reuse(pool, borrowed_item);
 		array_insert(self, index, new_item);
 	}
@@ -5424,18 +5457,18 @@ static inline void analysis_state_set__insert_sorted(
 //
 // The caller retains ownership of the passed-in memory. However, the clone that
 // is created by this function will be managed by the state set.
-static inline void analysis_state_set__push(AnalysisStateSet *self,
-											AnalysisStateSet *pool,
-											AnalysisState	 *borrowed_item)
+static inline void analysis_state_set__push(t_analysis_state_set *self,
+											t_analysis_state_set *pool,
+											t_analysis_state	 *borrowed_item)
 {
-	AnalysisState *new_item =
+	t_analysis_state *new_item =
 		analysis_state_pool__clone_or_reuse(pool, borrowed_item);
 	array_push(self, new_item);
 }
 
 // Removes all items from this set, returning it to an empty state.
-static inline void analysis_state_set__clear(AnalysisStateSet *self,
-											 AnalysisStateSet *pool)
+static inline void analysis_state_set__clear(t_analysis_state_set *self,
+											 t_analysis_state_set *pool)
 {
 	array_push_all(pool, self);
 	array_clear(self);
@@ -5444,7 +5477,7 @@ static inline void analysis_state_set__clear(AnalysisStateSet *self,
 // Releases all memory that is managed with this state set, including any items
 // currently present. After calling this function, the set is no longer suitable
 // for use.
-static inline void analysis_state_set__delete(AnalysisStateSet *self)
+static inline void analysis_state_set__delete(t_analysis_state_set *self)
 {
 	for (unsigned i = 0; i < self->size; i++)
 	{
@@ -5457,9 +5490,9 @@ static inline void analysis_state_set__delete(AnalysisStateSet *self)
  * QueryAnalyzer
  ****************/
 
-static inline QueryAnalysis query_analysis__new(void)
+static inline t_query_analysis query_analysis__new(void)
 {
-	return (QueryAnalysis){
+	return (t_query_analysis){
 		.states = array_new(),
 		.next_states = array_new(),
 		.deeper_states = array_new(),
@@ -5470,7 +5503,7 @@ static inline QueryAnalysis query_analysis__new(void)
 	};
 }
 
-static inline void query_analysis__delete(QueryAnalysis *self)
+static inline void query_analysis__delete(t_query_analysis *self)
 {
 	analysis_state_set__delete(&self->states);
 	analysis_state_set__delete(&self->next_states);
@@ -5481,11 +5514,11 @@ static inline void query_analysis__delete(QueryAnalysis *self)
 }
 
 /***********************
- * AnalysisSubgraphNode
+ * t_analysis_subgraph_node
  ***********************/
 
 static inline int analysis_subgraph_node__compare(
-	const AnalysisSubgraphNode *self, const AnalysisSubgraphNode *other)
+	const t_analysis_subgraph_node *self, const t_analysis_subgraph_node *other)
 {
 	if (self->state < other->state)
 		return -1;
@@ -5510,7 +5543,7 @@ static inline int analysis_subgraph_node__compare(
  * Query
  *********/
 
-// The `pattern_map` contains a mapping from TSSymbol values to indices in the
+// The `pattern_map` contains a mapping from t_symbol values to indices in the
 // `steps` array. For a given syntax node, the `pattern_map` makes it possible
 // to quickly find the starting steps of all of the patterns whose root matches
 // that node. Each entry has two fields: a `pattern_index`, which identifies one
@@ -5524,9 +5557,9 @@ static inline int analysis_subgraph_node__compare(
 // This returns `true` if the symbol is present and `false` otherwise.
 // If the symbol is not present `*result` is set to the index where the
 // symbol should be inserted.
-static inline bool ts_query__pattern_map_search(const TSQuery *self,
-												TSSymbol	   needle,
-												uint32_t	  *result)
+static inline bool ts_query__pattern_map_search(const t_parse_query *self,
+												t_symbol			 needle,
+												uint32_t			*result)
 {
 	uint32_t base_index = self->wildcard_root_pattern_count;
 	uint32_t size = self->pattern_map.size - base_index;
@@ -5539,7 +5572,7 @@ static inline bool ts_query__pattern_map_search(const TSQuery *self,
 	{
 		uint32_t half_size = size / 2;
 		uint32_t mid_index = base_index + half_size;
-		TSSymbol mid_symbol =
+		t_symbol mid_symbol =
 			self->steps
 				.contents[self->pattern_map.contents[mid_index].step_index]
 				.symbol;
@@ -5548,7 +5581,7 @@ static inline bool ts_query__pattern_map_search(const TSQuery *self,
 		size -= half_size;
 	}
 
-	TSSymbol symbol =
+	t_symbol symbol =
 		self->steps.contents[self->pattern_map.contents[base_index].step_index]
 			.symbol;
 
@@ -5570,8 +5603,9 @@ static inline bool ts_query__pattern_map_search(const TSQuery *self,
 
 // Insert a new pattern's start index into the pattern map, maintaining
 // the pattern map's ordering invariant.
-static inline void ts_query__pattern_map_insert(TSQuery *self, TSSymbol symbol,
-												PatternEntry new_entry)
+static inline void ts_query__pattern_map_insert(t_parse_query *self,
+												t_symbol	   symbol,
+												t_pattern_entry   new_entry)
 {
 	uint32_t index;
 	ts_query__pattern_map_search(self, symbol, &index);
@@ -5582,7 +5616,7 @@ static inline void ts_query__pattern_map_insert(TSQuery *self, TSSymbol symbol,
 	// to be maintained more efficiently.
 	while (index < self->pattern_map.size)
 	{
-		PatternEntry *entry = &self->pattern_map.contents[index];
+		t_pattern_entry *entry = &self->pattern_map.contents[index];
 		if (self->steps.contents[entry->step_index].symbol == symbol &&
 			entry->pattern_index < new_entry.pattern_index)
 		{
@@ -5599,9 +5633,9 @@ static inline void ts_query__pattern_map_insert(TSQuery *self, TSSymbol symbol,
 
 // Walk the subgraph for this non-terminal, tracking all of the possible
 // sequences of progress within the pattern.
-static void ts_query__perform_analysis(TSQuery					   *self,
-									   const AnalysisSubgraphArray *subgraphs,
-									   QueryAnalysis			   *analysis)
+static void ts_query__perform_analysis(t_parse_query			   *self,
+									   const t_analysis_subgraph_array *subgraphs,
+									   t_query_analysis			   *analysis)
 {
 	unsigned recursion_depth_limit = 0;
 	unsigned prev_final_step_count = 0;
@@ -5625,7 +5659,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 		printf("\n");
 		for (unsigned j = 0; j < analysis->states.size; j++)
 		{
-			AnalysisState *state = analysis->states.contents[j];
+			t_analysis_state *state = analysis->states.contents[j];
 			printf("  %3u: step: %u, stack: [", j, state->step_index);
 			for (unsigned k = 0; k < state->depth; k++)
 			{
@@ -5661,7 +5695,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 
 				prev_final_step_count = analysis->final_step_indices.size;
 				recursion_depth_limit++;
-				AnalysisStateSet _states = analysis->states;
+				t_analysis_state_set _states = analysis->states;
 				analysis->states = analysis->deeper_states;
 				analysis->deeper_states = _states;
 				continue;
@@ -5674,7 +5708,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 								  &analysis->state_pool);
 		for (unsigned j = 0; j < analysis->states.size; j++)
 		{
-			AnalysisState *const state = analysis->states.contents[j];
+			t_analysis_state *const state = analysis->states.contents[j];
 
 			// For efficiency, it's important to avoid processing the same
 			// analysis state more than once. To achieve this, keep the states
@@ -5708,15 +5742,15 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 				}
 			}
 
-			const TSStateId parse_state =
+			const t_state_id parse_state =
 				analysis_state__top(state)->parse_state;
-			const TSSymbol parent_symbol =
+			const t_symbol parent_symbol =
 				analysis_state__top(state)->parent_symbol;
-			const TSFieldId parent_field_id =
+			const t_field_id parent_field_id =
 				analysis_state__top(state)->field_id;
 			const unsigned child_index =
 				analysis_state__top(state)->child_index;
-			const QueryStep *const step =
+			const t_query_step *const step =
 				&self->steps.contents[state->step_index];
 
 			unsigned subgraph_index, exists;
@@ -5724,24 +5758,24 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 								   &subgraph_index, &exists);
 			if (!exists)
 				continue;
-			const AnalysisSubgraph *subgraph =
+			const t_analysis_subgraph *subgraph =
 				&subgraphs->contents[subgraph_index];
 
 			// Follow every possible path in the parse table, but only visit
 			// states that are part of the subgraph for the current symbol.
-			LookaheadIterator lookahead_iterator =
+			t_lookahead_iterator lookahead_iterator =
 				ts_language_lookaheads(self->language, parse_state);
 			while (ts_lookahead_iterator__next(&lookahead_iterator))
 			{
-				TSSymbol sym = lookahead_iterator.symbol;
+				t_symbol sym = lookahead_iterator.symbol;
 
-				AnalysisSubgraphNode successor = {
+				t_analysis_subgraph_node successor = {
 					.state = parse_state,
 					.child_index = child_index,
 				};
 				if (lookahead_iterator.action_count)
 				{
-					const TSParseAction *action =
+					const t_parse_action *action =
 						&lookahead_iterator
 							 .actions[lookahead_iterator.action_count - 1];
 					if (action->type == TSParseActionTypeShift)
@@ -5773,7 +5807,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 										 &successor, &node_index, &exists);
 				while (node_index < subgraph->nodes.size)
 				{
-					AnalysisSubgraphNode *node =
+					t_analysis_subgraph_node *node =
 						&subgraph->nodes.contents[node_index++];
 					if (node->state != successor.state ||
 						node->child_index != successor.child_index)
@@ -5781,17 +5815,17 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 
 					// Use the subgraph to determine what alias and field will
 					// eventually be applied to this child node.
-					TSSymbol alias = ts_language_alias_at(
+					t_symbol alias = ts_language_alias_at(
 						self->language, node->production_id, child_index);
-					TSSymbol visible_symbol =
+					t_symbol visible_symbol =
 						alias ? alias
 						: self->language->symbol_metadata[sym].visible
 							? self->language->public_symbol_map[sym]
 							: 0;
-					TSFieldId field_id = parent_field_id;
+					t_field_id field_id = parent_field_id;
 					if (!field_id)
 					{
-						const TSFieldMapEntry *field_map, *field_map_end;
+						const t_field_map_entry *field_map, *field_map_end;
 						ts_language_field_map(self->language,
 											  node->production_id, &field_map,
 											  &field_map_end);
@@ -5808,8 +5842,8 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 
 					// Create a new state that has advanced past this
 					// hypothetical subtree.
-					AnalysisState		next_state = *state;
-					AnalysisStateEntry *next_state_top =
+					t_analysis_state		next_state = *state;
+					t_analysis_state_entry *next_state_top =
 						analysis_state__top(&next_state);
 					next_state_top->child_index = successor.child_index;
 					next_state_top->parse_state = successor.state;
@@ -5867,7 +5901,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 							next_state_top = analysis_state__top(&next_state);
 						}
 
-						*next_state_top = (AnalysisStateEntry){
+						*next_state_top = (t_analysis_state_entry){
 							.parse_state = parse_state,
 							.parent_symbol = sym,
 							.child_index = 0,
@@ -5897,7 +5931,7 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 					// the query pattern, then advance to the next step at the
 					// current depth. This involves skipping over any descendant
 					// steps of the current child.
-					const QueryStep *next_step = step;
+					const t_query_step *next_step = step;
 					if (does_match)
 					{
 						for (;;)
@@ -5984,21 +6018,22 @@ static void ts_query__perform_analysis(TSQuery					   *self,
 			}
 		}
 
-		AnalysisStateSet _states = analysis->states;
+		t_analysis_state_set _states = analysis->states;
 		analysis->states = analysis->next_states;
 		analysis->next_states = _states;
 	}
 }
 
-static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
+static bool ts_query__analyze_patterns(t_parse_query *self,
+									   unsigned		 *error_offset)
 {
 	Array(uint16_t) non_rooted_pattern_start_steps = array_new();
 	for (unsigned i = 0; i < self->pattern_map.size; i++)
 	{
-		PatternEntry *pattern = &self->pattern_map.contents[i];
+		t_pattern_entry *pattern = &self->pattern_map.contents[i];
 		if (!pattern->is_rooted)
 		{
-			QueryStep *step = &self->steps.contents[pattern->step_index];
+			t_query_step *step = &self->steps.contents[pattern->step_index];
 			if (step->symbol != WILDCARD_SYMBOL)
 			{
 				array_push(&non_rooted_pattern_start_steps, i);
@@ -6013,7 +6048,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	Array(uint32_t) parent_step_indices = array_new();
 	for (unsigned i = 0; i < self->steps.size; i++)
 	{
-		QueryStep *step = &self->steps.contents[i];
+		t_query_step *step = &self->steps.contents[i];
 		if (step->depth == PATTERN_DONE_MARKER)
 		{
 			step->parent_pattern_guaranteed = true;
@@ -6026,7 +6061,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		step->contains_captures = step->capture_ids[0] != NONE;
 		for (unsigned j = i + 1; j < self->steps.size; j++)
 		{
-			QueryStep *next_step = &self->steps.contents[j];
+			t_query_step *next_step = &self->steps.contents[j];
 			if (next_step->depth == PATTERN_DONE_MARKER ||
 				next_step->depth <= step->depth)
 				break;
@@ -6056,20 +6091,20 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	// all of the hidden symbols in the grammar, because these might occur
 	// within one of the parent nodes, such that their children appear to belong
 	// to the parent.
-	AnalysisSubgraphArray subgraphs = array_new();
+	t_analysis_subgraph_array subgraphs = array_new();
 	for (unsigned i = 0; i < parent_step_indices.size; i++)
 	{
 		uint32_t parent_step_index = parent_step_indices.contents[i];
-		TSSymbol parent_symbol = self->steps.contents[parent_step_index].symbol;
-		AnalysisSubgraph subgraph = {.symbol = parent_symbol};
+		t_symbol parent_symbol = self->steps.contents[parent_step_index].symbol;
+		t_analysis_subgraph subgraph = {.symbol = parent_symbol};
 		array_insert_sorted_by(&subgraphs, .symbol, subgraph);
 	}
-	for (TSSymbol sym = (uint16_t)self->language->token_count;
+	for (t_symbol sym = (uint16_t)self->language->token_count;
 		 sym < (uint16_t)self->language->symbol_count; sym++)
 	{
 		if (!ts_language_symbol_metadata(self->language, sym).visible)
 		{
-			AnalysisSubgraph subgraph = {.symbol = sym};
+			t_analysis_subgraph subgraph = {.symbol = sym};
 			array_insert_sorted_by(&subgraphs, .symbol, subgraph);
 		}
 	}
@@ -6080,13 +6115,13 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	//   2) All of the parse states where one of these symbols can end, along
 	//      with information about the node that would be created.
 	//   3) A list of predecessor states for each state.
-	StatePredecessorMap predecessor_map =
+	t_state_predecessor_map predecessor_map =
 		state_predecessor_map_new(self->language);
-	for (TSStateId state = 1; state < (uint16_t)self->language->state_count;
+	for (t_state_id state = 1; state < (uint16_t)self->language->state_count;
 		 state++)
 	{
-		unsigned		  subgraph_index, exists;
-		LookaheadIterator lookahead_iterator =
+		unsigned			 subgraph_index, exists;
+		t_lookahead_iterator lookahead_iterator =
 			ts_language_lookaheads(self->language, state);
 		while (ts_lookahead_iterator__next(&lookahead_iterator))
 		{
@@ -6094,22 +6129,22 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 			{
 				for (unsigned i = 0; i < lookahead_iterator.action_count; i++)
 				{
-					const TSParseAction *action =
+					const t_parse_action *action =
 						&lookahead_iterator.actions[i];
 					if (action->type == TSParseActionTypeReduce)
 					{
-						const TSSymbol *aliases, *aliases_end;
+						const t_symbol *aliases, *aliases_end;
 						ts_language_aliases_for_symbol(self->language,
 													   action->reduce.symbol,
 													   &aliases, &aliases_end);
-						for (const TSSymbol *symbol = aliases;
+						for (const t_symbol *symbol = aliases;
 							 symbol < aliases_end; symbol++)
 						{
 							array_search_sorted_by(&subgraphs, .symbol, *symbol,
 												   &subgraph_index, &exists);
 							if (exists)
 							{
-								AnalysisSubgraph *subgraph =
+								t_analysis_subgraph *subgraph =
 									&subgraphs.contents[subgraph_index];
 								if (subgraph->nodes.size == 0 ||
 									array_back(&subgraph->nodes)->state !=
@@ -6117,7 +6152,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 								{
 									array_push(
 										&subgraph->nodes,
-										((AnalysisSubgraphNode){
+										((t_analysis_subgraph_node){
 											.state = state,
 											.production_id =
 												action->reduce.production_id,
@@ -6132,7 +6167,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 					else if (action->type == TSParseActionTypeShift &&
 							 !action->shift.extra)
 					{
-						TSStateId next_state = action->shift.state;
+						t_state_id next_state = action->shift.state;
 						state_predecessor_map_add(&predecessor_map, next_state,
 												  state);
 					}
@@ -6147,18 +6182,18 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 				}
 				if (ts_language_state_is_primary(self->language, state))
 				{
-					const TSSymbol *aliases, *aliases_end;
+					const t_symbol *aliases, *aliases_end;
 					ts_language_aliases_for_symbol(self->language,
 												   lookahead_iterator.symbol,
 												   &aliases, &aliases_end);
-					for (const TSSymbol *symbol = aliases; symbol < aliases_end;
+					for (const t_symbol *symbol = aliases; symbol < aliases_end;
 						 symbol++)
 					{
 						array_search_sorted_by(&subgraphs, .symbol, *symbol,
 											   &subgraph_index, &exists);
 						if (exists)
 						{
-							AnalysisSubgraph *subgraph =
+							t_analysis_subgraph *subgraph =
 								&subgraphs.contents[subgraph_index];
 							if (subgraph->start_states.size == 0 ||
 								*array_back(&subgraph->start_states) != state)
@@ -6172,10 +6207,10 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 
 	// For each subgraph, compute the preceding states by walking backward
 	// from the end states using the predecessor map.
-	Array(AnalysisSubgraphNode) next_nodes = array_new();
+	Array(t_analysis_subgraph_node) next_nodes = array_new();
 	for (unsigned i = 0; i < subgraphs.size; i++)
 	{
-		AnalysisSubgraph *subgraph = &subgraphs.contents[i];
+		t_analysis_subgraph *subgraph = &subgraphs.contents[i];
 		if (subgraph->nodes.size == 0)
 		{
 			array_delete(&subgraph->start_states);
@@ -6186,15 +6221,15 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		array_assign(&next_nodes, &subgraph->nodes);
 		while (next_nodes.size > 0)
 		{
-			AnalysisSubgraphNode node = array_pop(&next_nodes);
+			t_analysis_subgraph_node node = array_pop(&next_nodes);
 			if (node.child_index > 1)
 			{
-				unsigned		 predecessor_count;
-				const TSStateId *predecessors = state_predecessor_map_get(
+				unsigned		  predecessor_count;
+				const t_state_id *predecessors = state_predecessor_map_get(
 					&predecessor_map, node.state, &predecessor_count);
 				for (unsigned j = 0; j < predecessor_count; j++)
 				{
-					AnalysisSubgraphNode predecessor_node = {
+					t_analysis_subgraph_node predecessor_node = {
 						.state = predecessors[j],
 						.child_index = node.child_index - 1,
 						.production_id = node.production_id,
@@ -6218,7 +6253,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	printf("\nSubgraphs:\n");
 	for (unsigned i = 0; i < subgraphs.size; i++)
 	{
-		AnalysisSubgraph *subgraph = &subgraphs.contents[i];
+		t_analysis_subgraph *subgraph = &subgraphs.contents[i];
 		printf("  %u, %s:\n", subgraph->symbol,
 			   ts_language_symbol_name(self->language, subgraph->symbol));
 		for (unsigned j = 0; j < subgraph->start_states.size; j++)
@@ -6227,7 +6262,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		}
 		for (unsigned j = 0; j < subgraph->nodes.size; j++)
 		{
-			AnalysisSubgraphNode *node = &subgraph->nodes.contents[j];
+			t_analysis_subgraph_node *node = &subgraph->nodes.contents[j];
 			printf("    {state: %u, child_index: %u, production_id: %u, done: "
 				   "%d}\n",
 				   node->state, node->child_index, node->production_id,
@@ -6241,12 +6276,12 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	// match, and identify all of the possible children within the pattern where
 	// matching could fail.
 	bool		  all_patterns_are_valid = true;
-	QueryAnalysis analysis = query_analysis__new();
+	t_query_analysis analysis = query_analysis__new();
 	for (unsigned i = 0; i < parent_step_indices.size; i++)
 	{
 		uint16_t parent_step_index = parent_step_indices.contents[i];
 		uint16_t parent_depth = self->steps.contents[parent_step_index].depth;
-		TSSymbol parent_symbol = self->steps.contents[parent_step_index].symbol;
+		t_symbol parent_symbol = self->steps.contents[parent_step_index].symbol;
 		if (parent_symbol == ts_builtin_sym_error)
 			continue;
 
@@ -6269,16 +6304,16 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 
 		// Initialize an analysis state at every parse state in the table where
 		// this parent symbol can occur.
-		AnalysisSubgraph *subgraph = &subgraphs.contents[subgraph_index];
+		t_analysis_subgraph *subgraph = &subgraphs.contents[subgraph_index];
 		analysis_state_set__clear(&analysis.states, &analysis.state_pool);
 		analysis_state_set__clear(&analysis.deeper_states,
 								  &analysis.state_pool);
 		for (unsigned j = 0; j < subgraph->start_states.size; j++)
 		{
-			TSStateId parse_state = subgraph->start_states.contents[j];
+			t_state_id parse_state = subgraph->start_states.contents[j];
 			analysis_state_set__push(
 				&analysis.states, &analysis.state_pool,
-				&((AnalysisState){
+				&((t_analysis_state){
 					.step_index = parent_step_index + 1,
 					.stack =
 						{
@@ -6312,7 +6347,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		{
 			for (unsigned j = parent_step_index + 1; j < self->steps.size; j++)
 			{
-				QueryStep *step = &self->steps.contents[j];
+				t_query_step *step = &self->steps.contents[j];
 				if (step->depth <= parent_depth ||
 					step->depth == PATTERN_DONE_MARKER)
 					break;
@@ -6349,7 +6384,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		for (unsigned j = 0; j < analysis.final_step_indices.size; j++)
 		{
 			uint32_t final_step_index = analysis.final_step_indices.contents[j];
-			QueryStep *step = &self->steps.contents[final_step_index];
+			t_query_step *step = &self->steps.contents[final_step_index];
 			if (step->depth != PATTERN_DONE_MARKER &&
 				step->depth > parent_depth && !step->is_dead_end)
 			{
@@ -6363,7 +6398,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	Array(uint16_t) predicate_capture_ids = array_new();
 	for (unsigned i = 0; i < self->patterns.size; i++)
 	{
-		QueryPattern *pattern = &self->patterns.contents[i];
+		t_query_pattern *pattern = &self->patterns.contents[i];
 
 		// Gather all of the captures that are used in predicates for this
 		// pattern.
@@ -6372,7 +6407,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 					  end = start + pattern->predicate_steps.length, j = start;
 			 j < end; j++)
 		{
-			TSQueryPredicateStep *step = &self->predicate_steps.contents[j];
+			t_query_predicate_step *step = &self->predicate_steps.contents[j];
 			if (step->type == TSQueryPredicateStepTypeCapture)
 			{
 				uint16_t value_id = step->value_id;
@@ -6385,7 +6420,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 					  end = start + pattern->steps.length, j = start;
 			 j < end; j++)
 		{
-			QueryStep *step = &self->steps.contents[j];
+			t_query_step *step = &self->steps.contents[j];
 			for (unsigned k = 0; k < MAX_STEP_CAPTURE_COUNT; k++)
 			{
 				uint16_t capture_id = step->capture_ids[k];
@@ -6411,7 +6446,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		done = true;
 		for (unsigned i = self->steps.size - 1; i > 0; i--)
 		{
-			QueryStep *step = &self->steps.contents[i];
+			t_query_step *step = &self->steps.contents[i];
 			if (step->depth == PATTERN_DONE_MARKER)
 				continue;
 
@@ -6435,7 +6470,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 			// If not, mark its predecessor as indefinite.
 			if (!parent_pattern_guaranteed)
 			{
-				QueryStep *prev_step = &self->steps.contents[i - 1];
+				t_query_step *prev_step = &self->steps.contents[i - 1];
 				if (!prev_step->is_dead_end &&
 					prev_step->depth != PATTERN_DONE_MARKER &&
 					prev_step->root_pattern_guaranteed)
@@ -6451,7 +6486,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	printf("Steps:\n");
 	for (unsigned i = 0; i < self->steps.size; i++)
 	{
-		QueryStep *step = &self->steps.contents[i];
+		t_query_step *step = &self->steps.contents[i];
 		if (step->depth == PATTERN_DONE_MARKER)
 		{
 			printf("  %u: DONE\n", i);
@@ -6482,7 +6517,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	{
 		uint16_t pattern_entry_index =
 			non_rooted_pattern_start_steps.contents[i];
-		PatternEntry *pattern_entry =
+		t_pattern_entry *pattern_entry =
 			&self->pattern_map.contents[pattern_entry_index];
 
 		analysis_state_set__clear(&analysis.states, &analysis.state_pool);
@@ -6490,18 +6525,18 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 								  &analysis.state_pool);
 		for (unsigned j = 0; j < subgraphs.size; j++)
 		{
-			AnalysisSubgraph *subgraph = &subgraphs.contents[j];
-			TSSymbolMetadata  metadata =
+			t_analysis_subgraph *subgraph = &subgraphs.contents[j];
+			t_symbol_metadata metadata =
 				ts_language_symbol_metadata(self->language, subgraph->symbol);
 			if (metadata.visible || metadata.named)
 				continue;
 
 			for (uint32_t k = 0; k < subgraph->start_states.size; k++)
 			{
-				TSStateId parse_state = subgraph->start_states.contents[k];
+				t_state_id parse_state = subgraph->start_states.contents[k];
 				analysis_state_set__push(
 					&analysis.states, &analysis.state_pool,
-					&((AnalysisState){
+					&((t_analysis_state){
 						.step_index = pattern_entry->step_index,
 						.stack =
 							{
@@ -6535,7 +6570,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 
 		for (unsigned k = 0; k < analysis.finished_parent_symbols.size; k++)
 		{
-			TSSymbol symbol = analysis.finished_parent_symbols.contents[k];
+			t_symbol symbol = analysis.finished_parent_symbols.contents[k];
 			array_insert_sorted_by(&self->repeat_symbols_with_rootless_patterns,
 								   , symbol);
 		}
@@ -6549,7 +6584,7 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 		for (unsigned i = 0;
 			 i < self->repeat_symbols_with_rootless_patterns.size; i++)
 		{
-			TSSymbol symbol =
+			t_symbol symbol =
 				self->repeat_symbols_with_rootless_patterns.contents[i];
 			printf("  %u, %s\n", symbol,
 				   ts_language_symbol_name(self->language, symbol));
@@ -6575,11 +6610,12 @@ static bool ts_query__analyze_patterns(TSQuery *self, unsigned *error_offset)
 	return all_patterns_are_valid;
 }
 
-static void ts_query__add_negated_fields(TSQuery *self, uint16_t step_index,
-										 TSFieldId *field_ids,
-										 uint16_t	field_count)
+static void ts_query__add_negated_fields(t_parse_query *self,
+										 uint16_t		step_index,
+										 t_field_id	   *field_ids,
+										 uint16_t		field_count)
 {
-	QueryStep *step = &self->steps.contents[step_index];
+	t_query_step *step = &self->steps.contents[step_index];
 
 	// The negated field array stores a list of field lists, separated by zeros.
 	// Try to find the start index of an existing list that matches this new
@@ -6589,7 +6625,7 @@ static void ts_query__add_negated_fields(TSQuery *self, uint16_t step_index,
 	unsigned start_i = 0;
 	for (unsigned i = 0; i < self->negated_fields.size; i++)
 	{
-		TSFieldId existing_field_id = self->negated_fields.contents[i];
+		t_field_id existing_field_id = self->negated_fields.contents[i];
 
 		// At each zero value, terminate the match attempt. If we've exactly
 		// matched the new field list, then reuse this index. Otherwise,
@@ -6630,8 +6666,8 @@ static void ts_query__add_negated_fields(TSQuery *self, uint16_t step_index,
 	array_push(&self->negated_fields, 0);
 }
 
-static TSQueryError ts_query__parse_string_literal(TSQuery *self,
-												   Stream  *stream)
+static t_query_error ts_query__parse_string_literal(t_parse_query *self,
+													t_stream		  *stream)
 {
 	const char *string_start = stream->input;
 	if (stream->next != '"')
@@ -6705,7 +6741,8 @@ static TSQueryError ts_query__parse_string_literal(TSQuery *self,
 // a higher level of abstraction, such as the Rust/JavaScript bindings. They
 // can contain '@'-prefixed capture names, double-quoted strings, and bare
 // symbols, which also represent strings.
-static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
+static t_query_error ts_query__parse_predicate(t_parse_query *self,
+											   t_stream		 *stream)
 {
 	if (!stream_is_ident_start(stream))
 		return TSQueryErrorSyntax;
@@ -6715,7 +6752,7 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 	uint16_t id = symbol_table_insert_name(&self->predicate_values,
 										   predicate_name, length);
 	array_push(&self->predicate_steps,
-			   ((TSQueryPredicateStep){
+			   ((t_query_predicate_step){
 				   .type = TSQueryPredicateStepTypeString,
 				   .value_id = id,
 			   }));
@@ -6728,7 +6765,7 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 			stream_advance(stream);
 			stream_skip_whitespace(stream);
 			array_push(&self->predicate_steps,
-					   ((TSQueryPredicateStep){
+					   ((t_query_predicate_step){
 						   .type = TSQueryPredicateStepTypeDone,
 						   .value_id = 0,
 					   }));
@@ -6757,7 +6794,7 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 			}
 
 			array_push(&self->predicate_steps,
-					   ((TSQueryPredicateStep){
+					   ((t_query_predicate_step){
 						   .type = TSQueryPredicateStepTypeCapture,
 						   .value_id = capture_id,
 					   }));
@@ -6766,14 +6803,14 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 		// Parse a string literal
 		else if (stream->next == '"')
 		{
-			TSQueryError e = ts_query__parse_string_literal(self, stream);
+			t_query_error e = ts_query__parse_string_literal(self, stream);
 			if (e)
 				return e;
 			uint16_t query_id = symbol_table_insert_name(
 				&self->predicate_values, self->string_buffer.contents,
 				self->string_buffer.size);
 			array_push(&self->predicate_steps,
-					   ((TSQueryPredicateStep){
+					   ((t_query_predicate_step){
 						   .type = TSQueryPredicateStepTypeString,
 						   .value_id = query_id,
 					   }));
@@ -6788,7 +6825,7 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 			uint16_t query_id = symbol_table_insert_name(
 				&self->predicate_values, symbol_start, symbol_length);
 			array_push(&self->predicate_steps,
-					   ((TSQueryPredicateStep){
+					   ((t_query_predicate_step){
 						   .type = TSQueryPredicateStepTypeString,
 						   .value_id = query_id,
 					   }));
@@ -6809,12 +6846,12 @@ static TSQueryError ts_query__parse_predicate(TSQuery *self, Stream *stream)
 // the query's internal state machine representation. For nested patterns,
 // this function calls itself recursively.
 //
-// The caller is responsible for passing in a dedicated CaptureQuantifiers.
+// The caller is responsible for passing in a dedicated t_capture_quantifiers.
 // These should not be shared between different calls to
 // ts_query__parse_pattern!
-static TSQueryError ts_query__parse_pattern(
-	TSQuery *self, Stream *stream, uint32_t depth, bool is_immediate,
-	CaptureQuantifiers *capture_quantifiers)
+static t_query_error ts_query__parse_pattern(
+	t_parse_query *self, t_stream *stream, uint32_t depth, bool is_immediate,
+	t_capture_quantifiers *capture_quantifiers)
 {
 	if (stream->next == 0)
 		return TSQueryErrorSyntax;
@@ -6828,7 +6865,7 @@ static TSQueryError ts_query__parse_pattern(
 		array_back(&self->step_offsets)->step_index != starting_step_index)
 	{
 		array_push(&self->step_offsets,
-				   ((StepOffset){
+				   ((t_step_offset){
 					   .step_index = starting_step_index,
 					   .byte_offset = stream_offset(stream),
 				   }));
@@ -6843,12 +6880,12 @@ static TSQueryError ts_query__parse_pattern(
 		// Parse each branch, and add a placeholder step in between the
 		// branches.
 		Array(uint32_t) branch_step_indices = array_new();
-		CaptureQuantifiers branch_capture_quantifiers =
+		t_capture_quantifiers branch_capture_quantifiers =
 			capture_quantifiers_new();
 		for (;;)
 		{
-			uint32_t	 start_index = self->steps.size;
-			TSQueryError e = ts_query__parse_pattern(
+			uint32_t	  start_index = self->steps.size;
+			t_query_error e = ts_query__parse_pattern(
 				self, stream, depth, is_immediate, &branch_capture_quantifiers);
 
 			if (e == PARENT_DONE)
@@ -6891,8 +6928,8 @@ static TSQueryError ts_query__parse_pattern(
 		{
 			uint32_t   step_index = branch_step_indices.contents[i];
 			uint32_t   next_step_index = branch_step_indices.contents[i + 1];
-			QueryStep *start_step = &self->steps.contents[step_index];
-			QueryStep *end_step = &self->steps.contents[next_step_index - 1];
+			t_query_step *start_step = &self->steps.contents[step_index];
+			t_query_step *end_step = &self->steps.contents[next_step_index - 1];
 			start_step->alternative_index = next_step_index;
 			end_step->alternative_index = self->steps.size;
 			end_step->is_dead_end = true;
@@ -6916,7 +6953,7 @@ static TSQueryError ts_query__parse_pattern(
 		if (stream->next == '(' || stream->next == '"' || stream->next == '[')
 		{
 			bool			   child_is_immediate = is_immediate;
-			CaptureQuantifiers child_capture_quantifiers =
+			t_capture_quantifiers child_capture_quantifiers =
 				capture_quantifiers_new();
 			for (;;)
 			{
@@ -6926,7 +6963,7 @@ static TSQueryError ts_query__parse_pattern(
 					stream_advance(stream);
 					stream_skip_whitespace(stream);
 				}
-				TSQueryError e = ts_query__parse_pattern(
+				t_query_error e = ts_query__parse_pattern(
 					self, stream, depth, child_is_immediate,
 					&child_capture_quantifiers);
 				if (e == PARENT_DONE)
@@ -6963,7 +7000,7 @@ static TSQueryError ts_query__parse_pattern(
 		// Otherwise, this parenthesis is the start of a named node.
 		else
 		{
-			TSSymbol symbol;
+			t_symbol symbol;
 
 			// Parse a normal node name
 			if (stream_is_ident_start(stream))
@@ -6997,7 +7034,7 @@ static TSQueryError ts_query__parse_pattern(
 			// Add a step for the node.
 			array_push(&self->steps,
 					   query_step__new(symbol, depth, is_immediate));
-			QueryStep *step = array_back(&self->steps);
+			t_query_step *step = array_back(&self->steps);
 			if (ts_language_symbol_metadata(self->language, symbol).supertype)
 			{
 				step->supertype_symbol = step->symbol;
@@ -7037,8 +7074,8 @@ static TSQueryError ts_query__parse_pattern(
 			bool			   child_is_immediate = false;
 			uint16_t		   last_child_step_index = 0;
 			uint16_t		   negated_field_count = 0;
-			TSFieldId		   negated_field_ids[MAX_NEGATED_FIELD_COUNT];
-			CaptureQuantifiers child_capture_quantifiers =
+			t_field_id		   negated_field_ids[MAX_NEGATED_FIELD_COUNT];
+			t_capture_quantifiers child_capture_quantifiers =
 				capture_quantifiers_new();
 			for (;;)
 			{
@@ -7057,7 +7094,7 @@ static TSQueryError ts_query__parse_pattern(
 					uint32_t length = (uint32_t)(stream->input - field_name);
 					stream_skip_whitespace(stream);
 
-					TSFieldId field_id = ts_language_field_id_for_name(
+					t_field_id field_id = ts_language_field_id_for_name(
 						self->language, field_name, length);
 					if (!field_id)
 					{
@@ -7084,8 +7121,8 @@ static TSQueryError ts_query__parse_pattern(
 					stream_skip_whitespace(stream);
 				}
 
-				uint16_t	 step_index = self->steps.size;
-				TSQueryError e = ts_query__parse_pattern(
+				uint16_t	  step_index = self->steps.size;
+				t_query_error e = ts_query__parse_pattern(
 					self, stream, depth + 1, child_is_immediate,
 					&child_capture_quantifiers);
 				if (e == PARENT_DONE)
@@ -7147,13 +7184,13 @@ static TSQueryError ts_query__parse_pattern(
 	// Parse a double-quoted anonymous leaf node expression
 	else if (stream->next == '"')
 	{
-		const char	*string_start = stream->input;
-		TSQueryError e = ts_query__parse_string_literal(self, stream);
+		const char	 *string_start = stream->input;
+		t_query_error e = ts_query__parse_string_literal(self, stream);
 		if (e)
 			return e;
 
 		// Add a step for the node
-		TSSymbol symbol = ts_language_symbol_for_name(
+		t_symbol symbol = ts_language_symbol_for_name(
 			self->language, self->string_buffer.contents,
 			self->string_buffer.size, false);
 		if (!symbol)
@@ -7182,9 +7219,9 @@ static TSQueryError ts_query__parse_pattern(
 		stream_skip_whitespace(stream);
 
 		// Parse the pattern
-		CaptureQuantifiers field_capture_quantifiers =
+		t_capture_quantifiers field_capture_quantifiers =
 			capture_quantifiers_new();
-		TSQueryError e = ts_query__parse_pattern(
+		t_query_error e = ts_query__parse_pattern(
 			self, stream, depth, is_immediate, &field_capture_quantifiers);
 		if (e)
 		{
@@ -7195,7 +7232,7 @@ static TSQueryError ts_query__parse_pattern(
 		}
 
 		// Add the field name to the first step of the pattern
-		TSFieldId field_id =
+		t_field_id field_id =
 			ts_language_field_id_for_name(self->language, field_name, length);
 		if (!field_id)
 		{
@@ -7204,7 +7241,7 @@ static TSQueryError ts_query__parse_pattern(
 		}
 
 		uint32_t   step_index = starting_step_index;
-		QueryStep *step = &self->steps.contents[step_index];
+		t_query_step *step = &self->steps.contents[step_index];
 		for (;;)
 		{
 			step->field = field_id;
@@ -7234,7 +7271,7 @@ static TSQueryError ts_query__parse_pattern(
 	stream_skip_whitespace(stream);
 
 	// Parse suffixes modifiers for this pattern
-	TSQuantifier quantifier = TSQuantifierOne;
+	t_quantifier quantifier = TSQuantifierOne;
 	for (;;)
 	{
 		// Parse the one-or-more operator.
@@ -7245,7 +7282,7 @@ static TSQueryError ts_query__parse_pattern(
 			stream_advance(stream);
 			stream_skip_whitespace(stream);
 
-			QueryStep repeat_step =
+			t_query_step repeat_step =
 				query_step__new(WILDCARD_SYMBOL, depth, false);
 			repeat_step.alternative_index = starting_step_index;
 			repeat_step.is_pass_through = true;
@@ -7261,7 +7298,7 @@ static TSQueryError ts_query__parse_pattern(
 			stream_advance(stream);
 			stream_skip_whitespace(stream);
 
-			QueryStep repeat_step =
+			t_query_step repeat_step =
 				query_step__new(WILDCARD_SYMBOL, depth, false);
 			repeat_step.alternative_index = starting_step_index;
 			repeat_step.is_pass_through = true;
@@ -7271,7 +7308,7 @@ static TSQueryError ts_query__parse_pattern(
 			// Stop when `step->alternative_index` is `NONE` or it points to
 			// `repeat_step` or beyond. Note that having just been pushed,
 			// `repeat_step` occupies slot `self->steps.size - 1`.
-			QueryStep *step = &self->steps.contents[starting_step_index];
+			t_query_step *step = &self->steps.contents[starting_step_index];
 			while (step->alternative_index != NONE &&
 				   step->alternative_index < self->steps.size - 1)
 			{
@@ -7288,7 +7325,7 @@ static TSQueryError ts_query__parse_pattern(
 			stream_advance(stream);
 			stream_skip_whitespace(stream);
 
-			QueryStep *step = &self->steps.contents[starting_step_index];
+			t_query_step *step = &self->steps.contents[starting_step_index];
 			while (step->alternative_index != NONE &&
 				   step->alternative_index < self->steps.size)
 			{
@@ -7319,7 +7356,7 @@ static TSQueryError ts_query__parse_pattern(
 			uint32_t step_index = starting_step_index;
 			for (;;)
 			{
-				QueryStep *step = &self->steps.contents[step_index];
+				t_query_step *step = &self->steps.contents[step_index];
 				query_step__add_capture(step, capture_id);
 				if (step->alternative_index != NONE &&
 					step->alternative_index > step_index &&
@@ -7346,13 +7383,13 @@ static TSQueryError ts_query__parse_pattern(
 	return 0;
 }
 
-TSQuery *ts_query_new(const TSLanguage *language, const char *source,
-					  uint32_t source_len, uint32_t *error_offset,
-					  TSQueryError *error_type)
+t_parse_query *ts_query_new(const t_language *language, const char *source,
+							uint32_t source_len, uint32_t *error_offset,
+							t_query_error *error_type)
 {
 
-	TSQuery *self = malloc(sizeof(TSQuery));
-	*self = (TSQuery){
+	t_parse_query *self = malloc(sizeof(t_parse_query));
+	*self = (t_parse_query){
 		.steps = array_new(),
 		.pattern_map = array_new(),
 		.captures = symbol_table_new(),
@@ -7371,7 +7408,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 	array_push(&self->negated_fields, 0);
 
 	// Parse all of the S-expressions in the given string.
-	Stream stream = stream_new(source, source_len);
+	t_stream stream = stream_new(source, source_len);
 	stream_skip_whitespace(&stream);
 	while (stream.input < stream.end)
 	{
@@ -7379,20 +7416,20 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 		uint32_t start_step_index = self->steps.size;
 		uint32_t start_predicate_step_index = self->predicate_steps.size;
 		array_push(&self->patterns,
-				   ((QueryPattern){
-					   .steps = (Slice){.offset = start_step_index},
+				   ((t_query_pattern){
+					   .steps = (t_slice){.offset = start_step_index},
 					   .predicate_steps =
-						   (Slice){.offset = start_predicate_step_index},
+						   (t_slice){.offset = start_predicate_step_index},
 					   .start_byte = stream_offset(&stream),
 					   .is_non_local = false,
 				   }));
-		CaptureQuantifiers capture_quantifiers = capture_quantifiers_new();
+		t_capture_quantifiers capture_quantifiers = capture_quantifiers_new();
 		*error_type = ts_query__parse_pattern(self, &stream, 0, false,
 											  &capture_quantifiers);
 		array_push(&self->steps,
 				   query_step__new(0, PATTERN_DONE_MARKER, false));
 
-		QueryPattern *pattern = array_back(&self->patterns);
+		t_query_pattern *pattern = array_back(&self->patterns);
 		pattern->steps.length = self->steps.size - start_step_index;
 		pattern->predicate_steps.length =
 			self->predicate_steps.size - start_predicate_step_index;
@@ -7416,7 +7453,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 		uint16_t wildcard_root_alternative_index = NONE;
 		for (;;)
 		{
-			QueryStep *step = &self->steps.contents[start_step_index];
+			t_query_step *step = &self->steps.contents[start_step_index];
 
 			// If a pattern has a wildcard at its root, but it has a
 			// non-wildcard child, then optimize the matching process by
@@ -7426,7 +7463,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 			if (step->symbol == WILDCARD_SYMBOL && step->depth == 0 &&
 				!step->field)
 			{
-				QueryStep *second_step =
+				t_query_step *second_step =
 					&self->steps.contents[start_step_index + 1];
 				if (second_step->symbol != WILDCARD_SYMBOL &&
 					second_step->depth == 1)
@@ -7446,7 +7483,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 			for (uint32_t step_index = start_step_index + 1;
 				 step_index < self->steps.size; step_index++)
 			{
-				QueryStep *child_step = &self->steps.contents[step_index];
+				t_query_step *child_step = &self->steps.contents[step_index];
 				if (child_step->is_dead_end)
 					break;
 				if (child_step->depth == start_depth)
@@ -7458,7 +7495,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 
 			ts_query__pattern_map_insert(
 				self, step->symbol,
-				(PatternEntry){.step_index = start_step_index,
+				(t_pattern_entry){.step_index = start_step_index,
 							   .pattern_index = pattern_index,
 							   .is_rooted = is_rooted});
 			if (step->symbol == WILDCARD_SYMBOL)
@@ -7495,7 +7532,7 @@ TSQuery *ts_query_new(const TSLanguage *language, const char *source,
 	return self;
 }
 
-void ts_query_delete(TSQuery *self)
+void ts_query_delete(t_parse_query *self)
 {
 	if (self)
 	{
@@ -7513,7 +7550,7 @@ void ts_query_delete(TSQuery *self)
 		for (uint32_t index = 0; index < self->capture_quantifiers.size;
 			 index++)
 		{
-			CaptureQuantifiers *capture_quantifiers =
+			t_capture_quantifiers *capture_quantifiers =
 				array_get(&self->capture_quantifiers, index);
 			capture_quantifiers_delete(capture_quantifiers);
 		}
@@ -7522,46 +7559,46 @@ void ts_query_delete(TSQuery *self)
 	}
 }
 
-uint32_t ts_query_pattern_count(const TSQuery *self)
+uint32_t ts_query_pattern_count(const t_parse_query *self)
 {
 	return self->patterns.size;
 }
 
-uint32_t ts_query_capture_count(const TSQuery *self)
+uint32_t ts_query_capture_count(const t_parse_query *self)
 {
 	return self->captures.slices.size;
 }
 
-uint32_t ts_query_string_count(const TSQuery *self)
+uint32_t ts_query_string_count(const t_parse_query *self)
 {
 	return self->predicate_values.slices.size;
 }
 
-const char *ts_query_capture_name_for_id(const TSQuery *self, uint32_t index,
-										 uint32_t *length)
+const char *ts_query_capture_name_for_id(const t_parse_query *self,
+										 uint32_t index, uint32_t *length)
 {
 	return symbol_table_name_for_id(&self->captures, index, length);
 }
 
-TSQuantifier ts_query_capture_quantifier_for_id(const TSQuery *self,
-												uint32_t	   pattern_index,
-												uint32_t	   capture_index)
+t_quantifier ts_query_capture_quantifier_for_id(const t_parse_query *self,
+												uint32_t pattern_index,
+												uint32_t capture_index)
 {
-	CaptureQuantifiers *capture_quantifiers =
+	t_capture_quantifiers *capture_quantifiers =
 		array_get(&self->capture_quantifiers, pattern_index);
 	return capture_quantifier_for_id(capture_quantifiers, capture_index);
 }
 
-const char *ts_query_string_value_for_id(const TSQuery *self, uint32_t index,
-										 uint32_t *length)
+const char *ts_query_string_value_for_id(const t_parse_query *self,
+										 uint32_t index, uint32_t *length)
 {
 	return symbol_table_name_for_id(&self->predicate_values, index, length);
 }
 
-const TSQueryPredicateStep *ts_query_predicates_for_pattern(
-	const TSQuery *self, uint32_t pattern_index, uint32_t *step_count)
+const t_query_predicate_step *ts_query_predicates_for_pattern(
+	const t_parse_query *self, uint32_t pattern_index, uint32_t *step_count)
 {
-	Slice slice = self->patterns.contents[pattern_index].predicate_steps;
+	t_slice slice = self->patterns.contents[pattern_index].predicate_steps;
 	*step_count = slice.length;
 	if (self->predicate_steps.contents == NULL)
 	{
@@ -7570,17 +7607,18 @@ const TSQueryPredicateStep *ts_query_predicates_for_pattern(
 	return &self->predicate_steps.contents[slice.offset];
 }
 
-uint32_t ts_query_start_byte_for_pattern(const TSQuery *self,
-										 uint32_t		pattern_index)
+uint32_t ts_query_start_byte_for_pattern(const t_parse_query *self,
+										 uint32_t			  pattern_index)
 {
 	return self->patterns.contents[pattern_index].start_byte;
 }
 
-bool ts_query_is_pattern_rooted(const TSQuery *self, uint32_t pattern_index)
+bool ts_query_is_pattern_rooted(const t_parse_query *self,
+								uint32_t			 pattern_index)
 {
 	for (unsigned i = 0; i < self->pattern_map.size; i++)
 	{
-		PatternEntry *entry = &self->pattern_map.contents[i];
+		t_pattern_entry *entry = &self->pattern_map.contents[i];
 		if (entry->pattern_index == pattern_index)
 		{
 			if (!entry->is_rooted)
@@ -7590,7 +7628,8 @@ bool ts_query_is_pattern_rooted(const TSQuery *self, uint32_t pattern_index)
 	return true;
 }
 
-bool ts_query_is_pattern_non_local(const TSQuery *self, uint32_t pattern_index)
+bool ts_query_is_pattern_non_local(const t_parse_query *self,
+								   uint32_t				pattern_index)
 {
 	if (pattern_index < self->patterns.size)
 	{
@@ -7602,13 +7641,13 @@ bool ts_query_is_pattern_non_local(const TSQuery *self, uint32_t pattern_index)
 	}
 }
 
-bool ts_query_is_pattern_guaranteed_at_step(const TSQuery *self,
-											uint32_t	   byte_offset)
+bool ts_query_is_pattern_guaranteed_at_step(const t_parse_query *self,
+											uint32_t			 byte_offset)
 {
 	uint32_t step_index = UINT32_MAX;
 	for (unsigned i = 0; i < self->step_offsets.size; i++)
 	{
-		StepOffset *step_offset = &self->step_offsets.contents[i];
+		t_step_offset *step_offset = &self->step_offsets.contents[i];
 		if (step_offset->byte_offset > byte_offset)
 			break;
 		step_index = step_offset->step_index;
@@ -7623,17 +7662,18 @@ bool ts_query_is_pattern_guaranteed_at_step(const TSQuery *self,
 	}
 }
 
-bool ts_query__step_is_fallible(const TSQuery *self, uint16_t step_index)
+bool ts_query__step_is_fallible(const t_parse_query *self, uint16_t step_index)
 {
 	assert((uint32_t)step_index + 1 < self->steps.size);
-	QueryStep *step = &self->steps.contents[step_index];
-	QueryStep *next_step = &self->steps.contents[step_index + 1];
+	t_query_step *step = &self->steps.contents[step_index];
+	t_query_step *next_step = &self->steps.contents[step_index + 1];
 	return (next_step->depth != PATTERN_DONE_MARKER &&
 			next_step->depth > step->depth &&
 			!next_step->parent_pattern_guaranteed);
 }
 
-void ts_query_disable_capture(TSQuery *self, const char *name, uint32_t length)
+void ts_query_disable_capture(t_parse_query *self, const char *name,
+							  uint32_t length)
 {
 	// Remove capture information for any pattern step that previously
 	// captured with the given name.
@@ -7642,19 +7682,19 @@ void ts_query_disable_capture(TSQuery *self, const char *name, uint32_t length)
 	{
 		for (unsigned i = 0; i < self->steps.size; i++)
 		{
-			QueryStep *step = &self->steps.contents[i];
+			t_query_step *step = &self->steps.contents[i];
 			query_step__remove_capture(step, id);
 		}
 	}
 }
 
-void ts_query_disable_pattern(TSQuery *self, uint32_t pattern_index)
+void ts_query_disable_pattern(t_parse_query *self, uint32_t pattern_index)
 {
 	// Remove the given pattern from the pattern map. Its steps will still
 	// be in the `steps` array, but they will never be read.
 	for (unsigned i = 0; i < self->pattern_map.size; i++)
 	{
-		PatternEntry *pattern = &self->pattern_map.contents[i];
+		t_pattern_entry *pattern = &self->pattern_map.contents[i];
 		if (pattern->pattern_index == pattern_index)
 		{
 			array_erase(&self->pattern_map, i);
@@ -7667,10 +7707,10 @@ void ts_query_disable_pattern(TSQuery *self, uint32_t pattern_index)
  * QueryCursor
  ***************/
 
-TSQueryCursor *ts_query_cursor_new(void)
+t_query_cursor *ts_query_cursor_new(void)
 {
-	TSQueryCursor *self = malloc(sizeof(TSQueryCursor));
-	*self = (TSQueryCursor){
+	t_query_cursor *self = malloc(sizeof(t_query_cursor));
+	*self = (t_query_cursor){
 		.did_exceed_match_limit = false,
 		.ascending = false,
 		.halted = false,
@@ -7688,7 +7728,7 @@ TSQueryCursor *ts_query_cursor_new(void)
 	return self;
 }
 
-void ts_query_cursor_delete(TSQueryCursor *self)
+void ts_query_cursor_delete(t_query_cursor *self)
 {
 	array_delete(&self->states);
 	array_delete(&self->finished_states);
@@ -7697,17 +7737,17 @@ void ts_query_cursor_delete(TSQueryCursor *self)
 	free(self);
 }
 
-bool ts_query_cursor_did_exceed_match_limit(const TSQueryCursor *self)
+bool ts_query_cursor_did_exceed_match_limit(const t_query_cursor *self)
 {
 	return self->did_exceed_match_limit;
 }
 
-uint32_t ts_query_cursor_match_limit(const TSQueryCursor *self)
+uint32_t ts_query_cursor_match_limit(const t_query_cursor *self)
 {
 	return self->capture_list_pool.max_capture_list_count;
 }
 
-void ts_query_cursor_set_match_limit(TSQueryCursor *self, uint32_t limit)
+void ts_query_cursor_set_match_limit(t_query_cursor *self, uint32_t limit)
 {
 	self->capture_list_pool.max_capture_list_count = limit;
 }
@@ -7718,15 +7758,15 @@ void ts_query_cursor_set_match_limit(TSQueryCursor *self, uint32_t limit)
 # define LOG(...)
 #endif
 
-void ts_query_cursor_exec(TSQueryCursor *self, const TSQuery *query,
-						  TSNode node)
+void ts_query_cursor_exec(t_query_cursor *self, const t_parse_query *query,
+						  t_parse_node node)
 {
 	if (query)
 	{
 		LOG("query steps:\n");
 		for (unsigned i = 0; i < query->steps.size; i++)
 		{
-			QueryStep *step = &query->steps.contents[i];
+			t_query_step *step = &query->steps.contents[i];
 			LOG("  %u: {", i);
 			if (step->depth == PATTERN_DONE_MARKER)
 			{
@@ -7773,7 +7813,7 @@ void ts_query_cursor_exec(TSQueryCursor *self, const TSQuery *query,
 	self->did_exceed_match_limit = false;
 }
 
-void ts_query_cursor_set_byte_range(TSQueryCursor *self, uint32_t start_byte,
+void ts_query_cursor_set_byte_range(t_query_cursor *self, uint32_t start_byte,
 									uint32_t end_byte)
 {
 	if (end_byte == 0)
@@ -7784,8 +7824,8 @@ void ts_query_cursor_set_byte_range(TSQueryCursor *self, uint32_t start_byte,
 	self->end_byte = end_byte;
 }
 
-void ts_query_cursor_set_point_range(TSQueryCursor *self, TSPoint start_point,
-									 TSPoint end_point)
+void ts_query_cursor_set_point_range(t_query_cursor *self, t_point start_point,
+									 t_point end_point)
 {
 	if (end_point.row == 0 && end_point.column == 0)
 	{
@@ -7798,7 +7838,7 @@ void ts_query_cursor_set_point_range(TSQueryCursor *self, TSPoint start_point,
 // Search through all of the in-progress states, and find the captured
 // node that occurs earliest in the document.
 static bool ts_query_cursor__first_in_progress_capture(
-	TSQueryCursor *self, uint32_t *state_index, uint32_t *byte_offset,
+	t_query_cursor *self, uint32_t *state_index, uint32_t *byte_offset,
 	uint32_t *pattern_index, bool *root_pattern_guaranteed)
 {
 	bool result = false;
@@ -7807,18 +7847,19 @@ static bool ts_query_cursor__first_in_progress_capture(
 	*pattern_index = UINT32_MAX;
 	for (unsigned i = 0; i < self->states.size; i++)
 	{
-		QueryState *state = &self->states.contents[i];
+		t_query_state *state = &self->states.contents[i];
 		if (state->dead)
 			continue;
 
-		const CaptureList *captures = capture_list_pool_get(
+		const t_capture_list *captures = capture_list_pool_get(
 			&self->capture_list_pool, state->capture_list_id);
 		if (state->consumed_capture_count >= captures->size)
 		{
 			continue;
 		}
 
-		TSNode node = captures->contents[state->consumed_capture_count].node;
+		t_parse_node node =
+			captures->contents[state->consumed_capture_count].node;
 		if (ts_node_end_byte(node) <= self->start_byte ||
 			point_lte(ts_node_end_point(node), self->start_point))
 		{
@@ -7832,7 +7873,7 @@ static bool ts_query_cursor__first_in_progress_capture(
 			(node_start_byte == *byte_offset &&
 			 state->pattern_index < *pattern_index))
 		{
-			QueryStep *step = &self->query->steps.contents[state->step_index];
+			t_query_step *step = &self->query->steps.contents[state->step_index];
 			if (root_pattern_guaranteed)
 			{
 				*root_pattern_guaranteed = step->root_pattern_guaranteed;
@@ -7852,7 +7893,7 @@ static bool ts_query_cursor__first_in_progress_capture(
 }
 
 // Determine which node is first in a depth-first traversal
-int ts_query_cursor__compare_nodes(TSNode left, TSNode right)
+int ts_query_cursor__compare_nodes(t_parse_node left, t_parse_node right)
 {
 	if (left.id != right.id)
 	{
@@ -7873,15 +7914,15 @@ int ts_query_cursor__compare_nodes(TSNode left, TSNode right)
 }
 
 // Determine if either state contains a superset of the other state's captures.
-void ts_query_cursor__compare_captures(TSQueryCursor *self,
-									   QueryState	 *left_state,
-									   QueryState	 *right_state,
-									   bool			 *left_contains_right,
-									   bool			 *right_contains_left)
+void ts_query_cursor__compare_captures(t_query_cursor *self,
+									   t_query_state	  *left_state,
+									   t_query_state	  *right_state,
+									   bool			  *left_contains_right,
+									   bool			  *right_contains_left)
 {
-	const CaptureList *left_captures = capture_list_pool_get(
+	const t_capture_list *left_captures = capture_list_pool_get(
 		&self->capture_list_pool, left_state->capture_list_id);
-	const CaptureList *right_captures = capture_list_pool_get(
+	const t_capture_list *right_captures = capture_list_pool_get(
 		&self->capture_list_pool, right_state->capture_list_id);
 	*left_contains_right = true;
 	*right_contains_left = true;
@@ -7892,8 +7933,8 @@ void ts_query_cursor__compare_captures(TSQueryCursor *self,
 		{
 			if (j < right_captures->size)
 			{
-				TSQueryCapture *left = &left_captures->contents[i];
-				TSQueryCapture *right = &right_captures->contents[j];
+				t_query_capture *left = &left_captures->contents[i];
+				t_query_capture *right = &right_captures->contents[j];
 				if (left->node.id == right->node.id &&
 					left->index == right->index)
 				{
@@ -7939,10 +7980,10 @@ void ts_query_cursor__compare_captures(TSQueryCursor *self,
 	}
 }
 
-static void ts_query_cursor__add_state(TSQueryCursor	  *self,
-									   const PatternEntry *pattern)
+static void ts_query_cursor__add_state(t_query_cursor	  *self,
+									   const t_pattern_entry *pattern)
 {
-	QueryStep *step = &self->query->steps.contents[pattern->step_index];
+	t_query_step *step = &self->query->steps.contents[pattern->step_index];
 	uint32_t   start_depth = self->depth - step->depth;
 
 	// Keep the states array in ascending order of start_depth and
@@ -7969,7 +8010,7 @@ static void ts_query_cursor__add_state(TSQueryCursor	  *self,
 	uint32_t index = self->states.size;
 	while (index > 0)
 	{
-		QueryState *prev_state = &self->states.contents[index - 1];
+		t_query_state *prev_state = &self->states.contents[index - 1];
 		if (prev_state->start_depth < start_depth)
 			break;
 		if (prev_state->start_depth == start_depth)
@@ -7988,7 +8029,7 @@ static void ts_query_cursor__add_state(TSQueryCursor	  *self,
 	LOG("  start state. pattern:%u, step:%u\n", pattern->pattern_index,
 		pattern->step_index);
 	array_insert(&self->states, index,
-				 ((QueryState){
+				 ((t_query_state){
 					 .id = UINT32_MAX,
 					 .capture_list_id = NONE,
 					 .step_index = pattern->step_index,
@@ -8005,8 +8046,8 @@ static void ts_query_cursor__add_state(TSQueryCursor	  *self,
 // Acquire a capture list for this state. If there are no capture lists left in
 // the pool, this will steal the capture list from another existing state, and
 // mark that other state as 'dead'.
-static CaptureList *ts_query_cursor__prepare_to_capture(
-	TSQueryCursor *self, QueryState *state, unsigned state_index_to_preserve)
+static t_capture_list *ts_query_cursor__prepare_to_capture(
+	t_query_cursor *self, t_query_state *state, unsigned state_index_to_preserve)
 {
 	if (state->capture_list_id == NONE)
 	{
@@ -8026,11 +8067,11 @@ static CaptureList *ts_query_cursor__prepare_to_capture(
 			{
 				LOG("  abandon state. index:%u, pattern:%u, offset:%u.\n",
 					state_index, pattern_index, byte_offset);
-				QueryState *other_state = &self->states.contents[state_index];
+				t_query_state *other_state = &self->states.contents[state_index];
 				state->capture_list_id = other_state->capture_list_id;
 				other_state->capture_list_id = NONE;
 				other_state->dead = true;
-				CaptureList *list = capture_list_pool_get_mut(
+				t_capture_list *list = capture_list_pool_get_mut(
 					&self->capture_list_pool, state->capture_list_id);
 				array_clear(list);
 				return list;
@@ -8046,12 +8087,12 @@ static CaptureList *ts_query_cursor__prepare_to_capture(
 									 state->capture_list_id);
 }
 
-static void ts_query_cursor__capture(TSQueryCursor *self, QueryState *state,
-									 QueryStep *step, TSNode node)
+static void ts_query_cursor__capture(t_query_cursor *self, t_query_state *state,
+									 t_query_step *step, t_parse_node node)
 {
 	if (state->dead)
 		return;
-	CaptureList *capture_list =
+	t_capture_list *capture_list =
 		ts_query_cursor__prepare_to_capture(self, state, UINT32_MAX);
 	if (!capture_list)
 	{
@@ -8064,7 +8105,7 @@ static void ts_query_cursor__capture(TSQueryCursor *self, QueryState *state,
 		uint16_t capture_id = step->capture_ids[j];
 		if (step->capture_ids[j] == NONE)
 			break;
-		array_push(capture_list, ((TSQueryCapture){node, capture_id}));
+		array_push(capture_list, ((t_query_capture){node, capture_id}));
 		LOG("  capture node. type:%s, pattern:%u, capture_id:%u, "
 			"capture_count:%u\n",
 			ts_node_type(node), state->pattern_index, capture_id,
@@ -8075,22 +8116,22 @@ static void ts_query_cursor__capture(TSQueryCursor *self, QueryState *state,
 // Duplicate the given state and insert the newly-created state immediately
 // after the given state in the `states` array. Ensures that the given state
 // reference is still valid, even if the states array is reallocated.
-static QueryState *ts_query_cursor__copy_state(TSQueryCursor *self,
-											   QueryState	**state_ref)
+static t_query_state *ts_query_cursor__copy_state(t_query_cursor *self,
+											   t_query_state	 **state_ref)
 {
-	const QueryState *state = *state_ref;
+	const t_query_state *state = *state_ref;
 	uint32_t		  state_index = (uint32_t)(state - self->states.contents);
-	QueryState		  copy = *state;
+	t_query_state		  copy = *state;
 	copy.capture_list_id = NONE;
 
 	// If the state has captures, copy its capture list.
 	if (state->capture_list_id != NONE)
 	{
-		CaptureList *new_captures =
+		t_capture_list *new_captures =
 			ts_query_cursor__prepare_to_capture(self, &copy, state_index);
 		if (!new_captures)
 			return NULL;
-		const CaptureList *old_captures = capture_list_pool_get(
+		const t_capture_list *old_captures = capture_list_pool_get(
 			&self->capture_list_pool, state->capture_list_id);
 		array_push_all(new_captures, old_captures);
 	}
@@ -8100,7 +8141,7 @@ static QueryState *ts_query_cursor__copy_state(TSQueryCursor *self,
 	return &self->states.contents[state_index + 1];
 }
 
-static inline bool ts_query_cursor__should_descend(TSQueryCursor *self,
+static inline bool ts_query_cursor__should_descend(t_query_cursor *self,
 												   bool node_intersects_range)
 {
 
@@ -8113,9 +8154,9 @@ static inline bool ts_query_cursor__should_descend(TSQueryCursor *self,
 	// deeper in the tree, then descend.
 	for (unsigned i = 0; i < self->states.size; i++)
 	{
-		QueryState *state = &self->states.contents[i];
+		t_query_state *state = &self->states.contents[i];
 		;
-		QueryStep *next_step = &self->query->steps.contents[state->step_index];
+		t_query_step *next_step = &self->query->steps.contents[state->step_index];
 		if (next_step->depth != PATTERN_DONE_MARKER &&
 			state->start_depth + next_step->depth > self->depth)
 		{
@@ -8138,7 +8179,7 @@ static inline bool ts_query_cursor__should_descend(TSQueryCursor *self,
 		// Avoid descending into repetition nodes unless we have already
 		// determined that this query can match rootless patterns inside
 		// of this type of repetition node.
-		Subtree subtree = ts_tree_cursor_current_subtree(&self->cursor);
+		t_subtree subtree = ts_tree_cursor_current_subtree(&self->cursor);
 		if (ts_subtree_is_repetition(subtree))
 		{
 			bool	 exists;
@@ -8159,7 +8200,7 @@ static inline bool ts_query_cursor__should_descend(TSQueryCursor *self,
 // If one or more patterns finish, return `true` and store their states in the
 // `finished_states` array. Multiple patterns can finish on the same node. If
 // there are no more matches, return `false`.
-static inline bool ts_query_cursor__advance(TSQueryCursor *self,
+static inline bool ts_query_cursor__advance(t_query_cursor *self,
 											bool stop_on_definite_step)
 {
 	bool did_match = false;
@@ -8169,7 +8210,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 		{
 			while (self->states.size > 0)
 			{
-				QueryState state = array_pop(&self->states);
+				t_query_state state = array_pop(&self->states);
 				capture_list_pool_release(&self->capture_list_pool,
 										  state.capture_list_id);
 			}
@@ -8191,8 +8232,8 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 				uint32_t deleted_count = 0;
 				for (unsigned i = 0, n = self->states.size; i < n; i++)
 				{
-					QueryState *state = &self->states.contents[i];
-					QueryStep  *step =
+					t_query_state *state = &self->states.contents[i];
+					t_query_step  *step =
 						&self->query->steps.contents[state->step_index];
 
 					// If a state completed its pattern inside of this node, but
@@ -8265,9 +8306,10 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 		else
 		{
 			// Get the properties of the current node.
-			TSNode node = ts_tree_cursor_current_node(&self->cursor);
-			TSNode parent_node = ts_tree_cursor_parent_node(&self->cursor);
-			bool   parent_precedes_range =
+			t_parse_node node = ts_tree_cursor_current_node(&self->cursor);
+			t_parse_node parent_node =
+				ts_tree_cursor_parent_node(&self->cursor);
+			bool parent_precedes_range =
 				!ts_node_is_null(parent_node) &&
 				(ts_node_end_byte(parent_node) <= self->start_byte ||
 				 point_lte(ts_node_end_point(parent_node), self->start_point));
@@ -8290,14 +8332,14 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 
 			if (self->on_visible_node)
 			{
-				TSSymbol  symbol = ts_node_symbol(node);
-				bool	  is_named = ts_node_is_named(node);
-				bool	  has_later_siblings;
-				bool	  has_later_named_siblings;
-				bool	  can_have_later_siblings_with_this_field;
-				TSFieldId field_id = 0;
-				TSSymbol  supertypes[8] = {0};
-				unsigned  supertype_count = 8;
+				t_symbol   symbol = ts_node_symbol(node);
+				bool	   is_named = ts_node_is_named(node);
+				bool	   has_later_siblings;
+				bool	   has_later_named_siblings;
+				bool	   can_have_later_siblings_with_this_field;
+				t_field_id field_id = 0;
+				t_symbol   supertypes[8] = {0};
+				unsigned   supertype_count = 8;
 				ts_tree_cursor_current_status(
 					&self->cursor, &field_id, &has_later_siblings,
 					&has_later_named_siblings,
@@ -8323,12 +8365,12 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 					for (unsigned i = 0;
 						 i < self->query->wildcard_root_pattern_count; i++)
 					{
-						PatternEntry *pattern =
+						t_pattern_entry *pattern =
 							&self->query->pattern_map.contents[i];
 
 						// If this node matches the first step of the pattern,
 						// then add a new state at the start of this pattern.
-						QueryStep *step =
+						t_query_step *step =
 							&self->query->steps.contents[pattern->step_index];
 						uint32_t start_depth = self->depth - step->depth;
 						if ((pattern->is_rooted ? node_intersects_range
@@ -8348,10 +8390,10 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 				unsigned i;
 				if (ts_query__pattern_map_search(self->query, symbol, &i))
 				{
-					PatternEntry *pattern =
+					t_pattern_entry *pattern =
 						&self->query->pattern_map.contents[i];
 
-					QueryStep *step =
+					t_query_step *step =
 						&self->query->steps.contents[pattern->step_index];
 					uint32_t start_depth = self->depth - step->depth;
 					do
@@ -8382,8 +8424,8 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 				for (unsigned j = 0, copy_count = 0; j < self->states.size;
 					 j += 1 + copy_count)
 				{
-					QueryState *state = &self->states.contents[j];
-					QueryStep  *step =
+					t_query_state *state = &self->states.contents[j];
+					t_query_step  *step =
 						&self->query->steps.contents[state->step_index];
 					state->has_in_progress_alternatives = false;
 					copy_count = 0;
@@ -8448,12 +8490,12 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 
 					if (step->negated_field_list_id)
 					{
-						TSFieldId *negated_field_ids =
+						t_field_id *negated_field_ids =
 							&self->query->negated_fields
 								 .contents[step->negated_field_list_id];
 						for (;;)
 						{
-							TSFieldId negated_field_id = *negated_field_ids;
+							t_field_id negated_field_id = *negated_field_ids;
 							if (negated_field_id)
 							{
 								negated_field_ids++;
@@ -8515,7 +8557,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 					// capture the parent node if necessary.
 					if (state->needs_parent)
 					{
-						TSNode parent =
+						t_parse_node parent =
 							ts_tree_cursor_parent_node(&self->cursor);
 						if (ts_node_is_null(parent))
 						{
@@ -8525,7 +8567,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 						else
 						{
 							state->needs_parent = false;
-							QueryStep *skipped_wildcard_step = step;
+							t_query_step *skipped_wildcard_step = step;
 							do
 							{
 								skipped_wildcard_step--;
@@ -8561,7 +8603,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 					LOG("  advance state. pattern:%u, step:%u\n",
 						state->pattern_index, state->step_index);
 
-					QueryStep *next_step =
+					t_query_step *next_step =
 						&self->query->steps.contents[state->step_index];
 					if (stop_on_definite_step &&
 						next_step->root_pattern_guaranteed)
@@ -8574,8 +8616,8 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 					unsigned end_index = j + 1;
 					for (unsigned k = j; k < end_index; k++)
 					{
-						QueryState *child_state = &self->states.contents[k];
-						QueryStep  *child_step =
+						t_query_state *child_state = &self->states.contents[k];
+						t_query_step  *child_step =
 							&self->query->steps
 								 .contents[child_state->step_index];
 						if (child_step->alternative_index != NONE)
@@ -8605,7 +8647,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 								k--;
 							}
 
-							QueryState *copy =
+							t_query_state *copy =
 								ts_query_cursor__copy_state(self, &child_state);
 							if (copy)
 							{
@@ -8634,7 +8676,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 
 				for (unsigned j = 0; j < self->states.size; j++)
 				{
-					QueryState *state = &self->states.contents[j];
+					t_query_state *state = &self->states.contents[j];
 					if (state->dead)
 					{
 						array_erase(&self->states, j);
@@ -8649,7 +8691,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 					bool did_remove = false;
 					for (unsigned k = j + 1; k < self->states.size; k++)
 					{
-						QueryState *other_state = &self->states.contents[k];
+						t_query_state *other_state = &self->states.contents[k];
 
 						// Query states are kept in ascending order of
 						// start_depth and pattern_index. Since the
@@ -8712,7 +8754,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 							capture_list_pool_get(&self->capture_list_pool,
 												  state->capture_list_id)
 								->size);
-						QueryStep *next_step =
+						t_query_step *next_step =
 							&self->query->steps.contents[state->step_index];
 						if (next_step->depth == PATTERN_DONE_MARKER)
 						{
@@ -8758,7 +8800,7 @@ static inline bool ts_query_cursor__advance(TSQueryCursor *self,
 	}
 }
 
-bool ts_query_cursor_next_match(TSQueryCursor *self, TSQueryMatch *match)
+bool ts_query_cursor_next_match(t_query_cursor *self, t_query_match *match)
 {
 	if (self->finished_states.size == 0)
 	{
@@ -8768,12 +8810,12 @@ bool ts_query_cursor_next_match(TSQueryCursor *self, TSQueryMatch *match)
 		}
 	}
 
-	QueryState *state = &self->finished_states.contents[0];
+	t_query_state *state = &self->finished_states.contents[0];
 	if (state->id == UINT32_MAX)
 		state->id = self->next_state_id++;
 	match->id = state->id;
 	match->pattern_index = state->pattern_index;
-	const CaptureList *captures =
+	const t_capture_list *captures =
 		capture_list_pool_get(&self->capture_list_pool, state->capture_list_id);
 	match->captures = captures->contents;
 	match->capture_count = captures->size;
@@ -8782,11 +8824,11 @@ bool ts_query_cursor_next_match(TSQueryCursor *self, TSQueryMatch *match)
 	return true;
 }
 
-void ts_query_cursor_remove_match(TSQueryCursor *self, uint32_t match_id)
+void ts_query_cursor_remove_match(t_query_cursor *self, uint32_t match_id)
 {
 	for (unsigned i = 0; i < self->finished_states.size; i++)
 	{
-		const QueryState *state = &self->finished_states.contents[i];
+		const t_query_state *state = &self->finished_states.contents[i];
 		if (state->id == match_id)
 		{
 			capture_list_pool_release(&self->capture_list_pool,
@@ -8800,7 +8842,7 @@ void ts_query_cursor_remove_match(TSQueryCursor *self, uint32_t match_id)
 	// captures for a match being removed.
 	for (unsigned i = 0; i < self->states.size; i++)
 	{
-		const QueryState *state = &self->states.contents[i];
+		const t_query_state *state = &self->states.contents[i];
 		if (state->id == match_id)
 		{
 			capture_list_pool_release(&self->capture_list_pool,
@@ -8811,7 +8853,7 @@ void ts_query_cursor_remove_match(TSQueryCursor *self, uint32_t match_id)
 	}
 }
 
-bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
+bool ts_query_cursor_next_capture(t_query_cursor *self, t_query_match *match,
 								  uint32_t *capture_index)
 {
 	// The goal here is to return captures in order, even though they may not
@@ -8831,13 +8873,13 @@ bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
 
 		// Then find the earliest capture in a finished match. It must occur
 		// before the first capture in an *unfinished* match.
-		QueryState *first_finished_state = NULL;
+		t_query_state *first_finished_state = NULL;
 		uint32_t	first_finished_capture_byte = first_unfinished_capture_byte;
 		uint32_t first_finished_pattern_index = first_unfinished_pattern_index;
 		for (unsigned i = 0; i < self->finished_states.size;)
 		{
-			QueryState		  *state = &self->finished_states.contents[i];
-			const CaptureList *captures = capture_list_pool_get(
+			t_query_state		  *state = &self->finished_states.contents[i];
+			const t_capture_list *captures = capture_list_pool_get(
 				&self->capture_list_pool, state->capture_list_id);
 
 			// Remove states whose captures are all consumed.
@@ -8849,7 +8891,7 @@ bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
 				continue;
 			}
 
-			TSNode node =
+			t_parse_node node =
 				captures->contents[state->consumed_capture_count].node;
 
 			bool node_precedes_range =
@@ -8883,7 +8925,7 @@ bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
 		// If there is finished capture that is clearly before any unfinished
 		// capture, then return its match, and its capture index. Internally
 		// record the fact that the capture has been 'consumed'.
-		QueryState *state;
+		t_query_state *state;
 		if (first_finished_state)
 		{
 			state = first_finished_state;
@@ -8903,7 +8945,7 @@ bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
 				state->id = self->next_state_id++;
 			match->id = state->id;
 			match->pattern_index = state->pattern_index;
-			const CaptureList *captures = capture_list_pool_get(
+			const t_capture_list *captures = capture_list_pool_get(
 				&self->capture_list_pool, state->capture_list_id);
 			match->captures = captures->contents;
 			match->capture_count = captures->size;
@@ -8932,28 +8974,28 @@ bool ts_query_cursor_next_capture(TSQueryCursor *self, TSQueryMatch *match,
 	}
 }
 
-void ts_query_cursor_set_max_start_depth(TSQueryCursor *self,
-										 uint32_t		max_start_depth)
+void ts_query_cursor_set_max_start_depth(t_query_cursor *self,
+										 uint32_t		 max_start_depth)
 {
 	self->max_start_depth = max_start_depth;
 }
 
 #undef LOG
 
-typedef struct StackNode StackNode;
+typedef struct s_stack_node t_stack_node;
 
-typedef struct
+typedef struct s_stack_link
 {
-	StackNode *node;
-	Subtree	   subtree;
+	t_stack_node *node;
+	t_subtree  subtree;
 	bool	   is_pending;
-} StackLink;
+} t_stack_link;
 
-struct StackNode
+struct s_stack_node
 {
-	TSStateId		   state;
-	Length			   position;
-	StackLink		   links[MAX_LINK_COUNT];
+	t_state_id		   state;
+	t_length		   position;
+	t_stack_link		   links[MAX_LINK_COUNT];
 	short unsigned int link_count;
 	uint32_t		   ref_count;
 	unsigned		   error_cost;
@@ -8961,54 +9003,54 @@ struct StackNode
 	int				   dynamic_precedence;
 };
 
-typedef struct
+typedef struct s_stack_iterator
 {
-	StackNode	*node;
-	SubtreeArray subtrees;
-	uint32_t	 subtree_count;
-	bool		 is_pending;
-} StackIterator;
+	t_stack_node	   *node;
+	t_subtree_array subtrees;
+	uint32_t		subtree_count;
+	bool			is_pending;
+} t_stack_iterator;
 
-typedef Array(StackNode *) StackNodeArray;
+typedef Array(t_stack_node *) t_stack_node_array;
 
-typedef enum
+typedef enum e_stack_status
 {
 	StackStatusActive,
 	StackStatusPaused,
 	StackStatusHalted,
-} StackStatus;
+} t_stack_status;
 
-typedef struct
+typedef struct s_stack_head
 {
-	StackNode	 *node;
-	StackSummary *summary;
-	unsigned	  node_count_at_last_error;
-	Subtree		  last_external_token;
-	Subtree		  lookahead_when_paused;
-	StackStatus	  status;
-} StackHead;
+	t_stack_node		*node;
+	t_stack_summary *summary;
+	unsigned		 node_count_at_last_error;
+	t_subtree		 last_external_token;
+	t_subtree		 lookahead_when_paused;
+	t_stack_status		 status;
+} t_stack_head;
 
-struct Stack
+struct s_stack
 {
-	Array(StackHead) heads;
-	StackSliceArray slices;
-	Array(StackIterator) iterators;
-	StackNodeArray node_pool;
-	StackNode	  *base_node;
-	SubtreePool	  *subtree_pool;
+	Array(t_stack_head) heads;
+	t_stack_slice_array slices;
+	Array(t_stack_iterator) iterators;
+	t_stack_node_array	node_pool;
+	t_stack_node	   *base_node;
+	t_subtree_pool *subtree_pool;
 };
 
-typedef unsigned StackAction;
-enum
+typedef unsigned t_stack_action;
+enum e_stack_action
 {
 	StackActionNone,
 	StackActionStop = 1,
 	StackActionPop = 2,
 };
 
-typedef StackAction (*StackCallback)(void *, const StackIterator *);
+typedef t_stack_action (*t_stack_callback)(void *, const t_stack_iterator *);
 
-static void stack_node_retain(StackNode *self)
+static void stack_node_retain(t_stack_node *self)
 {
 	if (!self)
 		return;
@@ -9017,8 +9059,8 @@ static void stack_node_retain(StackNode *self)
 	assert(self->ref_count != 0);
 }
 
-static void stack_node_release(StackNode *self, StackNodeArray *pool,
-							   SubtreePool *subtree_pool)
+static void stack_node_release(t_stack_node *self, t_stack_node_array *pool,
+							   t_subtree_pool *subtree_pool)
 {
 recur:
 	assert(self->ref_count != 0);
@@ -9026,17 +9068,17 @@ recur:
 	if (self->ref_count > 0)
 		return;
 
-	StackNode *first_predecessor = NULL;
+	t_stack_node *first_predecessor = NULL;
 	if (self->link_count > 0)
 	{
 		for (unsigned i = self->link_count - 1; i > 0; i--)
 		{
-			StackLink link = self->links[i];
+			t_stack_link link = self->links[i];
 			if (link.subtree.ptr)
 				ts_subtree_release(subtree_pool, link.subtree);
 			stack_node_release(link.node, pool, subtree_pool);
 		}
-		StackLink link = self->links[0];
+		t_stack_link link = self->links[0];
 		if (link.subtree.ptr)
 			ts_subtree_release(subtree_pool, link.subtree);
 		first_predecessor = self->links[0].node;
@@ -9060,7 +9102,7 @@ recur:
 
 /// Get the number of nodes in the subtree, for the purpose of measuring
 /// how much progress has been made by a given version of the stack.
-static uint32_t stack__subtree_node_count(Subtree subtree)
+static uint32_t stack__subtree_node_count(t_subtree subtree)
 {
 	uint32_t count = ts_subtree_visible_descendant_count(subtree);
 	if (ts_subtree_visible(subtree))
@@ -9075,18 +9117,18 @@ static uint32_t stack__subtree_node_count(Subtree subtree)
 	return count;
 }
 
-static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree,
-								 bool is_pending, TSStateId state,
-								 StackNodeArray *pool)
+static t_stack_node *stack_node_new(t_stack_node *previous_node, t_subtree subtree,
+								 bool is_pending, t_state_id state,
+								 t_stack_node_array *pool)
 {
-	StackNode *node =
-		pool->size > 0 ? array_pop(pool) : malloc(sizeof(StackNode));
-	*node = (StackNode){.ref_count = 1, .link_count = 0, .state = state};
+	t_stack_node *node =
+		pool->size > 0 ? array_pop(pool) : malloc(sizeof(t_stack_node));
+	*node = (t_stack_node){.ref_count = 1, .link_count = 0, .state = state};
 
 	if (previous_node)
 	{
 		node->link_count = 1;
-		node->links[0] = (StackLink){
+		node->links[0] = (t_stack_link){
 			.node = previous_node,
 			.subtree = subtree,
 			.is_pending = is_pending,
@@ -9115,7 +9157,7 @@ static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree,
 	return node;
 }
 
-static bool stack__subtree_is_equivalent(Subtree left, Subtree right)
+static bool stack__subtree_is_equivalent(t_subtree left, t_subtree right)
 {
 	if (left.ptr == right.ptr)
 		return true;
@@ -9137,15 +9179,15 @@ static bool stack__subtree_is_equivalent(Subtree left, Subtree right)
 			ts_subtree_external_scanner_state_eq(left, right));
 }
 
-static void stack_node_add_link(StackNode *self, StackLink link,
-								SubtreePool *subtree_pool)
+static void stack_node_add_link(t_stack_node *self, t_stack_link link,
+								t_subtree_pool *subtree_pool)
 {
 	if (link.node == self)
 		return;
 
 	for (int i = 0; i < self->link_count; i++)
 	{
-		StackLink *existing_link = &self->links[i];
+		t_stack_link *existing_link = &self->links[i];
 		if (stack__subtree_is_equivalent(existing_link->subtree, link.subtree))
 		{
 			// In general, we preserve ambiguities until they are removed from
@@ -9215,8 +9257,8 @@ static void stack_node_add_link(StackNode *self, StackLink link,
 		self->dynamic_precedence = dynamic_precedence;
 }
 
-static void stack_head_delete(StackHead *self, StackNodeArray *pool,
-							  SubtreePool *subtree_pool)
+static void stack_head_delete(t_stack_head *self, t_stack_node_array *pool,
+							  t_subtree_pool *subtree_pool)
 {
 	if (self->node)
 	{
@@ -9237,11 +9279,11 @@ static void stack_head_delete(StackHead *self, StackNodeArray *pool,
 	}
 }
 
-static StackVersion ts_stack__add_version(Stack		  *self,
-										  StackVersion original_version,
-										  StackNode	  *node)
+static t_stack_version ts_stack__add_version(t_stack		*self,
+											 t_stack_version original_version,
+											 t_stack_node		*node)
 {
-	StackHead head = {
+	t_stack_head head = {
 		.node = node,
 		.node_count_at_last_error =
 			self->heads.contents[original_version].node_count_at_last_error,
@@ -9254,37 +9296,38 @@ static StackVersion ts_stack__add_version(Stack		  *self,
 	stack_node_retain(node);
 	if (head.last_external_token.ptr)
 		ts_subtree_retain(head.last_external_token);
-	return (StackVersion)(self->heads.size - 1);
+	return (t_stack_version)(self->heads.size - 1);
 }
 
-static void ts_stack__add_slice(Stack *self, StackVersion original_version,
-								StackNode *node, SubtreeArray *subtrees)
+static void ts_stack__add_slice(t_stack *self, t_stack_version original_version,
+								t_stack_node *node, t_subtree_array *subtrees)
 {
 	for (uint32_t i = self->slices.size - 1; i + 1 > 0; i--)
 	{
-		StackVersion version = self->slices.contents[i].version;
+		t_stack_version version = self->slices.contents[i].version;
 		if (self->heads.contents[version].node == node)
 		{
-			StackSlice slice = {*subtrees, version};
+			t_stack_slice slice = {*subtrees, version};
 			array_insert(&self->slices, i + 1, slice);
 			return;
 		}
 	}
 
-	StackVersion version = ts_stack__add_version(self, original_version, node);
-	StackSlice	 slice = {*subtrees, version};
+	t_stack_version version =
+		ts_stack__add_version(self, original_version, node);
+	t_stack_slice slice = {*subtrees, version};
 	array_push(&self->slices, slice);
 }
 
-static StackSliceArray stack__iter(Stack *self, StackVersion version,
-								   StackCallback callback, void *payload,
-								   int goal_subtree_count)
+static t_stack_slice_array stack__iter(t_stack *self, t_stack_version version,
+									   t_stack_callback callback, void *payload,
+									   int goal_subtree_count)
 {
 	array_clear(&self->slices);
 	array_clear(&self->iterators);
 
-	StackHead	 *head = array_get(&self->heads, version);
-	StackIterator new_iterator = {
+	t_stack_head	 *head = array_get(&self->heads, version);
+	t_stack_iterator new_iterator = {
 		.node = head->node,
 		.subtrees = array_new(),
 		.subtree_count = 0,
@@ -9297,7 +9340,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version,
 		include_subtrees = true;
 		array_reserve(&new_iterator.subtrees,
 					  (uint32_t)ts_subtree_alloc_size(goal_subtree_count) /
-						  sizeof(Subtree));
+						  sizeof(t_subtree));
 	}
 
 	array_push(&self->iterators, new_iterator);
@@ -9306,17 +9349,17 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version,
 	{
 		for (uint32_t i = 0, size = self->iterators.size; i < size; i++)
 		{
-			StackIterator *iterator = &self->iterators.contents[i];
-			StackNode	  *node = iterator->node;
+			t_stack_iterator *iterator = &self->iterators.contents[i];
+			t_stack_node	  *node = iterator->node;
 
-			StackAction action = callback(payload, iterator);
+			t_stack_action action = callback(payload, iterator);
 			bool		should_pop = action & StackActionPop;
 			bool		should_stop =
 				action & StackActionStop || node->link_count == 0;
 
 			if (should_pop)
 			{
-				SubtreeArray subtrees = iterator->subtrees;
+				t_subtree_array subtrees = iterator->subtrees;
 				if (!should_stop)
 				{
 					ts_subtree_array_copy(subtrees, &subtrees);
@@ -9339,8 +9382,8 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version,
 
 			for (uint32_t j = 1; j <= node->link_count; j++)
 			{
-				StackIterator *next_iterator;
-				StackLink	   link;
+				t_stack_iterator *next_iterator;
+				t_stack_link	   link;
 				if (j == node->link_count)
 				{
 					link = node->links[0];
@@ -9351,7 +9394,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version,
 					if (self->iterators.size >= MAX_ITERATOR_COUNT)
 						continue;
 					link = node->links[j];
-					StackIterator current_iterator =
+					t_stack_iterator current_iterator =
 						self->iterators.contents[i];
 					array_push(&self->iterators, current_iterator);
 					next_iterator = array_back(&self->iterators);
@@ -9389,9 +9432,9 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version,
 	return self->slices;
 }
 
-Stack *ts_stack_new(SubtreePool *subtree_pool)
+t_stack *ts_stack_new(t_subtree_pool *subtree_pool)
 {
-	Stack *self = calloc(1, sizeof(Stack));
+	t_stack *self = calloc(1, sizeof(t_stack));
 
 	array_init(&self->heads);
 	array_init(&self->slices);
@@ -9410,7 +9453,7 @@ Stack *ts_stack_new(SubtreePool *subtree_pool)
 	return self;
 }
 
-void ts_stack_delete(Stack *self)
+void ts_stack_delete(t_stack *self)
 {
 	if (self->slices.contents)
 		array_delete(&self->slices);
@@ -9433,30 +9476,31 @@ void ts_stack_delete(Stack *self)
 	free(self);
 }
 
-uint32_t ts_stack_version_count(const Stack *self)
+uint32_t ts_stack_version_count(const t_stack *self)
 {
 	return self->heads.size;
 }
 
-TSStateId ts_stack_state(const Stack *self, StackVersion version)
+t_state_id ts_stack_state(const t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->node->state;
 }
 
-Length ts_stack_position(const Stack *self, StackVersion version)
+t_length ts_stack_position(const t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->node->position;
 }
 
-Subtree ts_stack_last_external_token(const Stack *self, StackVersion version)
+t_subtree ts_stack_last_external_token(const t_stack  *self,
+									   t_stack_version version)
 {
 	return array_get(&self->heads, version)->last_external_token;
 }
 
-void ts_stack_set_last_external_token(Stack *self, StackVersion version,
-									  Subtree token)
+void ts_stack_set_last_external_token(t_stack *self, t_stack_version version,
+									  t_subtree token)
 {
-	StackHead *head = array_get(&self->heads, version);
+	t_stack_head *head = array_get(&self->heads, version);
 	if (token.ptr)
 		ts_subtree_retain(token);
 	if (head->last_external_token.ptr)
@@ -9464,9 +9508,9 @@ void ts_stack_set_last_external_token(Stack *self, StackVersion version,
 	head->last_external_token = token;
 }
 
-unsigned ts_stack_error_cost(const Stack *self, StackVersion version)
+unsigned ts_stack_error_cost(const t_stack *self, t_stack_version version)
 {
-	StackHead *head = array_get(&self->heads, version);
+	t_stack_head *head = array_get(&self->heads, version);
 	unsigned   result = head->node->error_cost;
 	if (head->status == StackStatusPaused ||
 		(head->node->state == ERROR_STATE && !head->node->links[0].subtree.ptr))
@@ -9476,10 +9520,10 @@ unsigned ts_stack_error_cost(const Stack *self, StackVersion version)
 	return result;
 }
 
-unsigned ts_stack_node_count_since_error(const Stack *self,
-										 StackVersion version)
+unsigned ts_stack_node_count_since_error(const t_stack	*self,
+										 t_stack_version version)
 {
-	StackHead *head = array_get(&self->heads, version);
+	t_stack_head *head = array_get(&self->heads, version);
 	if (head->node->node_count < head->node_count_at_last_error)
 	{
 		head->node_count_at_last_error = head->node->node_count;
@@ -9487,19 +9531,19 @@ unsigned ts_stack_node_count_since_error(const Stack *self,
 	return head->node->node_count - head->node_count_at_last_error;
 }
 
-void ts_stack_push(Stack *self, StackVersion version, Subtree subtree,
-				   bool pending, TSStateId state)
+void ts_stack_push(t_stack *self, t_stack_version version, t_subtree subtree,
+				   bool pending, t_state_id state)
 {
-	StackHead *head = array_get(&self->heads, version);
-	StackNode *new_node =
+	t_stack_head *head = array_get(&self->heads, version);
+	t_stack_node *new_node =
 		stack_node_new(head->node, subtree, pending, state, &self->node_pool);
 	if (!subtree.ptr)
 		head->node_count_at_last_error = new_node->node_count;
 	head->node = new_node;
 }
 
-static inline StackAction pop_count_callback(void				 *payload,
-											 const StackIterator *iterator)
+static inline t_stack_action pop_count_callback(void				 *payload,
+											 const t_stack_iterator *iterator)
 {
 	unsigned *goal_subtree_count = payload;
 	if (iterator->subtree_count == *goal_subtree_count)
@@ -9512,14 +9556,14 @@ static inline StackAction pop_count_callback(void				 *payload,
 	}
 }
 
-StackSliceArray ts_stack_pop_count(Stack *self, StackVersion version,
-								   uint32_t count)
+t_stack_slice_array ts_stack_pop_count(t_stack *self, t_stack_version version,
+									   uint32_t count)
 {
 	return stack__iter(self, version, pop_count_callback, &count, (int)count);
 }
 
-static inline StackAction pop_pending_callback(void				   *payload,
-											   const StackIterator *iterator)
+static inline t_stack_action pop_pending_callback(void				   *payload,
+											   const t_stack_iterator *iterator)
 {
 	(void)payload;
 	if (iterator->subtree_count >= 1)
@@ -9539,9 +9583,9 @@ static inline StackAction pop_pending_callback(void				   *payload,
 	}
 }
 
-StackSliceArray ts_stack_pop_pending(Stack *self, StackVersion version)
+t_stack_slice_array ts_stack_pop_pending(t_stack *self, t_stack_version version)
 {
-	StackSliceArray pop =
+	t_stack_slice_array pop =
 		stack__iter(self, version, pop_pending_callback, NULL, 0);
 	if (pop.size > 0)
 	{
@@ -9551,8 +9595,8 @@ StackSliceArray ts_stack_pop_pending(Stack *self, StackVersion version)
 	return pop;
 }
 
-static inline StackAction pop_error_callback(void				 *payload,
-											 const StackIterator *iterator)
+static inline t_stack_action pop_error_callback(void				 *payload,
+											 const t_stack_iterator *iterator)
 {
 	if (iterator->subtrees.size > 0)
 	{
@@ -9574,16 +9618,16 @@ static inline StackAction pop_error_callback(void				 *payload,
 	}
 }
 
-SubtreeArray ts_stack_pop_error(Stack *self, StackVersion version)
+t_subtree_array ts_stack_pop_error(t_stack *self, t_stack_version version)
 {
-	StackNode *node = array_get(&self->heads, version)->node;
+	t_stack_node *node = array_get(&self->heads, version)->node;
 	for (unsigned i = 0; i < node->link_count; i++)
 	{
 		if (node->links[i].subtree.ptr &&
 			ts_subtree_is_error(node->links[i].subtree))
 		{
-			bool			found_error = false;
-			StackSliceArray pop =
+			bool				found_error = false;
+			t_stack_slice_array pop =
 				stack__iter(self, version, pop_error_callback, &found_error, 1);
 			if (pop.size > 0)
 			{
@@ -9595,44 +9639,44 @@ SubtreeArray ts_stack_pop_error(Stack *self, StackVersion version)
 			break;
 		}
 	}
-	return (SubtreeArray){.size = 0};
+	return (t_subtree_array){.size = 0};
 }
 
-static inline StackAction pop_all_callback(void				   *payload,
-										   const StackIterator *iterator)
+static inline t_stack_action pop_all_callback(void				   *payload,
+										   const t_stack_iterator *iterator)
 {
 	(void)payload;
 	return iterator->node->link_count == 0 ? StackActionPop : StackActionNone;
 }
 
-StackSliceArray ts_stack_pop_all(Stack *self, StackVersion version)
+t_stack_slice_array ts_stack_pop_all(t_stack *self, t_stack_version version)
 {
 	return stack__iter(self, version, pop_all_callback, NULL, 0);
 }
 
-typedef struct
+typedef struct s_summarize_stack_session
 {
-	StackSummary *summary;
-	unsigned	  max_depth;
-} SummarizeStackSession;
+	t_stack_summary *summary;
+	unsigned		 max_depth;
+} t_summarize_stack_session;
 
-static inline StackAction summarize_stack_callback(
-	void *payload, const StackIterator *iterator)
+static inline t_stack_action summarize_stack_callback(
+	void *payload, const t_stack_iterator *iterator)
 {
-	SummarizeStackSession *session = payload;
-	TSStateId			   state = iterator->node->state;
+	t_summarize_stack_session *session = payload;
+	t_state_id			   state = iterator->node->state;
 	unsigned			   depth = iterator->subtree_count;
 	if (depth > session->max_depth)
 		return StackActionStop;
 	for (unsigned i = session->summary->size - 1; i + 1 > 0; i--)
 	{
-		StackSummaryEntry entry = session->summary->contents[i];
+		t_stack_summary_entry entry = session->summary->contents[i];
 		if (entry.depth < depth)
 			break;
 		if (entry.depth == depth && entry.state == state)
 			return StackActionNone;
 	}
-	array_push(session->summary, ((StackSummaryEntry){
+	array_push(session->summary, ((t_stack_summary_entry){
 									 .position = iterator->node->position,
 									 .depth = depth,
 									 .state = state,
@@ -9640,14 +9684,14 @@ static inline StackAction summarize_stack_callback(
 	return StackActionNone;
 }
 
-void ts_stack_record_summary(Stack *self, StackVersion version,
+void ts_stack_record_summary(t_stack *self, t_stack_version version,
 							 unsigned max_depth)
 {
-	SummarizeStackSession session = {.summary = malloc(sizeof(StackSummary)),
+	t_summarize_stack_session session = {.summary = malloc(sizeof(t_stack_summary)),
 									 .max_depth = max_depth};
 	array_init(session.summary);
 	stack__iter(self, version, summarize_stack_callback, &session, -1);
-	StackHead *head = &self->heads.contents[version];
+	t_stack_head *head = &self->heads.contents[version];
 	if (head->summary)
 	{
 		array_delete(head->summary);
@@ -9656,27 +9700,28 @@ void ts_stack_record_summary(Stack *self, StackVersion version,
 	head->summary = session.summary;
 }
 
-StackSummary *ts_stack_get_summary(Stack *self, StackVersion version)
+t_stack_summary *ts_stack_get_summary(t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->summary;
 }
 
-int ts_stack_dynamic_precedence(Stack *self, StackVersion version)
+int ts_stack_dynamic_precedence(t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->node->dynamic_precedence;
 }
 
-bool ts_stack_has_advanced_since_error(const Stack *self, StackVersion version)
+bool ts_stack_has_advanced_since_error(const t_stack  *self,
+									   t_stack_version version)
 {
-	const StackHead *head = array_get(&self->heads, version);
-	const StackNode *node = head->node;
+	const t_stack_head *head = array_get(&self->heads, version);
+	const t_stack_node *node = head->node;
 	if (node->error_cost == 0)
 		return true;
 	while (node)
 	{
 		if (node->link_count > 0)
 		{
-			Subtree subtree = node->links[0].subtree;
+			t_subtree subtree = node->links[0].subtree;
 			if (subtree.ptr)
 			{
 				if (ts_subtree_total_bytes(subtree) > 0)
@@ -9696,21 +9741,22 @@ bool ts_stack_has_advanced_since_error(const Stack *self, StackVersion version)
 	return false;
 }
 
-void ts_stack_remove_version(Stack *self, StackVersion version)
+void ts_stack_remove_version(t_stack *self, t_stack_version version)
 {
 	stack_head_delete(array_get(&self->heads, version), &self->node_pool,
 					  self->subtree_pool);
 	array_erase(&self->heads, version);
 }
 
-void ts_stack_renumber_version(Stack *self, StackVersion v1, StackVersion v2)
+void ts_stack_renumber_version(t_stack *self, t_stack_version v1,
+							   t_stack_version v2)
 {
 	if (v1 == v2)
 		return;
 	assert(v2 < v1);
 	assert((uint32_t)v1 < self->heads.size);
-	StackHead *source_head = &self->heads.contents[v1];
-	StackHead *target_head = &self->heads.contents[v2];
+	t_stack_head *source_head = &self->heads.contents[v1];
+	t_stack_head *target_head = &self->heads.contents[v2];
 	if (target_head->summary && !source_head->summary)
 	{
 		source_head->summary = target_head->summary;
@@ -9721,18 +9767,19 @@ void ts_stack_renumber_version(Stack *self, StackVersion v1, StackVersion v2)
 	array_erase(&self->heads, v1);
 }
 
-void ts_stack_swap_versions(Stack *self, StackVersion v1, StackVersion v2)
+void ts_stack_swap_versions(t_stack *self, t_stack_version v1,
+							t_stack_version v2)
 {
-	StackHead temporary_head = self->heads.contents[v1];
+	t_stack_head temporary_head = self->heads.contents[v1];
 	self->heads.contents[v1] = self->heads.contents[v2];
 	self->heads.contents[v2] = temporary_head;
 }
 
-StackVersion ts_stack_copy_version(Stack *self, StackVersion version)
+t_stack_version ts_stack_copy_version(t_stack *self, t_stack_version version)
 {
 	assert(version < self->heads.size);
 	array_push(&self->heads, self->heads.contents[version]);
-	StackHead *head = array_back(&self->heads);
+	t_stack_head *head = array_back(&self->heads);
 	stack_node_retain(head->node);
 	if (head->last_external_token.ptr)
 		ts_subtree_retain(head->last_external_token);
@@ -9740,12 +9787,13 @@ StackVersion ts_stack_copy_version(Stack *self, StackVersion version)
 	return self->heads.size - 1;
 }
 
-bool ts_stack_merge(Stack *self, StackVersion version1, StackVersion version2)
+bool ts_stack_merge(t_stack *self, t_stack_version version1,
+					t_stack_version version2)
 {
 	if (!ts_stack_can_merge(self, version1, version2))
 		return false;
-	StackHead *head1 = &self->heads.contents[version1];
-	StackHead *head2 = &self->heads.contents[version2];
+	t_stack_head *head1 = &self->heads.contents[version1];
+	t_stack_head *head2 = &self->heads.contents[version2];
 	for (uint32_t i = 0; i < head2->node->link_count; i++)
 	{
 		stack_node_add_link(head1->node, head2->node->links[i],
@@ -9759,11 +9807,11 @@ bool ts_stack_merge(Stack *self, StackVersion version1, StackVersion version2)
 	return true;
 }
 
-bool ts_stack_can_merge(Stack *self, StackVersion version1,
-						StackVersion version2)
+bool ts_stack_can_merge(t_stack *self, t_stack_version version1,
+						t_stack_version version2)
 {
-	StackHead *head1 = &self->heads.contents[version1];
-	StackHead *head2 = &self->heads.contents[version2];
+	t_stack_head *head1 = &self->heads.contents[version1];
+	t_stack_head *head2 = &self->heads.contents[version2];
 	return head1->status == StackStatusActive &&
 		   head2->status == StackStatusActive &&
 		   head1->node->state == head2->node->state &&
@@ -9773,45 +9821,45 @@ bool ts_stack_can_merge(Stack *self, StackVersion version1,
 												head2->last_external_token);
 }
 
-void ts_stack_halt(Stack *self, StackVersion version)
+void ts_stack_halt(t_stack *self, t_stack_version version)
 {
 	array_get(&self->heads, version)->status = StackStatusHalted;
 }
 
-void ts_stack_pause(Stack *self, StackVersion version, Subtree lookahead)
+void ts_stack_pause(t_stack *self, t_stack_version version, t_subtree lookahead)
 {
-	StackHead *head = array_get(&self->heads, version);
+	t_stack_head *head = array_get(&self->heads, version);
 	head->status = StackStatusPaused;
 	head->lookahead_when_paused = lookahead;
 	head->node_count_at_last_error = head->node->node_count;
 }
 
-bool ts_stack_is_active(const Stack *self, StackVersion version)
+bool ts_stack_is_active(const t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->status == StackStatusActive;
 }
 
-bool ts_stack_is_halted(const Stack *self, StackVersion version)
+bool ts_stack_is_halted(const t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->status == StackStatusHalted;
 }
 
-bool ts_stack_is_paused(const Stack *self, StackVersion version)
+bool ts_stack_is_paused(const t_stack *self, t_stack_version version)
 {
 	return array_get(&self->heads, version)->status == StackStatusPaused;
 }
 
-Subtree ts_stack_resume(Stack *self, StackVersion version)
+t_subtree ts_stack_resume(t_stack *self, t_stack_version version)
 {
-	StackHead *head = array_get(&self->heads, version);
+	t_stack_head *head = array_get(&self->heads, version);
 	assert(head->status == StackStatusPaused);
-	Subtree result = head->lookahead_when_paused;
+	t_subtree result = head->lookahead_when_paused;
 	head->status = StackStatusActive;
 	head->lookahead_when_paused = NULL_SUBTREE;
 	return result;
 }
 
-void ts_stack_clear(Stack *self)
+void ts_stack_clear(t_stack *self)
 {
 	stack_node_retain(self->base_node);
 	for (uint32_t i = 0; i < self->heads.size; i++)
@@ -9820,7 +9868,7 @@ void ts_stack_clear(Stack *self)
 						  self->subtree_pool);
 	}
 	array_clear(&self->heads);
-	array_push(&self->heads, ((StackHead){
+	array_push(&self->heads, ((t_stack_head){
 								 .node = self->base_node,
 								 .status = StackStatusActive,
 								 .last_external_token = NULL_SUBTREE,
@@ -9828,24 +9876,25 @@ void ts_stack_clear(Stack *self)
 							 }));
 }
 
-bool ts_stack_print_dot_graph(Stack *self, const TSLanguage *language, void *f)
+bool ts_stack_print_dot_graph(t_stack *self, const t_language *language,
+							  void *f)
 {
 	(void)(self);
 	(void)(language);
 	(void)(f);
-  return (false);
+	return (false);
 }
 
-typedef struct
-{
-	Length start;
-	Length old_end;
-	Length new_end;
-} Edit;
+typedef struct s_edit
+{ 
+	t_length start;
+	t_length old_end;
+	t_length new_end;
+} t_edit;
 
-// ExternalScannerState
+// t_external_scanner_state
 
-void ts_external_scanner_state_init(ExternalScannerState *self,
+void ts_external_scanner_state_init(t_external_scanner_state *self,
 									const char *data, unsigned length)
 {
 	self->length = length;
@@ -9860,10 +9909,10 @@ void ts_external_scanner_state_init(ExternalScannerState *self,
 	}
 }
 
-ExternalScannerState ts_external_scanner_state_copy(
-	const ExternalScannerState *self)
+t_external_scanner_state ts_external_scanner_state_copy(
+	const t_external_scanner_state *self)
 {
-	ExternalScannerState result = *self;
+	t_external_scanner_state result = *self;
 	if (self->length > sizeof(self->short_data))
 	{
 		result.long_data = malloc(self->length);
@@ -9872,7 +9921,7 @@ ExternalScannerState ts_external_scanner_state_copy(
 	return result;
 }
 
-void ts_external_scanner_state_delete(ExternalScannerState *self)
+void ts_external_scanner_state_delete(t_external_scanner_state *self)
 {
 	if (self->length > sizeof(self->short_data))
 	{
@@ -9880,7 +9929,7 @@ void ts_external_scanner_state_delete(ExternalScannerState *self)
 	}
 }
 
-const char *ts_external_scanner_state_data(const ExternalScannerState *self)
+const char *ts_external_scanner_state_data(const t_external_scanner_state *self)
 {
 	if (self->length > sizeof(self->short_data))
 	{
@@ -9892,24 +9941,24 @@ const char *ts_external_scanner_state_data(const ExternalScannerState *self)
 	}
 }
 
-bool ts_external_scanner_state_eq(const ExternalScannerState *self,
+bool ts_external_scanner_state_eq(const t_external_scanner_state *self,
 								  const char *buffer, unsigned length)
 {
 	return self->length == length &&
 		   memcmp(ts_external_scanner_state_data(self), buffer, length) == 0;
 }
 
-// SubtreeArray
+// t_subtree_array
 
-void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
+void ts_subtree_array_copy(t_subtree_array self, t_subtree_array *dest)
 {
 	dest->size = self.size;
 	dest->capacity = self.capacity;
 	dest->contents = self.contents;
 	if (self.capacity > 0)
 	{
-		dest->contents = calloc(self.capacity, sizeof(Subtree));
-		memcpy(dest->contents, self.contents, self.size * sizeof(Subtree));
+		dest->contents = calloc(self.capacity, sizeof(t_subtree));
+		memcpy(dest->contents, self.contents, self.size * sizeof(t_subtree));
 		for (uint32_t i = 0; i < self.size; i++)
 		{
 			ts_subtree_retain(dest->contents[i]);
@@ -9917,7 +9966,7 @@ void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
 	}
 }
 
-void ts_subtree_array_clear(SubtreePool *pool, SubtreeArray *self)
+void ts_subtree_array_clear(t_subtree_pool *pool, t_subtree_array *self)
 {
 	for (uint32_t i = 0; i < self->size; i++)
 	{
@@ -9926,19 +9975,19 @@ void ts_subtree_array_clear(SubtreePool *pool, SubtreeArray *self)
 	array_clear(self);
 }
 
-void ts_subtree_array_delete(SubtreePool *pool, SubtreeArray *self)
+void ts_subtree_array_delete(t_subtree_pool *pool, t_subtree_array *self)
 {
 	ts_subtree_array_clear(pool, self);
 	array_delete(self);
 }
 
-void ts_subtree_array_remove_trailing_extras(SubtreeArray *self,
-											 SubtreeArray *destination)
+void ts_subtree_array_remove_trailing_extras(t_subtree_array *self,
+											 t_subtree_array *destination)
 {
 	array_clear(destination);
 	while (self->size > 0)
 	{
-		Subtree last = self->contents[self->size - 1];
+		t_subtree last = self->contents[self->size - 1];
 		if (ts_subtree_extra(last))
 		{
 			self->size--;
@@ -9952,27 +10001,27 @@ void ts_subtree_array_remove_trailing_extras(SubtreeArray *self,
 	ts_subtree_array_reverse(destination);
 }
 
-void ts_subtree_array_reverse(SubtreeArray *self)
+void ts_subtree_array_reverse(t_subtree_array *self)
 {
 	for (uint32_t i = 0, limit = self->size / 2; i < limit; i++)
 	{
-		size_t	reverse_index = self->size - 1 - i;
-		Subtree swap = self->contents[i];
+		size_t	  reverse_index = self->size - 1 - i;
+		t_subtree swap = self->contents[i];
 		self->contents[i] = self->contents[reverse_index];
 		self->contents[reverse_index] = swap;
 	}
 }
 
-// SubtreePool
+// t_subtree_pool
 
-SubtreePool ts_subtree_pool_new(uint32_t capacity)
+t_subtree_pool ts_subtree_pool_new(uint32_t capacity)
 {
-	SubtreePool self = {array_new(), array_new()};
+	t_subtree_pool self = {array_new(), array_new()};
 	array_reserve(&self.free_trees, capacity);
 	return self;
 }
 
-void ts_subtree_pool_delete(SubtreePool *self)
+void ts_subtree_pool_delete(t_subtree_pool *self)
 {
 	if (self->free_trees.contents)
 	{
@@ -9986,7 +10035,7 @@ void ts_subtree_pool_delete(SubtreePool *self)
 		array_delete(&self->tree_stack);
 }
 
-static SubtreeHeapData *ts_subtree_pool_allocate(SubtreePool *self)
+static t_subtree_heap_data *ts_subtree_pool_allocate(t_subtree_pool *self)
 {
 	if (self->free_trees.size > 0)
 	{
@@ -9994,16 +10043,17 @@ static SubtreeHeapData *ts_subtree_pool_allocate(SubtreePool *self)
 	}
 	else
 	{
-		return malloc(sizeof(SubtreeHeapData));
+		return malloc(sizeof(t_subtree_heap_data));
 	}
 }
 
-static void ts_subtree_pool_free(SubtreePool *self, SubtreeHeapData *tree)
+static void ts_subtree_pool_free(t_subtree_pool		 *self,
+								 t_subtree_heap_data *tree)
 {
 	if (self->free_trees.capacity > 0 &&
 		self->free_trees.size + 1 <= TS_MAX_TREE_POOL_SIZE)
 	{
-		array_push(&self->free_trees, (MutableSubtree){.ptr = tree});
+		array_push(&self->free_trees, (t_mutable_subtree){.ptr = tree});
 	}
 	else
 	{
@@ -10011,9 +10061,9 @@ static void ts_subtree_pool_free(SubtreePool *self, SubtreeHeapData *tree)
 	}
 }
 
-// Subtree
+// t_subtree
 
-static inline bool ts_subtree_can_inline(Length padding, Length size,
+static inline bool ts_subtree_can_inline(t_length padding, t_length size,
 										 uint32_t lookahead_bytes)
 {
 	return padding.bytes < TS_MAX_INLINE_TREE_LENGTH &&
@@ -10024,21 +10074,21 @@ static inline bool ts_subtree_can_inline(Length padding, Length size,
 		   lookahead_bytes < 16;
 }
 
-Subtree ts_subtree_new_leaf(SubtreePool *pool, TSSymbol symbol, Length padding,
-							Length size, uint32_t lookahead_bytes,
-							TSStateId parse_state, bool has_external_tokens,
-							bool depends_on_column, bool is_keyword,
-							const TSLanguage *language)
+t_subtree ts_subtree_new_leaf(t_subtree_pool *pool, t_symbol symbol,
+							  t_length padding, t_length size,
+							  uint32_t lookahead_bytes, t_state_id parse_state,
+							  bool has_external_tokens, bool depends_on_column,
+							  bool is_keyword, const t_language *language)
 {
-	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
-	bool			 extra = symbol == ts_builtin_sym_end;
+	t_symbol_metadata metadata = ts_language_symbol_metadata(language, symbol);
+	bool			  extra = symbol == ts_builtin_sym_end;
 
 	bool is_inline = (symbol <= UINT8_MAX && !has_external_tokens &&
 					  ts_subtree_can_inline(padding, size, lookahead_bytes));
 
 	if (is_inline)
 	{
-		return (Subtree){{
+		return (t_subtree){{
 			.parse_state = parse_state,
 			.symbol = symbol,
 			.padding_bytes = padding.bytes,
@@ -10057,8 +10107,8 @@ Subtree ts_subtree_new_leaf(SubtreePool *pool, TSSymbol symbol, Length padding,
 	}
 	else
 	{
-		SubtreeHeapData *data = ts_subtree_pool_allocate(pool);
-		*data = (SubtreeHeapData){
+		t_subtree_heap_data *data = ts_subtree_pool_allocate(pool);
+		*data = (t_subtree_heap_data){
 			.ref_count = 1,
 			.padding = padding,
 			.size = size,
@@ -10079,14 +10129,14 @@ Subtree ts_subtree_new_leaf(SubtreePool *pool, TSSymbol symbol, Length padding,
 			.is_missing = false,
 			.is_keyword = is_keyword,
 			{{.first_leaf = {.symbol = 0, .parse_state = 0}}}};
-		return (Subtree){.ptr = data};
+		return (t_subtree){.ptr = data};
 	}
 }
 
-void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol,
-						   const TSLanguage *language)
+void ts_subtree_set_symbol(t_mutable_subtree *self, t_symbol symbol,
+						   const t_language *language)
 {
-	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
+	t_symbol_metadata metadata = ts_language_symbol_metadata(language, symbol);
 	if (self->data.is_inline)
 	{
 		assert(symbol < UINT8_MAX);
@@ -10102,15 +10152,15 @@ void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol,
 	}
 }
 
-Subtree ts_subtree_new_error(SubtreePool *pool, int32_t lookahead_char,
-							 Length padding, Length size,
-							 uint32_t bytes_scanned, TSStateId parse_state,
-							 const TSLanguage *language)
+t_subtree ts_subtree_new_error(t_subtree_pool *pool, int32_t lookahead_char,
+							   t_length padding, t_length size,
+							   uint32_t bytes_scanned, t_state_id parse_state,
+							   const t_language *language)
 {
-	Subtree result = ts_subtree_new_leaf(pool, ts_builtin_sym_error, padding,
-										 size, bytes_scanned, parse_state,
-										 false, false, false, language);
-	SubtreeHeapData *data = (SubtreeHeapData *)result.ptr;
+	t_subtree result = ts_subtree_new_leaf(pool, ts_builtin_sym_error, padding,
+										   size, bytes_scanned, parse_state,
+										   false, false, false, language);
+	t_subtree_heap_data *data = (t_subtree_heap_data *)result.ptr;
 	data->fragile_left = true;
 	data->fragile_right = true;
 	data->lookahead_char = lookahead_char;
@@ -10118,14 +10168,14 @@ Subtree ts_subtree_new_error(SubtreePool *pool, int32_t lookahead_char,
 }
 
 // Clone a subtree.
-MutableSubtree ts_subtree_clone(Subtree self)
+t_mutable_subtree ts_subtree_clone(t_subtree self)
 {
-	size_t	 alloc_size = ts_subtree_alloc_size(self.ptr->child_count);
-	Subtree *new_children = malloc(alloc_size);
-	Subtree *old_children = ts_subtree_children(self);
+	size_t	   alloc_size = ts_subtree_alloc_size(self.ptr->child_count);
+	t_subtree *new_children = malloc(alloc_size);
+	t_subtree *old_children = ts_subtree_children(self);
 	memcpy(new_children, old_children, alloc_size);
-	SubtreeHeapData *result =
-		(SubtreeHeapData *)&new_children[self.ptr->child_count];
+	t_subtree_heap_data *result =
+		(t_subtree_heap_data *)&new_children[self.ptr->child_count];
 	if (self.ptr->child_count > 0)
 	{
 		for (uint32_t i = 0; i < self.ptr->child_count; i++)
@@ -10139,7 +10189,7 @@ MutableSubtree ts_subtree_clone(Subtree self)
 			ts_external_scanner_state_copy(&self.ptr->external_scanner_state);
 	}
 	result->ref_count = 1;
-	return (MutableSubtree){.ptr = result};
+	return (t_mutable_subtree){.ptr = result};
 }
 
 // Get mutable version of a subtree.
@@ -10147,37 +10197,37 @@ MutableSubtree ts_subtree_clone(Subtree self)
 // This takes ownership of the subtree. If the subtree has only one owner,
 // this will directly convert it into a mutable version. Otherwise, it will
 // perform a copy.
-MutableSubtree ts_subtree_make_mut(SubtreePool *pool, Subtree self)
+t_mutable_subtree ts_subtree_make_mut(t_subtree_pool *pool, t_subtree self)
 {
 	if (self.data.is_inline)
-		return (MutableSubtree){self.data};
+		return (t_mutable_subtree){self.data};
 	if (self.ptr->ref_count == 1)
 		return ts_subtree_to_mut_unsafe(self);
-	MutableSubtree result = ts_subtree_clone(self);
+	t_mutable_subtree result = ts_subtree_clone(self);
 	ts_subtree_release(pool, self);
 	return result;
 }
 
-static void ts_subtree__compress(MutableSubtree self, unsigned count,
-								 const TSLanguage	 *language,
-								 MutableSubtreeArray *stack)
+static void ts_subtree__compress(t_mutable_subtree self, unsigned count,
+								 const t_language		 *language,
+								 t_mutable_subtree_array *stack)
 {
 	unsigned initial_stack_size = stack->size;
 
-	MutableSubtree tree = self;
-	TSSymbol	   symbol = tree.ptr->symbol;
+	t_mutable_subtree tree = self;
+	t_symbol		  symbol = tree.ptr->symbol;
 	for (unsigned i = 0; i < count; i++)
 	{
 		if (tree.ptr->ref_count > 1 || tree.ptr->child_count < 2)
 			break;
 
-		MutableSubtree child =
+		t_mutable_subtree child =
 			ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
 		if (child.data.is_inline || child.ptr->child_count < 2 ||
 			child.ptr->ref_count > 1 || child.ptr->symbol != symbol)
 			break;
 
-		MutableSubtree grandchild =
+		t_mutable_subtree grandchild =
 			ts_subtree_to_mut_unsafe(ts_subtree_children(child)[0]);
 		if (grandchild.data.is_inline || grandchild.ptr->child_count < 2 ||
 			grandchild.ptr->ref_count > 1 || grandchild.ptr->symbol != symbol)
@@ -10195,9 +10245,9 @@ static void ts_subtree__compress(MutableSubtree self, unsigned count,
 	while (stack->size > initial_stack_size)
 	{
 		tree = array_pop(stack);
-		MutableSubtree child =
+		t_mutable_subtree child =
 			ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
-		MutableSubtree grandchild = ts_subtree_to_mut_unsafe(
+		t_mutable_subtree grandchild = ts_subtree_to_mut_unsafe(
 			ts_subtree_children(child)[child.ptr->child_count - 1]);
 		ts_subtree_summarize_children(grandchild, language);
 		ts_subtree_summarize_children(child, language);
@@ -10205,8 +10255,8 @@ static void ts_subtree__compress(MutableSubtree self, unsigned count,
 	}
 }
 
-void ts_subtree_balance(Subtree self, SubtreePool *pool,
-						const TSLanguage *language)
+void ts_subtree_balance(t_subtree self, t_subtree_pool *pool,
+						const t_language *language)
 {
 	array_clear(&pool->tree_stack);
 
@@ -10217,12 +10267,12 @@ void ts_subtree_balance(Subtree self, SubtreePool *pool,
 
 	while (pool->tree_stack.size > 0)
 	{
-		MutableSubtree tree = array_pop(&pool->tree_stack);
+		t_mutable_subtree tree = array_pop(&pool->tree_stack);
 
 		if (tree.ptr->repeat_depth > 0)
 		{
-			Subtree child1 = ts_subtree_children(tree)[0];
-			Subtree child2 =
+			t_subtree child1 = ts_subtree_children(tree)[0];
+			t_subtree child2 =
 				ts_subtree_children(tree)[tree.ptr->child_count - 1];
 			long repeat_delta = (long)ts_subtree_repeat_depth(child1) -
 								(long)ts_subtree_repeat_depth(child2);
@@ -10239,7 +10289,7 @@ void ts_subtree_balance(Subtree self, SubtreePool *pool,
 
 		for (uint32_t i = 0; i < tree.ptr->child_count; i++)
 		{
-			Subtree child = ts_subtree_children(tree)[i];
+			t_subtree child = ts_subtree_children(tree)[i];
 			if (ts_subtree_child_count(child) > 0 && child.ptr->ref_count == 1)
 			{
 				array_push(&pool->tree_stack, ts_subtree_to_mut_unsafe(child));
@@ -10249,8 +10299,8 @@ void ts_subtree_balance(Subtree self, SubtreePool *pool,
 }
 
 // Assign all of the node's properties that depend on its children.
-void ts_subtree_summarize_children(MutableSubtree	 self,
-								   const TSLanguage *language)
+void ts_subtree_summarize_children(t_mutable_subtree self,
+								   const t_language *language)
 {
 	assert(!self.data.is_inline);
 
@@ -10265,14 +10315,14 @@ void ts_subtree_summarize_children(MutableSubtree	 self,
 	self.ptr->dynamic_precedence = 0;
 
 	uint32_t		structural_index = 0;
-	const TSSymbol *alias_sequence =
+	const t_symbol *alias_sequence =
 		ts_language_alias_sequence(language, self.ptr->production_id);
 	uint32_t lookahead_end_byte = 0;
 
-	const Subtree *children = ts_subtree_children(self);
+	const t_subtree *children = ts_subtree_children(self);
 	for (uint32_t i = 0; i < self.ptr->child_count; i++)
 	{
-		Subtree child = children[i];
+		t_subtree child = children[i];
 
 		if (self.ptr->size.extent.row == 0 &&
 			ts_subtree_depends_on_column(child))
@@ -10384,8 +10434,8 @@ void ts_subtree_summarize_children(MutableSubtree	 self,
 
 	if (self.ptr->child_count > 0)
 	{
-		Subtree first_child = children[0];
-		Subtree last_child = children[self.ptr->child_count - 1];
+		t_subtree first_child = children[0];
+		t_subtree last_child = children[self.ptr->child_count - 1];
 
 		self.ptr->first_leaf.symbol = ts_subtree_leaf_symbol(first_child);
 		self.ptr->first_leaf.parse_state =
@@ -10418,25 +10468,27 @@ void ts_subtree_summarize_children(MutableSubtree	 self,
 // Create a new parent node with the given children.
 //
 // This takes ownership of the children array.
-MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children,
-								   unsigned			 production_id,
-								   const TSLanguage *language)
+t_mutable_subtree ts_subtree_new_node(t_symbol			symbol,
+									  t_subtree_array  *children,
+									  unsigned			production_id,
+									  const t_language *language)
 {
-	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
-	bool			 fragile =
+	t_symbol_metadata metadata = ts_language_symbol_metadata(language, symbol);
+	bool			  fragile =
 		symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat;
 
 	// Allocate the node's data at the end of the array of children.
 	size_t new_byte_size = ts_subtree_alloc_size(children->size);
-	if (children->capacity * sizeof(Subtree) < new_byte_size)
+	if (children->capacity * sizeof(t_subtree) < new_byte_size)
 	{
 		children->contents = realloc(children->contents, new_byte_size);
-		children->capacity = (uint32_t)(new_byte_size / sizeof(Subtree));
+		children->capacity = (uint32_t)(new_byte_size / sizeof(t_subtree));
 	}
-	SubtreeHeapData *data =
-		(SubtreeHeapData *)&children->contents[children->size];
+	t_subtree_heap_data *data =
+		(t_subtree_heap_data *)&children->contents[children->size];
 
-	*data = (SubtreeHeapData){.ref_count = 1,
+	*data =
+		(t_subtree_heap_data){.ref_count = 1,
 							  .symbol = symbol,
 							  .child_count = children->size,
 							  .visible = metadata.visible,
@@ -10451,7 +10503,7 @@ MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children,
 								  .production_id = production_id,
 								  .first_leaf = {.symbol = 0, .parse_state = 0},
 							  }}};
-	MutableSubtree result = {.ptr = data};
+	t_mutable_subtree result = {.ptr = data};
 	ts_subtree_summarize_children(result, language);
 	return result;
 }
@@ -10460,10 +10512,10 @@ MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children,
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra,
-								  const TSLanguage *language)
+t_subtree ts_subtree_new_error_node(t_subtree_array *children, bool extra,
+									const t_language *language)
 {
-	MutableSubtree result =
+	t_mutable_subtree result =
 		ts_subtree_new_node(ts_builtin_sym_error, children, 0, language);
 	result.ptr->extra = extra;
 	return ts_subtree_from_mut(result);
@@ -10473,11 +10525,12 @@ Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra,
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_missing_leaf(SubtreePool *pool, TSSymbol symbol,
-									Length padding, uint32_t lookahead_bytes,
-									const TSLanguage *language)
+t_subtree ts_subtree_new_missing_leaf(t_subtree_pool *pool, t_symbol symbol,
+									  t_length			padding,
+									  uint32_t			lookahead_bytes,
+									  const t_language *language)
 {
-	Subtree result =
+	t_subtree result =
 		ts_subtree_new_leaf(pool, symbol, padding, length_zero(),
 							lookahead_bytes, 0, false, false, false, language);
 	if (result.data.is_inline)
@@ -10486,12 +10539,12 @@ Subtree ts_subtree_new_missing_leaf(SubtreePool *pool, TSSymbol symbol,
 	}
 	else
 	{
-		((SubtreeHeapData *)result.ptr)->is_missing = true;
+		((t_subtree_heap_data *)result.ptr)->is_missing = true;
 	}
 	return result;
 }
 
-void ts_subtree_retain(Subtree self)
+void ts_subtree_retain(t_subtree self)
 {
 	if (self.data.is_inline)
 		return;
@@ -10500,7 +10553,7 @@ void ts_subtree_retain(Subtree self)
 	assert(self.ptr->ref_count != 0);
 }
 
-void ts_subtree_release(SubtreePool *pool, Subtree self)
+void ts_subtree_release(t_subtree_pool *pool, t_subtree self)
 {
 	if (self.data.is_inline)
 		return;
@@ -10514,13 +10567,13 @@ void ts_subtree_release(SubtreePool *pool, Subtree self)
 
 	while (pool->tree_stack.size > 0)
 	{
-		MutableSubtree tree = array_pop(&pool->tree_stack);
+		t_mutable_subtree tree = array_pop(&pool->tree_stack);
 		if (tree.ptr->child_count > 0)
 		{
-			Subtree *children = ts_subtree_children(tree);
+			t_subtree *children = ts_subtree_children(tree);
 			for (uint32_t i = 0; i < tree.ptr->child_count; i++)
 			{
-				Subtree child = children[i];
+				t_subtree child = children[i];
 				if (child.data.is_inline)
 					continue;
 				assert(child.ptr->ref_count > 0);
@@ -10544,7 +10597,7 @@ void ts_subtree_release(SubtreePool *pool, Subtree self)
 	}
 }
 
-int ts_subtree_compare(Subtree left, Subtree right, SubtreePool *pool)
+int ts_subtree_compare(t_subtree left, t_subtree right, t_subtree_pool *pool)
 {
 	array_push(&pool->tree_stack, ts_subtree_to_mut_unsafe(left));
 	array_push(&pool->tree_stack, ts_subtree_to_mut_unsafe(right));
@@ -10571,8 +10624,8 @@ int ts_subtree_compare(Subtree left, Subtree right, SubtreePool *pool)
 
 		for (uint32_t i = ts_subtree_child_count(left); i > 0; i--)
 		{
-			Subtree left_child = ts_subtree_children(left)[i - 1];
-			Subtree right_child = ts_subtree_children(right)[i - 1];
+			t_subtree left_child = ts_subtree_children(left)[i - 1];
+			t_subtree right_child = ts_subtree_children(right)[i - 1];
 			array_push(&pool->tree_stack, ts_subtree_to_mut_unsafe(left_child));
 			array_push(&pool->tree_stack,
 					   ts_subtree_to_mut_unsafe(right_child));
@@ -10582,7 +10635,7 @@ int ts_subtree_compare(Subtree left, Subtree right, SubtreePool *pool)
 	return 0;
 }
 
-static inline void ts_subtree_set_has_changes(MutableSubtree *self)
+static inline void ts_subtree_set_has_changes(t_mutable_subtree *self)
 {
 	if (self->data.is_inline)
 	{
@@ -10594,22 +10647,22 @@ static inline void ts_subtree_set_has_changes(MutableSubtree *self)
 	}
 }
 
-Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
-						SubtreePool *pool)
+t_subtree ts_subtree_edit(t_subtree self, const t_input_edit *input_edit,
+						  t_subtree_pool *pool)
 {
-	typedef struct
+	typedef struct s_edit_entry
 	{
-		Subtree *tree;
-		Edit	 edit;
-	} EditEntry;
+		t_subtree *tree;
+		t_edit	   edit;
+	} t_edit_entry;
 
-	Array(EditEntry) stack = array_new();
+	Array(t_edit_entry) stack = array_new();
 	array_push(
 		&stack,
-		((EditEntry){
+		((t_edit_entry){
 			.tree = &self,
 			.edit =
-				(Edit){
+				(t_edit){
 					.start = {input_edit->start_byte, input_edit->start_point},
 					.old_end = {input_edit->old_end_byte,
 								input_edit->old_end_point},
@@ -10620,16 +10673,16 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 
 	while (stack.size)
 	{
-		EditEntry entry = array_pop(&stack);
-		Edit	  edit = entry.edit;
+		t_edit_entry entry = array_pop(&stack);
+		t_edit	  edit = entry.edit;
 		bool	  is_noop = edit.old_end.bytes == edit.start.bytes &&
 					   edit.new_end.bytes == edit.start.bytes;
 		bool is_pure_insertion = edit.old_end.bytes == edit.start.bytes;
 		bool invalidate_first_row = ts_subtree_depends_on_column(*entry.tree);
 
-		Length	 size = ts_subtree_size(*entry.tree);
-		Length	 padding = ts_subtree_padding(*entry.tree);
-		Length	 total_size = length_add(padding, size);
+		t_length size = ts_subtree_size(*entry.tree);
+		t_length padding = ts_subtree_padding(*entry.tree);
+		t_length total_size = length_add(padding, size);
 		uint32_t lookahead_bytes = ts_subtree_lookahead_bytes(*entry.tree);
 		uint32_t end_byte = total_size.bytes + lookahead_bytes;
 		if (edit.start.bytes > end_byte ||
@@ -10671,7 +10724,7 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 							  length_saturating_sub(total_size, edit.old_end));
 		}
 
-		MutableSubtree result = ts_subtree_make_mut(pool, *entry.tree);
+		t_mutable_subtree result = ts_subtree_make_mut(pool, *entry.tree);
 
 		if (result.data.is_inline)
 		{
@@ -10684,7 +10737,7 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 			}
 			else
 			{
-				SubtreeHeapData *data = ts_subtree_pool_allocate(pool);
+				t_subtree_heap_data *data = ts_subtree_pool_allocate(pool);
 				data->ref_count = 1;
 				data->padding = padding;
 				data->size = size;
@@ -10715,12 +10768,12 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 		ts_subtree_set_has_changes(&result);
 		*entry.tree = ts_subtree_from_mut(result);
 
-		Length child_left, child_right = length_zero();
+		t_length child_left, child_right = length_zero();
 		for (uint32_t i = 0, n = ts_subtree_child_count(*entry.tree); i < n;
 			 i++)
 		{
-			Subtree *child = &ts_subtree_children(*entry.tree)[i];
-			Length	 child_size = ts_subtree_total_size(*child);
+			t_subtree *child = &ts_subtree_children(*entry.tree)[i];
+			t_length   child_size = ts_subtree_total_size(*child);
 			child_left = child_right;
 			child_right = length_add(child_left, child_size);
 
@@ -10743,7 +10796,7 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 			}
 
 			// Transform edit into the child's coordinate space.
-			Edit child_edit = {
+			t_edit child_edit = {
 				.start = length_saturating_sub(edit.start, child_left),
 				.old_end = length_saturating_sub(edit.old_end, child_left),
 				.new_end = length_saturating_sub(edit.new_end, child_left),
@@ -10767,7 +10820,7 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 			}
 
 			// Queue processing of this child's subtree.
-			array_push(&stack, ((EditEntry){
+			array_push(&stack, ((t_edit_entry){
 								   .tree = child,
 								   .edit = child_edit,
 							   }));
@@ -10778,7 +10831,7 @@ Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit,
 	return self;
 }
 
-Subtree ts_subtree_last_external_token(Subtree tree)
+t_subtree ts_subtree_last_external_token(t_subtree tree)
 {
 	if (!ts_subtree_has_external_tokens(tree))
 		return NULL_SUBTREE;
@@ -10786,7 +10839,7 @@ Subtree ts_subtree_last_external_token(Subtree tree)
 	{
 		for (uint32_t i = tree.ptr->child_count - 1; i + 1 > 0; i--)
 		{
-			Subtree child = ts_subtree_children(tree)[i];
+			t_subtree child = ts_subtree_children(tree)[i];
 			if (ts_subtree_has_external_tokens(child))
 			{
 				tree = child;
@@ -10800,23 +10853,23 @@ Subtree ts_subtree_last_external_token(Subtree tree)
 static const char *const ROOT_FIELD = "__ROOT__";
 
 static size_t ts_subtree__write_to_string(
-	Subtree self, char *string, size_t limit, const TSLanguage *language,
-	bool include_all, TSSymbol alias_symbol, bool alias_is_named,
+	t_subtree self, char *string, size_t limit, const t_language *language,
+	bool include_all, t_symbol alias_symbol, bool alias_is_named,
 	const char *field_name)
 {
-  (void)(self);
-  (void)(string);
-  (void)(limit);
-  (void)(language);
-  (void)(include_all);
-  (void)(alias_symbol);
-  (void)(alias_is_named);
-  (void)(field_name);
-  return (0);
+	(void)(self);
+	(void)(string);
+	(void)(limit);
+	(void)(language);
+	(void)(include_all);
+	(void)(alias_symbol);
+	(void)(alias_is_named);
+	(void)(field_name);
+	return (0);
 }
 
-char *ts_subtree_string(Subtree self, TSSymbol alias_symbol,
-						bool alias_is_named, const TSLanguage *language,
+char *ts_subtree_string(t_subtree self, t_symbol alias_symbol,
+						bool alias_is_named, const t_language *language,
 						bool include_all)
 {
 	char   scratch_string[1];
@@ -10830,9 +10883,9 @@ char *ts_subtree_string(Subtree self, TSSymbol alias_symbol,
 	return result;
 }
 
-void ts_subtree__print_dot_graph(const Subtree *self, uint32_t start_offset,
-								 const TSLanguage *language,
-								 TSSymbol alias_symbol, void *f)
+void ts_subtree__print_dot_graph(const t_subtree *self, uint32_t start_offset,
+								 const t_language *language,
+								 t_symbol alias_symbol, void *f)
 {
 	(void)(self);
 	(void)(start_offset);
@@ -10841,44 +10894,45 @@ void ts_subtree__print_dot_graph(const Subtree *self, uint32_t start_offset,
 	(void)(f);
 }
 
-bool ts_subtree_external_scanner_state_eq(Subtree self, Subtree other)
+bool ts_subtree_external_scanner_state_eq(t_subtree self, t_subtree other)
 {
-	const ExternalScannerState *state_self =
+	const t_external_scanner_state *state_self =
 		ts_subtree_external_scanner_state(self);
-	const ExternalScannerState *state_other =
+	const t_external_scanner_state *state_other =
 		ts_subtree_external_scanner_state(other);
 	return ts_external_scanner_state_eq(
 		state_self, ts_external_scanner_state_data(state_other),
 		state_other->length);
 }
 
-TSTree *ts_tree_new(Subtree root, const TSLanguage *language,
-					const TSRange *included_ranges,
-					unsigned	   included_range_count)
+t_first_tree *ts_tree_new(t_subtree root, const t_language *language,
+						  const t_parse_range *included_ranges,
+						  unsigned			   included_range_count)
 {
-	TSTree *result = malloc(sizeof(TSTree));
+	t_first_tree *result = malloc(sizeof(t_first_tree));
 	result->root = root;
 	result->language = ts_language_copy(language);
-	result->included_ranges = calloc(included_range_count, sizeof(TSRange));
+	result->included_ranges =
+		calloc(included_range_count, sizeof(t_parse_range));
 	memcpy(result->included_ranges, included_ranges,
-		   included_range_count * sizeof(TSRange));
+		   included_range_count * sizeof(t_parse_range));
 	result->included_range_count = included_range_count;
 	return result;
 }
 
-TSTree *ts_tree_copy(const TSTree *self)
+t_first_tree *ts_tree_copy(const t_first_tree *self)
 {
 	ts_subtree_retain(self->root);
 	return ts_tree_new(self->root, self->language, self->included_ranges,
 					   self->included_range_count);
 }
 
-void ts_tree_delete(TSTree *self)
+void ts_tree_delete(t_first_tree *self)
 {
 	if (!self)
 		return;
 
-	SubtreePool pool = ts_subtree_pool_new(0);
+	t_subtree_pool pool = ts_subtree_pool_new(0);
 	ts_subtree_release(&pool, self->root);
 	ts_subtree_pool_delete(&pool);
 	ts_language_delete(self->language);
@@ -10886,29 +10940,30 @@ void ts_tree_delete(TSTree *self)
 	free(self);
 }
 
-TSNode ts_tree_root_node(const TSTree *self)
+t_parse_node ts_tree_root_node(const t_first_tree *self)
 {
 	return ts_node_new(self, &self->root, ts_subtree_padding(self->root), 0);
 }
 
-TSNode ts_tree_root_node_with_offset(const TSTree *self, uint32_t offset_bytes,
-									 TSPoint offset_extent)
+t_parse_node ts_tree_root_node_with_offset(const t_first_tree *self,
+										   uint32_t			   offset_bytes,
+										   t_point			   offset_extent)
 {
-	Length offset = {offset_bytes, offset_extent};
+	t_length offset = {offset_bytes, offset_extent};
 	return ts_node_new(self, &self->root,
 					   length_add(offset, ts_subtree_padding(self->root)), 0);
 }
 
-const TSLanguage *ts_tree_language(const TSTree *self)
+const t_language *ts_tree_language(const t_first_tree *self)
 {
 	return self->language;
 }
 
-void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
+void ts_tree_edit(t_first_tree *self, const t_input_edit *edit)
 {
 	for (unsigned i = 0; i < self->included_range_count; i++)
 	{
-		TSRange *range = &self->included_ranges[i];
+		t_parse_range *range = &self->included_ranges[i];
 		if (range->end_byte >= edit->old_end_byte)
 		{
 			if (range->end_byte != UINT32_MAX)
@@ -10950,35 +11005,38 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
 		}
 	}
 
-	SubtreePool pool = ts_subtree_pool_new(0);
+	t_subtree_pool pool = ts_subtree_pool_new(0);
 	self->root = ts_subtree_edit(self->root, edit, &pool);
 	ts_subtree_pool_delete(&pool);
 }
 
-TSRange *ts_tree_included_ranges(const TSTree *self, uint32_t *length)
+t_parse_range *ts_tree_included_ranges(const t_first_tree *self,
+									   uint32_t			  *length)
 {
 	*length = self->included_range_count;
-	TSRange *ranges = calloc(self->included_range_count, sizeof(TSRange));
+	t_parse_range *ranges =
+		calloc(self->included_range_count, sizeof(t_parse_range));
 	memcpy(ranges, self->included_ranges,
-		   self->included_range_count * sizeof(TSRange));
+		   self->included_range_count * sizeof(t_parse_range));
 	return ranges;
 }
 
-TSRange *ts_tree_get_changed_ranges(const TSTree *old_tree,
-									const TSTree *new_tree, uint32_t *length)
+t_parse_range *ts_tree_get_changed_ranges(const t_first_tree *old_tree,
+										  const t_first_tree *new_tree,
+										  uint32_t			 *length)
 {
-	TreeCursor cursor1 = {NULL, array_new(), 0};
-	TreeCursor cursor2 = {NULL, array_new(), 0};
+	t_tree_cursor cursor1 = {NULL, array_new(), 0};
+	t_tree_cursor cursor2 = {NULL, array_new(), 0};
 	ts_tree_cursor_init(&cursor1, ts_tree_root_node(old_tree));
 	ts_tree_cursor_init(&cursor2, ts_tree_root_node(new_tree));
 
-	TSRangeArray included_range_differences = array_new();
+	t_range_array included_range_differences = array_new();
 	ts_range_array_get_changed_ranges(
 		old_tree->included_ranges, old_tree->included_range_count,
 		new_tree->included_ranges, new_tree->included_range_count,
 		&included_range_differences);
 
-	TSRange *result;
+	t_parse_range *result;
 	*length = ts_subtree_get_changed_ranges(
 		&old_tree->root, &new_tree->root, &cursor1, &cursor2,
 		old_tree->language, &included_range_differences, &result);
@@ -11004,7 +11062,7 @@ int _ts_dup(HANDLE handle)
 	return _open_osfhandle((intptr_t)dup_handle, 0);
 }
 
-void ts_tree_print_dot_graph(const TSTree *self, int fd)
+void ts_tree_print_dot_graph(const t_first_tree *self, int fd)
 {
 	FILE *file = _fdopen(_ts_dup((HANDLE)_get_osfhandle(fd)), "a");
 	ts_subtree_print_dot_graph(self->root, self->language, file);
@@ -11020,7 +11078,7 @@ int _ts_dup(int file_descriptor)
 	return dup(file_descriptor);
 }
 
-void ts_tree_print_dot_graph(const TSTree *self, int file_descriptor)
+void ts_tree_print_dot_graph(const t_first_tree *self, int file_descriptor)
 {
 	(void)(self);
 	(void)(file_descriptor);
@@ -11028,30 +11086,30 @@ void ts_tree_print_dot_graph(const TSTree *self, int file_descriptor)
 
 #endif
 
-typedef struct
+typedef struct s_cursor_child_iterator
 {
-	Subtree			parent;
-	const TSTree   *tree;
-	Length			position;
-	uint32_t		child_index;
-	uint32_t		structural_child_index;
-	uint32_t		descendant_index;
-	const TSSymbol *alias_sequence;
-} CursorChildIterator;
+	t_subtree			parent;
+	const t_first_tree *tree;
+	t_length			position;
+	uint32_t			child_index;
+	uint32_t			structural_child_index;
+	uint32_t			descendant_index;
+	const t_symbol	   *alias_sequence;
+} t_cursor_child_iterator;
 
-// CursorChildIterator
+// t_cursor_child_iterator
 
-static inline bool ts_tree_cursor_is_entry_visible(const TreeCursor *self,
-												   uint32_t			 index)
+static inline bool ts_tree_cursor_is_entry_visible(const t_tree_cursor *self,
+												   uint32_t				index)
 {
-	TreeCursorEntry *entry = &self->stack.contents[index];
+	t_tree_cursor_entry *entry = &self->stack.contents[index];
 	if (index == 0 || ts_subtree_visible(*entry->subtree))
 	{
 		return true;
 	}
 	else if (!ts_subtree_extra(*entry->subtree))
 	{
-		TreeCursorEntry *parent_entry = &self->stack.contents[index - 1];
+		t_tree_cursor_entry *parent_entry = &self->stack.contents[index - 1];
 		return ts_language_alias_at(self->tree->language,
 									parent_entry->subtree->ptr->production_id,
 									entry->structural_child_index);
@@ -11062,16 +11120,16 @@ static inline bool ts_tree_cursor_is_entry_visible(const TreeCursor *self,
 	}
 }
 
-static inline CursorChildIterator ts_tree_cursor_iterate_children(
-	const TreeCursor *self)
+static inline t_cursor_child_iterator ts_tree_cursor_iterate_children(
+	const t_tree_cursor *self)
 {
-	TreeCursorEntry *last_entry = array_back(&self->stack);
+	t_tree_cursor_entry *last_entry = array_back(&self->stack);
 	if (ts_subtree_child_count(*last_entry->subtree) == 0)
 	{
-		return (CursorChildIterator){
+		return (t_cursor_child_iterator){
 			NULL_SUBTREE, self->tree, length_zero(), 0, 0, 0, NULL};
 	}
-	const TSSymbol *alias_sequence = ts_language_alias_sequence(
+	const t_symbol *alias_sequence = ts_language_alias_sequence(
 		self->tree->language, last_entry->subtree->ptr->production_id);
 
 	uint32_t descendant_index = last_entry->descendant_index;
@@ -11080,7 +11138,7 @@ static inline CursorChildIterator ts_tree_cursor_iterate_children(
 		descendant_index += 1;
 	}
 
-	return (CursorChildIterator){
+	return (t_cursor_child_iterator){
 		.tree = self->tree,
 		.parent = *last_entry->subtree,
 		.position = last_entry->position,
@@ -11091,15 +11149,14 @@ static inline CursorChildIterator ts_tree_cursor_iterate_children(
 	};
 }
 
-static inline bool ts_tree_cursor_child_iterator_next(CursorChildIterator *self,
-													  TreeCursorEntry *result,
-													  bool			  *visible)
+static inline bool ts_tree_cursor_child_iterator_next(
+	t_cursor_child_iterator *self, t_tree_cursor_entry *result, bool *visible)
 {
 	if (!self->parent.ptr || self->child_index == self->parent.ptr->child_count)
 		return false;
-	const Subtree *child =
+	const t_subtree *child =
 		&ts_subtree_children(self->parent)[self->child_index];
-	*result = (TreeCursorEntry){
+	*result = (t_tree_cursor_entry){
 		.subtree = child,
 		.position = self->position,
 		.child_index = self->child_index,
@@ -11128,7 +11185,7 @@ static inline bool ts_tree_cursor_child_iterator_next(CursorChildIterator *self,
 
 	if (self->child_index < self->parent.ptr->child_count)
 	{
-		Subtree next_child =
+		t_subtree next_child =
 			ts_subtree_children(self->parent)[self->child_index];
 		self->position =
 			length_add(self->position, ts_subtree_padding(next_child));
@@ -11141,14 +11198,14 @@ static inline bool ts_tree_cursor_child_iterator_next(CursorChildIterator *self,
 // can only be computed if `b` has zero rows. Otherwise, this function
 // returns `LENGTH_UNDEFINED`, and the caller needs to recompute
 // the position some other way.
-static inline Length length_backtrack(Length a, Length b)
+static inline t_length length_backtrack(t_length a, t_length b)
 {
 	if (length_is_undefined(a) || b.extent.row != 0)
 	{
 		return LENGTH_UNDEFINED;
 	}
 
-	Length result;
+	t_length result;
 	result.bytes = a.bytes - b.bytes;
 	result.extent.row = a.extent.row;
 	result.extent.column = a.extent.column - b.extent.column;
@@ -11156,15 +11213,15 @@ static inline Length length_backtrack(Length a, Length b)
 }
 
 static inline bool ts_tree_cursor_child_iterator_previous(
-	CursorChildIterator *self, TreeCursorEntry *result, bool *visible)
+	t_cursor_child_iterator *self, t_tree_cursor_entry *result, bool *visible)
 {
 	// this is mostly a reverse `ts_tree_cursor_child_iterator_next` taking into
 	// account unsigned underflow
 	if (!self->parent.ptr || (int8_t)self->child_index == -1)
 		return false;
-	const Subtree *child =
+	const t_subtree *child =
 		&ts_subtree_children(self->parent)[self->child_index];
-	*result = (TreeCursorEntry){
+	*result = (t_tree_cursor_entry){
 		.subtree = child,
 		.position = self->position,
 		.child_index = self->child_index,
@@ -11185,36 +11242,36 @@ static inline bool ts_tree_cursor_child_iterator_previous(
 	// unsigned can underflow so compare it to child_count
 	if (self->child_index < self->parent.ptr->child_count)
 	{
-		Subtree previous_child =
+		t_subtree previous_child =
 			ts_subtree_children(self->parent)[self->child_index];
-		Length size = ts_subtree_size(previous_child);
+		t_length size = ts_subtree_size(previous_child);
 		self->position = length_backtrack(self->position, size);
 	}
 
 	return true;
 }
 
-// TSTreeCursor - lifecycle
+// t_tree_cursor - lifecycle
 
-TSTreeCursor ts_tree_cursor_new(TSNode node)
+t_tree_cursor ts_tree_cursor_new(t_parse_node node)
 {
-	TSTreeCursor self = {NULL, NULL, {0, 0, 0}};
-	ts_tree_cursor_init((TreeCursor *)&self, node);
+	t_tree_cursor self = {NULL, {0, 0, 0}, 0};
+	ts_tree_cursor_init((t_tree_cursor *)&self, node);
 	return self;
 }
 
-void ts_tree_cursor_reset(TSTreeCursor *_self, TSNode node)
+void ts_tree_cursor_reset(t_tree_cursor *_self, t_parse_node node)
 {
-	ts_tree_cursor_init((TreeCursor *)_self, node);
+	ts_tree_cursor_init((t_tree_cursor *)_self, node);
 }
 
-void ts_tree_cursor_init(TreeCursor *self, TSNode node)
+void ts_tree_cursor_init(t_tree_cursor *self, t_parse_node node)
 {
 	self->tree = node.tree;
 	self->root_alias_symbol = node.context[3];
 	array_clear(&self->stack);
-	array_push(&self->stack, ((TreeCursorEntry){
-								 .subtree = (const Subtree *)node.id,
+	array_push(&self->stack, ((t_tree_cursor_entry){
+								 .subtree = (const t_subtree *)node.id,
 								 .position = {ts_node_start_byte(node),
 											  ts_node_start_point(node)},
 								 .child_index = 0,
@@ -11223,20 +11280,21 @@ void ts_tree_cursor_init(TreeCursor *self, TSNode node)
 							 }));
 }
 
-void ts_tree_cursor_delete(TSTreeCursor *_self)
+void ts_tree_cursor_delete(t_tree_cursor *_self)
 {
-	TreeCursor *self = (TreeCursor *)_self;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
 	array_delete(&self->stack);
 }
 
-// TSTreeCursor - walking the tree
+// t_tree_cursor - walking the tree
 
-TreeCursorStep ts_tree_cursor_goto_first_child_internal(TSTreeCursor *_self)
+t_tree_cursor_step ts_tree_cursor_goto_first_child_internal(
+	t_tree_cursor *_self)
 {
-	TreeCursor		   *self = (TreeCursor *)_self;
+	t_tree_cursor	   *self = (t_tree_cursor *)_self;
 	bool				visible;
-	TreeCursorEntry		entry;
-	CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
+	t_tree_cursor_entry entry;
+	t_cursor_child_iterator iterator = ts_tree_cursor_iterate_children(self);
 	while (ts_tree_cursor_child_iterator_next(&iterator, &entry, &visible))
 	{
 		if (visible)
@@ -11253,7 +11311,7 @@ TreeCursorStep ts_tree_cursor_goto_first_child_internal(TSTreeCursor *_self)
 	return TreeCursorStepNone;
 }
 
-bool ts_tree_cursor_goto_first_child(TSTreeCursor *self)
+bool ts_tree_cursor_goto_first_child(t_tree_cursor *self)
 {
 	for (;;)
 	{
@@ -11270,17 +11328,17 @@ bool ts_tree_cursor_goto_first_child(TSTreeCursor *self)
 	return false;
 }
 
-TreeCursorStep ts_tree_cursor_goto_last_child_internal(TSTreeCursor *_self)
+t_tree_cursor_step ts_tree_cursor_goto_last_child_internal(t_tree_cursor *_self)
 {
-	TreeCursor		   *self = (TreeCursor *)_self;
+	t_tree_cursor	   *self = (t_tree_cursor *)_self;
 	bool				visible;
-	TreeCursorEntry		entry;
-	CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
+	t_tree_cursor_entry entry;
+	t_cursor_child_iterator iterator = ts_tree_cursor_iterate_children(self);
 	if (!iterator.parent.ptr || iterator.parent.ptr->child_count == 0)
 		return TreeCursorStepNone;
 
-	TreeCursorEntry last_entry = {0};
-	TreeCursorStep	last_step = TreeCursorStepNone;
+	t_tree_cursor_entry last_entry = {0};
+	t_tree_cursor_step	last_step = TreeCursorStepNone;
 	while (ts_tree_cursor_child_iterator_next(&iterator, &entry, &visible))
 	{
 		if (visible)
@@ -11303,7 +11361,7 @@ TreeCursorStep ts_tree_cursor_goto_last_child_internal(TSTreeCursor *_self)
 	return TreeCursorStepNone;
 }
 
-bool ts_tree_cursor_goto_last_child(TSTreeCursor *self)
+bool ts_tree_cursor_goto_last_child(t_tree_cursor *self)
 {
 	for (;;)
 	{
@@ -11321,11 +11379,11 @@ bool ts_tree_cursor_goto_last_child(TSTreeCursor *self)
 }
 
 static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
-	TSTreeCursor *_self, uint32_t goal_byte, TSPoint goal_point)
+	t_tree_cursor *_self, uint32_t goal_byte, t_point goal_point)
 {
-	TreeCursor *self = (TreeCursor *)_self;
-	uint32_t	initial_size = self->stack.size;
-	uint32_t	visible_child_index = 0;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
+	uint32_t	   initial_size = self->stack.size;
+	uint32_t	   visible_child_index = 0;
 
 	bool did_descend;
 	do
@@ -11333,11 +11391,11 @@ static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
 		did_descend = false;
 
 		bool				visible;
-		TreeCursorEntry		entry;
-		CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
+		t_tree_cursor_entry entry;
+		t_cursor_child_iterator iterator = ts_tree_cursor_iterate_children(self);
 		while (ts_tree_cursor_child_iterator_next(&iterator, &entry, &visible))
 		{
-			Length entry_end =
+			t_length entry_end =
 				length_add(entry.position, ts_subtree_size(*entry.subtree));
 			bool at_goal = entry_end.bytes >= goal_byte &&
 						   point_gte(entry_end.extent, goal_point);
@@ -11372,31 +11430,31 @@ static inline int64_t ts_tree_cursor_goto_first_child_for_byte_and_point(
 	return -1;
 }
 
-int64_t ts_tree_cursor_goto_first_child_for_byte(TSTreeCursor *self,
-												 uint32_t	   goal_byte)
+int64_t ts_tree_cursor_goto_first_child_for_byte(t_tree_cursor *self,
+												 uint32_t		goal_byte)
 {
 	return ts_tree_cursor_goto_first_child_for_byte_and_point(self, goal_byte,
 															  POINT_ZERO);
 }
 
-int64_t ts_tree_cursor_goto_first_child_for_point(TSTreeCursor *self,
-												  TSPoint		goal_point)
+int64_t ts_tree_cursor_goto_first_child_for_point(t_tree_cursor *self,
+												  t_point		 goal_point)
 {
 	return ts_tree_cursor_goto_first_child_for_byte_and_point(self, 0,
 															  goal_point);
 }
 
-TreeCursorStep ts_tree_cursor_goto_sibling_internal(
-	TSTreeCursor *_self,
-	bool (*advance)(CursorChildIterator *, TreeCursorEntry *, bool *))
+t_tree_cursor_step ts_tree_cursor_goto_sibling_internal(
+	t_tree_cursor *_self,
+	bool (*advance)(t_cursor_child_iterator *, t_tree_cursor_entry *, bool *))
 {
-	TreeCursor *self = (TreeCursor *)_self;
-	uint32_t	initial_size = self->stack.size;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
+	uint32_t	   initial_size = self->stack.size;
 
 	while (self->stack.size > 1)
 	{
-		TreeCursorEntry		entry = array_pop(&self->stack);
-		CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
+		t_tree_cursor_entry entry = array_pop(&self->stack);
+		t_cursor_child_iterator iterator = ts_tree_cursor_iterate_children(self);
 		iterator.child_index = entry.child_index;
 		iterator.structural_child_index = entry.structural_child_index;
 		iterator.position = entry.position;
@@ -11427,13 +11485,14 @@ TreeCursorStep ts_tree_cursor_goto_sibling_internal(
 	return TreeCursorStepNone;
 }
 
-TreeCursorStep ts_tree_cursor_goto_next_sibling_internal(TSTreeCursor *_self)
+t_tree_cursor_step ts_tree_cursor_goto_next_sibling_internal(
+	t_tree_cursor *_self)
 {
 	return ts_tree_cursor_goto_sibling_internal(
 		_self, ts_tree_cursor_child_iterator_next);
 }
 
-bool ts_tree_cursor_goto_next_sibling(TSTreeCursor *self)
+bool ts_tree_cursor_goto_next_sibling(t_tree_cursor *self)
 {
 	switch (ts_tree_cursor_goto_next_sibling_internal(self))
 	{
@@ -11447,15 +11506,15 @@ bool ts_tree_cursor_goto_next_sibling(TSTreeCursor *self)
 	}
 }
 
-TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(
-	TSTreeCursor *_self)
+t_tree_cursor_step ts_tree_cursor_goto_previous_sibling_internal(
+	t_tree_cursor *_self)
 {
 	// since subtracting across row loses column information, we may have to
 	// restore it
-	TreeCursor *self = (TreeCursor *)_self;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
 
 	// for that, save current position before traversing
-	TreeCursorStep step = ts_tree_cursor_goto_sibling_internal(
+	t_tree_cursor_step step = ts_tree_cursor_goto_sibling_internal(
 		_self, ts_tree_cursor_child_iterator_previous);
 	if (step == TreeCursorStepNone)
 		return step;
@@ -11465,10 +11524,11 @@ TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(
 		return step;
 
 	// restore position from the parent node
-	const TreeCursorEntry *parent = &self->stack.contents[self->stack.size - 2];
-	Length				   position = parent->position;
-	uint32_t			   child_index = array_back(&self->stack)->child_index;
-	const Subtree		  *children = ts_subtree_children((*(parent->subtree)));
+	const t_tree_cursor_entry *parent =
+		&self->stack.contents[self->stack.size - 2];
+	t_length		 position = parent->position;
+	uint32_t		 child_index = array_back(&self->stack)->child_index;
+	const t_subtree *children = ts_subtree_children((*(parent->subtree)));
 
 	if (child_index > 0)
 	{
@@ -11488,7 +11548,7 @@ TreeCursorStep ts_tree_cursor_goto_previous_sibling_internal(
 	return step;
 }
 
-bool ts_tree_cursor_goto_previous_sibling(TSTreeCursor *self)
+bool ts_tree_cursor_goto_previous_sibling(t_tree_cursor *self)
 {
 	switch (ts_tree_cursor_goto_previous_sibling_internal(self))
 	{
@@ -11502,9 +11562,9 @@ bool ts_tree_cursor_goto_previous_sibling(TSTreeCursor *self)
 	}
 }
 
-bool ts_tree_cursor_goto_parent(TSTreeCursor *_self)
+bool ts_tree_cursor_goto_parent(t_tree_cursor *_self)
 {
-	TreeCursor *self = (TreeCursor *)_self;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
 	for (unsigned i = self->stack.size - 2; i + 1 > 0; i--)
 	{
 		if (ts_tree_cursor_is_entry_visible(self, i))
@@ -11516,17 +11576,17 @@ bool ts_tree_cursor_goto_parent(TSTreeCursor *_self)
 	return false;
 }
 
-void ts_tree_cursor_goto_descendant(TSTreeCursor *_self,
-									uint32_t	  goal_descendant_index)
+void ts_tree_cursor_goto_descendant(t_tree_cursor *_self,
+									uint32_t	   goal_descendant_index)
 {
-	TreeCursor *self = (TreeCursor *)_self;
+	t_tree_cursor *self = (t_tree_cursor *)_self;
 
 	// Ascend to the lowest ancestor that contains the goal node.
 	for (;;)
 	{
-		uint32_t		 i = self->stack.size - 1;
-		TreeCursorEntry *entry = &self->stack.contents[i];
-		uint32_t		 next_descendant_index =
+		uint32_t			 i = self->stack.size - 1;
+		t_tree_cursor_entry *entry = &self->stack.contents[i];
+		uint32_t			 next_descendant_index =
 			entry->descendant_index +
 			(ts_tree_cursor_is_entry_visible(self, i) ? 1 : 0) +
 			ts_subtree_visible_descendant_count(*entry->subtree);
@@ -11551,8 +11611,8 @@ void ts_tree_cursor_goto_descendant(TSTreeCursor *_self,
 	{
 		did_descend = false;
 		bool				visible;
-		TreeCursorEntry		entry;
-		CursorChildIterator iterator = ts_tree_cursor_iterate_children(self);
+		t_tree_cursor_entry entry;
+		t_cursor_child_iterator iterator = ts_tree_cursor_iterate_children(self);
 		if (iterator.descendant_index > goal_descendant_index)
 		{
 			return;
@@ -11577,21 +11637,21 @@ void ts_tree_cursor_goto_descendant(TSTreeCursor *_self,
 	} while (did_descend);
 }
 
-uint32_t ts_tree_cursor_current_descendant_index(const TSTreeCursor *_self)
+uint32_t ts_tree_cursor_current_descendant_index(const t_tree_cursor *_self)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
-	TreeCursorEntry	 *last_entry = array_back(&self->stack);
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
+	t_tree_cursor_entry *last_entry = array_back(&self->stack);
 	return last_entry->descendant_index;
 }
 
-TSNode ts_tree_cursor_current_node(const TSTreeCursor *_self)
+t_parse_node ts_tree_cursor_current_node(const t_tree_cursor *_self)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
-	TreeCursorEntry	 *last_entry = array_back(&self->stack);
-	TSSymbol		  alias_symbol = self->root_alias_symbol;
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
+	t_tree_cursor_entry *last_entry = array_back(&self->stack);
+	t_symbol			 alias_symbol = self->root_alias_symbol;
 	if (self->stack.size > 1 && !ts_subtree_extra(*last_entry->subtree))
 	{
-		TreeCursorEntry *parent_entry =
+		t_tree_cursor_entry *parent_entry =
 			&self->stack.contents[self->stack.size - 2];
 		alias_symbol = ts_language_alias_at(
 			self->tree->language, parent_entry->subtree->ptr->production_id,
@@ -11604,13 +11664,13 @@ TSNode ts_tree_cursor_current_node(const TSTreeCursor *_self)
 // Private - Get various facts about the current node that are needed
 // when executing tree queries.
 void ts_tree_cursor_current_status(
-	const TSTreeCursor *_self, TSFieldId *field_id, bool *has_later_siblings,
+	const t_tree_cursor *_self, t_field_id *field_id, bool *has_later_siblings,
 	bool *has_later_named_siblings,
-	bool *can_have_later_siblings_with_this_field, TSSymbol *supertypes,
+	bool *can_have_later_siblings_with_this_field, t_symbol *supertypes,
 	unsigned *supertype_count)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
-	unsigned		  max_supertypes = *supertype_count;
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
+	unsigned			 max_supertypes = *supertype_count;
 	*field_id = 0;
 	*supertype_count = 0;
 	*has_later_siblings = false;
@@ -11621,10 +11681,10 @@ void ts_tree_cursor_current_status(
 	// because fields can refer to nodes through invisible *wrapper* nodes,
 	for (unsigned i = self->stack.size - 1; i > 0; i--)
 	{
-		TreeCursorEntry *entry = &self->stack.contents[i];
-		TreeCursorEntry *parent_entry = &self->stack.contents[i - 1];
+		t_tree_cursor_entry *entry = &self->stack.contents[i];
+		t_tree_cursor_entry *parent_entry = &self->stack.contents[i - 1];
 
-		const TSSymbol *alias_sequence = ts_language_alias_sequence(
+		const t_symbol *alias_sequence = ts_language_alias_sequence(
 			self->tree->language, parent_entry->subtree->ptr->production_id);
 
 #define subtree_symbol(subtree, structural_child_index)                        \
@@ -11634,9 +11694,9 @@ void ts_tree_cursor_current_status(
 		 : ts_subtree_symbol(subtree))
 
 		// Stop walking up when a visible ancestor is found.
-		TSSymbol entry_symbol =
+		t_symbol entry_symbol =
 			subtree_symbol(*entry->subtree, entry->structural_child_index);
-		TSSymbolMetadata entry_metadata =
+		t_symbol_metadata entry_metadata =
 			ts_language_symbol_metadata(self->tree->language, entry_symbol);
 		if (i != self->stack.size - 1 && entry_metadata.visible)
 			break;
@@ -11657,11 +11717,12 @@ void ts_tree_cursor_current_status(
 				structural_child_index++;
 			for (unsigned j = entry->child_index + 1; j < sibling_count; j++)
 			{
-				Subtree sibling =
+				t_subtree sibling =
 					ts_subtree_children(*parent_entry->subtree)[j];
-				TSSymbolMetadata sibling_metadata = ts_language_symbol_metadata(
-					self->tree->language,
-					subtree_symbol(sibling, structural_child_index));
+				t_symbol_metadata sibling_metadata =
+					ts_language_symbol_metadata(
+						self->tree->language,
+						subtree_symbol(sibling, structural_child_index));
 				if (sibling_metadata.visible)
 				{
 					*has_later_siblings = true;
@@ -11693,7 +11754,7 @@ void ts_tree_cursor_current_status(
 
 		if (!ts_subtree_extra(*entry->subtree))
 		{
-			const TSFieldMapEntry *field_map, *field_map_end;
+			const t_field_map_entry *field_map, *field_map_end;
 			ts_language_field_map(self->tree->language,
 								  parent_entry->subtree->ptr->production_id,
 								  &field_map, &field_map_end);
@@ -11701,7 +11762,7 @@ void ts_tree_cursor_current_status(
 			// Look for a field name associated with the current node.
 			if (!*field_id)
 			{
-				for (const TSFieldMapEntry *map = field_map;
+				for (const t_field_map_entry *map = field_map;
 					 map < field_map_end; map++)
 				{
 					if (!map->inherited &&
@@ -11717,7 +11778,7 @@ void ts_tree_cursor_current_status(
 			// same field name.
 			if (*field_id)
 			{
-				for (const TSFieldMapEntry *map = field_map;
+				for (const t_field_map_entry *map = field_map;
 					 map < field_map_end; map++)
 				{
 					if (map->field_id == *field_id &&
@@ -11732,10 +11793,10 @@ void ts_tree_cursor_current_status(
 	}
 }
 
-uint32_t ts_tree_cursor_current_depth(const TSTreeCursor *_self)
+uint32_t ts_tree_cursor_current_depth(const t_tree_cursor *_self)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
-	uint32_t		  depth = 0;
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
+	uint32_t			 depth = 0;
 	for (unsigned i = 1; i < self->stack.size; i++)
 	{
 		if (ts_tree_cursor_is_entry_visible(self, i))
@@ -11746,17 +11807,17 @@ uint32_t ts_tree_cursor_current_depth(const TSTreeCursor *_self)
 	return depth;
 }
 
-TSNode ts_tree_cursor_parent_node(const TSTreeCursor *_self)
+t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *_self)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
 	for (int i = (int)self->stack.size - 2; i >= 0; i--)
 	{
-		TreeCursorEntry *entry = &self->stack.contents[i];
-		bool			 is_visible = true;
-		TSSymbol		 alias_symbol = 0;
+		t_tree_cursor_entry *entry = &self->stack.contents[i];
+		bool				 is_visible = true;
+		t_symbol			 alias_symbol = 0;
 		if (i > 0)
 		{
-			TreeCursorEntry *parent_entry = &self->stack.contents[i - 1];
+			t_tree_cursor_entry *parent_entry = &self->stack.contents[i - 1];
 			alias_symbol = ts_language_alias_at(
 				self->tree->language, parent_entry->subtree->ptr->production_id,
 				entry->structural_child_index);
@@ -11772,15 +11833,15 @@ TSNode ts_tree_cursor_parent_node(const TSTreeCursor *_self)
 	return ts_node_new(NULL, NULL, length_zero(), 0);
 }
 
-TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor *_self)
+t_field_id ts_tree_cursor_current_field_id(const t_tree_cursor *_self)
 {
-	const TreeCursor *self = (const TreeCursor *)_self;
+	const t_tree_cursor *self = (const t_tree_cursor *)_self;
 
 	// Walk up the tree, visiting the current node and its invisible ancestors.
 	for (unsigned i = self->stack.size - 1; i > 0; i--)
 	{
-		TreeCursorEntry *entry = &self->stack.contents[i];
-		TreeCursorEntry *parent_entry = &self->stack.contents[i - 1];
+		t_tree_cursor_entry *entry = &self->stack.contents[i];
+		t_tree_cursor_entry *parent_entry = &self->stack.contents[i - 1];
 
 		// Stop walking up when another visible node is found.
 		if (i != self->stack.size - 1 &&
@@ -11790,11 +11851,12 @@ TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor *_self)
 		if (ts_subtree_extra(*entry->subtree))
 			break;
 
-		const TSFieldMapEntry *field_map, *field_map_end;
+		const t_field_map_entry *field_map, *field_map_end;
 		ts_language_field_map(self->tree->language,
 							  parent_entry->subtree->ptr->production_id,
 							  &field_map, &field_map_end);
-		for (const TSFieldMapEntry *map = field_map; map < field_map_end; map++)
+		for (const t_field_map_entry *map = field_map; map < field_map_end;
+			 map++)
 		{
 			if (!map->inherited &&
 				map->child_index == entry->structural_child_index)
@@ -11806,12 +11868,12 @@ TSFieldId ts_tree_cursor_current_field_id(const TSTreeCursor *_self)
 	return 0;
 }
 
-const char *ts_tree_cursor_current_field_name(const TSTreeCursor *_self)
+const char *ts_tree_cursor_current_field_name(const t_tree_cursor *_self)
 {
-	TSFieldId id = ts_tree_cursor_current_field_id(_self);
+	t_field_id id = ts_tree_cursor_current_field_id(_self);
 	if (id)
 	{
-		const TreeCursor *self = (const TreeCursor *)_self;
+		const t_tree_cursor *self = (const t_tree_cursor *)_self;
 		return self->tree->language->field_names[id];
 	}
 	else
@@ -11820,11 +11882,11 @@ const char *ts_tree_cursor_current_field_name(const TSTreeCursor *_self)
 	}
 }
 
-TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor *_cursor)
+t_tree_cursor ts_tree_cursor_copy(const t_tree_cursor *_cursor)
 {
-	const TreeCursor *cursor = (const TreeCursor *)_cursor;
-	TSTreeCursor	  res = {NULL, NULL, {0, 0}};
-	TreeCursor		 *copy = (TreeCursor *)&res;
+	const t_tree_cursor *cursor = (const t_tree_cursor *)_cursor;
+	t_tree_cursor		 res = {NULL, {0, 0, 0}, 0};
+	t_tree_cursor		*copy = (t_tree_cursor *)&res;
 	copy->tree = cursor->tree;
 	copy->root_alias_symbol = cursor->root_alias_symbol;
 	array_init(&copy->stack);
@@ -11832,10 +11894,10 @@ TSTreeCursor ts_tree_cursor_copy(const TSTreeCursor *_cursor)
 	return res;
 }
 
-void ts_tree_cursor_reset_to(TSTreeCursor *_dst, const TSTreeCursor *_src)
+void ts_tree_cursor_reset_to(t_tree_cursor *_dst, const t_tree_cursor *_src)
 {
-	const TreeCursor *cursor = (const TreeCursor *)_src;
-	TreeCursor		 *copy = (TreeCursor *)_dst;
+	const t_tree_cursor *cursor = (const t_tree_cursor *)_src;
+	t_tree_cursor		*copy = (t_tree_cursor *)_dst;
 	copy->tree = cursor->tree;
 	copy->root_alias_symbol = cursor->root_alias_symbol;
 	array_clear(&copy->stack);

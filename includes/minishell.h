@@ -32,7 +32,7 @@
 
 typedef struct s_parser
 {
-	TSParser *parser;
+	t_first_parser *parser;
 } t_parser;
 
 typedef struct s_utils

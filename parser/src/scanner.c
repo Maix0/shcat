@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 #include "./api.h"
-=======
-#include "./array.h"
-#include "./parser.h"
->>>>>>> master
 
 #include <assert.h>
 #include <ctype.h>
@@ -68,9 +63,9 @@ typedef struct {
     Array(Heredoc) heredocs;
 } Scanner;
 
-static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
+static inline void advance(t_lexer_data *lexer) { lexer->advance(lexer, false); }
 
-static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
+static inline void skip(t_lexer_data *lexer) { lexer->advance(lexer, true); }
 
 static inline bool in_error_recovery(const bool *valid_symbols) { return valid_symbols[ERROR_RECOVERY]; }
 
@@ -165,7 +160,7 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length) {
  * POSIX-mandated substitution, and assumes the default value for
  * IFS.
  */
-static bool advance_word(TSLexer *lexer, String *unquoted_word) {
+static bool advance_word(t_lexer_data *lexer, String *unquoted_word) {
     bool empty = true;
 
     int32_t quote = 0;
@@ -196,7 +191,7 @@ static bool advance_word(TSLexer *lexer, String *unquoted_word) {
     return !empty;
 }
 
-static inline bool scan_bare_dollar(TSLexer *lexer) {
+static inline bool scan_bare_dollar(t_lexer_data *lexer) {
     while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer)) {
         skip(lexer);
     }
@@ -211,7 +206,7 @@ static inline bool scan_bare_dollar(TSLexer *lexer) {
     return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer) {
+static bool scan_heredoc_start(Heredoc *heredoc, t_lexer_data *lexer) {
     while (iswspace(lexer->lookahead)) {
         skip(lexer);
     }
@@ -227,7 +222,7 @@ static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer) {
     return found_delimiter;
 }
 
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer) {
+static bool scan_heredoc_end_identifier(Heredoc *heredoc, t_lexer_data *lexer) {
     reset_string(&heredoc->current_leading_word);
     // Scan the first 'n' characters on this line, to see if they match the
     // heredoc delimiter
@@ -247,7 +242,7 @@ static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer) {
                : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
 }
 
-static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type,
+static bool scan_heredoc_content(Scanner *scanner, t_lexer_data *lexer, enum TokenType middle_type,
                                  enum TokenType end_type) {
     bool did_advance = false;
     Heredoc *heredoc = array_back(&scanner->heredocs);
@@ -350,7 +345,7 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
     }
 }
 
-static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
+static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbols) {
     if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols)) {
         if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' ||
               lexer->lookahead == '<' || lexer->lookahead == ')' || lexer->lookahead == '(' ||
@@ -1194,7 +1189,7 @@ void *tree_sitter_bash_external_scanner_create() {
     return scanner;
 }
 
-bool tree_sitter_bash_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+bool tree_sitter_bash_external_scanner_scan(void *payload, t_lexer_data *lexer, const bool *valid_symbols) {
     Scanner *scanner = (Scanner *)payload;
     return scan(scanner, lexer, valid_symbols);
 }
