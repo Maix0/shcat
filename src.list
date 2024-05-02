@@ -1,3 +1,6 @@
+exec/handle_concat.c
+exec/handle_raw_word.c
+exec/handle_word.c
 ft_cmd.c
 ft_echo.c
 ft_exit.c

@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/01 10:34:21 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/02 15:14:11 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ END = \033[0m
 
 all:
 	@$(MAKE) -C ./stdme/ LIB_NAME="$(shell realpath ./stdme)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" CC=$(CC) libme.a
-	@$(MAKE) -C ./parser/ LIB_NAME="$(shell realpath ./parser)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
+	@$(MAKE) -C ./parser/ LIB_NAME="$(shell realpath ./parser)/" -j "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
 # Bonus (make bonus)
