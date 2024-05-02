@@ -23,4 +23,4 @@
 void	external_scanner_symbol_map_0(t_external_scanner_symbol_map_array *v);
 void	external_scanner_symbol_map_1(t_external_scanner_symbol_map_array *v);
 
-#endif // EXTERNAL_SCANNER_SYMBOL_MAP_H
+#endif

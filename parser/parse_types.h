@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/29 16:41:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/02 14:37:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@
 # include "parser/types/types_state_id.h"
 # include "parser/types/types_symbol.h"
 # include "parser/types/types_symbol_metadata.h"
+
+#ifndef inline
+#define inline __inline__
+#endif
 
 static inline bool	lex_skip(t_state_id state_value, t_lexer *lexer,
 		t_lexer_state *s)

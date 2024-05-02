@@ -74,4 +74,4 @@ static inline bool	lex_normal_map441(t_lexer *lexer, \
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));
 }
-#endif // INLINE_IMPL22_H
+#endif

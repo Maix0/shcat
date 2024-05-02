@@ -36,4 +36,4 @@ void	field_map_entries_12(t_field_map_entries_array *v);
 void	field_map_entries_13(t_field_map_entries_array *v);
 void	field_map_entries_14(t_field_map_entries_array *v);
 
-#endif // FIELD_MAP_ENTRIES_H
+#endif

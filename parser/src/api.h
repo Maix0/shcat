@@ -46,6 +46,10 @@
 		uint32_t capacity;                                                     \
 	}
 
+#ifndef inline
+# define inline __inline__
+#endif
+
 /// Initialize an array.
 #define array_init(self)                                                       \
 	((self)->size = 0, (self)->capacity = 0, (self)->contents = NULL)

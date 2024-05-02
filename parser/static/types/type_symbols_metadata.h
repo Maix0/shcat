@@ -24,4 +24,4 @@ typedef struct s_symbols_metadata_array
 	t_symbol_metadata	a[280];
 }	t_symbols_metadata_array;
 
-#endif // TYPE_SYMBOLS_METADATA_H
+#endif

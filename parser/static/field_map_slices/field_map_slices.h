@@ -29,4 +29,4 @@ void	field_map_slices_5(t_field_map_slices_array *v);
 void	field_map_slices_6(t_field_map_slices_array *v);
 void	field_map_slices_7(t_field_map_slices_array *v);
 
-#endif // FIELD_MAP_SLICES_H
+#endif

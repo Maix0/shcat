@@ -22,4 +22,4 @@
 
 void	field_names_0(t_field_names_array *v);
 
-#endif // FIELD_NAMES_H
+#endif

@@ -405,4 +405,4 @@ void	lex_modes_381(t_lex_modes_array *v);
 void	lex_modes_382(t_lex_modes_array *v);
 void	lex_modes_383(t_lex_modes_array *v);
 
-#endif // LEX_MODES_H
+#endif

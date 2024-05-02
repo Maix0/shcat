@@ -858,4 +858,4 @@ void	parse_actions_entries_834(t_parse_actions_entries_array *v);
 void	parse_actions_entries_835(t_parse_actions_entries_array *v);
 void	parse_actions_entries_836(t_parse_actions_entries_array *v);
 
-#endif // PARSE_ACTIONS_ENTRIES_H
+#endif

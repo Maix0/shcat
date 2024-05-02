@@ -24,4 +24,4 @@ typedef struct s_external_scanner_symbol_map_array
 	t_symbol	a[EXTERNAL_TOKEN_COUNT];
 }	t_external_scanner_symbol_map_array;
 
-#endif // TYPE_EXTERNAL_SCANNER_SYMBOL_MAP_H
+#endif

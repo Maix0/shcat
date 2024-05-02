@@ -24,4 +24,4 @@ typedef struct s_field_map_slices_array
 	t_field_map_slice	a[PRODUCTION_ID_COUNT];
 }	t_field_map_slices_array;
 
-#endif // TYPE_FIELD_MAP_SLICES_H
+#endif

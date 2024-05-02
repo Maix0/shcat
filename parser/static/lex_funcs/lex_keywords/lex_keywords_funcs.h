@@ -124,4 +124,4 @@ bool	lex_keywords_s95(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s96(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_default(t_lexer *lexer, t_lexer_state *s);
 
-#endif // LEX_KEYWORDS_FUNCS_H
+#endif

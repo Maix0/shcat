@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/02 14:40:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,4 @@ enum e_external_scanner_symbol_identifiers {
 	ts_external_token___error_recovery = 28,
 };
 
-#endif // EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H
+#endif
