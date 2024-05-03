@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/02 14:00:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/03 12:23:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/types.h"
 #include "readline/readline.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void sigint_handle(int sig, siginfo_t *info, void *ucontext)
 {
@@ -53,6 +54,7 @@ t_error install_signal(void)
 {
 	struct sigaction data;
 
+	data = (struct sigaction){};
 	data.sa_sigaction = sigint_handle;
 	data.sa_flags = SA_SIGINFO | SA_NOCLDWAIT;
 	if (sigaction(SIGINT, &data, NULL))

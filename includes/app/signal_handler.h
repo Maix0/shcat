@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:20:25 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/02 13:23:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/03 12:18:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define SIGNAL_HANDLER_H
 
 #include "me/types.h"
+#include <stdio.h>
 #include <readline/readline.h>
 #include <signal.h>
 
