@@ -16241,4 +16241,4 @@ void	small_parse_table_16217(t_small_parse_table_array *v);
 void	small_parse_table_16218(t_small_parse_table_array *v);
 void	small_parse_table_16219(t_small_parse_table_array *v);
 
-#endif // SMALL_PARSE_TABLE_H
+#endif

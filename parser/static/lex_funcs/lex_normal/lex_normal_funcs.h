@@ -990,4 +990,4 @@ bool	lex_normal_s957(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s958(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_default(t_lexer *lexer, t_lexer_state *s);
 
-#endif // LEX_NORMAL_FUNCS_H
+#endif

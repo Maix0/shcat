@@ -53,4 +53,4 @@ void	external_scanner_states_29(t_external_scanner_states_array *v);
 void	external_scanner_states_30(t_external_scanner_states_array *v);
 void	external_scanner_states_31(t_external_scanner_states_array *v);
 
-#endif // EXTERNAL_SCANNER_STATES_H
+#endif

@@ -35,4 +35,4 @@ void	symbols_metadata_11(t_symbols_metadata_array *v);
 void	symbols_metadata_12(t_symbols_metadata_array *v);
 void	symbols_metadata_13(t_symbols_metadata_array *v);
 
-#endif // SYMBOLS_METADATA_H
+#endif

@@ -35,4 +35,4 @@ void	unique_symbols_map_11(t_unique_symbols_map_array *v);
 void	unique_symbols_map_12(t_unique_symbols_map_array *v);
 void	unique_symbols_map_13(t_unique_symbols_map_array *v);
 
-#endif // UNIQUE_SYMBOLS_MAP_H
+#endif

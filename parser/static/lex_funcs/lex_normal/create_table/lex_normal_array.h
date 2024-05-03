@@ -70,4 +70,4 @@ void	lex_normal_array_45(t_lex_normal_array *v);
 void	lex_normal_array_46(t_lex_normal_array *v);
 void	lex_normal_array_47(t_lex_normal_array *v);
 
-#endif // LEX_NORMAL_ARRAY_H
+#endif

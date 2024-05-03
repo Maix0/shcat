@@ -2352,4 +2352,4 @@ void	parse_table_2328(t_parse_table_array *v);
 void	parse_table_2329(t_parse_table_array *v);
 void	parse_table_2330(t_parse_table_array *v);
 
-#endif // PARSE_TABLE_H
+#endif

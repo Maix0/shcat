@@ -379,4 +379,4 @@ void	small_parse_table_map_355(t_small_parse_table_map_array *v);
 void	small_parse_table_map_356(t_small_parse_table_map_array *v);
 void	small_parse_table_map_357(t_small_parse_table_map_array *v);
 
-#endif // SMALL_PARSE_TABLE_MAP_H
+#endif

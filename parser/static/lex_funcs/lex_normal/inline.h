@@ -66,4 +66,4 @@
 # include "./inline/inline_impl45.h"
 # include "./inline/inline_impl46.h"
 
-#endif // INLINE_H
+#endif

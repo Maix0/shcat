@@ -24,4 +24,4 @@ typedef struct s_lex_normal_array
 	void	*a[959];
 }	t_lex_normal_array;
 
-#endif // TYPE_LEX_NORMAL_H
+#endif

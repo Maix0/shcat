@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   type_small_parse_table.h                           :+:      :+:    :+:   */
+/*   handle_raw_word.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/02 15:58:01 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/02 15:58:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TYPE_SMALL_PARSE_TABLE_H
-# define TYPE_SMALL_PARSE_TABLE_H
+#ifndef HANDLE_RAW_WORD_H
+#define HANDLE_RAW_WORD_H
 
-# include "../../parse_types.h"
-# include "../headers/symbols.h"
-# include "../headers/external_scanner_symbol_identifiers.h"
-# include "../headers/field_identifiers.h"
-# include "../headers/constants.h"
+#include "app/node.h"
+#include "app/state.h"
 
-typedef struct s_small_parse_table_array
-{
-	uint16_t	a[324397];
-}	t_small_parse_table_array;
+t_error handle_raw_string(t_node *self, t_utils *shcat, t_str *ret);
 
-#endif
+#endif /* HANDLE_RAW_WORD_H */

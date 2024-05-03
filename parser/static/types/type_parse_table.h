@@ -24,4 +24,4 @@ typedef struct s_parse_table_array
 	uint16_t	a[LARGE_STATE_COUNT][SYMBOL_COUNT];
 }	t_parse_table_array;
 
-#endif // TYPE_PARSE_TABLE_H
+#endif

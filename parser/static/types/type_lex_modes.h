@@ -24,4 +24,4 @@ typedef struct s_lex_modes_array
 	t_lex_modes	a[STATE_COUNT];
 }	t_lex_modes_array;
 
-#endif // TYPE_LEX_MODES_H
+#endif

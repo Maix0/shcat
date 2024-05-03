@@ -22,4 +22,4 @@
 
 void	non_terminal_alias_map_0(t_non_terminal_alias_map_array *v);
 
-#endif // NON_TERMINAL_ALIAS_MAP_H
+#endif

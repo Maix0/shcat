@@ -35,4 +35,4 @@ void	symbols_names_11(t_symbols_names_array *v);
 void	symbols_names_12(t_symbols_names_array *v);
 void	symbols_names_13(t_symbols_names_array *v);
 
-#endif // SYMBOLS_NAMES_H
+#endif

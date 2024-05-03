@@ -6,13 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/02 14:18:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/02 15:26:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
+#include "gmr/symbols.h"
 #include "me/string/str_len.h"
 #include "parser/api.h"
 
@@ -74,9 +75,30 @@ void ft_check(t_utils *shcat, char **input)
 	}
 }
 
+t_error handle_concat(t_node *self, t_utils* shcat, t_str *ret);
+
+void print_node_concat(t_node *self)
+{
+	if (self->kind != sym_concatenation)
+	{
+		t_usize i = 0;
+		while (i < self->childs_count)
+			print_node_concat(&self->childs[i++]);
+	}
+	else
+	{
+		t_str ret;
+		if (handle_concat(self, NULL, &ret))
+			return ((void)printf("ERROR\n"));
+		printf("concat value = '%s'\n", ret);
+		free(ret);
+	}
+}
+
 void exec_shcat(t_utils *shcat)
 {
 	print_node_data(&shcat->current_node, 0);
+	print_node_concat(&shcat->current_node);
 	free_node(shcat->current_node);
 }
 

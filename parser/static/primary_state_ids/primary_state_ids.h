@@ -405,4 +405,4 @@ void	primary_state_ids_381(t_primary_state_ids_array *v);
 void	primary_state_ids_382(t_primary_state_ids_array *v);
 void	primary_state_ids_383(t_primary_state_ids_array *v);
 
-#endif // PRIMARY_STATE_IDS_H
+#endif
