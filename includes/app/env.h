@@ -1,36 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:40:53 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/04 18:41:01 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/04 19:08:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-#define STATE_H
+#ifndef ENV_H
+#define ENV_H
 
-#include "app/node.h"
+#include "me/buffered_str/buf_str.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/types.h"
+#include "me/vec/vec_str.h"
 
-typedef struct s_parser
+t_hashmap_env *create_env_map(void);
+
+t_error build_envp(t_hashmap_env *envs, t_vec_str *out);
+
+struct s_build_envp_state
 {
-	t_first_parser *parser;
-} t_parser;
+	t_vec_str	out;
+	t_buffer_str buf;
+};
 
-typedef struct s_utils
-{
-	t_str		   name_shell;
-	t_str		   str_input;
-	t_str		  *strs_input;
-	t_str		  *path;
-	t_parser	   parser;
-	t_hashmap_env *env;
-	t_node		   current_node;
-} t_utils;
-
-#endif /* STATE_H */
+#endif /* ENV_H */

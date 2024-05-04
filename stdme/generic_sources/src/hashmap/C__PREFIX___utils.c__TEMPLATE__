@@ -27,7 +27,7 @@ C__VALTYPE__ *get_hashmap_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
 
 	hmap->hfunc(&hmap->hasher, key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
-	entry = hashmap_get_entry_tile(hmap, hashed_key, key, &prev);
+	entry = hashmap_get_entry_C__PREFIX__(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
 		return (NULL);
 	return (&entry->kv.val);

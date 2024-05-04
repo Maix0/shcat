@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   hash_str.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:40:53 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/04 19:17:11 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/04 19:18:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-#define STATE_H
-
-#include "app/node.h"
-#include "me/hashmap/hashmap_env.h"
+#include "me/hash/hasher.h"
+#include "me/string/str_len.h"
 #include "me/types.h"
 
-typedef struct s_parser
+void hasher_write_str(t_hasher *hasher, t_str s)
 {
-	t_first_parser *parser;
-} t_parser;
-
-typedef struct s_utils
-{
-	t_str		   name_shell;
-	t_str		   str_input;
-	t_str		  *strs_input;
-	t_str		  *path;
-	t_parser	   parser;
-	t_hashmap_env *env;
-	t_node		   current_node;
-} t_utils;
-
-#endif /* STATE_H */
+	hasher_write_bytes(hasher, (t_u8 *)s, str_len(s));
+}

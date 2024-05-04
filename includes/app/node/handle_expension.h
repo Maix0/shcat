@@ -1,36 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   handle_expension.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:40:53 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/03 15:24:56 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/03 15:25:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-#define STATE_H
+#ifndef HANDLE_EXPENSION_H
+#define HANDLE_EXPENSION_H
 
 #include "app/node.h"
-#include "me/hashmap/hashmap_env.h"
+#include "app/state.h"
 #include "me/types.h"
 
-typedef struct s_parser
-{
-	t_first_parser *parser;
-} t_parser;
+t_error handle_expension(t_node *self, t_utils *shcat, t_str *ret);
 
-typedef struct s_utils
-{
-	t_str		   name_shell;
-	t_str		   str_input;
-	t_str		  *strs_input;
-	t_str		  *path;
-	t_parser	   parser;
-	t_hashmap_env *env;
-	t_node		   current_node;
-} t_utils;
-
-#endif /* STATE_H */
+#endif /* HANDLE_EXPENSION_H */

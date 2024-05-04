@@ -1,9 +1,9 @@
 [definition.vec]
 headers = ["generic_sources/header/vec_C__PREFIX__.h__TEMPLATE__"]
 sources = [
-	"generic_sources/src/vec_C__PREFIX__.c__TEMPLATE__",
-	"generic_sources/src/vec_C__PREFIX___functions2.c__TEMPLATE__",
-	"generic_sources/src/vec_C__PREFIX___functions3.c__TEMPLATE__",
+	"generic_sources/src/vec/C__PREFIX__.c__TEMPLATE__",
+	"generic_sources/src/vec/C__PREFIX___functions2.c__TEMPLATE__",
+	"generic_sources/src/vec/C__PREFIX___functions3.c__TEMPLATE__",
 ]
 replace.C__TYPENAME__ = "type"
 replace.C__TYPEHEADER__ = "header_include"
@@ -14,8 +14,8 @@ replace.C__PREFIXUP__ = "prefix"
 [definition.hashmap]
 headers = ["generic_sources/header/hashmap_C__PREFIX__.h__TEMPLATE__"]
 sources = [
-	"generic_sources/src/hashmap_C__PREFIX__.c__TEMPLATE__",
-	"generic_sources/src/hashmap_C__PREFIX___utils.c__TEMPLATE__",
+	"generic_sources/src/hashmap/C__PREFIX__.c__TEMPLATE__",
+	"generic_sources/src/hashmap/C__PREFIX___utils.c__TEMPLATE__",
 ]
 replace.C__VALTYPE__ = "type"
 replace.C__KEYTYPE__ = "type"
@@ -26,8 +26,8 @@ replace.C__PREFIXUP__ = "prefix"
 [definition.str_to_num]
 headers = []
 sources = [
-	"generic_sources/src/str_to_C__PREFIX__.c__TEMPLATE__",
-	"generic_sources/src/str_to_C__PREFIX___utils.c__TEMPLATE__",
+	"generic_sources/src/convert/str_to_C__PREFIX__.c__TEMPLATE__",
+	"generic_sources/src/convert/str_to_C__PREFIX___utils.c__TEMPLATE__",
 ]
 replace.C__TYPE__ = "type"
 replace.C__UNSIGNED_TYPE__ = "type"
@@ -128,7 +128,7 @@ replace.C__SIGNED_TYPE__ = "false"
 
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_u8"
 replace.C__TYPEHEADER__ = ''
@@ -136,7 +136,7 @@ replace.C__PREFIX__ = "u8"
 replace.C__PREFIXUP__ = "U8"
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_str"
 replace.C__TYPEHEADER__ = ''
@@ -144,7 +144,7 @@ replace.C__PREFIX__ = "str"
 replace.C__PREFIXUP__ = "STR"
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_buffer_str"
 replace.C__TYPEHEADER__ = '#include "me/buffered_str/buf_str.h"'

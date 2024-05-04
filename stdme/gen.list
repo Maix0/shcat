@@ -14,6 +14,15 @@ convert/str_to_u64
 convert/str_to_u64_utils
 convert/str_to_u8
 convert/str_to_u8_utils
+vec/buf_str/buf_str
+vec/buf_str/buf_str_functions2
+vec/buf_str/buf_str_functions3
+vec/str/str
+vec/str/str_functions2
+vec/str/str_functions3
+vec/u8/u8
+vec/u8/u8_functions2
+vec/u8/u8_functions3
 vec/vec_buf_str
 vec/vec_buf_str_functions2
 vec/vec_buf_str_functions3

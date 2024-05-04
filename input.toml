@@ -1,9 +1,9 @@
 [definition.vec]
 headers = ["stdme/generic_sources/header/vec_C__PREFIX__.h__TEMPLATE__"]
 sources = [
-	"stdme/generic_sources/src/vec_C__PREFIX__.c__TEMPLATE__",
-	"stdme/generic_sources/src/vec_C__PREFIX___functions2.c__TEMPLATE__",
-	"stdme/generic_sources/src/vec_C__PREFIX___functions3.c__TEMPLATE__",
+	"stdme/generic_sources/src/vec/C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/vec/C__PREFIX___functions2.c__TEMPLATE__",
+	"stdme/generic_sources/src/vec/C__PREFIX___functions3.c__TEMPLATE__",
 ]
 replace.C__TYPENAME__ = "type"
 replace.C__TYPEHEADER__ = "header_include"
@@ -14,8 +14,9 @@ replace.C__PREFIXUP__ = "prefix"
 [definition.hashmap]
 headers = ["stdme/generic_sources/header/hashmap_C__PREFIX__.h__TEMPLATE__"]
 sources = [
-	"stdme/generic_sources/src/hashmap_C__PREFIX__.c__TEMPLATE__",
-	"stdme/generic_sources/src/hashmap_C__PREFIX___utils.c__TEMPLATE__",
+	"stdme/generic_sources/src/hashmap/C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/hashmap/C__PREFIX___utils.c__TEMPLATE__",
+	"stdme/generic_sources/src/hashmap/C__PREFIX___iter.c__TEMPLATE__",
 ]
 replace.C__VALTYPE__ = "type"
 replace.C__KEYTYPE__ = "type"
@@ -26,8 +27,8 @@ replace.C__PREFIXUP__ = "prefix"
 [definition.str_to_num]
 headers = []
 sources = [
-	"stdme/generic_sources/src/str_to_C__PREFIX__.c__TEMPLATE__",
-	"stdme/generic_sources/src/str_to_C__PREFIX___utils.c__TEMPLATE__",
+	"stdme/generic_sources/src/convert/str_to_C__PREFIX__.c__TEMPLATE__",
+	"stdme/generic_sources/src/convert/str_to_C__PREFIX___utils.c__TEMPLATE__",
 ]
 replace.C__TYPE__ = "type"
 replace.C__UNSIGNED_TYPE__ = "type"
@@ -38,7 +39,7 @@ replace.C__ZERO__ = "value"
 replace.C__SIGNED_TYPE__ = "bool"
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__/"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_parser_range"
 replace.C__TYPEHEADER__ = '#include "parser/types/types_parser_range.h"'
@@ -46,7 +47,7 @@ replace.C__PREFIX__ = "parser_range"
 replace.C__PREFIXUP__ = "PARSER_RANGE"
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__/"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_heredoc"
 replace.C__TYPEHEADER__ = '#include "parser/types/types_heredoc.h"'
@@ -54,9 +55,18 @@ replace.C__PREFIX__ = "parser_heredoc"
 replace.C__PREFIXUP__ = "PARSER_HEREDOC"
 
 [[create.vec]]
-sources_output = "src/vec/"
+sources_output = "src/vec/C__PREFIX__/"
 headers_output = "include/me/vec/"
 replace.C__TYPENAME__ = "t_reduce_action"
 replace.C__TYPEHEADER__ = '#include "parser/types/types_reduce_action.h"'
 replace.C__PREFIX__ = "reduce_action"
 replace.C__PREFIXUP__ = "REDUCE_ACTION"
+
+[[create.hashmap]]
+sources_output = "src/hashmap/C__PREFIX__/"
+headers_output = "include/me/hashmap/"
+replace.C__VALTYPE__ = "t_str"
+replace.C__KEYTYPE__ = "t_str"
+replace.C__TYPEHEADER__ = ''
+replace.C__PREFIX__ = "env"
+replace.C__PREFIXUP__ = "ENV"

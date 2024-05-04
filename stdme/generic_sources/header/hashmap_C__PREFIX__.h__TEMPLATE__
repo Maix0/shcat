@@ -73,4 +73,10 @@ t_entry_C__PREFIX__ *hashmap_get_entry_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
 												   C__KEYTYPE__			 *key,
 												   t_entry_C__PREFIX__	**prev);
 
+t_error hashmap_C__PREFIX___iter(t_hashmap_C__PREFIX__ *self,
+								 t_error (*func)(t_usize			 idx,
+												 const C__KEYTYPE__ *key,
+												 C__VALTYPE__ *val, void *ctx),
+								 void *ctx);
+
 #endif

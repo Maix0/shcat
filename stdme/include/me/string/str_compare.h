@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   str_compare.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:40:53 by maiboyer         ###   ########.fr       */
+/*   Created: 2023/11/04 18:53:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/04 18:37:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-#define STATE_H
+#ifndef STR_COMPARE_H
+# define STR_COMPARE_H
 
-#include "app/node.h"
-#include "me/hashmap/hashmap_env.h"
-#include "me/types.h"
+# include "me/types.h"
 
-typedef struct s_parser
-{
-	t_first_parser *parser;
-} t_parser;
+bool	str_compare(t_const_str lhs, t_const_str rhs);
 
-typedef struct s_utils
-{
-	t_str		   name_shell;
-	t_str		   str_input;
-	t_str		  *strs_input;
-	t_str		  *path;
-	t_parser	   parser;
-	t_hashmap_env *env;
-	t_node		   current_node;
-} t_utils;
-
-#endif /* STATE_H */
+#endif

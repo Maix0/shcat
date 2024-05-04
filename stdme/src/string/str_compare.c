@@ -1,36 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   str_compare.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:40:53 by maiboyer         ###   ########.fr       */
+/*   Created: 2023/11/04 18:53:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/04 18:37:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-#define STATE_H
+#include "me/string/str_compare.h"
 
-#include "app/node.h"
-#include "me/hashmap/hashmap_env.h"
-#include "me/types.h"
-
-typedef struct s_parser
+// PLEASE FIX THIS FUNCTION IF NEEDED !
+bool str_compare(t_const_str lhs, t_const_str rhs)
 {
-	t_first_parser *parser;
-} t_parser;
+	t_usize index;
 
-typedef struct s_utils
-{
-	t_str		   name_shell;
-	t_str		   str_input;
-	t_str		  *strs_input;
-	t_str		  *path;
-	t_parser	   parser;
-	t_hashmap_env *env;
-	t_node		   current_node;
-} t_utils;
-
-#endif /* STATE_H */
+	if (lhs == NULL || rhs == NULL)
+		return (lhs == rhs);
+	index = 0;
+	while (lhs[index] && rhs[index] && lhs[index] == rhs[index])
+		index++;
+	return ((t_i32)(t_u8)lhs[index] - (t_i32)(t_u8)rhs[index]);
+}

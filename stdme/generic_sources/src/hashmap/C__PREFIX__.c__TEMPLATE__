@@ -102,9 +102,9 @@ void insert_hashmap_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
 	entry = hashmap_get_entry_C__PREFIX__(hmap, hashed_key, &key, &prev);
 	if (entry == NULL)
 	{
-		entry = mem_alloc(sizeof(t_entry_tile));
+		entry = mem_alloc(sizeof(t_entry_C__PREFIX__));
 		entry->hash_id = hashed_key;
-		entry->kv = (t_kv_tile){.key = key, .val = value};
+		entry->kv = (t_kv_C__PREFIX__){.key = key, .val = value};
 		entry->next = NULL;
 		if (prev == NULL)
 			hmap->buckets[hashed_key % hmap->num_buckets] = entry;

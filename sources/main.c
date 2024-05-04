@@ -6,15 +6,16 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/02 15:26:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:21:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "app/env.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
 #include "me/string/str_len.h"
+#include "minishell.h"
 #include "parser/api.h"
 
 t_first_parser *ts_parser_new();
@@ -55,27 +56,27 @@ t_node parse_str(t_parser *parser, t_const_str input)
 	return (parse_to_nodes(parser->parser, input));
 }
 
-void ft_check(t_utils *shcat, char **input)
-{
-	t_usize i;
-	t_usize prev_i;
+// void ft_check(t_utils *shcat, char **input)
+// {
+// 	t_usize i;
+// 	t_usize prev_i;
+//
+// 	i = 0;
+// 	prev_i = 0;
+// 	while (input[i] != NULL)
+// 	{
+// 		if (ft_strcmp(input[i], "exit") == 0)
+// 			ft_exit(shcat, 0);
+// 		else if (ft_strcmp(input[i], "pwd") == 0)
+// 			ft_pwd();
+// 		else
+// 			ft_other_cmd(shcat, i, prev_i);
+// 		prev_i = i;
+// 		i++;
+// 	}
+// }
 
-	i = 0;
-	prev_i = 0;
-	while (input[i] != NULL)
-	{
-		if (ft_strcmp(input[i], "exit") == 0)
-			ft_exit(shcat, 0);
-		else if (ft_strcmp(input[i], "pwd") == 0)
-			ft_pwd();
-		else
-			ft_other_cmd(shcat, i, prev_i);
-		prev_i = i;
-		i++;
-	}
-}
-
-t_error handle_concat(t_node *self, t_utils* shcat, t_str *ret);
+t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret);
 
 void print_node_concat(t_node *self)
 {
@@ -163,6 +164,7 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	if (install_signal())
 		return (1);
 	utils = (t_utils){};
+	utils.env = create_env_map();
 	utils.parser = create_myparser();
 	utils.name_shell = "\001\x1B[93m\002"
 					   "42sh"

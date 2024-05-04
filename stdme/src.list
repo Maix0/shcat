@@ -41,6 +41,7 @@ fs/write
 gnl/get_next_line
 hash/hasher
 hash/hash_signed
+hash/hash_str
 hash/hash_unsigned
 hash/sip/sip13
 hash/sip/sip_utils
@@ -91,6 +92,7 @@ printf/matchers
 printf/printf
 printf/vprintf
 string/str_clone
+string/str_compare
 string/str_find_chr
 string/str_find_rev_chr
 string/str_find_str
