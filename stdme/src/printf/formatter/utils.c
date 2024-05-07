@@ -99,7 +99,7 @@ t_printf_arg	print_substr(t_usize *c_idx, t_usize *nxt, t_const_str fmt,
 
 	truc = str_substring(fmt, *c_idx, *nxt - *c_idx);
 	extra.f(truc, *nxt - *c_idx, extra.p_args);
-	free(truc);
+	me_free(truc);
 	*c_idx = *nxt + 1;
 	return ((t_printf_arg){
 		.p_args = extra.p_args,

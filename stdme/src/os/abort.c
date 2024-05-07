@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mem_alloc.c                                        :+:      :+:    :+:   */
+/*   abort.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:47:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:45:31 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/07 13:09:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc.h"
-#include "me/alloc/alloc.h"
+#include "me/alloc/alloc_internal.h"
+#include "me/types.h"
+#include <stdlib.h>
 
-void	*mem_alloc(t_usize size)
+void me_abort(void)
 {
-	return (me_malloc(size));
+	me_exit(1);
 }

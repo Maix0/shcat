@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mem_alloc.c                                        :+:      :+:    :+:   */
+/*   mem_realloc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:47:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:45:31 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/07 12:46:18 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/07 12:47:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc.h"
+#include  "me/mem/mem_realloc.h"
 #include "me/alloc/alloc.h"
 
-void	*mem_alloc(t_usize size)
+void *mem_realloc(void *ptr, t_usize size)
 {
-	return (me_malloc(size));
+	return (me_realloc(ptr, size));
 }

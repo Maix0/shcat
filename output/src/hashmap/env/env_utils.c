@@ -51,6 +51,6 @@ void remove_hashmap_env(t_hashmap_env *hmap, t_str *key)
 	else
 		prev->next = entry->next;
 	hmap->drop(entry->kv);
-	free(entry);
+	me_free(entry);
 	hmap->buckets[hashed_key % hmap->num_buckets] = NULL;
 }

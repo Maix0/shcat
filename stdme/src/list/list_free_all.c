@@ -24,7 +24,7 @@ void	list_free_all(t_list **lst, void (*del)(void *))
 		del((*lst)->content);
 		tmp = *lst;
 		*lst = (*lst)->next;
-		free(tmp);
+		me_free(tmp);
 	}
 	*lst = NULL;
 }

@@ -18,5 +18,5 @@ void	list_free_one(t_list *lst, void (*del)(void *))
 	if (lst == NULL || del == NULL)
 		return ;
 	del(lst->content);
-	free(lst);
+	me_free(lst);
 }

@@ -32,7 +32,7 @@ t_i32	qoi_write(t_const_str filename, const void *data,
 	if (me_write(f, encoded, size))
 		return (me_close(f, NULL), 0);
 	me_close(f, NULL);
-	free(encoded);
+	me_free(encoded);
 	return (size);
 }
 

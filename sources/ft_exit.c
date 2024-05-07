@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/04 19:24:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 13:00:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ void ft_free_utils(t_utils *s)
 		free(s->str_input);
 	if (s->path)
 		ft_free_strs(s->path);
-	if (s->env)
-		drop_hashmap_env(s->env);
 	ts_parser_delete(s->parser.parser);
 }
 
@@ -48,5 +46,5 @@ void ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)
 {
 	if (maiboyerlpb != NULL)
 		ft_free_utils(maiboyerlpb);
-	exit(exit_status);
+	me_exit(exit_status);
 }

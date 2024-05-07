@@ -73,8 +73,8 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
 	}
 	sp_index = 0;
 	while (splitted_path[sp_index])
-		free(splitted_path[sp_index++]);
-	free(splitted_path);
+		me_free(splitted_path[sp_index++]);
+	me_free(splitted_path);
 	return (NO_ERROR);
 }
 
@@ -97,7 +97,7 @@ t_error	find_binary(t_spawn_info *info, t_process *process)
 	}
 	if (access(s.buf, X_OK | R_OK) == 0)
 	{
-		free(info->binary_path);
+		me_free(info->binary_path);
 		info->binary_path = s.buf;
 		return (NO_ERROR);
 	}
@@ -117,7 +117,7 @@ static void	cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
 	close(info.stderr.vals.fd.value);
 	vec_str_free(info.arguments);
 	vec_str_free(info.environement);
-	free(info.binary_path);
+	me_free(info.binary_path);
 }
 
 t_error	spawn_process(t_spawn_info info, t_process *process)

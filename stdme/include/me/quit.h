@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mem_alloc.c                                        :+:      :+:    :+:   */
+/*   quit.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 14:47:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:45:31 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/07 12:54:50 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/07 12:55:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc.h"
-#include "me/alloc/alloc.h"
+#ifndef QUIT_H
+#define QUIT_H
 
-void	*mem_alloc(t_usize size)
-{
-	return (me_malloc(size));
-}
+#include "me/types.h"
+
+void quit(t_i32 exit_code);
+
+#endif /* QUIT_H */

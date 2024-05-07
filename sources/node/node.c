@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/30 16:43:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 12:51:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,13 @@ t_str node_getstr(t_node *node)
 
 void free_node(t_node t)
 {
-	t_usize idx;
-
-	idx = 0;
-	while (idx < t.childs_count)
-		free_node(t.childs[idx++]);
-	free(t.childs);
-	if (t.single_str != NULL)
-		free(t.single_str);
+	// t_usize idx;
+	//
+	// idx = 0;
+	// while (idx < t.childs_count)
+	// 	free_node(t.childs[idx++]);
+	// free(t.childs);
+	// if (t.single_str != NULL)
+	// 	free(t.single_str);
+	(void)(t);
 }

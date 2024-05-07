@@ -43,7 +43,7 @@ t_hashmap_env *new_hashmap_with_buckets_env(
 	hmap->cfunc = cfunc;
 	hmap->drop = drop;
 	if (hmap->buckets == NULL)
-		return ((void)free(hmap), NULL);
+		return ((void)me_free(hmap), NULL);
 	return (hmap);
 }
 
@@ -57,13 +57,13 @@ void drop_hashmap_env(t_hashmap_env *hmap)
 		if (hmap->buckets[index])
 		{
 			hmap->drop(hmap->buckets[index]->kv);
-			free(hmap->buckets[index]);
+			me_free(hmap->buckets[index]);
 		}
 		index++;
 	}
 	hasher_finish(&hmap->hasher);
-	free(hmap->buckets);
-	free(hmap);
+	me_free(hmap->buckets);
+	me_free(hmap);
 }
 
 t_entry_env *hashmap_get_entry_env(t_hashmap_env *hmap,

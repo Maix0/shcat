@@ -66,5 +66,5 @@ void	printf_s(t_printf_arg data, t_printf_func f)
 .fill_zero = 0, .fill = 0, .len = len, .pretty = "", .pretty_len = 0, \
 .str = start_num, .allow_zero_fill = false, .sign = NULL, \
 .sign_len = 0, }, data, f);
-	free(start_num);
+	me_free(start_num);
 }

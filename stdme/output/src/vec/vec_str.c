@@ -47,7 +47,7 @@ t_error vec_str_push(t_vec_str *vec, t_str element)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_str));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -73,7 +73,7 @@ t_error vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_str));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -111,5 +111,5 @@ void vec_str_free(t_vec_str vec)
 			vec.len--;
 		}
 	}
-	free(vec.buffer);
+	me_free(vec.buffer);
 }

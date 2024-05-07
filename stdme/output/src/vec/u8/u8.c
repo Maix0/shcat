@@ -47,7 +47,7 @@ t_error vec_u8_push(t_vec_u8 *vec, t_u8 element)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_u8));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -73,7 +73,7 @@ t_error vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_u8));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -111,5 +111,5 @@ void vec_u8_free(t_vec_u8 vec)
 			vec.len--;
 		}
 	}
-	free(vec.buffer);
+	me_free(vec.buffer);
 }

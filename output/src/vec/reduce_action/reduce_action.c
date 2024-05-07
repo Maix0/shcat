@@ -47,7 +47,7 @@ t_error vec_reduce_action_push(t_vec_reduce_action *vec, t_reduce_action element
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_reduce_action));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -73,7 +73,7 @@ t_error vec_reduce_action_reserve(t_vec_reduce_action *vec, t_usize wanted_capac
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_reduce_action));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -111,5 +111,5 @@ void vec_reduce_action_free(t_vec_reduce_action vec)
 			vec.len--;
 		}
 	}
-	free(vec.buffer);
+	me_free(vec.buffer);
 }

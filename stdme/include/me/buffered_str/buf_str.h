@@ -29,9 +29,9 @@ t_error str_reserve(t_buffer_str *buf, t_usize size);
 
 static inline void	str_free(t_buffer_str buf)
 {
-	void	free(void *);
+	void	me_free(void *);
 
-	free(buf.buf);
+	me_free(buf.buf);
 }
 
 static inline char	str_pop(t_buffer_str *buf)

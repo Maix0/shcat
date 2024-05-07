@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:52:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/30 14:14:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 15:04:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/buffered_str/buf_str.h"
 #include "me/mem/mem_alloc.h"
+#include "me/mem/mem_realloc.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/string/str_l_cat.h"
-#include "me/string/str_l_copy.h"
 #include "me/string/str_len.h"
 #include "me/types.h"
 #include <stdlib.h>
@@ -29,11 +29,9 @@ t_error str_reserve(t_buffer_str *buf, t_usize size)
 	while (size > buf->capacity)
 	{
 		new_capacity = (buf->capacity * 3) / 2 + 1;
-		temp_buffer = mem_alloc(new_capacity);
+		temp_buffer = mem_realloc(buf->buf, new_capacity);
 		if (temp_buffer == NULL)
 			return (true);
-		str_l_copy(temp_buffer, buf->buf, new_capacity);
-		free(buf->buf);
 		buf->buf = temp_buffer;
 		buf->capacity = new_capacity;
 	}
@@ -52,11 +50,9 @@ bool push_str_buffer(t_buffer_str *buf, t_const_str to_push)
 	while (buf->len + to_push_len + 2 > buf->capacity)
 	{
 		new_capacity = (buf->capacity * 3) / 2 + 1;
-		temp_buffer = mem_alloc(new_capacity);
+		temp_buffer = mem_realloc(buf->buf, new_capacity);
 		if (temp_buffer == NULL)
 			return (true);
-		str_l_copy(temp_buffer, buf->buf, new_capacity);
-		free(buf->buf);
 		buf->buf = temp_buffer;
 		buf->capacity = new_capacity;
 	}

@@ -92,7 +92,7 @@ static bool	handle_leftovers(t_file fd, char *temp_buffer, t_buffer_str *buf)
 		if (copy_next_line_into_buffer(fd, buf, temp_buffer,
 				str_len(static_buffer->buf)))
 		{
-			free(temp_buffer);
+			me_free(temp_buffer);
 			return (true);
 		}
 	}
@@ -118,10 +118,10 @@ t_buffer_str	get_next_line(t_file fd, bool *error)
 		return (buf);
 	while (!read_and_copy(fd, &buf, temp_buffer, &flags) && !flags.empty_read)
 		;
-	free(temp_buffer);
+	me_free(temp_buffer);
 	if (flags.error || flags.empty_read)
 	{
-		free(buf.buf);
+		me_free(buf.buf);
 		return (*error = true, (t_buffer_str){0});
 	}
 	return (buf);

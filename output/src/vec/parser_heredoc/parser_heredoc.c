@@ -47,7 +47,7 @@ t_error vec_parser_heredoc_push(t_vec_parser_heredoc *vec, t_heredoc element)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_heredoc));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -73,7 +73,7 @@ t_error vec_parser_heredoc_reserve(t_vec_parser_heredoc *vec, t_usize wanted_cap
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_heredoc));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -111,5 +111,5 @@ void vec_parser_heredoc_free(t_vec_parser_heredoc vec)
 			vec.len--;
 		}
 	}
-	free(vec.buffer);
+	me_free(vec.buffer);
 }

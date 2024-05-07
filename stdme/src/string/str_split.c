@@ -43,7 +43,7 @@ static t_usize	local_count_words(t_const_str str, char chr)
 static t_str	*local_split_freeall(t_str **to_free)
 {
 	while (*to_free)
-		free(*(to_free++));
+		me_free(*(to_free++));
 	return (NULL);
 }
 

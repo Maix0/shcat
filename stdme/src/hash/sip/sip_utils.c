@@ -101,6 +101,6 @@ t_u64	sip13_finish(t_sip13 *self)
 	state.v2 ^= 0xff;
 	compress(&state);
 	compress(&state);
-	free(self);
+	me_free(self);
 	return (state.v0 ^ state.v1 ^ state.v2 ^ state.v3);
 }

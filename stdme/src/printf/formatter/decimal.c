@@ -85,5 +85,5 @@ void	printf_d(t_printf_arg data, t_printf_func f)
 .fill_zero = 0, .fill = 0, .sign = sign, .pretty = NULL, .len = \
 str_len(start_num), .pretty_len = 0, .str = start_num, .allow_zero_fill \
 	= true, .sign_len = str_len(sign), }, data, f);
-	free(start_num);
+	me_free(start_num);
 }

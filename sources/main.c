@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/04 19:21:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 13:08:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void print_node_data(t_node *t, t_usize depth)
 	while (idx++ < depth)
 		printf("\t");
 	idx = 0;
-	printf("%s(%llu) = %s\n", t->kind_str, t->kind, node_getstr(t));
+	printf("%s(%lu) = %s\n", t->kind_str, t->kind, node_getstr(t));
 	while (idx < t->childs_count)
 		print_node_data(&t->childs[idx++], depth + 1);
 }

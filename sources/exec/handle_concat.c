@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:05:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/02 16:01:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 14:59:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret)
 		if (node_get_string(&self->childs[i], shcat, &tmp))
 			return (str_free(out), ERROR);
 		push_str_buffer(&out, tmp);
-		free(tmp);
+		me_free(tmp);
 		i++;
 	}
 	*ret = out.buf;

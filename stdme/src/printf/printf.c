@@ -99,7 +99,7 @@ t_usize	me_printf(t_const_str fmt, ...)
 	va_end(args);
 	len = str_len(str);
 	write(1, str, len);
-	free(str);
+	me_free(str);
 	return (len);
 }
 
@@ -114,7 +114,7 @@ t_usize	me_eprintf(t_const_str fmt, ...)
 	va_end(args);
 	len = str_len(str);
 	write(2, str, len);
-	free(str);
+	me_free(str);
 	return (len);
 }
 */

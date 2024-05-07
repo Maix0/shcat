@@ -47,7 +47,7 @@ t_error vec_C__PREFIX___push(t_vec_C__PREFIX__ *vec, C__TYPENAME__ element)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(C__TYPENAME__));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -73,7 +73,7 @@ t_error vec_C__PREFIX___reserve(t_vec_C__PREFIX__ *vec, t_usize wanted_capacity)
 		if (temp_buffer == NULL)
 			return (ERROR);
 		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(C__TYPENAME__));
-		free(vec->buffer);
+		me_free(vec->buffer);
 		vec->buffer = temp_buffer;
 		vec->capacity = new_capacity;
 	}
@@ -111,5 +111,5 @@ void vec_C__PREFIX___free(t_vec_C__PREFIX__ vec)
 			vec.len--;
 		}
 	}
-	free(vec.buffer);
+	me_free(vec.buffer);
 }

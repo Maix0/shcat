@@ -51,6 +51,6 @@ void remove_hashmap_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ *key)
 	else
 		prev->next = entry->next;
 	hmap->drop(entry->kv);
-	free(entry);
+	me_free(entry);
 	hmap->buckets[hashed_key % hmap->num_buckets] = NULL;
 }

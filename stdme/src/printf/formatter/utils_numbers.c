@@ -23,7 +23,7 @@ void	handle_weird_precision_stuff(t_printf_arg *data, t_prec_strs strs,
 		data->flags &= (~ZERO_ALIGN);
 		data->flags |= ALIGN;
 		if (strs.free_out)
-			*strs.out = (free(*strs.out), (t_str)mem_alloc_array(1, 1));
+			*strs.out = (me_free(*strs.out), (t_str)mem_alloc_array(1, 1));
 		else
 			*strs.out = "";
 		*strs.pretty = "";
