@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 14:54:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/07 22:00:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,29 +21,48 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-// the `+ 16` is twice the size of size_t, only to stay aligned on a 16 byte
+t_arena_page *find_page_for(t_usize data_size, t_arena_page *page)
+{
+	t_arena_block *block;
+
+	while (page != NULL)
+	{
+		if (page->page_size <= data_size + sizeof(t_arena_block))
+		{
+			if (page->next == NULL &&
+				alloc_arena_page(usize_round_up_to(data_size + sizeof(*block),
+												   ARENA_SIZE_DEFAULT),
+								 &page->next))
+				return (me_abort(), NULL);
+			page = page->next;
+		}
+		block = (t_arena_block *)(&page[1]);
+		while (block)
+		{
+			if ((t_u8 *)block >= (t_u8 *)page + sizeof(*page) + page->page_size)
+				break;
+			if (block->free && block->size >= data_size)
+				return (page);
+			block = (void *)((t_u8 *)block + block->size + sizeof(*block));
+		}
+		page = page->next;
+	}
+	return ((me_abort(), NULL));
+}
+
+// the is twice the size of size_t, only to stay aligned on a 16 byte
 // alignement
 void *me_malloc(t_usize size)
 {
-	t_arena_page *arena;
-	void		 *ret;
+	t_arena_page  *arena;
+	t_arena_block *block;
 
 	size = usize_round_up_to(size, 16);
-	if (size + 16 > ARENA_SIZE)
-		me_abort();
-	arena = get_head_arena();
-	while (arena->next != NULL && arena->current_index + 16 + size > ARENA_SIZE)
-		arena = arena->next;
-	if (arena->current_index + 16 + size > ARENA_SIZE)
-	{
-		if (alloc_arena(&arena->next))
-			me_abort();
-		arena = arena->next;
-	}
-	*(t_usize *)&arena->bytes[arena->current_index] = size;
-	ret = (void *)&arena->bytes[arena->current_index + 16];
-	arena->current_index += 16 + size;
-	return (ret);
+	arena = find_page_for(size, get_head_arena());
+	if (get_block_for_page(size, arena, &block))
+		return (me_abort(), NULL);
+	block->free = false;
+	return ((t_u8 *)block + sizeof(*block));
 }
 
 void *me_calloc(t_usize elem_size, t_usize elem_count)
@@ -55,35 +74,27 @@ void *me_calloc(t_usize elem_size, t_usize elem_count)
 
 void *me_realloc(void *ptr, t_usize new_size)
 {
-	t_arena_page *arena;
-	t_usize		  size;
-	void		 *ret;
+	t_arena_page  *arena;
+	t_arena_block *block;
+	void		  *ret;
 
 	arena = get_head_arena();
-	while (arena != NULL && !((void *)&arena->bytes <= ptr &&
-							  ptr <= (void *)(&arena->bytes) + ARENA_SIZE))
+	if (arena == NULL)
+		return (NULL);
+	block = (void *)((t_u8 *)(ptr) - sizeof(t_arena_block));
+	while (arena && !((t_u8 *)arena + arena->page_size + sizeof(*arena) > (t_u8 *)block && (t_u8 *)block > (t_u8 *)arena))
 		arena = arena->next;
 	if (arena == NULL)
 		return (NULL);
-	size = *(t_usize *)((t_u8 *)(ptr)-16);
-	if (size <= new_size)
+	if (block->size <= new_size)
 		return (ptr);
 	ret = me_malloc(new_size);
-	mem_copy(ret, ptr, size);
+	mem_copy(ret, ptr, block->size);
 	return (ret);
 }
 
 void me_free(void *ptr)
 {
-	t_arena_page *arena;
-
-	arena = get_head_arena();
-	while (arena != NULL && !((void *)&arena->bytes <= ptr &&
-							  ptr <= (void *)(&arena->bytes) + ARENA_SIZE))
-		arena = arena->next;
-	if (arena == NULL)
-	{
-		me_putstr_fd("Tried to free with me_free !\n", 2);
-		free(ptr);
-	}
+	(void)(ptr);
+	// t_arena_page *arena;
 }

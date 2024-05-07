@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/02 15:00:49 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/07 22:23:52 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,9 +17,8 @@ BONUS_FLAGS		=
 NAME			=	libgmr.a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
-CC				=	cc
+CC				?=	cc
 CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include
-
 include ./Filelist.mk
 
 SRC_FILES		+= ./src/combined ./src/scanner
