@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/03 12:23:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:28:15 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,16 @@ void sigquit_handle(int sig, siginfo_t *info, void *ucontext)
 	}
 }
 
+void sigsegv_handle(int sig, siginfo_t *info, void *ucontext)
+{
+	(void)(sig);
+	(void)(info);
+	(void)(ucontext);
+	printf("SEGFAULT!!!\n");
+	print_trace();
+	exit(139);
+}
+
 t_error install_signal(void)
 {
 	struct sigaction data;
@@ -62,6 +72,9 @@ t_error install_signal(void)
 
 	data.sa_sigaction = sigquit_handle;
 	if (sigaction(SIGQUIT, &data, NULL))
+		return (ERROR);
+	data.sa_sigaction = sigsegv_handle;
+	if (sigaction(SIGSEGV, &data, NULL))
 		return (ERROR);
 
 	return (NO_ERROR);

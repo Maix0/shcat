@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 14:52:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:19:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef bool t_error;
 void me_abort(void);
 void me_exit(t_i32 code);
 void me_free(void *ptr);
+void print_trace(void);
 
 #define ERROR 1
 #define NO_ERROR 0

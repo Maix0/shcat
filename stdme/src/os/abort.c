@@ -6,11 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 22:26:15 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:22:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
+#include <execinfo.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #define PRINT_BACKTRACE
@@ -20,25 +22,48 @@
 # ifndef BACKTRACE_DEEP
 #  define BACKTRACE_DEEP 256
 # endif
-# include "me/fs/putendl_fd.h"
-# include <execinfo.h>
 
-static void print_trace(void)
+static void	print_trace_inner(void **trace, t_str *messages, t_usize i)
 {
-	void  *array[BACKTRACE_DEEP];
-	t_i32  size;
+	char	syscom[1024];
+	t_i32	p;
 
-	size = backtrace(array, BACKTRACE_DEEP);
-	backtrace_symbols_fd(array, size, 2);
+	p = 0;
+	printf("[bt] #%zu\t", i);
+	while (messages[i][p] != '(' && messages[i][p] != ' '
+		&& messages[i][p] != 0)
+		++p;
+	fflush(stdout);
+	snprintf(syscom, 1024, "addr2line %p -e %.*s -sipf", trace[i], p,
+		messages[i]);
+	(void)system(syscom);
+}
+
+void	print_trace(void)
+{
+	void	*trace[BACKTRACE_DEEP];
+	t_str	*messages;
+	t_i32	size;
+	t_i32	i;
+
+	size = backtrace(trace, BACKTRACE_DEEP);
+	messages = backtrace_symbols(trace, size);
+	i = 1;
+	printf("[bt] Execution path:\n");
+	if (size >= 3)
+		size -= 3;
+	while (i < size)
+		print_trace_inner(trace, messages, i++);
 }
 #else
 
-static void print_trace(void)
+static void	print_trace(void)
 {
 }
+
 #endif
 
-void me_abort(void)
+void	me_abort(void)
 {
 	print_trace();
 	me_exit(1);
