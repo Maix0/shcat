@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/08 15:03:15 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/08 22:15:45 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 OBJDIRNAME ?=
 
 # Flags
-CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline  -I./includes -I./output/include -I./stdme/output/include -rdynamic
+CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
 # Sources
 LIB =	./libft/ft_bzero.c \
 		./libft/ft_calloc.c \

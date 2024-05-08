@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:47:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 19:24:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 22:05:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_error alloc_arena_page(t_usize min_size, t_arena_page **out)
 {
 	t_arena_block *block;
 
-	printf("Allocating page with size %zu", min_size);
+	printf("Allocating page with size %zu\n", min_size);
 	min_size = usize_round_up_to(min_size, ARENA_SIZE_DEFAULT);
 	if (out == NULL)
 		return (ERROR);

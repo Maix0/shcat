@@ -15,10 +15,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in {
         devShell = pkgs.mkShell {
-          packages = with pkgs; [clang valgrind gnumake readline.out readline.dev generic_c.packages.${system}.default];
-          shellHook = ''
-            alias 'valgrind'='valgrind --supressions=${./valgrind_readline_leaks_ignore.txt}';
-          '';
+          packages = with pkgs; [clang valgrind gnumake readline.out readline.dev generic_c.packages.${system}.default llvmPackages.bintools];
         };
       }
     );
