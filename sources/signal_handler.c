@@ -6,13 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 15:28:15 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:33:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/signal_handler.h"
 #include "me/types.h"
 #include "readline/readline.h"
+#include "me/printf/printf.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -55,7 +56,7 @@ void sigsegv_handle(int sig, siginfo_t *info, void *ucontext)
 	(void)(sig);
 	(void)(info);
 	(void)(ucontext);
-	printf("SEGFAULT!!!\n");
+	me_eprintf("SEGFAULT!!!\n");
 	print_trace();
 	exit(139);
 }

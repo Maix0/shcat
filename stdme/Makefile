@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/08 15:01:24 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/08 16:06:05 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,11 +17,13 @@ LIBS_DIR		=	.
 GENERIC_DIR		=	output/src
 GENERIC_INCLUDE	=	output/include
 
+
+BASE_PATH		?=	$(shell pwd)
 NAME			=	libme.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic
+CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
 BONUS_FILES		=	
 LIBS_NAME		=	
 SUBJECT_URL		=	

@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/05/07 13:14:07 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/08 16:01:18 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,14 +27,14 @@ NAME = minishell
 
 # All (make all)
 all: 
-	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME)
-	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME)
+	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
 
 bonus: 
-	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) bonus
-	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME)
+	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd) bonus
+	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
 
 #	Header
 header:

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/08 15:27:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 15:36:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,6 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	if (install_signal())
 		return (1);
 	utils = (t_utils){};
-	*(t_u8 volatile *)NULL = 5;
 	utils.env = create_env_map();
 	utils.parser = create_myparser();
 	utils.name_shell = "\001\x1B[93m\002"
