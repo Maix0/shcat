@@ -6,11 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 16:06:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:11:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/printf/printf.h"
+#include "me/fs/putstr_fd.h"
+#include "me/fs/putendl_fd.h"
 #include "me/types.h"
 #include <execinfo.h>
 #include <stdio.h>
@@ -73,9 +74,12 @@ static void	print_trace(void)
 
 #endif
 
-void	me_abort(void)
+void	me_abort(t_str msg)
 {
-	me_eprintf("Abort:\n");
+	if (msg == NULL)
+		msg = "No message (msg was NULL)";
+	me_putstr_fd("Abort: ", 2);
+	me_putendl_fd(msg, 2);
 	print_trace();
 	me_exit(1);
 }

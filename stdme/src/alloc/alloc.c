@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 22:00:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:12:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_arena_page *find_page_for(t_usize data_size, t_arena_page *page)
 				alloc_arena_page(usize_round_up_to(data_size + sizeof(*block),
 												   ARENA_SIZE_DEFAULT),
 								 &page->next))
-				return (me_abort(), NULL);
+				return (me_abort("Failed Malloc"), NULL);
 			page = page->next;
 		}
 		block = (t_arena_block *)(&page[1]);
@@ -47,7 +47,7 @@ t_arena_page *find_page_for(t_usize data_size, t_arena_page *page)
 		}
 		page = page->next;
 	}
-	return ((me_abort(), NULL));
+	return ((me_abort("Found no pages for memory"), NULL));
 }
 
 // the is twice the size of size_t, only to stay aligned on a 16 byte
@@ -60,7 +60,7 @@ void *me_malloc(t_usize size)
 	size = usize_round_up_to(size, 16);
 	arena = find_page_for(size, get_head_arena());
 	if (get_block_for_page(size, arena, &block))
-		return (me_abort(), NULL);
+		return (me_abort("Found no page for me_malloc"), NULL);
 	block->free = false;
 	return ((t_u8 *)block + sizeof(*block));
 }
