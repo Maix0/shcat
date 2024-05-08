@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/08 15:36:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:22:47 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,15 @@
 #include "app/node.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
+#include "me/alloc/alloc.h"
 #include "me/string/str_len.h"
 #include "minishell.h"
 #include "parser/api.h"
+
+#undef free
+#undef malloc
+#undef realloc
+#undef calloc
 
 t_first_parser *ts_parser_new();
 void			ts_tree_delete(t_first_tree *);

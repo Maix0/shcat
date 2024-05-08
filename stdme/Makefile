@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/08 16:06:05 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/08 16:18:00 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,6 +46,10 @@ COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
 COL_BOLD		=	\033[1m
 COL_RESET		=	\033[0m
+
+# TODO: REMOVE FOR RENDU !!!!!
+CFLAGS += -DPRINT_BACKTRACE
+
 
 .PHONY = all bonus clean re subject
 

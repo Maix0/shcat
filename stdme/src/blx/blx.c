@@ -29,7 +29,7 @@ t_blx	blx_initialize(t_run_function func, t_free_function free_fn,
 {
 	t_blx	ctx;
 
-	ctx = (t_blx){.func = func, .app = data, .free = free_fn};
+	ctx = (t_blx){.func = func, .app = data, .me_free = free_fn};
 	ctx.mlx = mlx_init();
 	if (ctx.mlx == NULL)
 		(me_eprintf("Error:\nfailed to inialize blx (mlx) !\n"), exit(1));
@@ -59,14 +59,14 @@ void	blx_free(t_blx app)
 	blx_sprite_free(app._data.screen);
 	blx_sprite_free(app._data.font);
 	mlx_do_key_autorepeaton(app.mlx);
-	if (app.free)
-		app.free(app.app);
+	if (app.me_free)
+		app.me_free(app.app);
 	if (app.win)
 		mlx_destroy_window(app.mlx, app.win);
 	if (app.mlx)
 	{
 		mlx_destroy_display(app.mlx);
-		free(app.mlx);
+		me_free(app.mlx);
 	}
 	vec_u8_free(app.inputs.keysyms_held);
 	vec_u8_free(app.inputs.keysyms_pressed);

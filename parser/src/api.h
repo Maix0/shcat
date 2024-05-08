@@ -1,6 +1,7 @@
 #ifndef TREE_SITTER_ARRAY_H_
 #define TREE_SITTER_ARRAY_H_
 
+#include "me/alloc/alloc.h"
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
@@ -37,6 +38,18 @@
 #define NULL_SUBTREE ((t_subtree){.ptr = NULL})
 #define STACK_VERSION_NONE ((t_stack_version)-1)
 #define TS_DECODE_ERROR (-1)
+
+#if 1 == 1
+# undef malloc
+# undef calloc
+# undef realloc
+# undef free
+
+# define malloc(s) me_malloc((s))
+# define calloc(s, l) me_calloc((s), (l))
+# define realloc(p, t) me_realloc((p), (t))
+# define free(p) me_free((p))
+#endif
 
 #define Array(T)                                                               \
 	struct                                                                     \
@@ -184,7 +197,6 @@
 			array_insert(self, _index, value);                                 \
 	} while (0)
 
-
 // Get a subtree's children, which are allocated immediately before the
 // tree's own heap data.
 #define ts_subtree_children(self)                                              \
@@ -275,10 +287,10 @@ typedef struct s_parse_node
 typedef struct s_tree_cursor_entry
 {
 	const union u_subtree *subtree;
-	t_length				position;
-	uint32_t				child_index;
-	uint32_t				structural_child_index;
-	uint32_t				descendant_index;
+	t_length			   position;
+	uint32_t			   child_index;
+	uint32_t			   structural_child_index;
+	uint32_t			   descendant_index;
 } t_tree_cursor_entry;
 
 typedef struct s_tree_cursor
@@ -1537,8 +1549,8 @@ void ts_stack_clear(t_stack *);
 
 typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
 
-void		ts_external_scanner_state_init(t_external_scanner_state *, const char *,
-										   unsigned);
+void ts_external_scanner_state_init(t_external_scanner_state *, const char *,
+									unsigned);
 const char *ts_external_scanner_state_data(const t_external_scanner_state *);
 bool		ts_external_scanner_state_eq(const t_external_scanner_state *self,
 										 const char *, unsigned);
@@ -1579,7 +1591,8 @@ t_subtree ts_subtree_edit(t_subtree, const t_input_edit *edit,
 char	 *ts_subtree_string(t_subtree, t_symbol, bool, const t_language *,
 							bool include_all);
 t_subtree ts_subtree_last_external_token(t_subtree);
-const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self);
+const t_external_scanner_state *ts_subtree_external_scanner_state(
+	t_subtree self);
 bool ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
 
 #define SUBTREE_GET(self, name)                                                \

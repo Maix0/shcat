@@ -56,7 +56,7 @@ typedef struct s_blx
 	void					*win;
 	t_blx_input				inputs;
 	t_run_function			func;
-	t_free_function			free;
+	t_free_function			me_free;
 	t_blx_app				app;
 	t_blx_data				_data;
 }							t_blx;

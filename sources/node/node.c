@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:51:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 18:35:15 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,21 @@
 #include "me/mem/mem_alloc_array.h"
 #include "me/string/str_l_copy.h"
 #include "parser/api.h"
+#include <stdio.h>
 
-t_node build_node(t_parse_node current, t_const_str input);
+t_node		 build_node(t_parse_node current, t_const_str input);
 t_parse_node ts_node_child(t_parse_node parent, t_usize idx);
-t_symbol ts_node_symbol(t_parse_node self);
-t_const_str ts_node_type(t_parse_node self);
-t_u32 ts_node_start_byte(t_parse_node self);
-t_u32 ts_node_end_byte(t_parse_node self);
-t_u32 ts_node_child_count(t_parse_node self);
+t_symbol	 ts_node_symbol(t_parse_node self);
+t_const_str	 ts_node_type(t_parse_node self);
+t_u32		 ts_node_start_byte(t_parse_node self);
+t_u32		 ts_node_end_byte(t_parse_node self);
+t_u32		 ts_node_child_count(t_parse_node self);
 
 t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 {
-	t_node *ret;
-	t_usize idx;
-	t_parse_node	child;
+	t_node		*ret;
+	t_usize		 idx;
+	t_parse_node child;
 
 	ret = mem_alloc_array(sizeof(*ret), count);
 	if (ret == NULL)

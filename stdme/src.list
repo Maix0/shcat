@@ -1,4 +1,5 @@
 alloc/alloc
+alloc/alloc_get_page_from_bloc
 alloc/get_arena
 blx/blx
 blx/blx_create_fontsheet

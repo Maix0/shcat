@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 16:11:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:07:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "me/alloc/alloc_internal.h"
 
-#define PRINT_BACKTRACE
 #ifndef BASE_PATH
 # define BASE_PATH "/no_base_path_defined/"
 #endif
@@ -34,7 +34,7 @@ static void	print_trace_inner(void **trace, t_str *messages, t_usize i)
 	t_i32	p;
 
 	p = 0;
-	fprintf(stderr, "[bt] #%zu\t", i);
+	fprintf(stderr, "[bt] #%-4zu\t", i);
 	while (messages[i][p] != '(' && messages[i][p] != ' '
 		&& messages[i][p] != 0)
 		++p;
@@ -47,7 +47,8 @@ static void	print_trace_inner(void **trace, t_str *messages, t_usize i)
 				p, \
 				messages[i], \
 				BASE_PATH);
-	(void)system(syscom);
+	if (system(syscom))
+		fprintf(stderr, "%s\n", messages[i]);
 }
 
 void	print_trace(void)
@@ -65,10 +66,11 @@ void	print_trace(void)
 		size -= 3;
 	while (i < size)
 		print_trace_inner(trace, messages, i++);
+	me_free(messages);
 }
 #else
 
-static void	print_trace(void)
+void	print_trace(void)
 {
 }
 
@@ -78,6 +80,8 @@ void	me_abort(t_str msg)
 {
 	if (msg == NULL)
 		msg = "No message (msg was NULL)";
+	me_putendl_fd("Memory information:", 2);
+	print_pages_info();
 	me_putstr_fd("Abort: ", 2);
 	me_putendl_fd(msg, 2);
 	print_trace();
