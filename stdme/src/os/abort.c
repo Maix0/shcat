@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 19:07:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:39:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	print_trace(void)
 		size -= 3;
 	while (i < size)
 		print_trace_inner(trace, messages, i++);
-	me_free(messages);
+	free(messages);
 }
 #else
 

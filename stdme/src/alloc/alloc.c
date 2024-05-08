@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 19:20:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:37:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void *me_realloc(void *ptr, t_usize new_size)
 	ret = me_malloc(new_size);
 
 	mem_copy(ret, ptr, block->size);
+	me_free(ptr);
 	return (ret);
 }
 
@@ -107,7 +108,7 @@ void me_free(void *ptr)
 	t_arena_block *cur;
 	t_arena_block *next;
 
-	(void)(ptr);
+	print_trace();
 	page = get_page_from_ptr(ptr);
 	if (page == NULL)
 		me_abort("Tried to me_free with me_free something that isn't allocated "
