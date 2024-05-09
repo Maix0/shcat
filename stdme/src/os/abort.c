@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 23:26:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/09 07:43:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static void print_trace_inner(void **trace, t_str *messages, t_usize i)
 	fflush(stderr);
 	snprintf(
 		syscom, sizeof(syscom) / sizeof(syscom[0]),
-		"addr2line %#x -e %.*s -ipfa"
+		"addr2line %#x -e %.*s -ipf"
 		"| 1>&2 rg \"^(.*) at %s(.*)\"'$' --replace '$1 at $2' --color never",
 		(t_u32)(convert_to_vma((t_usize)trace[i])), p, messages[i], BASE_PATH);
 	if (system(syscom))

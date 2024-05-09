@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 13:08:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 19:33:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:55:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,28 @@
 #include "me/types.h"
 #include <stdlib.h>
 
+void __libc_free(void *ptr);
+
 void me_exit(t_i32 exit_code)
 {
-	t_arena_page  *page;
-	t_arena_page  *tmp;
-	t_arena_block *block;
-	t_usize		   count_block;
+	t_mpage	 *page;
+	t_mpage	 *tmp;
+	t_mblock *block;
+	t_usize	  count_block;
 
 	page = get_head_arena();
 	count_block = 0;
 	while (page)
 	{
-		block = (void *)(((t_usize)page) + sizeof(*page));
-		while (((t_usize)page) <= ((t_usize)block) &&
-			   ((t_usize)block) <=
-				   ((t_usize)page) + page->page_size + sizeof(*page))
+		block = page->first;
+		while (block)
 		{
-			count_block += block->used;
-			block = (void *)(((t_usize)block) + sizeof(*block) + block);
+			if (block->used)
+				count_block += 1;
+			block = block->next;
 		}
 		tmp = page->next;
-		me_free(page);
+		__libc_free(page);
 		page = tmp;
 	}
 	if (count_block != 0)

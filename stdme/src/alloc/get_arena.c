@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:47:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 22:05:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/09 18:21:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "me/fs/putendl_fd.h"
 #include "me/fs/putnbr_fd.h"
 #include "me/fs/putstr_fd.h"
+#include "me/mem/mem_compare.h"
+#include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/num/usize.h"
 #include <stdio.h>
@@ -22,81 +24,90 @@
 
 void *__libc_malloc(size_t size);
 
-t_arena_page *get_head_arena(void)
+t_mpage *alloc_page(t_usize size)
 {
-	static t_arena_page *val = NULL;
+	t_mpage *val;
 
-	if (val == NULL)
-	{
-		if (alloc_arena_page(ARENA_SIZE_DEFAULT, &val))
-		{
-			me_putstr_fd("Error: malloc failed\n", 2);
-			exit(1);
-		}
-	}
+	size = usize_round_up_to(size, PAGE_SIZE_DEFAULT);
+	val = __libc_malloc(PAGE_SIZE_DEFAULT);
+	if (val == NULL || sizeof(t_mpage) >= PAGE_SIZE_DEFAULT)
+		return (NULL);
+	val->next = NULL;
+	val->page_size = PAGE_SIZE_DEFAULT;
+	val->first = (t_mblock *)(((t_usize)val) + sizeof(t_mpage));
+	val->first->page = val;
+	val->first->next = NULL;
+	mem_copy(val->first->padding, BLOCK_PADDING, 7);
+	val->first->used = false;
+	val->first->size = PAGE_SIZE_DEFAULT - sizeof(t_mpage);
+	me_putstr_fd("Allocating a page of size ", 2);
+	me_putnbr_fd(size, 2);
+	me_putendl_fd("", 2);
 	return (val);
 }
 
-t_error alloc_arena_page(t_usize min_size, t_arena_page **out)
+t_mpage *get_head_arena(void)
 {
-	t_arena_block *block;
+	static t_mpage *val = NULL;
 
-	printf("Allocating page with size %zu\n", min_size);
-	min_size = usize_round_up_to(min_size, ARENA_SIZE_DEFAULT);
-	if (out == NULL)
-		return (ERROR);
-	*out = __libc_malloc(sizeof(t_arena_page) + min_size);
-	if (*out == NULL)
-		return (ERROR);
-	mem_set_zero((t_u8 *)*out + sizeof(**out), min_size);
-	(*out)->page_size = min_size;
-	(*out)->next = NULL;
-	block = (t_arena_block *)((t_u8 *)*out + sizeof(**out));
-	block->end = true;
-	block->used = false;
-	block->size = min_size - sizeof(*block);
-	return (NO_ERROR);
+	if (val == NULL)
+		val = alloc_page(PAGE_SIZE_DEFAULT);
+	if (val == NULL)
+		(me_putstr_fd("Failed to alloc first page", 2), exit(1));
+	return (val);
 }
 
-t_error get_block_for_page(t_usize size, t_arena_page *page,
-						   t_arena_block **out)
+t_mblock *split_block(t_mblock *self, t_usize min_size)
 {
-	t_arena_block *cur;
-	t_arena_block *next;
-	t_usize		   leftover;
+	t_usize	  remaining;
+	t_mblock *old_next;
 
-	if (page == NULL || out == NULL)
-		return (ERROR);
-	if (page->page_size - sizeof(t_arena_block) <= size)
-		return (ERROR);
-	cur = (void *)((t_u8 *)page + sizeof(*page));
-	while ((t_usize)((t_u8 *)cur - (t_u8 *)page) <
-		   page->page_size - sizeof(*page))
+	min_size = usize_round_up_to(min_size, 16);
+	if (self->size > (min_size + sizeof(t_mpage) + 16))
+	{
+		remaining = self->size - min_size - sizeof(t_mpage);
+		printf("Splitting %zu into %zu and %zu\n", self->size, min_size,
+			   remaining);
+		self->size = min_size;
+		old_next = self->next;
+		self->next =
+			(t_mblock *)(((t_usize)self) + self->size + sizeof(t_mpage));
+		self->next->page = self->page;
+		self->next->next = old_next;
+		self->next->used = false;
+		self->next->size = remaining;
+		mem_copy(self->next->padding, BLOCK_PADDING, 7);
+	}
+	return (self);
+}
+
+t_mblock *get_block_for_size(t_usize size)
+{
+	t_mblock *last;
+	t_mblock *cur;
+
+	last = NULL;
+	cur = get_head_arena()->first;
+	while (cur)
 	{
 		if (!cur->used && cur->size >= size)
-		{
-			if (cur->size > size + sizeof(*cur) * 2)
-			{
-				leftover = cur->size - size - sizeof(*cur);
-				cur->size = size;
-				next = (void *)(((t_usize)cur) + size);
-				next->size = leftover;
-				next->end = cur->end;
-				next->used = false;
-				cur->end = false;
-			}
-			*out = cur;
-			return (NO_ERROR);
-		}
-		cur = (void *)((t_u8 *)cur + cur->size + sizeof(*cur));
+			return (split_block(cur, size));
+		last = cur;
+		cur = cur->next;
 	}
-	return (ERROR);
+	if (last == NULL)
+		return (NULL);
+	last->page->next = alloc_page(size);
+	if (last->page->next == NULL)
+		me_abort("Failed to alloc page!");
+	last->next = last->page->next->first;
+	return (split_block(last->page->next->first, size));
 }
 
 void print_pages_info(void)
 {
-	t_arena_page *page;
-	t_i32		  page_nb;
+	t_mpage *page;
+	t_i32	 page_nb;
 
 	page = get_head_arena();
 	page_nb = 0;
