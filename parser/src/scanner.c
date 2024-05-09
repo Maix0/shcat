@@ -304,8 +304,8 @@ static bool scan_heredoc_content(Scanner *scanner, t_lexer_data *lexer, enum Tok
                 lexer->result_symbol = heredoc->started ? middle_type : end_type;
                 lexer->mark_end(lexer);
                 if (scan_heredoc_end_identifier(heredoc, lexer)) {
-                    if (lexer->result_symbol == HEREDOC_END) {
-                        array_pop(&scanner->heredocs);
+                    if (lexer->result_symbol == HEREDOC_END) { 
+                        (void) array_pop(&scanner->heredocs);
                     }
                     return true;
                 }
@@ -444,7 +444,7 @@ static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbol
         if (scan_heredoc_end_identifier(heredoc, lexer)) {
             array_delete(&heredoc->current_leading_word);
             array_delete(&heredoc->delimiter);
-            array_pop(&scanner->heredocs);
+            (void)array_pop(&scanner->heredocs);
             lexer->result_symbol = HEREDOC_END;
             return true;
         }

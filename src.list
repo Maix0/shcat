@@ -1,6 +1,8 @@
 env.c
+exec/handle_command.c
 exec/handle_concat.c
 exec/handle_expension.c
+exec/handle_program.c
 exec/handle_raw_word.c
 exec/handle_word.c
 ft_cmd.c
