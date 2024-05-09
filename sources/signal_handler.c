@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 18:20:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/09 21:31:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ t_error install_signal(void)
 	if (sigaction(SIGQUIT, &data, NULL))
 		return (ERROR);
 	
-	data.sa_sigaction = sigsegv_handle;
-	if (sigaction(SIGSEGV, &data, NULL))
-		return (ERROR);
+	// data.sa_sigaction = sigsegv_handle;
+	// if (sigaction(SIGSEGV, &data, NULL))
+	// 	return (ERROR);
 	return (NO_ERROR);
 }

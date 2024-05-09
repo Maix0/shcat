@@ -53,3 +53,4 @@ dkms.conf
 objects/
 minishell
 .envrc
+.idea
