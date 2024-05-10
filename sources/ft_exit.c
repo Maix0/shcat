@@ -41,6 +41,8 @@ void ft_free_utils(t_utils *s)
 		free(s->str_input);
 	if (s->path)
 		ft_free_strs(s->path);
+	if (s->env)
+		drop_hashmap_env(s->env);
 	ts_parser_delete(s->parser.parser);
 }
 

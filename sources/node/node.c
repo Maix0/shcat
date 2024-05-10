@@ -81,15 +81,15 @@ t_str node_getstr(t_node *node)
 	return (node->single_str);
 }
 
-void free_node(t_node t)
+void free_node(t_node self)
 {
-	// t_usize idx;
-	//
-	// idx = 0;
-	// while (idx < t.childs_count)
-	// 	free_node(t.childs[idx++]);
-	// free(t.childs);
-	// if (t.single_str != NULL)
-	// 	free(t.single_str);
-	(void)(t);
+	t_usize idx;
+
+	if (self.single_str)
+		me_free(self.single_str);
+	idx = 0;
+	while (idx < self.childs_count)
+		free_node(self.childs[idx++]);
+	if (self.childs_count != 0)
+		me_free(self.childs);
 }

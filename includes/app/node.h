@@ -30,6 +30,6 @@ typedef struct s_node
 
 t_node build_node(t_parse_node curr, t_const_str input);
 t_str  node_getstr(t_node *node);
-void   free_node(t_node t);
+void   free_node(t_node self);
 
 #endif /* NODE_H */

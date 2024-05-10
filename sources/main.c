@@ -117,6 +117,8 @@ void ft_take_args(t_utils *shcat)
 		shcat->str_input = readline((t_const_str)shcat->name_shell);
 		if (!shcat->str_input)
 			ft_exit(shcat, 0);
+		else if (ft_strcmp(shcat->str_input, "exit") == 0)
+			ft_exit(shcat, 0);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
 		add_history(shcat->str_input);
@@ -170,8 +172,8 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	if (install_signal())
 		return (1);
 	utils = (t_utils){};
-	utils.env = create_env_map();
 	utils.parser = create_myparser();
+	utils.env = create_env_map();
 	utils.name_shell = "\001\x1B[93m\002"
 					   "42sh"
 					   "\001\x1B[32m\002"

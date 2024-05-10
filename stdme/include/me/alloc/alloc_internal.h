@@ -17,8 +17,8 @@
 #include "me/types.h"
 #include <stdalign.h>
 
-#define PAGE_SIZE_DEFAULT 4096 * 4
-#define BLOCK_PADDING "\xFE\xDC\xAB\xC0\xFE\xEE"
+#define PAGE_SIZE_DEFAULT 4096
+#define BLOCK_PADDING "\xFE\xDC\xAB\xC0\xFE\xEE\x66"
 
 typedef struct s_mblock
 {

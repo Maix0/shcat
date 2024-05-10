@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 17:57:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/10 21:39:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void *me_malloc(t_usize size)
 	if (block == NULL)
 		return (me_abort("Found no page for me_malloc"), NULL);
 	block->used = true;
+	mem_set_zero((t_u8 *)block + sizeof(*block), block->size);
 	return ((void *)(((t_usize)block) + sizeof(t_mblock)));
 }
 
@@ -51,10 +52,21 @@ void *me_realloc(void *ptr, t_usize new_size)
 	block = (void *)((t_u8 *)(ptr) - sizeof(t_mblock));
 	if (block->size <= new_size)
 		return (ptr);
-	ret = me_malloc(new_size);
-	mem_copy(ret, ptr, block->size);
-	me_free(ptr);
-	return (ret);
+	if (block->next && block->next->page == block->page && !block->used &&
+		block->next->size + block->size + sizeof(t_mblock) >= new_size)
+
+	{
+		block->size = block->size + block->next->size + sizeof(t_mblock);
+		block->next = block->next->next;
+		return (ptr);
+	}
+	else
+	{
+		ret = me_malloc(new_size);
+		mem_copy(ret, ptr, block->size);
+		me_free(ptr);
+		return (ret);
+	}
 }
 
 void me_free(void *ptr)
