@@ -17,4 +17,12 @@ CompileFlags: # Tweak the parse settings
     - "-I/home/maix/school/shcat/includes/"
     - "-I/home/maix/school/shcat/output/include/"
     - "-I/home/maix/school/shcat/generic_sources/header/"
+    - "-I/home/rparodi/Documents/shcat/vendor/"
+    - "-I/home/rparodi/Documents/shcat/stdme/include/"
+    - "-I/home/rparodi/Documents/shcat/stdme/vendor/"
+    - "-I/home/rparodi/Documents/shcat/stdme/output/include/"
+    - "-I/home/rparodi/Documents/shcat/stdme/generic_sources/header/"
+    - "-I/home/rparodi/Documents/shcat/includes/"
+    - "-I/home/rparodi/Documents/shcat/output/include/"
+    - "-I/home/rparodi/Documents/shcat/generic_sources/header/"
 

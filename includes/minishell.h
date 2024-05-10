@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/03 15:22:24 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/09 16:28:26 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,7 @@ void	ft_pwd(void);
 void	ft_echo(t_str txt, t_str flag);
 void	ft_exit(t_utils *maiboyerlpb, t_u8 exit_status);
 void	ft_free(void *ptr);
+
+t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out);
 
 #endif

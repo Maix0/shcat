@@ -12,12 +12,15 @@
 
 #include "app/env.h"
 #include "app/node.h"
+#include "app/node/handle_program.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
 #include "me/alloc/alloc.h"
 #include "me/string/str_len.h"
 #include "minishell.h"
 #include "parser/api.h"
+#include "app/node/handle_concat.h"
+#include <sys/types.h>
 
 #undef free
 #undef malloc
@@ -31,6 +34,21 @@ t_first_tree   *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree,
 									   t_const_str input, t_usize len);
 void			ts_parser_delete(t_first_parser *self);
 void			ts_parser_set_language(t_first_parser *self, t_language *lang);
+
+
+t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out)
+{
+	switch (self->kind)
+	{
+		case sym_word:
+			*out = node_getstr(self);
+			return (NO_ERROR);
+		case sym_concatenation:
+			return (handle_concat(self, shcat, out));
+		default:
+			return (ERROR);
+	}
+}
 
 void print_node_data(t_node *t, t_usize depth)
 {
@@ -104,9 +122,12 @@ void print_node_concat(t_node *self)
 
 void exec_shcat(t_utils *shcat)
 {
+	t_i32 ret;
+
 	print_node_data(&shcat->current_node, 0);
-	print_node_concat(&shcat->current_node);
+	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
+	(void)ret;
 }
 
 void ft_take_args(t_utils *shcat)
@@ -116,8 +137,6 @@ void ft_take_args(t_utils *shcat)
 	{
 		shcat->str_input = readline((t_const_str)shcat->name_shell);
 		if (!shcat->str_input)
-			ft_exit(shcat, 0);
-		else if (ft_strcmp(shcat->str_input, "exit") == 0)
 			ft_exit(shcat, 0);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
@@ -174,6 +193,8 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	utils = (t_utils){};
 	utils.parser = create_myparser();
 	utils.env = create_env_map();
+	if (install_signal())
+		return (1);
 	utils.name_shell = "\001\x1B[93m\002"
 					   "42sh"
 					   "\001\x1B[32m\002"
