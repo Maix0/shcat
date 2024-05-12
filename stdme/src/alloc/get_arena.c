@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:47:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 18:21:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/12 22:19:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,16 @@ t_mpage *alloc_page(t_usize size)
 
 	size = usize_round_up_to(size + sizeof(t_mpage), PAGE_SIZE_DEFAULT);
 	val = __libc_malloc(size);
-	if (val == NULL || sizeof(t_mpage)  + sizeof(t_mblock) >= PAGE_SIZE_DEFAULT)
+	if (val == NULL)
 		return (NULL);
 	val->next = NULL;
 	val->page_size = size;
 	val->first = (t_mblock *)(((t_usize)val) + sizeof(t_mpage));
 	val->first->page = val;
 	val->first->next = NULL;
-	mem_copy(val->first->padding, BLOCK_PADDING, 7);
 	val->first->used = false;
 	val->first->size = size - sizeof(t_mblock) - sizeof(t_mpage);
+	mem_copy(val->first->padding, BLOCK_PADDING, 7);
 	return (val);
 }
 
@@ -47,7 +47,7 @@ t_mpage *get_head_arena(void)
 {
 	static t_mpage *val = NULL;
 
-	if (val == NULL && PAGE_SIZE_DEFAULT > sizeof(t_mpage))
+	if (val == NULL && PAGE_SIZE_DEFAULT > sizeof(t_mpage) + sizeof(t_mblock))
 		val = alloc_page(PAGE_SIZE_DEFAULT - sizeof(t_mpage));
 	if (val == NULL)
 		(me_putstr_fd("Failed to alloc first page", 2), exit(1));
@@ -63,9 +63,8 @@ t_mblock *split_block(t_mblock *self, t_usize min_size)
 	if (self->size > (min_size + sizeof(t_mblock) + 16))
 	{
 		remaining = self->size - min_size - sizeof(t_mblock);
-		printf("splitting %zu into %zu and %zu\n", self->size, min_size, remaining);
-		if (self->size == 80 && min_size == 16 && remaining == 32)
-			printf("HERE\n");
+		printf("splitting %zu into %zu and %zu\n", self->size, min_size,
+			   remaining);
 		self->size = min_size;
 		old_next = self->next;
 		self->next =
@@ -119,3 +118,170 @@ void print_pages_info(void)
 		page = page->next;
 	}
 }
+void __libc_free(void *ptr);
+
+//
+// void free_ifn(void *ptr)
+// {
+// 	if (ptr != NULL)
+// 		__libc_free(ptr);
+// }
+//
+// t_mpage *alloc_page(t_usize size)
+// {
+// 	t_mpage	 *page;
+// 	void	 *data;
+// 	t_mblock *block;
+//
+// 	size = usize_round_up_to(size, PAGE_SIZE_DEFAULT);
+// 	page = __libc_malloc(sizeof(t_mpage));
+// 	block = __libc_malloc(sizeof(t_mblock));
+// 	data = __libc_malloc(size);
+// 	if (page == NULL || data == NULL || block == NULL ||
+// 		PAGE_SIZE_DEFAULT <= (t_usize)0)
+// 		return (free_ifn(page), free_ifn(data), free_ifn(block), NULL);
+// 	page->data = data;
+// 	page->next = NULL;
+// 	page->page_size = size;
+// 	page->first = block;
+// 	block->offset = 0;
+// 	block->page = page;
+// 	block->next = NULL;
+// 	block->used = false;
+// 	block->size = size;
+// 	mem_copy(block->padding, BLOCK_PADDING, 7);
+// 	return (page);
+// }
+//
+// t_mpage *get_head_arena(void)
+// {
+// 	static t_mpage *val = NULL;
+//
+// 	if (val == NULL)
+// 	{
+// 		val = alloc_page(PAGE_SIZE_DEFAULT);
+// 		if (val == NULL)
+// 			(me_putstr_fd("Failed to alloc first page", 2), exit(1));
+// 	}
+// 	return (val);
+// }
+//
+// t_mblock *split_block(t_mblock *self, t_usize min_size)
+// {
+// 	t_usize	  remaining;
+// 	t_mblock *new_next;
+//
+// 	min_size = usize_round_up_to(min_size, 16);
+// 	if (self->size > min_size)
+// 	{
+// 		remaining = self->size - min_size - 1;
+// 		new_next = __libc_malloc(sizeof(t_mblock));
+// 		if (new_next == NULL)
+// 			return (me_abort("Failed to alloc block"), NULL);
+// 		printf("splitting %zu into %zu and %zu\n", self->size, min_size,
+// 			   remaining);
+// 		self->size = min_size;
+// 		new_next->page = self->page;
+// 		new_next->next = self->next;
+// 		new_next->offset = self->offset + self->size + 1;
+// 		new_next->used = false;
+// 		new_next->size = remaining;
+// 		mem_copy(new_next->padding, BLOCK_PADDING, 7);
+// 		self->next = new_next;
+// 	}
+// 	return (self);
+// }
+//
+// t_mblock *get_block_for_size(t_usize size)
+// {
+// 	t_mblock *last;
+// 	t_mblock *cur;
+//
+// 	last = NULL;
+// 	cur = get_head_arena()->first;
+// 	while (cur)
+// 	{
+// 		if (cur->page == NULL)
+// 			me_abort("block doesn't have a page ?????");
+// 		if (!cur->used && cur->size >= size)
+// 			return (split_block(cur, size));
+// 		last = cur;
+// 		cur = cur->next;
+// 	}
+// 	if (last == NULL)
+// 		return (NULL);
+// 	last->page->next = alloc_page(size);
+// 	if (last->page->next == NULL)
+// 		me_abort("Failed to alloc page!");
+// 	last->next = last->page->next->first;
+// 	return (split_block(last->page->next->first, size));
+// }
+//
+// t_mblock *get_block_from_ptr(void *ptr)
+// {
+// 	t_mpage	 *page;
+// 	t_mblock *block;
+//
+// 	page = get_page_from_ptr(ptr);
+// 	if (page == NULL)
+// 		return (NULL);
+// 	block = page->first;
+// 	while (block && block->page == page)
+// 	{
+// 		if (((t_u8 *)page->data) + block->offset == (t_u8 *)ptr)
+// 			return (block);
+// 		block = block->next;
+// 	}
+// 	return (NULL);
+// }
+//
+// t_mpage *get_page_from_ptr(void *ptr)
+// {
+// 	t_mpage *page;
+//
+// 	page = get_head_arena();
+// 	while (page)
+// 	{
+// 		if ((t_u8 *)page->data <= (t_u8 *)ptr &&
+// 			(t_u8 *)ptr < (((t_u8 *)page->data) + page->page_size))
+// 			return (page);
+// 		page = page->next;
+// 	}
+// 	return (NULL);
+// }
+//
+// void print_pages_info(void)
+// {
+// 	t_mpage *page;
+// 	t_i32	 page_nb;
+//
+// 	page = get_head_arena();
+// 	page_nb = 0;
+// 	while (page != NULL)
+// 	{
+// 		me_putstr_fd("Page ", 2);
+// 		me_putnbr_fd(page_nb++, 2);
+// 		me_putstr_fd(" with size ", 2);
+// 		me_putnbr_fd((t_i32)page->page_size, 2);
+// 		me_putstr_fd("\n", 2);
+// 		page = page->next;
+// 	}
+// }
+//
+// bool merge_next_block(t_mblock *cur, t_usize min_size)
+// {
+// 	t_mblock *next;
+//
+// 	if (cur->next != NULL && cur->page == cur->next->page && !cur->next->used &&
+// 		cur->size + cur->next->size >= min_size)
+// 	{
+// 		cur->size += cur->next->size;
+// 		next = cur->next;
+// 		cur->next = cur->next->next;
+// 		printf("merging two blocks %p and %p\n", cur, cur->next);
+// 		__libc_free(next);
+// 		return (NO_ERROR);
+// 	}
+// 	return (ERROR);
+// }
+>>>>>>> origin
