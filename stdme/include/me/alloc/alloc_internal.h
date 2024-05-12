@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:48:17 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 13:30:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/12 14:02:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_mblock
 	struct s_mblock *next;
 	struct s_mpage	*page;
 	t_usize			 size;
+	t_usize			 offset;
 	bool			 used;
 	t_u8			 padding[7];
 } t_mblock;
@@ -32,6 +33,7 @@ typedef struct s_mblock
 typedef struct s_mpage
 {
 	t_usize			page_size;
+	void		   *data;
 	t_mblock	   *first;
 	struct s_mpage *next;
 } t_mpage;
@@ -40,10 +42,11 @@ typedef struct s_mpage
 t_mpage *get_head_arena(void);
 
 // Will return ERROR if it couldn't malloc the page
-t_error alloc_arena_page(t_usize min_size, t_mpage **out);
-
+t_error	  alloc_arena_page(t_usize min_size, t_mpage **out);
 t_mblock *get_block_for_size(t_usize size);
 void	  print_pages_info(void);
 t_mpage	 *get_page_from_ptr(void *ptr);
+t_mblock *get_block_from_ptr(void *ptr);
+t_error	  merge_next_block(t_mblock *self, t_usize min_size);
 
 #endif /* ALLOC_INTERNAL_H */

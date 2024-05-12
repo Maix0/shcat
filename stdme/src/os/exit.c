@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 13:08:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 17:55:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/12 14:07:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,25 @@ void __libc_free(void *ptr);
 void me_exit(t_i32 exit_code)
 {
 	t_mpage	 *page;
-	t_mpage	 *tmp;
+	void	 *tmp;
 	t_mblock *block;
 	t_usize	  count_block;
 
 	page = get_head_arena();
 	count_block = 0;
+	block = page->first;
+	while (block)
+	{
+		if (block->used)
+			count_block += 1;
+		tmp = block->next;
+		__libc_free(block);
+		block = tmp;
+	}
 	while (page)
 	{
-		block = page->first;
-		while (block)
-		{
-			if (block->used)
-				count_block += 1;
-			block = block->next;
-		}
 		tmp = page->next;
+		__libc_free(page->data);
 		__libc_free(page);
 		page = tmp;
 	}
