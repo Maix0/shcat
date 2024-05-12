@@ -10,6 +10,3 @@ src/vec/parser_range/parser_range_functions3.c
 src/vec/reduce_action/reduce_action.c
 src/vec/reduce_action/reduce_action_functions2.c
 src/vec/reduce_action/reduce_action_functions3.c
-src/vec/str/str.c
-src/vec/str/str_functions2.c
-src/vec/str/str_functions3.c

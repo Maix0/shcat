@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/10 21:39:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/10 21:50:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void me_free(void *ptr)
 {
 	t_mblock *cur;
 
+	if (ptr == NULL)
+		return;
 	cur = (void *)(((t_usize)ptr) - sizeof(t_mblock));
 	cur->used = false;
 	if (cur->next != NULL && cur->page == cur->next->page && !cur->next->used)

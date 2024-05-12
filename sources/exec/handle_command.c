@@ -6,7 +6,7 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:00:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/09 17:14:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/10 22:02:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 	t_spawn_info spawn_info;
 	t_str tmp;
 
-	spawn_info.arguments = vec_str_new(self->childs_count, (void (*)(t_str))free);
+	spawn_info.arguments = vec_str_new(self->childs_count, (void (*)(t_str))me_free);
 	if (self->kind != sym_command)
 		 return (ERROR);
 	i = 0;

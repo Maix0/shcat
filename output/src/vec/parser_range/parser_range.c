@@ -14,6 +14,7 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/types.h"
+#include "me/alloc/alloc.h"
 #include "me/vec/vec_parser_range.h"
 #include <stdlib.h>
 
@@ -33,7 +34,6 @@ t_vec_parser_range vec_parser_range_new(t_usize				  capacity,
 /// Return true in case of an error
 t_error vec_parser_range_push(t_vec_parser_range *vec, t_parser_range element)
 {
-	t_parser_range *temp_buffer;
 	size_t		   new_capacity;
 
 	if (vec == NULL)
@@ -43,12 +43,7 @@ t_error vec_parser_range_push(t_vec_parser_range *vec, t_parser_range element)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (vec->len + 1 > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		temp_buffer = mem_alloc_array(new_capacity, sizeof(t_parser_range));
-		if (temp_buffer == NULL)
-			return (ERROR);
-		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_parser_range));
-		me_free(vec->buffer);
-		vec->buffer = temp_buffer;
+		vec->buffer = me_realloc(vec->buffer, new_capacity);
 		vec->capacity = new_capacity;
 	}
 	vec->buffer[vec->len] = element;
@@ -59,7 +54,6 @@ t_error vec_parser_range_push(t_vec_parser_range *vec, t_parser_range element)
 /// Return true in case of an error
 t_error vec_parser_range_reserve(t_vec_parser_range *vec, t_usize wanted_capacity)
 {
-	t_parser_range *temp_buffer;
 	size_t		   new_capacity;
 
 	if (vec == NULL)
@@ -69,12 +63,7 @@ t_error vec_parser_range_reserve(t_vec_parser_range *vec, t_usize wanted_capacit
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		temp_buffer = mem_alloc_array(new_capacity, sizeof(t_parser_range));
-		if (temp_buffer == NULL)
-			return (ERROR);
-		mem_copy(temp_buffer, vec->buffer, vec->len * sizeof(t_parser_range));
-		me_free(vec->buffer);
-		vec->buffer = temp_buffer;
+		vec->buffer = me_realloc(vec->buffer, new_capacity);
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);

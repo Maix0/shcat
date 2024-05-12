@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:47:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 18:21:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/11 15:05:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,16 @@ t_mpage *alloc_page(t_usize size)
 
 	size = usize_round_up_to(size + sizeof(t_mpage), PAGE_SIZE_DEFAULT);
 	val = __libc_malloc(size);
-	if (val == NULL || sizeof(t_mpage)  + sizeof(t_mblock) >= PAGE_SIZE_DEFAULT)
+	if (val == NULL || sizeof(t_mpage) + sizeof(t_mblock) >= PAGE_SIZE_DEFAULT)
 		return (NULL);
 	val->next = NULL;
 	val->page_size = size;
 	val->first = (t_mblock *)(((t_usize)val) + sizeof(t_mpage));
 	val->first->page = val;
 	val->first->next = NULL;
-	mem_copy(val->first->padding, BLOCK_PADDING, 7);
 	val->first->used = false;
 	val->first->size = size - sizeof(t_mblock) - sizeof(t_mpage);
+	mem_copy(val->first->padding, BLOCK_PADDING, 7);
 	return (val);
 }
 
@@ -63,9 +63,8 @@ t_mblock *split_block(t_mblock *self, t_usize min_size)
 	if (self->size > (min_size + sizeof(t_mblock) + 16))
 	{
 		remaining = self->size - min_size - sizeof(t_mblock);
-		printf("splitting %zu into %zu and %zu\n", self->size, min_size, remaining);
-		if (self->size == 80 && min_size == 16 && remaining == 32)
-			printf("HERE\n");
+		printf("splitting %zu into %zu and %zu\n", self->size, min_size,
+			   remaining);
 		self->size = min_size;
 		old_next = self->next;
 		self->next =
@@ -88,6 +87,8 @@ t_mblock *get_block_for_size(t_usize size)
 	cur = get_head_arena()->first;
 	while (cur)
 	{
+		if (cur->page == NULL)
+			me_abort("block doesn't have a page ?????");
 		if (!cur->used && cur->size >= size)
 			return (split_block(cur, size));
 		last = cur;

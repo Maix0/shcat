@@ -62,6 +62,14 @@ replace.C__TYPEHEADER__ = '#include "parser/types/types_reduce_action.h"'
 replace.C__PREFIX__ = "reduce_action"
 replace.C__PREFIXUP__ = "REDUCE_ACTION"
 
+[[create.vec]]
+sources_output = "src/vec/C__PREFIX__/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_str"
+replace.C__TYPEHEADER__ = ''
+replace.C__PREFIX__ = "str"
+replace.C__PREFIXUP__ = "STR"
+
 [[create.hashmap]]
 sources_output = "src/hashmap/C__PREFIX__/"
 headers_output = "include/me/hashmap/"

@@ -32,9 +32,7 @@ t_hashmap_env *new_hashmap_with_buckets_env(
 	t_drop_env_fn drop, t_usize buckets)
 {
 	t_hashmap_env *hmap;
-	t_usize i;
 
-	i = 0;
 	hmap = mem_alloc(sizeof(*hmap));
 	if (hmap == NULL)
 		return (NULL);
@@ -46,8 +44,6 @@ t_hashmap_env *new_hashmap_with_buckets_env(
 	hmap->drop = drop;
 	if (hmap->buckets == NULL)
 		return ((void)me_free(hmap), NULL);
-	while (i < buckets)
-		hmap->buckets[i++] = NULL;
 	return (hmap);
 }
 
