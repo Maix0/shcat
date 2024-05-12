@@ -1,23 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc.h                                            :+:      :+:    :+:   */
+/*   alloc_dumb_internal.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 09:42:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 17:10:51 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 15:03:59 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/12 16:42:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ALLOC_H
-#define ALLOC_H
+#ifndef ALLOC_DUMB_INTERNAL_H
+#define ALLOC_DUMB_INTERNAL_H
 
 #include "me/types.h"
 
-void *me_malloc(t_usize size);
-void *me_calloc(t_usize elem_count, t_usize elem_size);
-void *me_realloc(void *ptr, t_usize size);
-void *me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count);
+#define PTR_LENS 255
 
-#endif /* ALLOC_H */
+typedef struct s_ptr
+{
+	void   *ptr;
+	t_usize size;
+} t_ptr;
+
+typedef struct s_ptr_table
+{
+	t_ptr				table[PTR_LENS];
+	struct s_ptr_table *next;
+} t_ptr_table;
+
+t_ptr_table *get_table(void);
+
+#endif /* ALLOC_DUMB_INTERNAL_H */

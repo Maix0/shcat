@@ -43,7 +43,7 @@ t_error vec_str_push(t_vec_str *vec, t_str element)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (vec->len + 1 > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = me_realloc(vec->buffer, new_capacity);
+		vec->buffer = me_realloc_array(vec->buffer, new_capacity, sizeof(t_str));
 		vec->capacity = new_capacity;
 	}
 	vec->buffer[vec->len] = element;
@@ -63,7 +63,7 @@ t_error vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = me_realloc(vec->buffer, new_capacity);
+		vec->buffer = me_realloc_array(vec->buffer, new_capacity, sizeof(t_str));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
