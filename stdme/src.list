@@ -2,6 +2,9 @@ alloc/alloc
 alloc/alloc_dumb
 alloc/alloc_get_page_from_bloc
 alloc/get_arena
+alloc/vg/valgrind_block
+alloc/vg/valgrind_mempool
+alloc/vg/valgrind_mem_status
 blx/blx
 blx/blx_create_fontsheet
 blx/blx_handlers

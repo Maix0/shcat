@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:48:17 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 13:30:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/13 00:00:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "me/types.h"
 #include <stdalign.h>
 
-#define PAGE_SIZE_DEFAULT 4096
+#define PAGE_SIZE_DEFAULT (4096 + sizeof(t_mpage))
 #define BLOCK_PADDING "\xFE\xDC\xAB\xC0\xFE\xEE\x66"
 
 typedef struct s_mblock
@@ -44,6 +44,6 @@ t_error alloc_arena_page(t_usize min_size, t_mpage **out);
 
 t_mblock *get_block_for_size(t_usize size);
 void	  print_pages_info(void);
-t_mpage	 *get_page_from_ptr(void *ptr);
+bool	  merge_block(t_mblock *self, t_usize min_size);
 
 #endif /* ALLOC_INTERNAL_H */

@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc.h                                            :+:      :+:    :+:   */
+/*   valgrind_mem_status.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 09:42:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 23:04:00 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 23:08:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/12 23:22:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ALLOC_H
-#define ALLOC_H
+#include "me/alloc/internal_vg_funcs.h"
 
-#include "me/types.h"
+#ifdef VGFUNCS
 
-void *me_malloc(t_usize size);
-void *me_calloc(t_usize elem_count, t_usize elem_size);
-void *me_realloc(void *ptr, t_usize size);
-void *me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count);
+void vg_mem_no_access(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_NOACCESS(ptr, size);
+}
 
-void uninit_allocator(void);
+void vg_mem_undefined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_UNDEFINED(ptr, size);
+}
 
-#endif /* ALLOC_H */
+void vg_mem_defined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_DEFINED(ptr, size);
+}
+
+#endif
