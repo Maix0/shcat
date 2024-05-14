@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 16:00:33 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/12 16:21:34 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/12 19:13:26 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,6 @@
 #include "app/node/handle_command.h"
 #include "minishell.h"
 #include "me/string/str_clone.h"
-
-t_error	ft_command_exec(t_node *node, t_i32 *ret_value)
-{
-	printf("execve : %s\n", node->single_str);
-	
-	return (NO_ERROR);
-}
 
 t_error semicolon_exec(t_node *first, t_node *second, t_i32 *ret_value)
 {
