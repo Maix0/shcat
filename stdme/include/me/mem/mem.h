@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_add_back.c                                    :+:      :+:    :+:   */
+/*   mem.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 20:38:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 15:02:42 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:32:57 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:39:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/list/list_add_back.h"
-#include "me/list/list_get_last.h"
+#ifndef MEM_H
+#define MEM_H
 
-void	list_add_back(t_list **list, t_list *new)
-{
-	if (*list)
-		list_get_last(*list)->next = new;
-	else
-		*list = new;
-}
+#include "me/types.h"
+
+void *mem_alloc(t_usize size);
+void *mem_alloc_array(t_usize size, t_usize count);
+void *mem_realloc(void *ptr, t_usize size);
+void *mem_realloc_array(void *ptr, t_usize size, t_usize count);
+void mem_free(void *ptr);
+
+#endif /* MEM_H */

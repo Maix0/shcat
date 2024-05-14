@@ -6,11 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:57:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/01 21:20:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:43:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/buffered_str/buf_str.h"
+#include "me/mem/mem.h"
 #include "me/convert/atoi.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
@@ -99,7 +100,7 @@ t_printf_arg	print_substr(t_usize *c_idx, t_usize *nxt, t_const_str fmt,
 
 	truc = str_substring(fmt, *c_idx, *nxt - *c_idx);
 	extra.f(truc, *nxt - *c_idx, extra.p_args);
-	me_free(truc);
+	mem_free(truc);
 	*c_idx = *nxt + 1;
 	return ((t_printf_arg){
 		.p_args = extra.p_args,

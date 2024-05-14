@@ -14,7 +14,7 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/types.h"
-#include "me/alloc/alloc.h"
+#include "me/mem/mem.h"
 #include "me/vec/vec_u8.h"
 #include <stdlib.h>
 
@@ -43,7 +43,7 @@ t_error vec_u8_push(t_vec_u8 *vec, t_u8 element)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (vec->len + 1 > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = me_realloc_array(vec->buffer, new_capacity, sizeof(t_u8));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_u8));
 		vec->capacity = new_capacity;
 	}
 	vec->buffer[vec->len] = element;
@@ -63,7 +63,7 @@ t_error vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = me_realloc_array(vec->buffer, new_capacity, sizeof(t_u8));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_u8));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -100,5 +100,5 @@ void vec_u8_free(t_vec_u8 vec)
 			vec.len--;
 		}
 	}
-	me_free(vec.buffer);
+	mem_free(vec.buffer);
 }

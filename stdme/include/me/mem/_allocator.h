@@ -1,34 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc_dumb_internal.h                              :+:      :+:    :+:   */
+/*   _allocator.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/12 15:03:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 16:42:39 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:27:07 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:27:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ALLOC_DUMB_INTERNAL_H
-#define ALLOC_DUMB_INTERNAL_H
+#ifndef _ALLOCATOR_H
+#define _ALLOCATOR_H
 
-#include "me/types.h"
+#include "aq/allocator.h"
 
-#define PTR_LENS 255
+t_allocator *global_allocator(void);
+void		 uninit_global_allocator(void);
 
-typedef struct s_ptr
-{
-	void   *ptr;
-	t_usize size;
-} t_ptr;
-
-typedef struct s_ptr_table
-{
-	t_ptr				table[PTR_LENS];
-	struct s_ptr_table *next;
-} t_ptr_table;
-
-t_ptr_table *get_table(void);
-
-#endif /* ALLOC_DUMB_INTERNAL_H */
+#endif /* _ALLOCATOR_H */

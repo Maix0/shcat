@@ -1,20 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_add_front.c                                   :+:      :+:    :+:   */
+/*   functions2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 20:15:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 15:02:50 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:06:34 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:48:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/list/list_add_front.h"
-#include "me/list/list_alloc_node.h"
+#include "aq/allocator.h"
+#include "aq/libc_wrapper.h"
 
-void	list_add_front(t_list **lst, t_list *new)
+void lc_uninit(t_allocator *self)
 {
-	new->next = *lst;
-	*lst = new;
+	(void)(self);
+}
+
+t_allocator lc_init(void)
+{
+	return ((t_allocator){
+		.alloc = lc_malloc,
+		.alloc_array = lc_calloc,
+		.realloc = lc_realloc,
+		.realloc_array = lc_realloc_array,
+		.free = lc_free,
+		.uninit = lc_uninit,
+		.alloc_data = NULL,
+	});
 }

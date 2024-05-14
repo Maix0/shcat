@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_free_all.c                                    :+:      :+:    :+:   */
+/*   allocator.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 21:35:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 15:03:34 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:26:27 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:28:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/list/list_free_all.h"
-#include <stdlib.h>
+#include "aq/allocator.h"
+#include "aq/libc_wrapper.h"
 
-void	list_free_all(t_list **lst, void (*del)(void *))
+t_allocator *global_allocator(void)
 {
-	t_list	*tmp;
-
-	if (lst == NULL || del == NULL)
-		return ;
-	while (*lst)
+	static t_allocator global_alloc = {};
+	static bool		   init = false;
+	if (!init)
 	{
-		del((*lst)->content);
-		tmp = *lst;
-		*lst = (*lst)->next;
-		me_free(tmp);
+		init = true;
+		global_alloc = lc_init();
 	}
-	*lst = NULL;
+	return (&global_alloc);
+}
+
+void uninit_global_allocator(void)
+{
+	t_allocator *allocator;
+
+	allocator = global_allocator();
+	allocator->uninit(allocator);
 }

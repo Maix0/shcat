@@ -44,7 +44,7 @@ t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret)
 		if (node_get_string(&self->childs[i], shcat, &tmp))
 			return (str_free(out), ERROR);
 		push_str_buffer(&out, tmp);
-		me_free(tmp);
+		mem_free(tmp);
 		i++;
 	}
 	*ret = out.buf;

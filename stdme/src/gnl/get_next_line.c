@@ -6,13 +6,13 @@
 /*   By: maix <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 17:38:21 by maix              #+#    #+#             */
-/*   Updated: 2023/12/11 19:10:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:39:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/buffered_str/buf_str.h"
 #include "me/gnl/gnl.h"
-#include "me/mem/mem_alloc.h"
+#include "me/mem/mem.h"
 #include "me/mem/mem_move.h"
 #include "me/string/str_len.h"
 #include "me/types.h"
@@ -92,7 +92,7 @@ static bool	handle_leftovers(t_file fd, char *temp_buffer, t_buffer_str *buf)
 		if (copy_next_line_into_buffer(fd, buf, temp_buffer,
 				str_len(static_buffer->buf)))
 		{
-			me_free(temp_buffer);
+			mem_free(temp_buffer);
 			return (true);
 		}
 	}
@@ -118,10 +118,10 @@ t_buffer_str	get_next_line(t_file fd, bool *error)
 		return (buf);
 	while (!read_and_copy(fd, &buf, temp_buffer, &flags) && !flags.empty_read)
 		;
-	me_free(temp_buffer);
+	mem_free(temp_buffer);
 	if (flags.error || flags.empty_read)
 	{
-		me_free(buf.buf);
+		mem_free(buf.buf);
 		return (*error = true, (t_buffer_str){0});
 	}
 	return (buf);

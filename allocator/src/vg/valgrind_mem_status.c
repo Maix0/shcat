@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_size.c                                        :+:      :+:    :+:   */
+/*   valgrind_mem_status.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 20:23:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 15:05:00 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 23:08:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/12 23:22:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/list/list_size.h"
+#include "aq/internal_vg_funcs.h"
 
-t_usize	list_size(t_list *lst)
+#ifdef VGFUNCS
+
+void vg_mem_no_access(void *ptr, t_usize size)
 {
-	t_list	*head;
-	t_usize	idx;
-
-	head = lst;
-	idx = 0;
-	while (head)
-	{
-		head = head->next;
-		idx++;
-	}
-	return (idx);
+	VALGRIND_MAKE_MEM_NOACCESS(ptr, size);
 }
+
+void vg_mem_undefined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_UNDEFINED(ptr, size);
+}
+
+void vg_mem_defined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_DEFINED(ptr, size);
+}
+
+#endif

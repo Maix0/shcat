@@ -6,13 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 07:43:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:42:15 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _GNU_SOURCE
 
-#include "me/alloc/alloc_internal.h"
 #include "me/fs/putendl_fd.h"
 #include "me/fs/putstr_fd.h"
 #include "me/types.h"
@@ -91,7 +90,6 @@ void me_abort(t_str msg)
 	if (msg == NULL)
 		msg = "No message (msg was NULL)";
 	me_putendl_fd("Memory information:", 2);
-	print_pages_info();
 	me_putstr_fd("Abort: ", 2);
 	me_putendl_fd(msg, 2);
 	print_trace();

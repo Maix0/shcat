@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 16:55:16 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/14 18:42:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "me/os/process.h"
 #include "me/string/str_find_chr.h"
 #include "me/string/str_n_compare.h"
+#include "me/mem/mem.h"
 #include "me/string/str_split.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
@@ -73,8 +74,8 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
 	}
 	sp_index = 0;
 	while (splitted_path[sp_index])
-		me_free(splitted_path[sp_index++]);
-	me_free(splitted_path);
+		mem_free(splitted_path[sp_index++]);
+	mem_free(splitted_path);
 	return (NO_ERROR);
 }
 
@@ -99,7 +100,7 @@ t_error	find_binary(t_spawn_info *info, t_process *process)
 	}
 	if (access(s.buf, X_OK | R_OK) == 0)
 	{
-		me_free(info->binary_path);
+		mem_free(info->binary_path);
 		info->binary_path = s.buf;
 		return (NO_ERROR);
 	}
@@ -119,7 +120,7 @@ static void	cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
 	close(info.stderr.vals.fd.value);
 	vec_str_free(info.arguments);
 	vec_str_free(info.environement);
-	me_free(info.binary_path);
+	mem_free(info.binary_path);
 }
 
 t_error	spawn_process(t_spawn_info info, t_process *process)

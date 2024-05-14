@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_free_all.h                                    :+:      :+:    :+:   */
+/*   functions2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 21:35:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 16:28:47 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:06:34 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:21:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIST_FREE_ALL_H
-# define LIST_FREE_ALL_H
+#include "aq/allocator.h"
+#include "aq/libc_wrapper.h"
 
-# include "me/types.h"
-
-void	list_free_all(t_list **lst, void (*del)(void *));
-
-#endif
+// void lc_uninit(t_allocator *self)
+// {
+// 	(void)(self);
+// }

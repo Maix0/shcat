@@ -6,11 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 18:12:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 19:18:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:43:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_set.h"
+#include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
 #include "me/string/str_len.h"
@@ -66,5 +66,5 @@ void	printf_s(t_printf_arg data, t_printf_func f)
 .fill_zero = 0, .fill = 0, .len = len, .pretty = "", .pretty_len = 0, \
 .str = start_num, .allow_zero_fill = false, .sign = NULL, \
 .sign_len = 0, }, data, f);
-	me_free(start_num);
+	mem_free(start_num);
 }

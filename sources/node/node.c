@@ -86,10 +86,10 @@ void free_node(t_node self)
 	t_usize idx;
 
 	if (self.single_str)
-		me_free(self.single_str);
+		mem_free(self.single_str);
 	idx = 0;
 	while (idx < self.childs_count)
 		free_node(self.childs[idx++]);
 	if (self.childs_count != 0)
-		me_free(self.childs);
+		mem_free(self.childs);
 }

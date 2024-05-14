@@ -1,7 +1,3 @@
-alloc/alloc
-alloc/alloc_dumb
-alloc/alloc_get_page_from_bloc
-alloc/get_arena
 blx/blx
 blx/blx_create_fontsheet
 blx/blx_handlers
@@ -54,15 +50,7 @@ img/qoi/qoi_decode
 img/qoi/qoi_encode
 img/qoi/qoi_fs
 img/qoi/qoi_utils
-list/list_add_back
-list/list_add_front
-list/list_alloc_node
-list/list_free_all
-list/list_free_one
-list/list_get_last
-list/list_iter
-list/list_map
-list/list_size
+mem/allocator
 mem/mem_alloc
 mem/mem_alloc_array
 mem/mem_compare

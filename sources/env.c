@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:32:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/10 21:48:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:46:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "me/string/str_compare.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
+#include "me/mem/mem.h"
 #include <stdlib.h>
 
 static void _hash_str(t_hasher *hasher, t_str *s)
@@ -62,7 +63,7 @@ t_error build_envp(t_hashmap_env *envs, t_vec_str *envp)
 {
 	struct s_build_envp_state state;
 
-	state.out = vec_str_new(envs->num_buckets, (void (*)(t_str))me_free);
+	state.out = vec_str_new(envs->num_buckets, (void (*)(t_str))mem_free);
 	state.buf = alloc_new_buffer(50);
 	if (hashmap_env_iter(envs, _build_envp_iterator, &state))
 		return (ERROR);
