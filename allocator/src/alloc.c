@@ -6,36 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 17:12:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:26:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/alloc/alloc.h"
-#include "me/alloc/alloc_internal.h"
-#include "me/alloc/internal_vg_funcs.h"
-#include "me/fs/putendl_fd.h"
-#include "me/fs/putnbr_fd.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
-#include "me/num/usize.h"
-#include "valgrind/memcheck.h"
-#include <stdalign.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct s_allocator t_allocator;
-
-typedef void *(*t_allocator_alloc)(t_allocator *self, t_usize size);
-typedef void *(*t_allocator_alloc_array)(t_allocator *self, t_usize size,
-										 t_usize count);
-typedef void (*t_allocator_free)(t_allocator *self, void *ptr);
-typedef void *(*t_allocator_realloc)(t_allocator *self, void *ptr,
-									 t_usize requested_size);
-typedef void *(*t_allocator_realloc_array)(t_allocator *self, void *ptr,
-										   t_usize requested_size,
-										   t_usize requested_count);
+#include "aq/allocator.h"
+#include "aq/libc_wrapper.h"
 
 typedef struct s_allocator_page
 {
@@ -49,24 +25,6 @@ typedef struct s_page_list
 	t_allocator_page	a[10];
 	struct s_page_list *next;
 } t_page_list;
-struct s_allocator
-{
-	t_allocator_alloc		  alloc;
-	t_allocator_alloc_array	  alloc_array;
-	t_allocator_realloc		  realloc;
-	t_allocator_realloc_array realloc_array;
-	t_allocator_free		  free;
-	t_page_list				  pages;
-};
-
-void uninit_allocator(void)
-{
-}
-
-void *me_malloc(t_usize size)
-{
-	return (NULL);
-}
 
 /*
 void *me_malloc(t_usize size)
@@ -120,7 +78,7 @@ void *me_realloc(void *ptr, t_usize new_size)
 	{
 		ret = me_malloc(new_size);
 		mem_copy(ret, ptr, block->size);
-		me_free(ptr);
+		mem_free(ptr);
 		return (ret);
 	}
 }
@@ -132,7 +90,7 @@ void *me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count)
 	return (me_realloc(ptr, elem_size * elem_count));
 }
 
-void me_free(void *ptr)
+void mem_free(void *ptr)
 {
 	t_mblock *cur;
 
@@ -219,12 +177,12 @@ void me_free(void *ptr)
 // 	{
 // 		ret = me_malloc(new_size);
 // 		mem_copy(ret, ptr, block->size);
-// 		me_free(ptr);
+// 		mem_free(ptr);
 // 		return (ret);
 // 	}
 // }
 //
-// void me_free(void *ptr)
+// void mem_free(void *ptr)
 // {
 // 	t_mblock *cur;
 //

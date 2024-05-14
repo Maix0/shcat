@@ -13,7 +13,7 @@
 #ifndef INTERNAL_VG_FUNCS_H
 #define INTERNAL_VG_FUNCS_H
 
-#include "me/alloc/alloc_internal.h"
+#include "aq/alloc_internal.h"
 
 #include "me/types.h"
 #if !defined(NVALGRIND) || defined(VGHEADER)

@@ -1,20 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list_iter.h                                        :+:      :+:    :+:   */
+/*   valgrind_mem_status.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/09 21:39:05 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 16:29:51 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 23:08:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/12 23:22:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIST_ITER_H
-# define LIST_ITER_H
+#include "aq/internal_vg_funcs.h"
 
-# include "me/types.h"
+#ifdef VGFUNCS
 
-void	list_iter(t_list *list, void (*f)(void *));
+void vg_mem_no_access(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_NOACCESS(ptr, size);
+}
+
+void vg_mem_undefined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_UNDEFINED(ptr, size);
+}
+
+void vg_mem_defined(void *ptr, t_usize size)
+{
+	VALGRIND_MAKE_MEM_DEFINED(ptr, size);
+}
 
 #endif

@@ -28,7 +28,7 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 	t_spawn_info spawn_info;
 	t_str tmp;
 
-	spawn_info.arguments = vec_str_new(self->childs_count, (void (*)(t_str))me_free);
+	spawn_info.arguments = vec_str_new(self->childs_count, (void (*)(t_str))mem_free);
 	if (self->kind != sym_command)
 		 return (ERROR);
 	i = 0;

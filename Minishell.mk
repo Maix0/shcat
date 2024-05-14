@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/09 21:24:34 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/14 18:38:18 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ LIBDIRNAME = libft
 SRCDIRNAME = sources
 
 # Commands
-CC = cc
+CC ?= clang
 RM = rm -rf
 
 # Objects
@@ -56,6 +56,7 @@ END = \033[0m
 
 all:
 	@$(MAKE) -C ./stdme/ LIB_NAME="$(shell realpath ./stdme)/" "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" CC=$(CC) libme.a
+	@$(MAKE) -C ./allocator/ LIB_NAME="$(shell realpath ./parser)/" -j "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libaq.a
 	@$(MAKE) -C ./parser/ LIB_NAME="$(shell realpath ./parser)/" -j "BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
@@ -66,7 +67,7 @@ bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@cc $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lgmr -lme
+	@$(CC) $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq
 
 # Dependences for all
 $(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
@@ -74,12 +75,12 @@ $(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@cc $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lgmr -lme
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq
 
 # Creating the objects
 $(OBJDIRNAME)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
-	@cc $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
 -include	${OBJ:.o=.d}

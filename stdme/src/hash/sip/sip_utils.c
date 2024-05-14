@@ -6,7 +6,7 @@
 /*   By: maix <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 20:02:12 by maix              #+#    #+#             */
-/*   Updated: 2023/12/11 19:09:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:40:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/hash/sip/sip_utils.h"
 #include "me/num/u64.h"
 #include "me/num/usize.h"
+#include "me/mem/mem.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -101,6 +102,6 @@ t_u64	sip13_finish(t_sip13 *self)
 	state.v2 ^= 0xff;
 	compress(&state);
 	compress(&state);
-	me_free(self);
+	mem_free(self);
 	return (state.v0 ^ state.v1 ^ state.v2 ^ state.v3);
 }

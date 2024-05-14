@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/alloc/alloc.h"
-#include "me/alloc/alloc_internal.h"
-#include "me/alloc/internal_vg_funcs.h"
+#include "aq/alloc.h"
+#include "aq/alloc_internal.h"
+#include "aq/internal_vg_funcs.h"
 #include "me/fs/putendl_fd.h"
 #include "me/fs/putnbr_fd.h"
 #include "me/fs/putstr_fd.h"

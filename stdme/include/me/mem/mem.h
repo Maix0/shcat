@@ -1,34 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc_dumb_internal.h                              :+:      :+:    :+:   */
+/*   mem.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/12 15:03:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 16:42:39 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/14 18:32:57 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/14 18:39:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ALLOC_DUMB_INTERNAL_H
-#define ALLOC_DUMB_INTERNAL_H
+#ifndef MEM_H
+#define MEM_H
 
 #include "me/types.h"
 
-#define PTR_LENS 255
+void *mem_alloc(t_usize size);
+void *mem_alloc_array(t_usize size, t_usize count);
+void *mem_realloc(void *ptr, t_usize size);
+void *mem_realloc_array(void *ptr, t_usize size, t_usize count);
+void mem_free(void *ptr);
 
-typedef struct s_ptr
-{
-	void   *ptr;
-	t_usize size;
-} t_ptr;
-
-typedef struct s_ptr_table
-{
-	t_ptr				table[PTR_LENS];
-	struct s_ptr_table *next;
-} t_ptr_table;
-
-t_ptr_table *get_table(void);
-
-#endif /* ALLOC_DUMB_INTERNAL_H */
+#endif /* MEM_H */

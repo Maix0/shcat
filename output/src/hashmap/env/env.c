@@ -6,15 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 10:58:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/13 00:12:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:46:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/hash/hasher.h"
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_env.h"
-#include "me/mem/mem_alloc.h"
-#include "me/mem/mem_alloc_array.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
@@ -42,7 +41,7 @@ t_hashmap_env *new_hashmap_with_buckets_env(
 	hmap->cfunc = cfunc;
 	hmap->drop = drop;
 	if (hmap->buckets == NULL)
-		return ((void)me_free(hmap), NULL);
+		return ((void)mem_free(hmap), NULL);
 	return (hmap);
 }
 
@@ -56,13 +55,13 @@ void drop_hashmap_env(t_hashmap_env *hmap)
 		if (hmap->buckets[index])
 		{
 			hmap->drop(hmap->buckets[index]->kv);
-			me_free(hmap->buckets[index]);
+			mem_free(hmap->buckets[index]);
 		}
 		index++;
 	}
 	hasher_finish(&hmap->hasher);
-	me_free(hmap->buckets);
-	me_free(hmap);
+	mem_free(hmap->buckets);
+	mem_free(hmap);
 }
 
 t_entry_env *hashmap_get_entry_env(t_hashmap_env *hmap,

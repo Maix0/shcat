@@ -6,42 +6,37 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/14 18:41:46 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/14 18:44:53 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 BUILD_DIR		?=	build
 SRC_DIR			=	src
-INCLUDE_DIR		=	include output/include ../allocator/include
-LIBS_DIR		=	.
+INCLUDE_DIR		=	include output/include ../stdme/include
+LIBS_DIR		=	. 
 GENERIC_DIR		=	output/src
 GENERIC_INCLUDE	=	output/include
 
 
 BASE_PATH		?=	$(shell pwd)
-NAME			=	libme.a
+NAME			=	libaq.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
 CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
-#CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
+# CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 BONUS_FILES		=	
 LIBS_NAME		=	
 SUBJECT_URL		=	
 
-GENERIC_FILES	=	$(shell cat gen.list)
 SRC_FILES		=	$(shell cat src.list)
 
-BONUS			=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(BONUS_FILES)))
-SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES))) \
-					$(addsuffix .c,$(addprefix $(GENERIC_DIR)/,$(GENERIC_FILES)))
-BONUS_OBJ		=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(BONUS_FILES)))
-OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES) )) \
-					$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(GENERIC_FILES)))
-DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES))) \
-					$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(GENERIC_FILES)))
+SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
+OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
+DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
+
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
-INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(GENERIC_INCLUDE) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
+INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
 COL_GRAY		=	\033[90m
 COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
@@ -77,22 +72,14 @@ clean:
 	@- $(foreach LIB,$(LIBS), \
 		make clean LIB_NAME=$(LIB)/ BUILD_DIR=$(realpath $(BUILD_DIR)) -C $(LIB) --no-print-directory || true;\
 	)
-	@- $(if $(LIB_NAME),,\
-		printf $(COL_WHITE)Clearing\ Artefacts\ ; \
-		printf $(COL_GRAY)\%-25s$(COL_RESET)\  \($(BUILD_DIR)\); \
-		rm -rf $(BUILD_DIR); \
-		printf $(COL_GREEN)done$(COL_RESET)\\n; \
-	)
-	@echo >/dev/null
+	@- $(if $(LIB_NAME),,echo -e '$(COL_WHITE)Clearing Artefacts';rm -rf $(BUILD_DIR))
 
 fclean: clean
 	@- $(foreach LIB,$(LIBS), \
 		make fclean LIB_NAME=$(LIB)/ BUILD_DIR=$(shell realpath $(BUILD_DIR)) -C $(LIB) --no-print-directory || true;\
 	)
-	@printf $(COL_WHITE)Clearing\ Output\ $(COL_GRAY)%-28s$(COL_RESET)\  \
-		\($(LIB_NAME)$(NAME)\)
+	@echo -e '$(COL_WHITE)Clearing Output $(COL_GRAY)$(LIB_NAME)$(NAME)'
 	@rm -f $(BUILD_DIR)$(NAME)
-	@printf $(COL_GREEN)done$(COL_RESET)\\n
 
 re: fclean all
 

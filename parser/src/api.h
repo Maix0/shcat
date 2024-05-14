@@ -1,7 +1,7 @@
 #ifndef TREE_SITTER_ARRAY_H_
 #define TREE_SITTER_ARRAY_H_
 
-#include "me/alloc/alloc.h"
+#include "me/mem/mem.h"
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
@@ -46,9 +46,9 @@
 # undef free
 
 # define malloc(s) me_malloc((s))
-# define calloc(s, l) me_calloc((s), (l))
-# define realloc(p, t) me_realloc((p), (t))
-# define free(p) me_free((p))
+# define calloc(s, l) mem_alloc_array((s), (l))
+# define realloc(p, t) mem_realloc((p), (t))
+# define free(p) mem_free((p))
 #endif
 
 #define Array(T)                                                               \

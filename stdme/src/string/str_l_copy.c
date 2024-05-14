@@ -97,8 +97,8 @@ int	main(void) {
 				printf("\n");
 				printf("\n");
 			}
-			me_free(dest_libc);
-			me_free(dest_ft);
+			mem_free(dest_libc);
+			mem_free(dest_ft);
 		}
 }
 R*/

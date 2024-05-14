@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/alloc/alloc.h"
+#include "me/mem/mem.h"
 #include "me/buffered_str/buf_str.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/string/str_l_cat.h"
@@ -29,7 +29,7 @@ t_error str_reserve(t_buffer_str *buf, t_usize size)
 		return (NO_ERROR);
 	while (size > buf->capacity)
 		new_capacity = (buf->capacity * 3) / 2 + 1;
-	temp_buffer = me_realloc_array(buf->buf, new_capacity, sizeof(char));
+	temp_buffer = mem_realloc_array(buf->buf, new_capacity, sizeof(char));
 	if (temp_buffer == NULL)
 		return (ERROR);
 	buf->buf = temp_buffer;
@@ -74,7 +74,7 @@ t_buffer_str alloc_new_buffer(t_usize capacity)
 
 	if (capacity == 0)
 		capacity = 16;
-	buf = me_calloc(sizeof(char), capacity);
+	buf = mem_alloc_array(sizeof(char), capacity);
 	if (buf == NULL)
 	{
 		out.buf = NULL;

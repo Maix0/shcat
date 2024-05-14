@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 19:27:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:41:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,11 @@ typedef size_t	 t_usize;
 typedef float  t_f32;
 typedef double t_f64;
 
-typedef int t_file;
-typedef struct s_list
-{
-	void		  *content;
-	struct s_list *next;
-} t_list;
-
+typedef int	 t_file;
 typedef bool t_error;
 
 void me_abort(t_str msg);
 void me_exit(t_i32 code);
-void me_free(void *ptr);
 void print_trace(void);
 
 #define ERROR 1

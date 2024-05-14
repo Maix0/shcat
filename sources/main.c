@@ -15,7 +15,7 @@
 #include "app/node/handle_program.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
-#include "me/alloc/alloc.h"
+#include "me/mem/mem.h"
 #include "me/string/str_len.h"
 #include "minishell.h"
 #include "parser/api.h"

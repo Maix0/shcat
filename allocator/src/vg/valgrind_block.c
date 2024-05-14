@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/alloc/internal_vg_funcs.h"
+#include "aq/internal_vg_funcs.h"
 #include "valgrind/valgrind.h"
 
 #ifdef VGFUNCS

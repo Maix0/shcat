@@ -6,14 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 21:05:47 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/01 21:49:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:43:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc_array.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
-#include <stdlib.h>
+#include "me/mem/mem.h"
 
 void	handle_weird_precision_stuff(t_printf_arg *data, t_prec_strs strs,
 		t_usize value)
@@ -23,7 +22,7 @@ void	handle_weird_precision_stuff(t_printf_arg *data, t_prec_strs strs,
 		data->flags &= (~ZERO_ALIGN);
 		data->flags |= ALIGN;
 		if (strs.free_out)
-			*strs.out = (me_free(*strs.out), (t_str)mem_alloc_array(1, 1));
+			*strs.out = (mem_free(*strs.out), (t_str)mem_alloc_array(1, 1));
 		else
 			*strs.out = "";
 		*strs.pretty = "";

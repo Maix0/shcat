@@ -6,15 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 15:53:21 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:46:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:30:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/alloc/alloc.h"
 #include "me/mem/mem_alloc_array.h"
-#include <stdlib.h>
+#include "me/mem/_allocator.h"
 
-void	*mem_alloc_array(t_usize item_count, t_usize item_size)
+void *mem_alloc_array(t_usize size, t_usize count)
 {
-	return (me_calloc(item_count, item_size));
+	t_allocator *a;
+
+	a = global_allocator();
+	return (a->alloc_array(a, size, count));
 }

@@ -13,7 +13,7 @@
 #ifndef ALLOC_INTERNAL_H
 #define ALLOC_INTERNAL_H
 
-#include "me/alloc/alloc.h"
+#include "aq/alloc.h"
 #include "me/types.h"
 #include <stdalign.h>
 

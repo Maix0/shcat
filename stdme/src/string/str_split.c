@@ -6,12 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/17 15:56:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 16:52:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:44:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc.h"
-#include "me/mem/mem_alloc_array.h"
+#include "me/mem/mem.h"
 #include "me/string/str_l_copy.h"
 #include "me/string/str_split.h"
 #include <stdlib.h>
@@ -43,7 +42,7 @@ static t_usize	local_count_words(t_const_str str, char chr)
 static t_str	*local_split_freeall(t_str **to_free)
 {
 	while (*to_free)
-		me_free(*(to_free++));
+		mem_free(*(to_free++));
 	return (NULL);
 }
 

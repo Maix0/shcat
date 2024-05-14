@@ -6,14 +6,24 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 12:46:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/07 12:47:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:32:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include  "me/mem/mem_realloc.h"
-#include "me/alloc/alloc.h"
+#include "me/mem/_allocator.h"
 
 void *mem_realloc(void *ptr, t_usize size)
 {
-	return (me_realloc(ptr, size));
+	t_allocator *a;
+
+	a = global_allocator();
+	return (a->realloc(a, ptr, size));
+}
+
+void *mem_realloc_array(void *ptr, t_usize size, t_usize count)
+{
+	t_allocator *a;
+
+	a = global_allocator();
+	return (a->realloc_array(a, ptr, size, count));
 }

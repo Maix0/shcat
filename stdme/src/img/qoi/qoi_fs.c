@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 19:06:05 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/24 19:18:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:40:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "me/fs/read_to_vec.h"
 #include "me/fs/write.h"
 #include "me/img/qoi.h"
+#include "me/mem/mem.h"
 #include <stdlib.h>
 
 t_i32	qoi_write(t_const_str filename, const void *data,
@@ -32,7 +33,7 @@ t_i32	qoi_write(t_const_str filename, const void *data,
 	if (me_write(f, encoded, size))
 		return (me_close(f, NULL), 0);
 	me_close(f, NULL);
-	me_free(encoded);
+	mem_free(encoded);
 	return (size);
 }
 
