@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:47:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/13 00:07:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:52:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "me/num/usize.h"
 #include <stdio.h>
 #include <stdlib.h>
+/*
 
 void *__libc_malloc(size_t size);
 void  __libc_free(void *ptr);
@@ -36,13 +37,14 @@ t_mpage *alloc_page(t_usize size)
 		return (NULL);
 	mem_set_zero(val, size);
 	val->next = NULL;
-	val->page_size = size;
+	val->page_size = size - sizeof(*val);
 	val->first = (t_mblock *)(((t_usize)val) + sizeof(t_mpage));
 	val->first->page = val;
 	val->first->next = NULL;
 	val->first->used = false;
 	val->first->size = size - sizeof(t_mpage) - sizeof(t_mblock) * 2;
 	mem_copy(val->first->padding, BLOCK_PADDING, 7);
+	vg_mem_no_access(val, size);
 	return (val);
 }
 
@@ -51,8 +53,11 @@ t_mpage *get_head_arena(void)
 	static t_mpage *val = NULL;
 
 	if (val == NULL &&
-		PAGE_SIZE_DEFAULT > sizeof(t_mpage) + sizeof(t_mblock) * 2)
+		PAGE_SIZE_DEFAULT > sizeof(t_mpage) + sizeof(t_mblock) * 2 + 16)
+	{
+		vg_mempool_create(POOL_ADDR);
 		val = alloc_page(PAGE_SIZE_DEFAULT - sizeof(t_mpage));
+	}
 	if (val == NULL)
 		(me_putstr_fd("Failed to alloc first page", 2), exit(1));
 	return (val);
@@ -63,19 +68,17 @@ t_mblock *split_block(t_mblock *self, t_usize min_size)
 	t_usize	  remaining;
 	t_mblock *old_next;
 
-	VALGRIND_DO_LEAK_CHECK;
 	vg_mem_defined(self, sizeof(*self));
 	min_size = usize_round_up_to(min_size, 16);
-	if (self->size > (min_size + sizeof(t_mblock)))
+	if (self->size > (min_size + sizeof(t_mblock) + 16))
 	{
 		remaining = self->size - min_size - sizeof(t_mblock);
 		printf("splitting %zu into %zu and %zu\n", self->size, min_size,
 			   remaining);
 		self->size = min_size;
 		old_next = self->next;
-		self->next =
-			(t_mblock *)(((t_usize)self) + sizeof(t_mblock) + self->size);
-		vg_mem_defined(self->next, sizeof(*self));
+		self->next = (t_mblock *)(((t_usize)self) + sizeof(*self) + self->size);
+		vg_mem_defined(self->next, sizeof(*self->next));
 		self->next->page = self->page;
 		self->next->next = old_next;
 		self->next->used = false;
@@ -156,7 +159,7 @@ bool merge_block(t_mblock *self, t_usize min_size)
 		return (vg_mem_no_access(self->next, sizeof(*self->next)),
 				vg_mem_no_access(self, sizeof(*self)), false);
 	old_next = self->next;
-	self->size += sizeof(t_mblock) + self->next->size;
+	self->size += sizeof(*self) + self->next->size;
 	self->next = self->next->next;
 	vg_mem_no_access(self, sizeof(*self));
 	vg_mem_no_access(old_next, sizeof(*old_next));
@@ -191,7 +194,7 @@ void uninit_allocator(void)
 	if (count_block != 0)
 		(me_putnbr_fd(count_block, 2),
 		 me_putendl_fd(" Blocks weren't freed when exiting !", 2));
-}
+}*/
 
 //
 // void free_ifn(void *ptr)

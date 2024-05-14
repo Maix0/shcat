@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 10:13:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 23:59:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 17:12:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,57 @@
 #include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/num/usize.h"
+#include "valgrind/memcheck.h"
 #include <stdalign.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef struct s_allocator t_allocator;
+
+typedef void *(*t_allocator_alloc)(t_allocator *self, t_usize size);
+typedef void *(*t_allocator_alloc_array)(t_allocator *self, t_usize size,
+										 t_usize count);
+typedef void (*t_allocator_free)(t_allocator *self, void *ptr);
+typedef void *(*t_allocator_realloc)(t_allocator *self, void *ptr,
+									 t_usize requested_size);
+typedef void *(*t_allocator_realloc_array)(t_allocator *self, void *ptr,
+										   t_usize requested_size,
+										   t_usize requested_count);
+
+typedef struct s_allocator_page
+{
+	void   *data;
+	t_usize size;
+} t_allocator_page;
+
+typedef struct s_page_list
+{
+	t_usize				allocated;
+	t_allocator_page	a[10];
+	struct s_page_list *next;
+} t_page_list;
+struct s_allocator
+{
+	t_allocator_alloc		  alloc;
+	t_allocator_alloc_array	  alloc_array;
+	t_allocator_realloc		  realloc;
+	t_allocator_realloc_array realloc_array;
+	t_allocator_free		  free;
+	t_page_list				  pages;
+};
+
+void uninit_allocator(void)
+{
+}
+
+void *me_malloc(t_usize size)
+{
+	return (NULL);
+}
+
+/*
 void *me_malloc(t_usize size)
 {
 	t_mblock *block;
@@ -33,12 +78,10 @@ void *me_malloc(t_usize size)
 	if (block == NULL)
 		return (me_abort("Found no page for me_malloc"), NULL);
 	vg_mem_defined(block, sizeof(*block));
-	block->used = true;
-	vg_mem_defined((t_u8 *)block + sizeof(*block), block->size);
-	mem_set_zero((t_u8 *)block + sizeof(*block), block->size);
-	vg_block_malloc((void *)(((t_usize)block) + sizeof(*block)), block->size);
-	vg_mem_no_access(block, sizeof(*block));
-	return ((void *)(((t_usize)block) + sizeof(*block)));
+	vg_mempool_alloc(POOL_ADDR, (void *)(((t_usize)block) + sizeof(*block)),
+block->size); block->used = true; mem_set_zero((t_u8 *)block + sizeof(*block),
+block->size); vg_mem_no_access(block, sizeof(*block)); return ((void
+*)(((t_usize)block) + sizeof(*block)));
 }
 
 void *me_calloc(t_usize elem_size, t_usize elem_count)
@@ -56,15 +99,19 @@ void *me_realloc(void *ptr, t_usize new_size)
 
 	if (ptr == NULL)
 		return (me_malloc(new_size));
-	block = (void *)((t_u8 *)(ptr) - sizeof(*block));
+	block = (void *)((t_usize)(ptr) - sizeof(*block));
 	vg_mem_defined(block, sizeof(*block));
+	VALGRIND_CHECK_MEM_IS_ADDRESSABLE(ptr, block->size);
+	block->used = true;
 	if (block->size <= new_size)
 		return (vg_mem_no_access(block, sizeof(*block)), ptr);
 	old_size = block->size;
-	if (merge_block(block, new_size))
+	vg_mem_no_access(block, sizeof(*block));
+	if (false && merge_block(block, new_size))
 	{
-		vg_block_resize(ptr, old_size, block->size);
-		vg_mem_defined(ptr, block->size);
+		vg_mem_defined(block, sizeof(*block));
+		vg_mempool_resize(POOL_ADDR, ptr, block->size);
+		VALGRIND_CHECK_MEM_IS_ADDRESSABLE(ptr, block->size);
 		mem_set_zero((t_u8 *)ptr + old_size, block->size - old_size);
 		vg_mem_no_access(block, sizeof(*block));
 		return (ptr);
@@ -89,14 +136,16 @@ void me_free(void *ptr)
 {
 	t_mblock *cur;
 
+	if (ptr == NULL)
+		return;
 	cur = (void *)(((t_usize)ptr) - sizeof(t_mblock));
-	vg_block_free(ptr);
-	vg_mem_defined(cur, sizeof(t_mblock));
+	vg_mempool_free(POOL_ADDR, ptr);
+	vg_mem_defined(cur, sizeof(*cur));
 	cur->used = false;
 	merge_block(cur, ~(t_usize)0);
-	vg_mem_no_access(cur, sizeof(t_mblock));
+	vg_mem_no_access(cur, sizeof(*cur));
 }
-
+*/
 // void uninit_allocator(void)
 // {
 // 	t_ptr_table *table;

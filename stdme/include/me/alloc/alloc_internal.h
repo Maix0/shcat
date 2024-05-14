@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 09:48:17 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/13 00:00:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:12:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 #include "me/types.h"
 #include <stdalign.h>
 
-#define PAGE_SIZE_DEFAULT (4096 + sizeof(t_mpage))
+#define PAGE_SIZE_DEFAULT 4096
 #define BLOCK_PADDING "\xFE\xDC\xAB\xC0\xFE\xEE\x66"
+#define POOL_ADDR (void *)0xDeadBeef
 
 typedef struct s_mblock
 {
