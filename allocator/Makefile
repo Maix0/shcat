@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/14 18:44:53 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/16 16:06:36 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ NAME			=	libaq.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
+CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"' -O0
 # CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 BONUS_FILES		=	
 LIBS_NAME		=	
@@ -55,7 +55,6 @@ $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
 	@echo -e '$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)'
-	@#$(CC) $(INCLUDES) $(OBJ) $(CFLAGS) -o $(NAME)
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c

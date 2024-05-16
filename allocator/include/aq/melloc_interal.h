@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 15:27:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/15 16:09:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/16 14:58:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@
 #include "me/types.h"
 
 #define PAGE_LIST_MAX 255
+#define PAGE_POW_2 12
+#define PAGE_ALIGN 3
+
+typedef struct s_chunk
+{
+	bool  used : 1;
+	t_u64 size : 63;
+} t_chunk;
 
 typedef struct s_page
 {

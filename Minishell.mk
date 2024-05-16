@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/14 18:38:18 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/16 17:37:10 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,21 +61,21 @@ all:
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
 # Bonus (make bonus)
-bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a
+bonus: $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libaq.a
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq
+	@$(CC) $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq -lme
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a
+$(NAME): $(OBJ) $(LIB_OBJ) $(OBJDIRNAME)/libgmr.a $(OBJDIRNAME)/libme.a $(OBJDIRNAME)/libaq.a
 	@mkdir -p $(OBJDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIB_OBJ) -L$(OBJDIRNAME) -lgmr -lme -laq -lme
 
 # Creating the objects
 $(OBJDIRNAME)/%.o: %.c
