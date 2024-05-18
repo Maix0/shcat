@@ -5,6 +5,10 @@ exec/handle_expension.c
 exec/handle_program.c
 exec/handle_raw_word.c
 exec/handle_word.c
+exec/separator/and_and.c
+exec/separator/pipe_pipe.c
+exec/separator/semicolon.c
+exec/separator/simple_cmd.c
 ft_cmd.c
 ft_echo.c
 ft_exit.c

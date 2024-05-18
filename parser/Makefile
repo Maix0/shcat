@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/14 15:26:21 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/18 14:36:37 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,11 +28,11 @@ OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
 DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
 
 INCLUDES		=	
-COL_GRAY		=	\\e[90m
-COL_WHITE		=	\\e[37m
-COL_GREEN		=	\\e[32m
-COL_BOLD		=	\\e[1m
-COL_RESET		=	\\e[0m
+GREEN = \033[32m
+GREY = \033[0;90m
+RED = \033[0;31m
+GOLD = \033[38;5;220m
+END = \033[0m
 
 .PHONY: all
 .PHONY: libs_build
@@ -50,12 +50,14 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo "ar rcs $(BUILD_DIR)/$(NAME) <OBJS...>"
+	@#echo "ar rcs $(BUILD_DIR)/$(NAME) <OBJS...>"
+	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	@- $(foreach LIB,$(LIBS), \

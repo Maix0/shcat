@@ -6,14 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 22:20:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 16:17:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/17 15:34:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INTERNAL_VG_FUNCS_H
 #define INTERNAL_VG_FUNCS_H
-
-#include "aq/alloc_internal.h"
 
 #include "me/types.h"
 #if !defined(NVALGRIND) || defined(VGHEADER)
@@ -30,7 +28,7 @@
 
 static inline t_usize redzone_size(void)
 {
-	return (sizeof(t_mblock));
+	return (8);
 }
 
 #ifdef VGFUNCS

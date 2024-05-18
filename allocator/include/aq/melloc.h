@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 17:54:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:08:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/16 15:43:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@ void *m_realloc_array(t_allocator *self, void *ptr, t_usize size,
 					  t_usize count);
 void  m_free(t_allocator *self, void *ptr);
 void  m_uninit(t_allocator *self);
+
+t_allocator m_init(void);
 
 #endif /* MELLOC_H */

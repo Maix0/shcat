@@ -1,21 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   dummy_mem_status.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 13:08:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/16 17:12:46 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 23:08:47 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/17 15:28:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/_allocator.h"
-#include "me/types.h"
-#include <stdlib.h>
+#include "aq/internal_vg_funcs.h"
 
-void me_exit(t_i32 exit_code)
+#ifndef VGFUNCS
+
+void vg_mem_no_access(void *ptr, t_usize size)
 {
-	uninit_global_allocator();
-	exit(exit_code);
+	(void)(ptr);
+	(void)(size);
 }
+
+void vg_mem_undefined(void *ptr, t_usize size)
+{
+	(void)(ptr);
+	(void)(size);
+}
+
+void vg_mem_defined(void *ptr, t_usize size)
+{
+	(void)(ptr);
+	(void)(size);
+}
+
+#endif

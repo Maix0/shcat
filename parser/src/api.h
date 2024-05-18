@@ -45,7 +45,7 @@
 # undef realloc
 # undef free
 
-# define malloc(s) me_malloc((s))
+# define malloc(s) mem_alloc((s))
 # define calloc(s, l) mem_alloc_array((s), (l))
 # define realloc(p, t) mem_realloc((p), (t))
 # define free(p) mem_free((p))

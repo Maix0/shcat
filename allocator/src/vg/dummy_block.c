@@ -1,21 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   dummy_block.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 13:08:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/16 17:12:46 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 22:51:55 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/05/17 15:28:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/_allocator.h"
-#include "me/types.h"
-#include <stdlib.h>
+#include "aq/internal_vg_funcs.h"
 
-void me_exit(t_i32 exit_code)
+#ifndef VGFUNCS
+
+void vg_block_malloc(void *ptr, t_usize size)
 {
-	uninit_global_allocator();
-	exit(exit_code);
+	(void)(ptr);
+	(void)(size);
 }
+
+void vg_block_resize(void *ptr, t_usize oldsize, t_usize newsize)
+{
+	(void)(ptr);
+	(void)(oldsize);
+	(void)(newsize);
+}
+
+void vg_block_free(void *ptr)
+{
+	(void)(ptr);
+}
+
+#endif

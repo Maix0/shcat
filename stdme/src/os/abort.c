@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:42:15 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:26:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,6 @@ void me_abort(t_str msg)
 	me_putstr_fd("Abort: ", 2);
 	me_putendl_fd(msg, 2);
 	print_trace();
-	me_exit(1);
+	// me_exit(1);
+	abort();
 }
