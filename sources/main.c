@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/18 16:15:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 17:09:37 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,16 @@
 #include "app/node/handle_program.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
+#include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
 #include "me/string/str_len.h"
+#include "me/types.h"
 #include "minishell.h"
 #include "parser/api.h"
+#include <sys/_types/_null.h>
 #include <sys/types.h>
+#include "me/string/str_split.h"
+#include "me/mem/mem.h"
 
 #undef free
 #undef malloc
@@ -34,6 +39,32 @@ t_first_tree   *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree,
 									   t_const_str input, t_usize len);
 void			ts_parser_delete(t_first_parser *self);
 void			ts_parser_set_language(t_first_parser *self, t_language *lang);
+
+// Foutre envp dans env
+// Chaque elemenet d'envp split au premier = 
+// cle avant le =
+// data apres le =
+
+t_error	populate_env(t_hashmap_env *env, t_str envp[])
+{
+	t_usize	i;
+	t_str	*temp;
+
+	i = 0;
+	temp = NULL;
+	if (envp == NULL || env == NULL)
+		return (ERROR);
+	while (envp[i] != NULL)
+	{
+		temp = str_split(envp[i], '=');
+		if	(temp[0]  == NULL || temp[1] == NULL)
+			return (ERROR);
+		insert_hashmap_env(env, temp[0], temp[1]);
+		mem_free(temp);
+		i++;
+	}
+	return (NO_ERROR);
+}
 
 t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out)
 {
