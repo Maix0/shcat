@@ -14,7 +14,6 @@
 #define INTERNAL_VG_FUNCS_H
 
 #include "me/types.h"
-
 #if !defined(NVALGRIND) || defined(VGHEADER)
 # ifdef NVALGRIND
 #  undef NVALGRIND

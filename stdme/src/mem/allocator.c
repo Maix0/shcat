@@ -16,6 +16,8 @@
 #include "aq/libc_wrapper.h"
 #include "aq/melloc.h"
 
+
+
 t_allocator *global_allocator(void)
 {
 	static t_allocator global_alloc = {};

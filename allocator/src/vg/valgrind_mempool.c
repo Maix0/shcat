@@ -12,7 +12,6 @@
 
 #include "aq/internal_vg_funcs.h"
 #include "valgrind/valgrind.h"
-#include <stdio.h>
 
 #ifdef VGFUNCS
 
@@ -37,6 +36,7 @@ void vg_mempool_resize(void *pool, void *ptr, t_usize size)
 void vg_mempool_create(void *pool)
 {
 	VALGRIND_CREATE_MEMPOOL(pool, 0, ZEROED_POOL);
+
 }
 
 void vg_mempool_destroy(void *pool)
