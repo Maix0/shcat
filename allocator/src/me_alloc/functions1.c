@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:02:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 16:36:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:22:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@ t_error alloc_new_page(struct s_allocator_melloc *alloc, t_usize page_size)
 
 void *m_alloc_error(struct s_allocator_melloc *self, t_str msg)
 {
-	(void)(self);
+	self->uninit((void *)self);
 	me_abort(msg);
 	return (NULL);
 }
@@ -294,7 +294,7 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 			old_size = chunk->size;
 			chunk->size += next->size + sizeof(*next);
 			vg_mem_defined(next, next->size + sizeof(*next));
-			//mem_set_zero(next, next->size + sizeof(*next));
+			mem_set_zero(next, next->size + sizeof(*next));
 			vg_block_resize((void *)chunk + sizeof(*chunk), old_size,
 							chunk->size);
 			vg_mem_no_access(chunk, sizeof(*chunk));

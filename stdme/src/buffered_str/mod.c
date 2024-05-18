@@ -6,12 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:52:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 15:33:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:06:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem.h"
 #include "me/buffered_str/buf_str.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem_copy.h"
 #include "me/mem/mem_set_zero.h"
 #include "me/string/str_l_cat.h"
 #include "me/string/str_len.h"
@@ -27,11 +28,15 @@ t_error str_reserve(t_buffer_str *buf, t_usize size)
 		return (ERROR);
 	if (buf->capacity >= size)
 		return (NO_ERROR);
-	while (size > buf->capacity)
-		new_capacity = (buf->capacity * 3) / 2 + 1;
-	temp_buffer = mem_realloc_array(buf->buf, new_capacity, sizeof(char));
+	new_capacity = buf->capacity;
+	while (size > new_capacity)
+		new_capacity = (new_capacity * 3) / 2 + 1;
+	temp_buffer = mem_alloc_array(new_capacity, sizeof(char));
 	if (temp_buffer == NULL)
 		return (ERROR);
+	mem_set_zero(temp_buffer, new_capacity);
+	mem_copy(temp_buffer, buf->buf, buf->len);
+	mem_free(buf->buf);
 	buf->buf = temp_buffer;
 	buf->capacity = new_capacity;
 	return (NO_ERROR);
@@ -46,8 +51,8 @@ t_error push_str_buffer(t_buffer_str *buf, t_const_str to_push)
 	to_push_len = str_len(to_push);
 	if (str_reserve(buf, buf->len + to_push_len + 2))
 		return (ERROR);
-	buf->len += to_push_len;
 	str_l_cat(buf->buf, to_push, buf->capacity);
+	buf->len += to_push_len;
 	return (NO_ERROR);
 }
 

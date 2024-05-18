@@ -6,16 +6,16 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:42:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:33:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
-#include "me/os/pipe.h"
 #include "me/os/process.h"
+#include "me/buffered_str/buf_str.h"
+#include "me/mem/mem.h"
+#include "me/os/pipe.h"
 #include "me/string/str_find_chr.h"
 #include "me/string/str_n_compare.h"
-#include "me/mem/mem.h"
 #include "me/string/str_split.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
@@ -23,14 +23,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-bool		find_path(const t_str *s);
-bool		find_null(const t_str *s);
-bool		str_start_with(t_const_str s, t_const_str prefix);
-t_error		handle_redirections(t_spawn_info *info, t_process *process);
+bool	find_path(const t_str *s);
+bool	find_null(const t_str *s);
+bool	str_start_with(t_const_str s, t_const_str prefix);
+t_error handle_redirections(t_spawn_info *info, t_process *process);
 
-t_error	spawn_process_exec(t_spawn_info info, t_process *process)
+t_error spawn_process_exec(t_spawn_info info, t_process *process)
 {
-	bool	res;
+	bool res;
 
 	if (info.forked_free)
 		info.forked_free(info.forked_free_args);
@@ -52,11 +52,11 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	return (NO_ERROR);
 }
 
-t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
-		t_buffer_str *s)
+t_error in_path(t_spawn_info *info, t_process *process, t_const_str path,
+				t_buffer_str *s)
 {
-	t_str	*splitted_path;
-	t_usize	sp_index;
+	t_str  *splitted_path;
+	t_usize sp_index;
 
 	splitted_path = str_split(path + 5, ':');
 	if (splitted_path == NULL)
@@ -70,7 +70,7 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
 		push_str_buffer(s, info->binary_path);
 		sp_index++;
 		if (access(s->buf, X_OK | R_OK) == 0)
-			break ;
+			break;
 	}
 	sp_index = 0;
 	while (splitted_path[sp_index])
@@ -79,22 +79,23 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
 	return (NO_ERROR);
 }
 
-t_error	find_binary(t_spawn_info *info, t_process *process)
+t_error find_binary(t_spawn_info *info, t_process *process)
 {
-	t_usize			p_idx;
-	t_buffer_str	s;
+	t_usize		 p_idx;
+	t_buffer_str s;
 
 	(void)(process);
 	if (info->binary_path == NULL)
 		return (ERROR);
 	s = alloc_new_buffer(256);
-	if (str_start_with(info->binary_path, "/")
-		|| str_find_chr(info->binary_path, '/') != NULL)
+	if (str_start_with(info->binary_path, "/") ||
+		str_find_chr(info->binary_path, '/') != NULL)
 		push_str_buffer(&s, info->binary_path);
 	else
 	{
 		if (vec_str_find(&info->environement, find_path, &p_idx))
 			return (str_free(s), ERROR);
+		printf("finding in path\n");
 		if (in_path(info, process, info->environement.buffer[p_idx], &s))
 			return (ERROR);
 	}
@@ -107,7 +108,7 @@ t_error	find_binary(t_spawn_info *info, t_process *process)
 	return (str_free(s), ERROR);
 }
 
-static void	cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
+static void cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
 {
 	if (cleanup_process && process->stdin.tag != INVALID)
 		close(process->stdin.vals.ro.fd);
@@ -123,7 +124,7 @@ static void	cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
 	mem_free(info.binary_path);
 }
 
-t_error	spawn_process(t_spawn_info info, t_process *process)
+t_error spawn_process(t_spawn_info info, t_process *process)
 {
 	if (handle_redirections(&info, process))
 		return (cleanup(info, process, true), ERROR);

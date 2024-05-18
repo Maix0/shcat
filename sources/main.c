@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/18 17:09:37 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/18 18:37:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,12 @@
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
 #include "me/string/str_len.h"
+#include "me/string/str_split.h"
+#include "me/string/str_substring.h"
 #include "me/types.h"
 #include "minishell.h"
 #include "parser/api.h"
-#include <sys/_types/_null.h>
 #include <sys/types.h>
-#include "me/string/str_split.h"
-#include "me/mem/mem.h"
 
 #undef free
 #undef malloc
@@ -41,26 +40,44 @@ void			ts_parser_delete(t_first_parser *self);
 void			ts_parser_set_language(t_first_parser *self, t_language *lang);
 
 // Foutre envp dans env
-// Chaque elemenet d'envp split au premier = 
+// Chaque elemenet d'envp split au premier =
 // cle avant le =
 // data apres le =
 
-t_error	populate_env(t_hashmap_env *env, t_str envp[])
+t_error split_str_first(t_const_str s, char splitter, t_str *before,
+						t_str *after)
 {
-	t_usize	i;
-	t_str	*temp;
+	t_usize i;
+
+	if (s == NULL || before == NULL || after == NULL || splitter == '\0')
+		return (ERROR);
+	i = 0;
+	while (s[i] != '\0' && s[i] != splitter)
+		i++;
+	if (s[i] == '\0')
+		return (ERROR);
+	if (i == 0)
+		i = 1;
+	*before = str_substring(s, 0, i);
+	*after = str_substring(s, i + 1, ~(t_usize)0);
+	return (NO_ERROR);
+}
+
+t_error populate_env(t_hashmap_env *env, t_str envp[])
+{
+	t_usize i;
+	t_str	temp[2];
 
 	i = 0;
-	temp = NULL;
 	if (envp == NULL || env == NULL)
-		return (ERROR);
+		return (printf("given a nullptr\n"), ERROR);
 	while (envp[i] != NULL)
 	{
-		temp = str_split(envp[i], '=');
-		if	(temp[0]  == NULL || temp[1] == NULL)
+		if (split_str_first(envp[i], '=', &temp[0], &temp[1]))
 			return (ERROR);
+		if (temp[0] == NULL || temp[1] == NULL)
+			return (printf("TEMP NULL\n"), ERROR);
 		insert_hashmap_env(env, temp[0], temp[1]);
-		mem_free(temp);
 		i++;
 	}
 	return (NO_ERROR);
@@ -224,8 +241,10 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	utils = (t_utils){};
 	utils.parser = create_myparser();
 	utils.env = create_env_map();
-	if (install_signal())
-		return (1);
+	// if (install_signal())
+	// 	return (1);
+	if (populate_env(utils.env, envp))
+		me_abort("unable to build ENV hashmap");
 	utils.name_shell = "\001\x1B[93m\002"
 					   "42sh"
 					   "\001\x1B[32m\002"

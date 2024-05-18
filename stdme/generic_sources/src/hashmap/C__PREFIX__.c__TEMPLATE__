@@ -111,5 +111,9 @@ void insert_hashmap_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
 			prev->next = entry;
 	}
 	else
+	{
+		hmap->drop(entry->kv);
+		entry->kv.key = key;
 		entry->kv.val = value;
+	}
 }

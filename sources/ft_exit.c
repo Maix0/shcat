@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/14 18:46:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:11:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@ void ft_free_strs(t_str *strs)
 
 void ft_free_utils(t_utils *s)
 {
-	(void)(s);
 	if (s->str_input)
 		free(s->str_input);
 	if (s->path)
 		ft_free_strs(s->path);
 	if (s->env)
+	{
+		printf("Dropping HashMap\n");
 		drop_hashmap_env(s->env);
+	}
 	ts_parser_delete(s->parser.parser);
 }
 

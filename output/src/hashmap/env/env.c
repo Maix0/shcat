@@ -111,5 +111,9 @@ void insert_hashmap_env(t_hashmap_env *hmap, t_str key,
 			prev->next = entry;
 	}
 	else
+	{
+		hmap->drop(entry->kv);
+		entry->kv.key = key;
 		entry->kv.val = value;
+	}
 }
