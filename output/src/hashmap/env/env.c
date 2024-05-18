@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   hashmap_env.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 10:58:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:46:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2023/12/11 15:32:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
+#include "me/mem/mem_copy.h"
 #include "me/types.h"
 #include <stdlib.h>
 
@@ -80,7 +81,9 @@ t_entry_env *hashmap_get_entry_env(t_hashmap_env *hmap,
 			entry = entry->next;
 		}
 		else
+		{
 			return (entry);
+		}
 	}
 	return (NULL);
 }

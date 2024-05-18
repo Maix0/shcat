@@ -12,8 +12,7 @@
 
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_C__PREFIX__.h"
-#include "me/mem/mem_alloc.h"
-#include "me/mem/mem_alloc_array.h"
+#include "me/mem/mem.h"
 #include "me/mem/mem_copy.h"
 #include "me/types.h"
 #include <stdlib.h>

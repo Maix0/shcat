@@ -34,18 +34,9 @@ t_vec_C__PREFIX__ vec_C__PREFIX___new(t_usize				  capacity,
 /// Return true in case of an error
 t_error vec_C__PREFIX___push(t_vec_C__PREFIX__ *vec, C__TYPENAME__ element)
 {
-	size_t		   new_capacity;
-
 	if (vec == NULL)
 		return (ERROR);
-	if (vec->len + 1 > vec->capacity)
-	{
-		new_capacity = (vec->capacity * 3) / 2 + 1;
-		while (vec->len + 1 > new_capacity)
-			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(C__TYPENAME__));
-		vec->capacity = new_capacity;
-	}
+	vec_C__PREFIX___reserve(vec, vec->len + 1);
 	vec->buffer[vec->len] = element;
 	vec->len += 1;
 	return (NO_ERROR);

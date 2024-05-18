@@ -6,12 +6,13 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/08 19:22:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 16:15:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/env.h"
 #include "app/node.h"
+#include "app/node/handle_concat.h"
 #include "app/node/handle_program.h"
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
@@ -19,7 +20,6 @@
 #include "me/string/str_len.h"
 #include "minishell.h"
 #include "parser/api.h"
-#include "app/node/handle_concat.h"
 #include <sys/types.h>
 
 #undef free
@@ -35,19 +35,19 @@ t_first_tree   *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree,
 void			ts_parser_delete(t_first_parser *self);
 void			ts_parser_set_language(t_first_parser *self, t_language *lang);
 
-
 t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out)
 {
-	switch (self->kind)
+	*out = NULL;
+	if (self->kind == sym_word)
 	{
-		case sym_word:
-			*out = node_getstr(self);
-			return (NO_ERROR);
-		case sym_concatenation:
-			return (handle_concat(self, shcat, out));
-		default:
-			return (ERROR);
+		printf("word!!!\n");
+		*out = node_getstr(self);
+		return (NO_ERROR);
 	}
+	if (self->kind == sym_concatenation)
+		return (handle_concat(self, shcat, out));
+
+	return (ERROR);
 }
 
 void print_node_data(t_node *t, t_usize depth)

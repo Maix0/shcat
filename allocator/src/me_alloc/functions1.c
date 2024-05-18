@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:02:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/17 15:21:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/18 16:36:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,7 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 			old_size = chunk->size;
 			chunk->size += next->size + sizeof(*next);
 			vg_mem_defined(next, next->size + sizeof(*next));
-			mem_set_zero(next, next->size + sizeof(*next));
+			//mem_set_zero(next, next->size + sizeof(*next));
 			vg_block_resize((void *)chunk + sizeof(*chunk), old_size,
 							chunk->size);
 			vg_mem_no_access(chunk, sizeof(*chunk));

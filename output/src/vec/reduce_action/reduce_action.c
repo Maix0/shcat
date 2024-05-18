@@ -34,18 +34,9 @@ t_vec_reduce_action vec_reduce_action_new(t_usize				  capacity,
 /// Return true in case of an error
 t_error vec_reduce_action_push(t_vec_reduce_action *vec, t_reduce_action element)
 {
-	size_t		   new_capacity;
-
 	if (vec == NULL)
 		return (ERROR);
-	if (vec->len + 1 > vec->capacity)
-	{
-		new_capacity = (vec->capacity * 3) / 2 + 1;
-		while (vec->len + 1 > new_capacity)
-			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_reduce_action));
-		vec->capacity = new_capacity;
-	}
+	vec_reduce_action_reserve(vec, vec->len + 1);
 	vec->buffer[vec->len] = element;
 	vec->len += 1;
 	return (NO_ERROR);
