@@ -14,19 +14,19 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem_copy.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
-t_hashmap_env *new_hashmap_env(t_hash_env_fn hfunc,
+t_hashmap_env *hmap_new_env(t_hash_env_fn hfunc,
 											   t_eq_env_fn	 cfunc,
 											   t_drop_env_fn drop)
 {
-	return (new_hashmap_with_buckets_env(hfunc, cfunc, drop,
+	return (hmap_new_with_buckets_env(hfunc, cfunc, drop,
 												 DEFAULT_BUCKETS));
 }
 
-t_hashmap_env *new_hashmap_with_buckets_env(
+t_hashmap_env *hmap_new_with_buckets_env(
 	t_hash_env_fn hfunc, t_eq_env_fn cfunc,
 	t_drop_env_fn drop, t_usize buckets)
 {
@@ -46,7 +46,7 @@ t_hashmap_env *new_hashmap_with_buckets_env(
 	return (hmap);
 }
 
-void drop_hashmap_env(t_hashmap_env *hmap)
+void hmap_free_env(t_hashmap_env *hmap)
 {
 	t_usize index;
 
@@ -65,7 +65,7 @@ void drop_hashmap_env(t_hashmap_env *hmap)
 	mem_free(hmap);
 }
 
-t_entry_env *hashmap_get_entry_env(t_hashmap_env *hmap,
+t_entry_env *hmap_get_entry_env(t_hashmap_env *hmap,
 												   t_usize		 hashed_key,
 												   t_str *key,
 												   t_entry_env **prev)
@@ -88,7 +88,7 @@ t_entry_env *hashmap_get_entry_env(t_hashmap_env *hmap,
 	return (NULL);
 }
 
-void insert_hashmap_env(t_hashmap_env *hmap, t_str key,
+void hmap_insert_env(t_hashmap_env *hmap, t_str key,
 								t_str value)
 {
 	t_usize				 hashed_key;
@@ -98,7 +98,7 @@ void insert_hashmap_env(t_hashmap_env *hmap, t_str key,
 	hmap->hfunc(&hmap->hasher, &key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
 	prev = NULL;
-	entry = hashmap_get_entry_env(hmap, hashed_key, &key, &prev);
+	entry = hmap_get_entry_env(hmap, hashed_key, &key, &prev);
 	if (entry == NULL)
 	{
 		entry = mem_alloc(sizeof(t_entry_env));

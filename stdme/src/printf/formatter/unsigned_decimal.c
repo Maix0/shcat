@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem_set.h"
+#include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
-#include "me/string/str_clone.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include <stdio.h>
 #include <stdlib.h>
 #define UINT_INLINE_BUF 21

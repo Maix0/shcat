@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/islower.h"
+#include "me/char/char.h"
 
 bool	me_islower(char chr)
 {

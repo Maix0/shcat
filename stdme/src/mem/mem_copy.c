@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_copy.h"
+#include "me/mem/mem.h"
 
 void	*mem_copy(void *destination, const void *source, t_usize count)
 {

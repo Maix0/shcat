@@ -12,7 +12,7 @@
 
 #include "me/hashmap/hashmap_env.h"
 
-t_error hashmap_env_iter(t_hashmap_env *self,
+t_error hmap_env_iter(t_hashmap_env *self,
 								 t_error (*func)(t_usize			 idx,
 												 const t_str *key,
 												 t_str *val, void *ctx),

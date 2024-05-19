@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isupper.h"
+#include "me/char/char.h"
 
 bool	me_isupper(char chr)
 {

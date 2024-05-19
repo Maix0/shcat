@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_move.h"
+#include "me/mem/mem.h"
 
 void	*mem_move(void *destination, const void *source, t_usize count)
 {

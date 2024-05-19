@@ -6,17 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 18:33:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/19 14:57:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/os/process.h"
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/mem/mem.h"
 #include "me/os/pipe.h"
-#include "me/string/str_find_chr.h"
-#include "me/string/str_n_compare.h"
-#include "me/string/str_split.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 #include <stdio.h>
@@ -53,21 +53,21 @@ t_error spawn_process_exec(t_spawn_info info, t_process *process)
 }
 
 t_error in_path(t_spawn_info *info, t_process *process, t_const_str path,
-				t_buffer_str *s)
+				t_string *s)
 {
 	t_str  *splitted_path;
 	t_usize sp_index;
 
 	splitted_path = str_split(path + 5, ':');
 	if (splitted_path == NULL)
-		return (str_free(*s), ERROR);
+		return (string_free(*s), ERROR);
 	sp_index = 0;
 	while (splitted_path[sp_index])
 	{
-		((void)(process), str_clear(s));
-		push_str_buffer(s, splitted_path[sp_index]);
-		push_str_buffer(s, "/");
-		push_str_buffer(s, info->binary_path);
+		((void)(process), string_clear(s));
+		string_push(s, splitted_path[sp_index]);
+		string_push(s, "/");
+		string_push(s, info->binary_path);
 		sp_index++;
 		if (access(s->buf, X_OK | R_OK) == 0)
 			break;
@@ -82,20 +82,19 @@ t_error in_path(t_spawn_info *info, t_process *process, t_const_str path,
 t_error find_binary(t_spawn_info *info, t_process *process)
 {
 	t_usize		 p_idx;
-	t_buffer_str s;
+	t_string s;
 
 	(void)(process);
 	if (info->binary_path == NULL)
 		return (ERROR);
-	s = alloc_new_buffer(256);
+	s = string_new(256);
 	if (str_start_with(info->binary_path, "/") ||
 		str_find_chr(info->binary_path, '/') != NULL)
-		push_str_buffer(&s, info->binary_path);
+		string_push(&s, info->binary_path);
 	else
 	{
 		if (vec_str_find(&info->environement, find_path, &p_idx))
-			return (str_free(s), ERROR);
-		printf("finding in path\n");
+			return (string_free(s), ERROR);
 		if (in_path(info, process, info->environement.buffer[p_idx], &s))
 			return (ERROR);
 	}
@@ -105,7 +104,7 @@ t_error find_binary(t_spawn_info *info, t_process *process)
 		info->binary_path = s.buf;
 		return (NO_ERROR);
 	}
-	return (str_free(s), ERROR);
+	return (string_free(s), ERROR);
 }
 
 static void cleanup(t_spawn_info info, t_process *process, bool cleanup_process)

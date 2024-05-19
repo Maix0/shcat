@@ -14,8 +14,8 @@
 #include "app/node.h"
 #include "app/state.h"
 #include "gmr/symbols.h"
-#include "me/string/str_len.h"
-#include "me/string/str_substring.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include "me/types.h"
 
 t_error handle_raw_string(t_node *self, t_utils *shcat, t_str *ret)

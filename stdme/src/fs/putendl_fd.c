@@ -12,7 +12,7 @@
 
 #include "me/fs/putstr_fd.h"
 #include "me/fs/write.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 
 void	me_putendl_fd(t_str str, t_file file)
 {

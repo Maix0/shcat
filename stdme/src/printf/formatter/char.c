@@ -13,8 +13,8 @@
 #include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
-#include "me/string/str_len.h"
-#include "me/string/str_substring.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include <stdlib.h>
 
 void	printf_c(t_printf_arg data, t_printf_func f)

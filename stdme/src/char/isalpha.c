@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isalpha.h"
+#include "me/char/char.h"
 
 bool	me_isalpha(char chr)
 {

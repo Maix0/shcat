@@ -13,7 +13,7 @@
 #include "app/node/handle_word.h"
 #include "app/state.h"
 #include "gmr/symbols.h"
-#include "me/string/str_clone.h"
+#include "me/str/str.h"
 #include "me/types.h"
 
 t_error handle_word(t_node *self, t_utils *shcat, t_str *ret)

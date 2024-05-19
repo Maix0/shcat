@@ -16,7 +16,7 @@
 #include "app/node/handle_word.h"
 #include "app/state.h"
 #include "gmr/symbols.h"
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/types.h"
 
 t_error node_get_string(t_node *self, t_utils *shcat, t_str *ret)
@@ -30,20 +30,20 @@ t_error node_get_string(t_node *self, t_utils *shcat, t_str *ret)
 
 t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret)
 {
-	t_buffer_str out;
+	t_string out;
 	t_usize		 i;
 	t_str		 tmp;
 
 	(void)(shcat);
 	if (self == NULL || ret == NULL || self->kind != sym_concatenation)
 		return (ERROR);
-	out = alloc_new_buffer(16);
+	out = string_new(16);
 	i = 0;
 	while (i < self->childs_count)
 	{
 		if (node_get_string(&self->childs[i], shcat, &tmp))
-			return (str_free(out), ERROR);
-		push_str_buffer(&out, tmp);
+			return (string_free(out), ERROR);
+		string_push(&out, tmp);
 		mem_free(tmp);
 		i++;
 	}

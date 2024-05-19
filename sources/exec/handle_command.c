@@ -6,7 +6,7 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:00:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/18 18:31:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/19 14:56:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "me/vec/vec_str.h"
 // #include "app/node/handle_program.h"
 #include "app/node/handle_command.h"
-#include "me/string/str_clone.h"
+#include "me/str/str.h"
 #include "minishell.h"
 #include <time.h>
 
@@ -48,8 +48,6 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 			printf("PAS ENCORE HANDLE FDP asignement!\n");
 		else
 		{
-			printf("arg %s %s\n", self->childs[i].kind_str,
-				   node_getstr(&self->childs[i]));
 			if (handle_node_getstr(&self->childs[i], shcat, &tmp))
 				return (vec_str_free(spawn_info.arguments), ERROR);
 			if (vec_str_push(&spawn_info.arguments, str_clone(tmp)))
@@ -57,15 +55,11 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 		}
 		i++;
 	}
-	// printf("%zu\n", spawn_info.arguments.len);
-	vec_str_push(&spawn_info.arguments, NULL);
-	// for (i = 0; i < spawn_info.arguments.len; i++)
-	// 	printf("[%zu]\t%s\n", i, spawn_info.arguments.buffer[i]);
+	// vec_str_push(&spawn_info.arguments, NULL);
 	spawn_info.stdin = inherited();
 	spawn_info.stdout = inherited();
 	spawn_info.stderr = inherited();
 	spawn_info.forked_free = NULL;
-	printf("building envp\n");
 	if (build_envp(shcat->env, &spawn_info.environement))
 		return (vec_str_free(spawn_info.arguments), ERROR);
 	if (spawn_process(spawn_info, &shcat->ret))

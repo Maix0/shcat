@@ -146,7 +146,7 @@ replace.C__PREFIXUP__ = "STR"
 [[create.vec]]
 sources_output = "src/vec/C__PREFIX__"
 headers_output = "include/me/vec/"
-replace.C__TYPENAME__ = "t_buffer_str"
-replace.C__TYPEHEADER__ = '#include "me/buffered_str/buf_str.h"'
+replace.C__TYPENAME__ = "t_string"
+replace.C__TYPEHEADER__ = '#include "me/string/string.h"'
 replace.C__PREFIX__ = "buf_str"
 replace.C__PREFIXUP__ = "BUF_STR"

@@ -12,8 +12,8 @@
 
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
-#include "me/string/str_find_chr.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include <stdio.h>
 

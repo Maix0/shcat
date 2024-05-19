@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc.h"
+#include "me/mem/mem.h"
 #include "me/mem/_allocator.h"
 
 void *mem_alloc(t_usize size)

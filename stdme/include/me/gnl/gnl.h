@@ -21,7 +21,7 @@
 #  define BUFFER_LENGTH 512
 # endif
 
-# include "me/buffered_str/buf_str.h"
+# include "me/string/string.h"
 # include "me/types.h"
 
 typedef struct s_static_buffer
@@ -38,6 +38,6 @@ typedef struct s_copy_flags
 	bool		empty_read;
 }				t_copy_flags;
 
-t_buffer_str	get_next_line(t_file fd, bool *error);
+t_string	get_next_line(t_file fd, bool *error);
 
 #endif

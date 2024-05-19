@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isdigit.h"
+#include "me/char/char.h"
 
 bool	me_isdigit(char chr)
 {

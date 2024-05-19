@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isdigit.h"
-#include "me/char/isspace.h"
+#include "me/char/char.h"
+#include "me/char/char.h"
 #include "me/convert/atoi.h"
 
 t_i32	me_atoi(t_const_str str)

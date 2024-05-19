@@ -41,12 +41,16 @@ union						u_redirection
 	} inherited;
 };
 
+/// @brief Redirection for spawning a process
 typedef struct s_redirection
 {
 	enum e_redirection		tag;
 	union u_redirection		vals;
 }							t_redirection;
 
+/// @brief Create a piped redirection
+/// @param void
+/// @return the redirection
 static inline t_redirection	piped(void)
 {
 	return ((t_redirection){
@@ -54,6 +58,9 @@ static inline t_redirection	piped(void)
 	});
 }
 
+/// @brief Create an inherited redirection (inherit from the parent process)
+/// @param void
+/// @return the redirection
 static inline t_redirection	inherited(void)
 {
 	return ((t_redirection){
@@ -61,12 +68,16 @@ static inline t_redirection	inherited(void)
 	});
 }
 
+/// @brief Create a file descriptor redirection
+/// @param fd file descriptor to redirect
+/// @return the redirection
 static inline t_redirection	fd(t_file fd)
 {
 	return ((t_redirection){.tag = R_FD, \
 		.vals = (union u_redirection){.fd = {.value = fd},}});
 }
 
+/// @brief Wrapped file descriptor tag
 enum						e_wrapped_fd_tag
 {
 	READ_ONLY,
@@ -75,6 +86,7 @@ enum						e_wrapped_fd_tag
 	INVALID,
 };
 
+/// @brief Wrapped file descriptor
 union						u_wrapped_fd
 {
 	struct					s_read_only
@@ -91,12 +103,16 @@ union						u_wrapped_fd
 	} rw;
 };
 
+/// @brief Wrapped file descriptor
 typedef struct s_wrapped_fd
 {
 	enum e_wrapped_fd_tag	tag;
 	union u_wrapped_fd		vals;
 }							t_wrapped_fd;
 
+/// @brief Create a Read only wrapped file descriptor
+/// @param fd file descriptor to wrap
+/// @return the wrapped file descriptor
 static inline t_wrapped_fd	ro(t_file fd)
 {
 	return ((t_wrapped_fd){.tag = READ_ONLY,
@@ -105,12 +121,16 @@ static inline t_wrapped_fd	ro(t_file fd)
 	}});
 }
 
+/// @brief Create a Write only wrapped file descriptor
+/// @param fd file descriptor to wrap
+/// @return the wrapped file descriptor
 static inline t_wrapped_fd	wo(t_file fd)
 {
 	return ((t_wrapped_fd){.tag = WRITE_ONLY,
 		.vals = (union u_wrapped_fd){.wo = {.fd = fd}}});
 }
 
+/// @brief Spawn information
 typedef struct s_spawn_info
 {
 	t_redirection			stdin;
@@ -123,6 +143,7 @@ typedef struct s_spawn_info
 	void					*forked_free_args;
 }							t_spawn_info;
 
+/// @brief Process information
 typedef struct s_process
 {
 	t_wrapped_fd			stdin;
@@ -130,7 +151,8 @@ typedef struct s_process
 	t_wrapped_fd			stderr;
 	t_pid					pid;
 }							t_process;
-
+/// @struct Process output
+/// @brief Process output information
 typedef struct s_process_output
 {
 	t_pid					pid;
@@ -139,6 +161,11 @@ typedef struct s_process_output
 	t_exit_code				exit_code;
 }							t_process_output;
 
+
+/// @brief Spawn a new process with the given information
+/// @param info the information to spawn the process
+/// @param process data returned by the function
+/// @return true if an error occured, false otherwise 
 t_error						spawn_process(t_spawn_info info,
 								t_process *process);
 

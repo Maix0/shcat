@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/gnl/gnl.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem_move.h"
-#include "me/string/str_len.h"
+#include "me/mem/mem.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +35,7 @@ static t_static_buffer	*get_next_line_buffer(t_file fd)
 	return (&bufs[index]);
 }
 
-static bool	copy_next_line_into_buffer(t_file fd, t_buffer_str *out,
+static bool	copy_next_line_into_buffer(t_file fd, t_string *out,
 		char *temp_buffer, t_usize amount)
 {
 	char	*buf;
@@ -55,12 +55,12 @@ static bool	copy_next_line_into_buffer(t_file fd, t_buffer_str *out,
 	buf[(t_usize)(newline - buf)] = 0;
 	temp_buffer[(t_usize)(newline - buf + got_newline)] = 0;
 	mem_move(buf, newline + 1, other_part_len);
-	push_str_buffer(out, temp_buffer);
+	string_push(out, temp_buffer);
 	buf[amount - (t_usize)(newline - buf + got_newline)] = 0;
 	return (got_newline);
 }
 
-static bool	read_and_copy(t_file fd, t_buffer_str *out, char *tmp,
+static bool	read_and_copy(t_file fd, t_string *out, char *tmp,
 		t_copy_flags *flags)
 {
 	t_isize			amount;
@@ -82,7 +82,7 @@ static bool	read_and_copy(t_file fd, t_buffer_str *out, char *tmp,
 	return (copy_next_line_into_buffer(fd, out, tmp, (t_usize)amount));
 }
 
-static bool	handle_leftovers(t_file fd, char *temp_buffer, t_buffer_str *buf)
+static bool	handle_leftovers(t_file fd, char *temp_buffer, t_string *buf)
 {
 	t_static_buffer	*static_buffer;
 
@@ -99,21 +99,21 @@ static bool	handle_leftovers(t_file fd, char *temp_buffer, t_buffer_str *buf)
 	return (false);
 }
 
-t_buffer_str	get_next_line(t_file fd, bool *error)
+t_string	get_next_line(t_file fd, bool *error)
 {
-	t_buffer_str	buf;
+	t_string	buf;
 	char			*temp_buffer;
 	t_copy_flags	flags;
 
 	*error = false;
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (*error = true, (t_buffer_str){0});
+		return (*error = true, (t_string){0});
 	flags = (t_copy_flags){
 		.error = false,
 		.empty_read = false,
 	};
 	temp_buffer = mem_alloc(sizeof(char) * (BUFFER_SIZE + 2));
-	buf = alloc_new_buffer(32);
+	buf = string_new(32);
 	if (handle_leftovers(fd, temp_buffer, &buf))
 		return (buf);
 	while (!read_and_copy(fd, &buf, temp_buffer, &flags) && !flags.empty_read)
@@ -122,7 +122,7 @@ t_buffer_str	get_next_line(t_file fd, bool *error)
 	if (flags.error || flags.empty_read)
 	{
 		mem_free(buf.buf);
-		return (*error = true, (t_buffer_str){0});
+		return (*error = true, (t_string){0});
 	}
 	return (buf);
 }

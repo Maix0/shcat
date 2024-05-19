@@ -227,8 +227,8 @@ Header - Public functions */
 #ifndef QOI_H
 # define QOI_H
 
-# include "me/mem/mem_alloc.h"
-# include "me/mem/mem_set_zero.h"
+# include "me/mem/mem.h"
+# include "me/mem/mem.h"
 # include "me/types.h"
 /* A pot_i32er to a t_qoi_desc struct has to be supplied to all of qoi's
 functions. It describes either the input format (for qoi_write and qoi_encode),

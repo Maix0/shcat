@@ -61,9 +61,28 @@ typedef struct s_printf_args
 typedef void			(*t_printf_func)(t_const_str to_write,
 				t_usize to_write_len, void *p_args);
 
+/// @brief Print a formatted string to stdout
+/// @param fmt the format string
+/// @param ... the arguments to format
+/// @return the number of characters printed
 t_usize					me_printf(t_const_str fmt, ...);
+
+/// @brief Print a formatted string to a stderr
+/// @param fmt the format string
+/// @param ... the arguments to format
+/// @return  the number of characters printed
 t_usize					me_eprintf(t_const_str fmt, ...);
+
+/// @brief Print a formatted string to a stdout
+/// @param fmt the format string
+/// @param args the arguments to format as a va_list
+/// @return the number of characters printed
 t_usize					me_vprintf(t_const_str fmt, va_list *args);
+
+/// @brief Print a formatted string to a stderr
+/// @param fmt the format string
+/// @param args the arguments to format as a va_list
+/// @return the number of characters printed
 t_usize					me_veprintf(t_const_str fmt, va_list *args);
 
 #endif

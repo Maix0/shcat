@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isprint.h"
+#include "me/char/char.h"
 
 bool	me_isprint(char chr)
 {

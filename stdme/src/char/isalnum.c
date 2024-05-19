@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isalnum.h"
-#include "me/char/isalpha.h"
-#include "me/char/isdigit.h"
+#include "me/char/char.h"
+#include "me/char/char.h"
+#include "me/char/char.h"
 
 bool	me_isalnum(char chr)
 {

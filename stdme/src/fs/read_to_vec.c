@@ -12,7 +12,7 @@
 
 #include "me/fs/open.h"
 #include "me/fs/read.h"
-#include "me/mem/mem_copy.h"
+#include "me/mem/mem.h"
 #include "me/vec/vec_u8.h"
 
 #define READ_BUFFER_SIZE 4096

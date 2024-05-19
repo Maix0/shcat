@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc_array.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/mem/mem.h"
 #include "me/vec/vec_buf_str.h"
@@ -25,14 +25,14 @@ t_vec_buf_str vec_buf_str_new(t_usize				  capacity,
 
 	out = (t_vec_buf_str){0};
 	out.free_func = free_function;
-	out.buffer = mem_alloc_array(capacity, sizeof(t_buffer_str));
+	out.buffer = mem_alloc_array(capacity, sizeof(t_string));
 	if (out.buffer)
 		out.capacity = capacity;
 	return (out);
 }
 
 /// Return true in case of an error
-t_error vec_buf_str_push(t_vec_buf_str *vec, t_buffer_str element)
+t_error vec_buf_str_push(t_vec_buf_str *vec, t_string element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -54,7 +54,7 @@ t_error vec_buf_str_reserve(t_vec_buf_str *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_buffer_str));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_string));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -62,10 +62,10 @@ t_error vec_buf_str_reserve(t_vec_buf_str *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error vec_buf_str_pop(t_vec_buf_str *vec, t_buffer_str *value)
+t_error vec_buf_str_pop(t_vec_buf_str *vec, t_string *value)
 {
-	t_buffer_str  temp_value;
-	t_buffer_str *ptr;
+	t_string  temp_value;
+	t_string *ptr;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -76,7 +76,7 @@ t_error vec_buf_str_pop(t_vec_buf_str *vec, t_buffer_str *value)
 		ptr = &temp_value;
 	vec->len--;
 	*ptr = vec->buffer[vec->len];
-	mem_set_zero(&vec->buffer[vec->len], sizeof(t_buffer_str));
+	mem_set_zero(&vec->buffer[vec->len], sizeof(t_string));
 	return (NO_ERROR);
 }
 

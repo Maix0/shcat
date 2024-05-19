@@ -13,7 +13,7 @@
 #ifndef TYPES_HEREDOC_H
 #define TYPES_HEREDOC_H
 
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/types.h"
 
 typedef struct s_heredoc
@@ -21,8 +21,8 @@ typedef struct s_heredoc
 	bool		 is_raw;
 	bool		 started;
 	bool		 allows_indent;
-	t_buffer_str delimiter;
-	t_buffer_str current_leading_word;
+	t_string delimiter;
+	t_string current_leading_word;
 } t_heredoc;
 
 #endif /* TYPES_HEREDOC_H */

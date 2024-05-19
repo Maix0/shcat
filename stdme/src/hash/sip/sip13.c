@@ -12,7 +12,7 @@
 
 #include "me/hash/sip.h"
 #include "me/hash/sip/sip_utils.h"
-#include "me/mem/mem_alloc.h"
+#include "me/mem/mem.h"
 
 t_hasher	hasher_sip13_new(void)
 {

@@ -10,35 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/fs/write.h"
 #include "me/printf/formatter/formatter.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
 #include "me/printf/printf.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include <limits.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-// p_args is an t_buffer_str;
+// p_args is an t_string;
 static void	me_printf_add_to_string(t_const_str to_write, t_usize to_write_len,
 		void *p_args)
 {
-	t_buffer_str	*out_buf;
+	t_string	*out_buf;
 
-	out_buf = (t_buffer_str *)p_args;
+	out_buf = (t_string *)p_args;
 	(void)(to_write_len);
-	push_str_buffer(out_buf, to_write);
+	string_push(out_buf, to_write);
 }
 
 t_str	me_printf_str(t_const_str fmt, va_list *arguments)
 {
-	t_buffer_str	out;
+	t_string	out;
 
-	out = alloc_new_buffer(str_len(fmt));
+	out = string_new(str_len(fmt));
 	if (out.buf == NULL)
 	{
 		return (NULL);

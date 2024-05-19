@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
-#include "me/char/isdigit.h"
+#include "me/string/string.h"
+#include "me/char/char.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
 #include "me/types.h"

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
 
 void	mem_set_zero(void *buf, t_usize count)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_find.h"
+#include "me/mem/mem.h"
 
 void	*mem_find(void *buf, t_u8 find, t_usize count)
 {

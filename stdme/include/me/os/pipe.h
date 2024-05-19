@@ -15,12 +15,16 @@
 
 # include "me/types.h"
 
+/// @brief Pipe structure
 typedef struct s_pipe
 {
 	t_file	read;
 	t_file	write;
 }			t_pipe;
 
+/// @brief Create a pipe
+/// @param[out] out the created pipe
+/// @return the error
 t_error		create_pipe(t_pipe *out);
 
 #endif /* PIPE_H */

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isascii.h"
+#include "me/char/char.h"
 
 bool	me_isascii(char chr)
 {

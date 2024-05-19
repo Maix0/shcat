@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/18 18:37:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/19 14:55:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,8 @@
 #include "app/signal_handler.h"
 #include "gmr/symbols.h"
 #include "me/hashmap/hashmap_env.h"
-#include "me/mem/mem.h"
-#include "me/string/str_len.h"
-#include "me/string/str_split.h"
-#include "me/string/str_substring.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include "minishell.h"
 #include "parser/api.h"
@@ -77,7 +75,7 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 			return (ERROR);
 		if (temp[0] == NULL || temp[1] == NULL)
 			return (printf("TEMP NULL\n"), ERROR);
-		insert_hashmap_env(env, temp[0], temp[1]);
+		hmap_insert_env(env, temp[0], temp[1]);
 		i++;
 	}
 	return (NO_ERROR);
@@ -172,7 +170,7 @@ void exec_shcat(t_utils *shcat)
 {
 	t_i32 ret;
 
-	print_node_data(&shcat->current_node, 0);
+	// print_node_data(&shcat->current_node, 0);
 	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
 	(void)ret;
@@ -191,24 +189,6 @@ void ft_take_args(t_utils *shcat)
 		add_history(shcat->str_input);
 		free(shcat->str_input);
 	}
-}
-
-void ft_find_path(t_str arge[], t_utils *utils)
-{
-	t_i32 i;
-
-	i = 0;
-	while (arge[i] != NULL)
-	{
-		if (arge[i][0] == 'P' && arge[i][1] == 'A' && arge[i][2] == 'T' &&
-			arge[i][3] == 'H' && arge[i][4] == '=')
-		{
-			utils->path = ft_split(arge[i] + 5, ':');
-			return;
-		}
-		i++;
-	}
-	utils->path = ft_split(PATH_FILES, ':');
 }
 
 t_language *tree_sitter_bash(void);
@@ -237,14 +217,12 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	(void)argv;
 	(void)envp;
 	if (install_signal())
-		return (1);
+		me_abort("Unable to install signals");
 	utils = (t_utils){};
 	utils.parser = create_myparser();
 	utils.env = create_env_map();
-	// if (install_signal())
-	// 	return (1);
 	if (populate_env(utils.env, envp))
-		me_abort("unable to build ENV hashmap");
+		me_abort("Unable to build env hashmap");
 	utils.name_shell = "\001\x1B[93m\002"
 					   "42sh"
 					   "\001\x1B[32m\002"

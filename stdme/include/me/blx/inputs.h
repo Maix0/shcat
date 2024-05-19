@@ -31,6 +31,10 @@ typedef struct s_blx_input
 
 }						t_blx_input;
 
+/// @brief Create an input manager
+/// @param ctx the BLX context
+/// @return the created input manager
+/// @note this is an internal function, you should not call it yourself
 t_blx_input				create_inputs_manager(t_blx *ctx);
 
 #endif

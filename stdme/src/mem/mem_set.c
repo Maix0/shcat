@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_set.h"
+#include "me/mem/mem.h"
 
 void	mem_set(void *buf, t_u8 fill_by, t_usize count)
 {

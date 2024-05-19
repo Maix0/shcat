@@ -23,7 +23,19 @@ typedef __attribute__((aligned(4))) struct s_color
 	t_u8	a;
 }		t_color;
 
+/// @brief Create a new color with an specified alpha channel
+/// @param r the red channel
+/// @param g the green channel
+/// @param b the blue channel
+/// @param alpha the alpha channel
+/// @return the resulting color
 t_color	new_color_with_alpha(t_u8 r, t_u8 g, t_u8 b, t_u8 alpha);
+
+/// @brief Create a new color
+/// @param r the red channel
+/// @param g the green channel
+/// @param b the blue channel
+/// @return the resulting color
 t_color	new_color(t_u8 r, t_u8 g, t_u8 b);
 
 #endif

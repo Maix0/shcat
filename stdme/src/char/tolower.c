@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isupper.h"
-#include "me/char/tolower.h"
+#include "me/char/char.h"
+#include "me/char/char.h"
 
-bool	me_tolower(char chr)
+char	me_tolower(char chr)
 {
 	if (me_isupper(chr))
 		return (chr + ('a' - 'A'));

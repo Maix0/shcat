@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/char/isspace.h"
+#include "me/char/char.h"
 
 bool	me_isspace(char chr)
 {

@@ -16,9 +16,9 @@
 #include "me/fs/putendl_fd.h"
 #include "me/fs/putnbr_fd.h"
 #include "me/fs/putstr_fd.h"
-#include "me/mem/mem_compare.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/num/usize.h"
 #include <stdio.h>
 #include <stdlib.h>

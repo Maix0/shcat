@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc_array.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_buf_str.h"
 #include <stdlib.h>
 
 t_error vec_buf_str_push_front(t_vec_buf_str *vec,
-								   t_buffer_str	  element)
+								   t_string	  element)
 {
 	t_usize i;
 
@@ -39,7 +39,7 @@ t_error vec_buf_str_push_front(t_vec_buf_str *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_buffer_str *value)
+t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_string *value)
 {
 	t_usize i;
 
@@ -59,7 +59,7 @@ t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_buffer_str *value)
 
 void vec_buf_str_reverse(t_vec_buf_str *vec)
 {
-	t_buffer_str temporary;
+	t_string temporary;
 	t_usize		  i;
 
 	i = 0;
@@ -72,9 +72,9 @@ void vec_buf_str_reverse(t_vec_buf_str *vec)
 	}
 }
 
-t_error vec_buf_str_back(t_vec_buf_str *vec, t_buffer_str **out)
+t_error vec_buf_str_back(t_vec_buf_str *vec, t_string **out)
 {
-	t_buffer_str *temporary;
+	t_string *temporary;
 
 	if (out == NULL)
 		out = &temporary;

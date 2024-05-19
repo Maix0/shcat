@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 #include "app/node.h"
-#include "me/mem/mem_alloc.h"
-#include "me/mem/mem_alloc_array.h"
-#include "me/string/str_l_copy.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/str/str.h"
 #include "parser/api.h"
 #include <stdio.h>
 

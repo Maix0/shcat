@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_set.h"
+#include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 #define HEX_INLINE_BUF 17
 
 static void	fill_hex(t_str out_buf, t_u64 num, t_const_str base)

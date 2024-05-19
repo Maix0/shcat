@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "me/hash/hasher.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 #include "me/types.h"
 
 void hasher_write_str(t_hasher *hasher, t_str s)

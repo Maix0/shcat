@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc_array.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_buf_str.h"
 #include <stdlib.h>
 
 t_error vec_buf_str_find(t_vec_buf_str *vec,
-							 bool (*fn)(const t_buffer_str *), t_usize *index)
+							 bool (*fn)(const t_string *), t_usize *index)
 {
 	t_usize idx;
 
@@ -38,7 +38,7 @@ t_error vec_buf_str_find(t_vec_buf_str *vec,
 }
 
 t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
-									  bool (*fn)(const t_buffer_str *),
+									  bool (*fn)(const t_string *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -59,7 +59,7 @@ t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
 }
 
 t_error vec_buf_str_all(t_vec_buf_str *vec,
-							bool (*fn)(const t_buffer_str *), bool *result)
+							bool (*fn)(const t_string *), bool *result)
 {
 	t_usize idx;
 
@@ -77,7 +77,7 @@ t_error vec_buf_str_all(t_vec_buf_str *vec,
 }
 
 t_error vec_buf_str_any(t_vec_buf_str *vec,
-							bool (*fn)(const t_buffer_str *), bool *result)
+							bool (*fn)(const t_string *), bool *result)
 {
 	t_usize idx;
 
@@ -95,7 +95,7 @@ t_error vec_buf_str_any(t_vec_buf_str *vec,
 }
 
 void vec_buf_str_iter(t_vec_buf_str *vec,
-						  void (*fn)(t_usize index, t_buffer_str *value,
+						  void (*fn)(t_usize index, t_string *value,
 									 void *state),
 						  void *state)
 {

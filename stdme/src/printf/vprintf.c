@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/fs/write.h"
 #include "me/printf/formatter/formatter.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
 #include "me/printf/printf.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include <limits.h>
 #include <stdarg.h>

@@ -166,10 +166,34 @@ typedef enum e_keysym
 
 typedef struct s_blx	t_blx;
 
+/// @brief Convert a keysym to a bit index
+/// @param key the keysym to convert
+/// @return the bit index
+/// @note this is an internal function, you should not call it yourself
 t_usize					keysym_to_bit_index(t_keysym key);
+
+/// @brief Get a key from a key storage
+/// @param key_storage the key storage
+/// @param keysym the key to get
+/// @return true if the key is present in the storage, false otherwise
 bool					get_key(t_vec_u8 *key_storage, t_keysym keysym);
+
+/// @brief is the key pressed
+/// @param ctx The BLX context
+/// @param key the key to check
+/// @return true if the key is pressed, false otherwise
 bool					is_key_pressed(t_blx *ctx, t_keysym key);
+
+/// @brief is the key held
+/// @param ctx The BLX context
+/// @param key the key to check
+/// @return  true if the key is held, false otherwise
 bool					is_key_held(t_blx *ctx, t_keysym key);
+
+/// @brief is the key released
+/// @param ctx The BLX context
+/// @param key the key to check
+/// @return true if the key is released, false otherwise
 bool					is_key_released(t_blx *ctx, t_keysym key);
 
 #endif

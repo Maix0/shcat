@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_alloc_array.h"
-#include "me/mem/mem_copy.h"
-#include "me/mem/mem_set_zero.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_parser_range.h"
 #include <stdlib.h>

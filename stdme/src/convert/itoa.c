@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "me/convert/itoa.h"
-#include "me/mem/mem_set.h"
-#include "me/string/str_clone.h"
+#include "me/mem/mem.h"
+#include "me/str/str.h"
 #include <stdlib.h>
 
 static void	me_itoa_inner(t_u64 nb, t_str out)

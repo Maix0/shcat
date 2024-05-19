@@ -18,7 +18,7 @@
 #include "me/vec/vec_str.h"
 #include "app/node/handle_command.h"
 #include "minishell.h"
-#include "me/string/str_clone.h"
+#include "me/str/str.h"
 
 t_error ft_command_exec(t_node *self, t_i32 *ret);
 

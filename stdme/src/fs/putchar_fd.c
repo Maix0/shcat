@@ -12,7 +12,7 @@
 
 #include "me/fs/putchar_fd.h"
 #include "me/fs/write.h"
-#include "me/string/str_len.h"
+#include "me/str/str.h"
 
 void	me_putchar_fd(char chr, t_file file)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem_compare.h"
+#include "me/mem/mem.h"
 #include "me/printf/formatter/formatter.h"
 #include "me/printf/matchers/matchers.h"
 #include "me/printf/printf.h"

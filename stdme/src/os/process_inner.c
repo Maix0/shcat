@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:25:44 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 18:38:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/19 14:51:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ bool find_path(const t_str *s)
 	if (*s == NULL)
 		return (false);
 	ss = *s;
-	printf("%s\n", ss);
 	return (ss[0] == 'P' && ss[1] == 'A' && ss[2] == 'T' && ss[3] == 'H' &&
 			ss[4] == '=');
 }

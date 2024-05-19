@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/buffered_str/buf_str.h"
+#include "me/string/string.h"
 #include "me/mem/mem.h"
 #include "me/convert/atoi.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
 #include "me/printf/printf.h"
-#include "me/string/str_find_chr.h"
-#include "me/string/str_substring.h"
+#include "me/str/str.h"
+#include "me/str/str.h"
 #include "me/types.h"
 #include <stdio.h>
 #include <stdlib.h>
