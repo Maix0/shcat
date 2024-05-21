@@ -13,12 +13,11 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_C__PREFIX__.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
-C__VALTYPE__ *hmap_get_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
-									  C__KEYTYPE__			*key)
+C__VALTYPE__ *hmap_C__PREFIX___get(t_hashmap_C__PREFIX__ *hmap,
+								   C__KEYTYPE__			 *key)
 {
 	t_usize				 hashed_key;
 	t_entry_C__PREFIX__ *entry;
@@ -26,13 +25,13 @@ C__VALTYPE__ *hmap_get_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
 
 	hmap->hfunc(&hmap->hasher, key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
-	entry = hmap_get_entry_C__PREFIX__(hmap, hashed_key, key, &prev);
+	entry = hmap_C__PREFIX___get_entry(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
 		return (NULL);
 	return (&entry->kv.val);
 }
 
-void hmap_remove_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ *key)
+void hmap_C__PREFIX___remove(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ *key)
 {
 	t_usize				 hashed_key;
 	t_entry_C__PREFIX__ *prev;
@@ -42,7 +41,7 @@ void hmap_remove_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ *key)
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
 	hmap->hasher = hasher_sip13_new();
 	prev = NULL;
-	entry = hmap_get_entry_C__PREFIX__(hmap, hashed_key, key, &prev);
+	entry = hmap_C__PREFIX___get_entry(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
 		return;
 	if (prev == NULL)

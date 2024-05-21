@@ -13,12 +13,11 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
-t_str *hmap_get_env(t_hashmap_env *hmap,
-									  t_str			*key)
+t_str *hmap_env_get(t_hashmap_env *hmap,
+								   t_str			 *key)
 {
 	t_usize				 hashed_key;
 	t_entry_env *entry;
@@ -26,13 +25,13 @@ t_str *hmap_get_env(t_hashmap_env *hmap,
 
 	hmap->hfunc(&hmap->hasher, key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
-	entry = hmap_get_entry_env(hmap, hashed_key, key, &prev);
+	entry = hmap_env_get_entry(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
 		return (NULL);
 	return (&entry->kv.val);
 }
 
-void hmap_remove_env(t_hashmap_env *hmap, t_str *key)
+void hmap_env_remove(t_hashmap_env *hmap, t_str *key)
 {
 	t_usize				 hashed_key;
 	t_entry_env *prev;
@@ -42,7 +41,7 @@ void hmap_remove_env(t_hashmap_env *hmap, t_str *key)
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
 	hmap->hasher = hasher_sip13_new();
 	prev = NULL;
-	entry = hmap_get_entry_env(hmap, hashed_key, key, &prev);
+	entry = hmap_env_get_entry(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
 		return;
 	if (prev == NULL)

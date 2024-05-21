@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:32:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/19 14:55:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:55:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void _free_env(t_kv_env kv)
 
 t_hashmap_env *create_env_map(void)
 {
-	return (hmap_new_env(_hash_str, _cmp_str, _free_env));
+	return (hmap_env_new(_hash_str, _cmp_str, _free_env));
 }
 
 t_error _build_envp_iterator(t_usize idx, const t_str *key, t_str *val,

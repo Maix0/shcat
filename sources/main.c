@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/19 14:55:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:53:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 			return (ERROR);
 		if (temp[0] == NULL || temp[1] == NULL)
 			return (printf("TEMP NULL\n"), ERROR);
-		hmap_insert_env(env, temp[0], temp[1]);
+		if (hmap_env_insert(env, temp[0], temp[1]))
+			printf("'%s' was already in the hmap ?????\n", temp[0]);
 		i++;
 	}
 	return (NO_ERROR);

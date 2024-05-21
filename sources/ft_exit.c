@@ -40,7 +40,7 @@ void ft_free_utils(t_utils *s)
 	if (s->path)
 		ft_free_strs(s->path);
 	if (s->env)
-		hmap_free_env(s->env);
+		hmap_env_free(s->env);
 	ts_parser_delete(s->parser.parser);
 }
 

@@ -14,19 +14,18 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
-t_hashmap_env *hmap_new_env(t_hash_env_fn hfunc,
-											   t_eq_env_fn	 cfunc,
-											   t_drop_env_fn drop)
+t_hashmap_env *hmap_env_new(t_hash_env_fn hfunc,
+											t_eq_env_fn	  cfunc,
+											t_drop_env_fn drop)
 {
-	return (hmap_new_with_buckets_env(hfunc, cfunc, drop,
-												 DEFAULT_BUCKETS));
+	return (
+		hmap_env_new_with_buckets(hfunc, cfunc, drop, DEFAULT_BUCKETS));
 }
 
-t_hashmap_env *hmap_new_with_buckets_env(
+t_hashmap_env *hmap_env_new_with_buckets(
 	t_hash_env_fn hfunc, t_eq_env_fn cfunc,
 	t_drop_env_fn drop, t_usize buckets)
 {
@@ -46,17 +45,22 @@ t_hashmap_env *hmap_new_with_buckets_env(
 	return (hmap);
 }
 
-void hmap_free_env(t_hashmap_env *hmap)
+void hmap_env_free(t_hashmap_env *hmap)
 {
 	t_usize index;
+	t_entry_env *entry;
+	t_entry_env *tmp;
 
 	index = 0;
 	while (index < hmap->num_buckets)
 	{
-		if (hmap->buckets[index])
+		entry = hmap->buckets[index];
+		while (entry != NULL)
 		{
-			hmap->drop(hmap->buckets[index]->kv);
-			mem_free(hmap->buckets[index]);
+			hmap->drop(entry->kv);
+			tmp = entry->next;
+			mem_free(entry);
+			entry = tmp;
 		}
 		index++;
 	}
@@ -65,10 +69,10 @@ void hmap_free_env(t_hashmap_env *hmap)
 	mem_free(hmap);
 }
 
-t_entry_env *hmap_get_entry_env(t_hashmap_env *hmap,
-												   t_usize		 hashed_key,
-												   t_str *key,
-												   t_entry_env **prev)
+t_entry_env *hmap_env_get_entry(t_hashmap_env *hmap,
+												t_usize		  hashed_key,
+												t_str *key,
+												t_entry_env **prev)
 {
 	t_entry_env *entry;
 
@@ -88,8 +92,8 @@ t_entry_env *hmap_get_entry_env(t_hashmap_env *hmap,
 	return (NULL);
 }
 
-void hmap_insert_env(t_hashmap_env *hmap, t_str key,
-								t_str value)
+bool hmap_env_insert(t_hashmap_env *hmap, t_str key,
+							 t_str value)
 {
 	t_usize				 hashed_key;
 	t_entry_env *prev;
@@ -98,7 +102,7 @@ void hmap_insert_env(t_hashmap_env *hmap, t_str key,
 	hmap->hfunc(&hmap->hasher, &key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
 	prev = NULL;
-	entry = hmap_get_entry_env(hmap, hashed_key, &key, &prev);
+	entry = hmap_env_get_entry(hmap, hashed_key, &key, &prev);
 	if (entry == NULL)
 	{
 		entry = mem_alloc(sizeof(t_entry_env));
@@ -109,11 +113,13 @@ void hmap_insert_env(t_hashmap_env *hmap, t_str key,
 			hmap->buckets[hashed_key % hmap->num_buckets] = entry;
 		else
 			prev->next = entry;
+		return (false);
 	}
 	else
 	{
 		hmap->drop(entry->kv);
 		entry->kv.key = key;
 		entry->kv.val = value;
+		return (true);
 	}
 }

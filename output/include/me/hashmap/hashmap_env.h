@@ -73,7 +73,7 @@ typedef struct s_hashmap_env
 /// @param cmp The comparison function
 /// @param drop The drop function
 /// @return A new hashmap
-t_hashmap_env *hmap_new_env(t_hash_env_fn hash, t_eq_env_fn	cmp, t_drop_env_fn drop);
+t_hashmap_env *hmap_env_new(t_hash_env_fn hash, t_eq_env_fn	cmp, t_drop_env_fn drop);
 
 /// @brief Creates a new hashmap with the given hash, comparison, and drop functions
 /// @param hash The hash function
@@ -81,27 +81,29 @@ t_hashmap_env *hmap_new_env(t_hash_env_fn hash, t_eq_env_fn	cmp, t_drop_env_fn d
 /// @param drop The drop function
 /// @param cap The number of buckets
 /// @return A new hashmap
-t_hashmap_env *hmap_new_with_buckets_env(t_hash_env_fn hash, t_eq_env_fn cmp, t_drop_env_fn drop, size_t cap);
+t_hashmap_env *hmap_env_new_with_buckets(t_hash_env_fn hash, t_eq_env_fn cmp, t_drop_env_fn drop, size_t cap);
 
-/// @brief Drops the hashmap and all of its entries
-/// @param hmap The hashmap to drop
-void hmap_free_env(t_hashmap_env *hmap);
+/// @brief Free the hashmap and all of its entries
+/// @param hmap The hashmap to free
+void hmap_env_free(t_hashmap_env *hmap);
 
 /// @brief Inserts a key-value pair into the hashmap
 /// @param hmap The hashmap
 /// @param key The key
 /// @param value The value
-void hmap_insert_env(t_hashmap_env *hmap, t_str key, t_str value);
+/// @return true if the key already existed before, false otherwise
+bool hmap_env_insert(t_hashmap_env *hmap, t_str key, t_str value);
 
 /// @brief Gets the value associated with the key
 /// @param hmap The hashmap
 /// @param key The key
 /// @return The value associated with the key, or NULL if the key is not in the hashmap
-t_str *hmap_get_env(t_hashmap_env *hmap, t_str *key);
+t_str *hmap_env_get(t_hashmap_env *hmap, t_str *key);
+
 /// @brief Removes the key-value pair from the hashmap
 /// @param hmap The hashmap
 /// @param key The key
-void hmap_remove_env(t_hashmap_env *hmap, t_str *key);
+void hmap_env_remove(t_hashmap_env *hmap, t_str *key);
 
 /// @brief Get an entry from the hashmap
 /// @param hmap The hashmap
@@ -110,7 +112,7 @@ void hmap_remove_env(t_hashmap_env *hmap, t_str *key);
 /// @param prev The previous entry in the bucket
 /// @return The entry, or NULL if the key is not in the hashmap
 /// @note this is an internal function
-t_entry_env *hmap_get_entry_env(t_hashmap_env *hmap, t_usize hash, t_str *key, t_entry_env	**prev);
+t_entry_env *hmap_env_get_entry(t_hashmap_env *hmap, t_usize hash, t_str *key, t_entry_env	**prev);
 
 /// @brief Iterates over the hashmap and calls the given function for each key-value pair
 /// @param self The hashmap

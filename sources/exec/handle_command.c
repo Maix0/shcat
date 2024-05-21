@@ -6,7 +6,7 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:00:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/19 14:56:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:57:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "app/node.h"
 #include "app/state.h"
 #include "gmr/symbols.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 // #include "app/node/handle_program.h"
@@ -21,6 +22,14 @@
 #include "me/str/str.h"
 #include "minishell.h"
 #include <time.h>
+
+void handle_command_free_infork(void *vshcat)
+{
+	t_utils *shcat;
+
+	shcat = vshcat;
+	ft_exit(shcat, 255);
+}
 
 t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 {
@@ -55,11 +64,10 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 		}
 		i++;
 	}
-	// vec_str_push(&spawn_info.arguments, NULL);
 	spawn_info.stdin = inherited();
 	spawn_info.stdout = inherited();
 	spawn_info.stderr = inherited();
-	spawn_info.forked_free = NULL;
+	spawn_info.forked_free = handle_command_free_infork;
 	if (build_envp(shcat->env, &spawn_info.environement))
 		return (vec_str_free(spawn_info.arguments), ERROR);
 	if (spawn_process(spawn_info, &shcat->ret))

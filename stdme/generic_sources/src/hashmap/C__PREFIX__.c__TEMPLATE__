@@ -14,19 +14,18 @@
 #include "me/hash/sip.h"
 #include "me/hashmap/hashmap_C__PREFIX__.h"
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include <stdlib.h>
 
-t_hashmap_C__PREFIX__ *hmap_new_C__PREFIX__(t_hash_C__PREFIX___fn hfunc,
-											   t_eq_C__PREFIX___fn	 cfunc,
-											   t_drop_C__PREFIX___fn drop)
+t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new(t_hash_C__PREFIX___fn hfunc,
+											t_eq_C__PREFIX___fn	  cfunc,
+											t_drop_C__PREFIX___fn drop)
 {
-	return (hmap_new_with_buckets_C__PREFIX__(hfunc, cfunc, drop,
-												 DEFAULT_BUCKETS));
+	return (
+		hmap_C__PREFIX___new_with_buckets(hfunc, cfunc, drop, DEFAULT_BUCKETS));
 }
 
-t_hashmap_C__PREFIX__ *hmap_new_with_buckets_C__PREFIX__(
+t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new_with_buckets(
 	t_hash_C__PREFIX___fn hfunc, t_eq_C__PREFIX___fn cfunc,
 	t_drop_C__PREFIX___fn drop, t_usize buckets)
 {
@@ -46,17 +45,22 @@ t_hashmap_C__PREFIX__ *hmap_new_with_buckets_C__PREFIX__(
 	return (hmap);
 }
 
-void hmap_free_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap)
+void hmap_C__PREFIX___free(t_hashmap_C__PREFIX__ *hmap)
 {
 	t_usize index;
+	t_entry_C__PREFIX__ *entry;
+	t_entry_C__PREFIX__ *tmp;
 
 	index = 0;
 	while (index < hmap->num_buckets)
 	{
-		if (hmap->buckets[index])
+		entry = hmap->buckets[index];
+		while (entry != NULL)
 		{
-			hmap->drop(hmap->buckets[index]->kv);
-			mem_free(hmap->buckets[index]);
+			hmap->drop(entry->kv);
+			tmp = entry->next;
+			mem_free(entry);
+			entry = tmp;
 		}
 		index++;
 	}
@@ -65,10 +69,10 @@ void hmap_free_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap)
 	mem_free(hmap);
 }
 
-t_entry_C__PREFIX__ *hmap_get_entry_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
-												   t_usize		 hashed_key,
-												   C__KEYTYPE__ *key,
-												   t_entry_C__PREFIX__ **prev)
+t_entry_C__PREFIX__ *hmap_C__PREFIX___get_entry(t_hashmap_C__PREFIX__ *hmap,
+												t_usize		  hashed_key,
+												C__KEYTYPE__ *key,
+												t_entry_C__PREFIX__ **prev)
 {
 	t_entry_C__PREFIX__ *entry;
 
@@ -88,8 +92,8 @@ t_entry_C__PREFIX__ *hmap_get_entry_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap,
 	return (NULL);
 }
 
-void hmap_insert_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
-								C__VALTYPE__ value)
+bool hmap_C__PREFIX___insert(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
+							 C__VALTYPE__ value)
 {
 	t_usize				 hashed_key;
 	t_entry_C__PREFIX__ *prev;
@@ -98,7 +102,7 @@ void hmap_insert_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
 	hmap->hfunc(&hmap->hasher, &key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
 	prev = NULL;
-	entry = hmap_get_entry_C__PREFIX__(hmap, hashed_key, &key, &prev);
+	entry = hmap_C__PREFIX___get_entry(hmap, hashed_key, &key, &prev);
 	if (entry == NULL)
 	{
 		entry = mem_alloc(sizeof(t_entry_C__PREFIX__));
@@ -109,11 +113,13 @@ void hmap_insert_C__PREFIX__(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
 			hmap->buckets[hashed_key % hmap->num_buckets] = entry;
 		else
 			prev->next = entry;
+		return (false);
 	}
 	else
 	{
 		hmap->drop(entry->kv);
 		entry->kv.key = key;
 		entry->kv.val = value;
+		return (true);
 	}
 }

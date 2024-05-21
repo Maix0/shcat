@@ -39,7 +39,7 @@
 #define STACK_VERSION_NONE ((t_stack_version)-1)
 #define TS_DECODE_ERROR (-1)
 
-#if true
+#if false
 # undef malloc
 # undef calloc
 # undef realloc
