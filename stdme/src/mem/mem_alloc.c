@@ -6,19 +6,23 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 14:47:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:32:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/22 15:01:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem.h"
 #include "me/mem/_allocator.h"
+#include "me/mem/mem.h"
 
 void *mem_alloc(t_usize size)
 {
 	t_allocator *a;
+	void		*ret;
 
 	a = global_allocator();
-	return (a->alloc(a, size));
+	ret = a->alloc(a, size);
+	if (ret != NULL)
+		mem_set_zero(ret, size);
+	return (ret);
 }
 
 void mem_free(void *ptr)
