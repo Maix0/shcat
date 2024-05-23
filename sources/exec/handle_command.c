@@ -6,7 +6,7 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:00:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/21 14:57:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/23 15:27:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void handle_command_free_infork(void *vshcat)
 	t_utils *shcat;
 
 	shcat = vshcat;
-	ft_exit(shcat, 255);
+	(void)(shcat);
+	//ft_exit(shcat, 255);
 }
 
 t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
