@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 16:00:33 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/18 17:49:43 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/22 15:04:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "app/node/handle_command.h"
 #include "minishell.h"
 #include "me/str/str.h"
+
+t_error ft_command_exec(t_node *self, t_i32 *ret);
 
 t_error ft_command_exec(t_node *self, t_i32 *ret);
 

@@ -6,11 +6,10 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:02:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 18:22:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/23 14:35:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 
@@ -20,8 +19,10 @@
 #include "valgrind/valgrind.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 #define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
@@ -250,16 +251,19 @@ void *m_alloc_array(struct s_allocator_melloc *self, t_usize size,
 	return (m_realloc(self, NULL, size * count));
 }
 
+#include "stdlib.h"
+
 void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 {
 	t_chunk *chunk;
 	t_chunk *next;
 	t_usize	 old_size;
 
-	// eprintf("M_REALLOC\n");
-	// if (self->list == NULL && alloc_page_list(&self->list))
-	// 	return (m_alloc_error(self, "Unable to alloc page list"));
+	if (size > INT32_MAX - sizeof(t_chunk) * 10)
+		return (errno = ENOMEM, NULL);
 	size = round_to_pow2(size, PAGE_ALIGN);
+	if (ptr != NULL && size == 0)
+		return (m_free(self, ptr), NULL);
 	if (ptr == NULL)
 	{
 		chunk = find_chunk_of_size(self, size);
@@ -293,8 +297,7 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 		{
 			old_size = chunk->size;
 			chunk->size += next->size + sizeof(*next);
-			vg_mem_defined(next, next->size + sizeof(*next));
-			mem_set_zero(next, next->size + sizeof(*next));
+			vg_mem_undefined(next, next->size + sizeof(*next));
 			vg_block_resize((void *)chunk + sizeof(*chunk), old_size,
 							chunk->size);
 			vg_mem_no_access(chunk, sizeof(*chunk));
@@ -305,7 +308,7 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 			vg_mem_no_access(next, sizeof(*next));
 			next = m_realloc(self, NULL, size);
 			vg_mem_defined(chunk, sizeof(*chunk));
-			mem_copy(ptr, next, chunk->size);
+			mem_move(next, ptr, chunk->size);
 			vg_mem_no_access(chunk, sizeof(*chunk));
 			m_free(self, ptr);
 			return (next);
