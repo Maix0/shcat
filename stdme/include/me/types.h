@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/16 16:12:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/24 14:45:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,6 @@ typedef float  t_f32;
 /// @brief a 64 bit floating point number
 typedef double t_f64;
 
-/// @brief a file descriptor
-typedef int	 t_file;
 /// @brief a boolean value that represents an error
 /// @note true is an error, false is no error
 typedef bool t_error;

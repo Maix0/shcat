@@ -31,7 +31,7 @@ union						u_redirection
 {
 	struct					s_fd
 	{
-		t_file				value;
+		int				value;
 	} fd;
 	struct					s_piped
 	{
@@ -71,7 +71,7 @@ static inline t_redirection	inherited(void)
 /// @brief Create a file descriptor redirection
 /// @param fd file descriptor to redirect
 /// @return the redirection
-static inline t_redirection	fd(t_file fd)
+static inline t_redirection	fd(int fd)
 {
 	return ((t_redirection){.tag = R_FD, \
 		.vals = (union u_redirection){.fd = {.value = fd},}});
@@ -91,15 +91,15 @@ union						u_wrapped_fd
 {
 	struct					s_read_only
 	{
-		t_file				fd;
+		int				fd;
 	} ro;
 	struct					s_write_only
 	{
-		t_file				fd;
+		int				fd;
 	} wo;
 	struct					s_read_write
 	{
-		t_file				fd;
+		int				fd;
 	} rw;
 };
 
@@ -113,7 +113,7 @@ typedef struct s_wrapped_fd
 /// @brief Create a Read only wrapped file descriptor
 /// @param fd file descriptor to wrap
 /// @return the wrapped file descriptor
-static inline t_wrapped_fd	ro(t_file fd)
+static inline t_wrapped_fd	ro(int fd)
 {
 	return ((t_wrapped_fd){.tag = READ_ONLY,
 		.vals = (union u_wrapped_fd){
@@ -124,7 +124,7 @@ static inline t_wrapped_fd	ro(t_file fd)
 /// @brief Create a Write only wrapped file descriptor
 /// @param fd file descriptor to wrap
 /// @return the wrapped file descriptor
-static inline t_wrapped_fd	wo(t_file fd)
+static inline t_wrapped_fd	wo(int fd)
 {
 	return ((t_wrapped_fd){.tag = WRITE_ONLY,
 		.vals = (union u_wrapped_fd){.wo = {.fd = fd}}});

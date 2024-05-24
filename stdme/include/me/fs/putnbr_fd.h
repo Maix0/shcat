@@ -15,6 +15,6 @@
 
 # include "me/types.h"
 
-void	me_putnbr_fd(t_i32 n, t_file file);
+void	me_putnbr_fd(t_i32 n, int file);
 
 #endif

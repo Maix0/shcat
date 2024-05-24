@@ -26,7 +26,7 @@
 
 typedef struct s_static_buffer
 {
-	t_file		fd;
+	int		fd;
 	bool		used;
 	char		buf[BUFFER_SIZE + 1];
 	bool		init;
@@ -38,6 +38,6 @@ typedef struct s_copy_flags
 	bool		empty_read;
 }				t_copy_flags;
 
-t_string	get_next_line(t_file fd, bool *error);
+t_string	get_next_line(int fd, bool *error);
 
 #endif

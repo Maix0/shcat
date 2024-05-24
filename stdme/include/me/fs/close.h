@@ -15,6 +15,6 @@
 
 # include "me/types.h"
 
-bool	me_close(t_file file, t_i32 *error);
+bool	me_close(int file, t_i32 *error);
 
 #endif

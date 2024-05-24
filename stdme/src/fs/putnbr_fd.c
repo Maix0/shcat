@@ -34,7 +34,7 @@ static void	me_inner(t_u64 nb, t_str out, t_usize *idx)
 	}
 }
 
-void	me_putnbr_fd(t_i32 n, t_file file)
+void	me_putnbr_fd(t_i32 n, int file)
 {
 	t_usize	idx;
 	t_i64	nb;

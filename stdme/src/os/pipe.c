@@ -14,7 +14,7 @@
 
 t_error	create_pipe(t_pipe *out)
 {
-	t_file	fds[2];
+	int	fds[2];
 
 	if (pipe(fds))
 		return (ERROR);

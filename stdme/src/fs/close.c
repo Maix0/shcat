@@ -14,7 +14,7 @@
 #include "me/types.h"
 #include <unistd.h>
 
-bool	me_close(t_file file, t_i32 *error)
+bool	me_close(int file, t_i32 *error)
 {
 	t_i32	res;
 	bool	out;

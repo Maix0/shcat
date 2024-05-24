@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static t_static_buffer	*get_next_line_buffer(t_file fd)
+static t_static_buffer	*get_next_line_buffer(int fd)
 {
 	t_usize					index;
 	static t_static_buffer	bufs[BUFFER_LENGTH] = {0};
@@ -35,7 +35,7 @@ static t_static_buffer	*get_next_line_buffer(t_file fd)
 	return (&bufs[index]);
 }
 
-static bool	copy_next_line_into_buffer(t_file fd, t_string *out,
+static bool	copy_next_line_into_buffer(int fd, t_string *out,
 		char *temp_buffer, t_usize amount)
 {
 	char	*buf;
@@ -60,7 +60,7 @@ static bool	copy_next_line_into_buffer(t_file fd, t_string *out,
 	return (got_newline);
 }
 
-static bool	read_and_copy(t_file fd, t_string *out, char *tmp,
+static bool	read_and_copy(int fd, t_string *out, char *tmp,
 		t_copy_flags *flags)
 {
 	t_isize			amount;
@@ -82,7 +82,7 @@ static bool	read_and_copy(t_file fd, t_string *out, char *tmp,
 	return (copy_next_line_into_buffer(fd, out, tmp, (t_usize)amount));
 }
 
-static bool	handle_leftovers(t_file fd, char *temp_buffer, t_string *buf)
+static bool	handle_leftovers(int fd, char *temp_buffer, t_string *buf)
 {
 	t_static_buffer	*static_buffer;
 
@@ -99,7 +99,7 @@ static bool	handle_leftovers(t_file fd, char *temp_buffer, t_string *buf)
 	return (false);
 }
 
-t_string	get_next_line(t_file fd, bool *error)
+t_string	get_next_line(int fd, bool *error)
 {
 	t_string	buf;
 	char			*temp_buffer;

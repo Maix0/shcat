@@ -15,8 +15,8 @@
 
 # include "me/types.h"
 
-t_error	me_open(t_const_str path, bool read, bool write, t_file *file_out);
-t_error	me_open_truncate(t_const_str path, t_file *file_out);
-t_error	me_open_create(t_const_str path, t_file *file_out);
+t_error	me_open(t_const_str path, bool read, bool write, int *file_out);
+t_error	me_open_truncate(t_const_str path, int *file_out);
+t_error	me_open_create(t_const_str path, int *file_out);
 
 #endif

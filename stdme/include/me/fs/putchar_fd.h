@@ -15,6 +15,6 @@
 
 # include "me/types.h"
 
-void	me_putchar_fd(char chr, t_file file);
+void	me_putchar_fd(char chr, int file);
 
 #endif

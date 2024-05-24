@@ -14,7 +14,7 @@
 #include "me/fs/write.h"
 #include "me/str/str.h"
 
-void	me_putendl_fd(t_str str, t_file file)
+void	me_putendl_fd(t_str str, int file)
 {
 	if (str == NULL)
 		return ;

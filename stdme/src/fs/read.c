@@ -13,7 +13,7 @@
 #include "me/fs/read.h"
 #include <unistd.h>
 
-t_usize	me_read(t_file fd, t_u8 *buffer, t_i64 buffer_max, bool *eof_out)
+t_usize	me_read(int fd, t_u8 *buffer, t_i64 buffer_max, bool *eof_out)
 {
 	ssize_t	out;
 

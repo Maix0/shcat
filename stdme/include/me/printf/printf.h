@@ -19,7 +19,7 @@
 typedef struct s_fprintf_arg
 {
 	t_usize				total_print;
-	t_file				fd;
+	int				fd;
 }						t_fprintf_arg;
 
 typedef enum e_printf_flags

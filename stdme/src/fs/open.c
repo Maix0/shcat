@@ -13,9 +13,9 @@
 #include "me/fs/open.h"
 #include <fcntl.h>
 
-t_error	me_open(t_const_str path, bool read, bool write, t_file *file_out)
+t_error	me_open(t_const_str path, bool read, bool write, int *file_out)
 {
-	t_file	out;
+	int	out;
 	int		flags;
 
 	flags = 0;
@@ -32,9 +32,9 @@ t_error	me_open(t_const_str path, bool read, bool write, t_file *file_out)
 	return (NO_ERROR);
 }
 
-t_error	me_open_truncate(t_const_str path, t_file *file_out)
+t_error	me_open_truncate(t_const_str path, int *file_out)
 {
-	t_file	out;
+	int	out;
 	int		flags;
 
 	unlink(path);
@@ -46,9 +46,9 @@ t_error	me_open_truncate(t_const_str path, t_file *file_out)
 	return (NO_ERROR);
 }
 
-t_error	me_open_create(t_const_str path, t_file *file_out)
+t_error	me_open_create(t_const_str path, int *file_out)
 {
-	t_file	out;
+	int	out;
 	int		flags;
 
 	flags = O_WRONLY | O_CREAT | O_APPEND;

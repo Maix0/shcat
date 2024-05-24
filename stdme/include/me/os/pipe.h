@@ -18,8 +18,8 @@
 /// @brief Pipe structure
 typedef struct s_pipe
 {
-	t_file	read;
-	t_file	write;
+	int	read;
+	int	write;
 }			t_pipe;
 
 /// @brief Create a pipe

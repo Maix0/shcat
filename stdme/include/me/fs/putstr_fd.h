@@ -15,6 +15,6 @@
 
 # include "me/types.h"
 
-void	me_putstr_fd(t_str str, t_file file);
+void	me_putstr_fd(t_str str, int file);
 
 #endif

@@ -13,7 +13,7 @@
 #include "me/fs/write.h"
 #include <unistd.h>
 
-bool	me_write(t_file fd, t_u8 *buffer, t_i64 size)
+bool	me_write(int fd, t_u8 *buffer, t_i64 size)
 {
 	return (write(fd, buffer, size) < 0);
 }

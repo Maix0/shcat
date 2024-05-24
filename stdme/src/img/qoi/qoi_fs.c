@@ -21,7 +21,7 @@
 t_i32	qoi_write(t_const_str filename, const void *data,
 		const t_qoi_desc *desc)
 {
-	t_file	f;
+	int	f;
 	void	*encoded;
 	t_i32	size;
 

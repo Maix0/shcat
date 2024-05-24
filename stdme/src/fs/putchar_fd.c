@@ -14,7 +14,7 @@
 #include "me/fs/write.h"
 #include "me/str/str.h"
 
-void	me_putchar_fd(char chr, t_file file)
+void	me_putchar_fd(char chr, int file)
 {
 	me_write(file, (t_u8 *)&chr, 1);
 }

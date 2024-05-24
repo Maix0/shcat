@@ -34,7 +34,7 @@ typedef size_t				t_usize;
 typedef float				t_f32;
 typedef double				t_f64;
 
-typedef int					t_file;
+typedef int					int;
 
 typedef bool				t_error;
 
