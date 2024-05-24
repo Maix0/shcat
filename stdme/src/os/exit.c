@@ -17,7 +17,7 @@
 
 void me_exit(t_i32 exit_code)
 {
-	close_all_fds();
+	close_all_slots();
 	uninit_global_allocator();
 	exit(exit_code);
 }
