@@ -6,24 +6,24 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/25 16:28:54 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/25 16:29:47 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-BUILD_DIR		?=	build
+BUILD_DIR		?=	../build
 SRC_DIR			=	src
-INCLUDE_DIR		=	include output/include ../stdme/include
+INCLUDE_DIR		=	include output/include ../includes
 LIBS_DIR		=	. 
 GENERIC_DIR		=	output/src
 GENERIC_INCLUDE	=	output/include
 
 
 BASE_PATH		?=	$(shell pwd)
-NAME			=	libaq.a
+NAME			=	libast.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"' -O0
+CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
 # CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 BONUS_FILES		=	
 LIBS_NAME		=	
@@ -32,8 +32,8 @@ SUBJECT_URL		=
 SRC_FILES		=	$(shell cat src.list)
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
-OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/aq/,$(SRC_FILES)))
-DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/aq/,$(SRC_FILES)))
+OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
+DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
 
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
@@ -57,12 +57,12 @@ $(TARGET): $(OBJ)
 	@echo -e '$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
-$(BUILD_DIR)/aq/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/ast/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
 
-$(BUILD_DIR)/aq/%.o: $(GENERIC_DIR)/%.c
+$(BUILD_DIR)/ast/%.o: $(GENERIC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@

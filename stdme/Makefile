@@ -6,9 +6,11 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/14 18:41:46 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/25 16:28:21 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+
 
 BUILD_DIR		?=	build
 SRC_DIR			=	src
@@ -35,11 +37,11 @@ SRC_FILES		=	$(shell cat src.list)
 BONUS			=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(BONUS_FILES)))
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES))) \
 					$(addsuffix .c,$(addprefix $(GENERIC_DIR)/,$(GENERIC_FILES)))
-BONUS_OBJ		=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(BONUS_FILES)))
-OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES) )) \
-					$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(GENERIC_FILES)))
-DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES))) \
-					$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(GENERIC_FILES)))
+BONUS_OBJ		=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/me/,$(BONUS_FILES)))
+OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/me/,$(SRC_FILES) )) \
+					$(addsuffix .o,$(addprefix $(BUILD_DIR)/me/,$(GENERIC_FILES)))
+DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/me/,$(SRC_FILES))) \
+					$(addsuffix .d,$(addprefix $(BUILD_DIR)/me/,$(GENERIC_FILES)))
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(GENERIC_INCLUDE) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
 COL_GRAY		=	\033[90m
@@ -63,12 +65,12 @@ $(TARGET): $(OBJ)
 	@#$(CC) $(INCLUDES) $(OBJ) $(CFLAGS) -o $(NAME)
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/me/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
 
-$(BUILD_DIR)/%.o: $(GENERIC_DIR)/%.c
+$(BUILD_DIR)/me/%.o: $(GENERIC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
 	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
@@ -78,10 +80,8 @@ clean:
 		make clean LIB_NAME=$(LIB)/ BUILD_DIR=$(realpath $(BUILD_DIR)) -C $(LIB) --no-print-directory || true;\
 	)
 	@- $(if $(LIB_NAME),,\
-		printf $(COL_WHITE)Clearing\ Artefacts\ ; \
-		printf $(COL_GRAY)\%-25s$(COL_RESET)\  \($(BUILD_DIR)\); \
+		echo -e '$(COL_WHITE)Clearing Artefacts\t$(COL_GREEN)$(BUILD_DIR)/$(COL_RESET)' \
 		rm -rf $(BUILD_DIR); \
-		printf $(COL_GREEN)done$(COL_RESET)\\n; \
 	)
 	@echo >/dev/null
 
@@ -89,10 +89,8 @@ fclean: clean
 	@- $(foreach LIB,$(LIBS), \
 		make fclean LIB_NAME=$(LIB)/ BUILD_DIR=$(shell realpath $(BUILD_DIR)) -C $(LIB) --no-print-directory || true;\
 	)
-	@printf $(COL_WHITE)Clearing\ Output\ $(COL_GRAY)%-28s$(COL_RESET)\  \
-		\($(LIB_NAME)$(NAME)\)
-	@rm -f $(BUILD_DIR)$(NAME)
-	@printf $(COL_GREEN)done$(COL_RESET)\\n
+	@echo -e '$(COL_WHITE)Clearing Output\t$(COL_GREEN)$(BUILD_DIR)/$(NAME)$(COL_RESET)'
+	@rm -f $(BUILD_DIR)/$(NAME)
 
 re: fclean all
 

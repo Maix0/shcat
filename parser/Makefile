@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/18 14:36:37 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/25 16:29:29 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,8 +24,8 @@ include ./Filelist.mk
 
 SRC_FILES		+= ./src/combined ./src/scanner
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
-OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
-DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/,$(SRC_FILES)))
+OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/gmr/,$(SRC_FILES)))
+DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/gmr/,$(SRC_FILES)))
 
 INCLUDES		=	
 GREEN = \033[32m
@@ -54,7 +54,7 @@ $(TARGET): $(OBJ)
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/gmr/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
