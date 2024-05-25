@@ -6,90 +6,20 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 19:30:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/25 19:31:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/25 20:28:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AST_H
 #define AST_H
 
-#include "me/types.h"
+#include "ast/forward.h"
 
-// Forward declaration
-typedef union u_ast_node			  t_ast_node;
-typedef struct s_ast_string			  t_ast_string;
-typedef struct s_name				  t_name;
-typedef struct s_word				  t_word;
-typedef struct s_assignment			  t_assignment;
-typedef union u_redirect			  t_redirect;
-typedef struct s_redirect_file		  t_redirect_file;
-typedef struct s_redirect_heredoc	  t_redirect_heredoc;
-typedef struct s_function_definition  t_function_definition;
-typedef struct s_command			  t_command;
-typedef struct s_simple_command		  t_simple_command;
-typedef union u_compound_command	  t_compound_command;
-typedef struct s_assignments_list	  t_assignments_list;
-typedef struct s_brace_command		  t_brace_command;
-typedef struct s_subshell_command	  t_subshell_command;
-typedef struct s_if_command			  t_if_command;
-typedef struct s_if_clause			  t_if_clause;
-typedef struct s_elif_clause		  t_elif_clause;
-typedef struct s_else_clause		  t_else_clause;
-typedef struct s_for_command		  t_for_command;
-typedef struct s_case_command		  t_case_command;
-typedef struct s_case_item			  t_case_item;
-typedef struct s_while_command		  t_while_command;
-typedef struct s_until_command		  t_until_command;
-typedef struct s_parameter_expansion  t_parameter_expansion;
-typedef struct s_arithmetic_expansion t_arithmetic_expansion;
-typedef struct s_command_substitution t_command_substitution;
-typedef struct s_command_backticks	  t_command_backticks;
-typedef struct s_compound_list		  t_compound_list;
-typedef struct s_sequential_list	  t_sequential_list;
-typedef struct s_async_command		  t_async_command;
-typedef struct s_and_list			  t_and_list;
-typedef struct s_or_list			  t_or_list;
-typedef struct s_and_or_list		  t_and_or_list;
-typedef struct s_not				  t_not;
-typedef struct s_pipe_list			  t_pipe_list;
-typedef struct s_program			  t_program;
-typedef struct s_assignment_list	  t_assignment_list;
-typedef union u_expension_or_string	  t_expension_or_string;
-typedef union u_expension			  t_expension;
-typedef struct s_redirect_or_assign	  t_redirect_or_assign;
-typedef struct s_redirect_or_word	  t_redirect_or_word;
-typedef union u_compound_command_body t_compound_command_body;
-typedef union u_program_body		  t_program_body;
-typedef union u_sequential_list_body  t_sequential_list_body;
-typedef union u_async_command_body	  t_async_command_body;
-typedef union u_and_list_body		  t_and_list_body;
-typedef union u_or_list_body		  t_or_list_body;
-typedef union u_and_or_list_body	  t_and_or_list_body;
-typedef union u_not_body			  t_not_body;
-typedef union u_command_inner		  t_command_inner;
-typedef struct s_command_backticks	  t_command_backticks;
-typedef struct s_compound_list		  t_compound_list;
-typedef struct s_sequential_list	  t_sequential_list;
-typedef struct s_async_command		  t_async_command;
-typedef struct s_and_list			  t_and_list;
-typedef struct s_or_list			  t_or_list;
-typedef struct s_and_or_list		  t_and_or_list;
-typedef struct s_not				  t_not;
-typedef struct s_pipe_list			  t_pipe_list;
-typedef struct s_program			  t_program;
-typedef struct s_assignment_list	  t_assignment_list;
-typedef struct s_redirect_or_assign	  t_redirect_or_assign;
-typedef struct s_redirect_or_word	  t_redirect_or_word;
-typedef union u_compound_command_body t_compound_command_body;
-typedef union u_program_body		  t_program_body;
-typedef union u_sequential_list_body  t_sequential_list_body;
-typedef union u_async_command_body	  t_async_command_body;
-typedef union u_and_list_body		  t_and_list_body;
-typedef union u_or_list_body		  t_or_list_body;
-typedef union u_and_or_list_body	  t_and_or_list_body;
-typedef union u_not_body			  t_not_body;
-typedef union u_command_inner		  t_command_inner;
-typedef union u_compond_list_body	  t_compound_list_body;
+#ifndef TYPES_H
+typedef unsigned int t_usize;
+typedef int			 t_isize;
+typedef char		*t_str;
+#endif
 
 /// @brief Node types enumeration
 /// @details This enumeration is used to identify the type of a node
@@ -129,7 +59,7 @@ struct s_program
 
 /// Can be either a t_sequential_list, t_async_command, t_and_or_list, t_not,
 /// t_pipe_list or an t_command
-union u_compond_list_body {
+union u_compound_list_body {
 	t_ast_type		  *type;
 	t_sequential_list *sequential_list;
 	t_async_command	  *async_command;
@@ -258,7 +188,7 @@ union u_command_inner {
 	t_ast_type			  *type;
 	t_simple_command	  *simple_command;
 	t_compound_command	  *compound_command;
-	t_assignments_list	  *assignments_list;
+	t_assignment_list	  *assignments_list;
 	t_function_definition *function_definition;
 };
 
@@ -285,20 +215,11 @@ union u_redirect_or_word {
 struct s_simple_command
 {
 	t_ast_type			  type;
-	u_redirect_or_assign *prefix;
+	t_redirect_or_assign *prefix;
 	t_usize				  prefix_len;
 	t_word *_Nullable cmd;
 	t_redirect_or_word *suffix;
 	t_usize				suffix_len;
-};
-
-/// @note Format: `{ compound-list ; }`
-struct s_compound_command
-{
-	t_ast_type				 type;
-	t_compound_command_body *body;
-	t_redirect				*redirects;
-	t_usize					 redirects_len;
 };
 
 typedef enum e_assignement_modifier
@@ -348,7 +269,7 @@ struct s_subshell_command
 	t_usize		redirects_len;
 };
 
-union u_if_clause {
+union u_if_clauses {
 	t_ast_type	  *type;
 	t_if_clause	  *if_clause;
 	t_elif_clause *elif_clause;
@@ -358,7 +279,7 @@ union u_if_clause {
 struct s_if_command
 {
 	t_ast_type	 type;
-	t_if_clause *clauses;
+	t_if_clauses *clauses;
 	t_usize		 clauses_len;
 	t_redirect	*redirect;
 	t_usize		 redirect_len;
