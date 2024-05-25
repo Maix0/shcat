@@ -6,20 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 19:30:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/25 20:28:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/25 20:42:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AST_H
 #define AST_H
 
+#include "me/types.h"
 #include "ast/forward.h"
-
-#ifndef TYPES_H
-typedef unsigned int t_usize;
-typedef int			 t_isize;
-typedef char		*t_str;
-#endif
 
 /// @brief Node types enumeration
 /// @details This enumeration is used to identify the type of a node

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/24 14:45:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/25 20:43:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <unistd.h>
+
+#ifndef _Nullable
+#define _Nullable
+#endif
 
 /// @brief A string, null terminated
 typedef char	   *t_str;
