@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 19:30:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/26 17:25:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:55:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,40 @@
 enum e_ast_type
 {
 	TY_EMPTY = 0,
-	TY_PROGRAM,
-	TY_COMPOUND_LIST,
-	TY_SEQUENTIAL_LIST,
-	TY_ASYNC_COMMAND,
 	TY_AND_LIST,
-	TY_OR_LIST,
 	TY_AND_OR_LIST,
+	TY_ARITHMETIC_EXPANSION,
+	TY_ASSIGNMENT,
+	TY_ASSIGNMENT_LIST,
+	TY_AST_STRING,
+	TY_ASYNC_COMMAND,
+	TY_BRACE_COMMAND,
+	TY_CASE_COMMAND,
+	TY_CASE_ITEM,
+	TY_COMMAND,
+	TY_COMMAND_BACKTICKS,
+	TY_COMMAND_SUBSTITUTION,
+	TY_COMPOUND_LIST,
+	TY_ELIF_CLAUSE,
+	TY_ELSE_CLAUSE,
+	TY_FOR_COMMAND,
+	TY_FUNCTION_DEFINITION,
+	TY_IF_CLAUSE,
+	TY_IF_COMMAND,
+	TY_NAME,
 	TY_NOT,
-	TY_PIPE_LIST
+	TY_OR_LIST,
+	TY_PARAMETER_EXPANSION,
+	TY_PIPE_LIST,
+	TY_PROGRAM,
+	TY_REDIRECT_FILE,
+	TY_REDIRECT_HEREDOC,
+	TY_SEQUENTIAL_LIST,
+	TY_SIMPLE_COMMAND,
+	TY_SUBSHELL_COMMAND,
+	TY_UNTIL_COMMAND,
+	TY_WHILE_COMMAND,
+	TY_WORD,
 };
 
 /// Can be either a t_sequential_list, t_async_command, t_and_or_list, t_not,
@@ -365,13 +390,13 @@ union u_redirect {
 
 enum e_redirect_file_op
 {
-	RO_INPUT,		// <
-	RO_OUTPUT,		// >
-	RO_APPEND,		// >>
-	RO_DUP_INPUT,	// <&
-	RO_DUP_OUTPUT,	// >&
-	RO_CLOBBER,		// >|
-	RO_INPUT_OUPUT, // <>
+	RF_INPUT,		// <
+	RF_OUTPUT,		// >
+	RF_APPEND,		// >>
+	RF_DUP_INPUT,	// <&
+	RF_DUP_OUTPUT,	// >&
+	RF_CLOBBER,		// >|
+	RF_INPUT_OUPUT, // <>
 };
 
 struct s_redirect_file
@@ -495,42 +520,41 @@ struct s_command_backticks
 };
 
 union u_ast_node {
-	t_ast_type			   type;
-	t_assignment_list	   assignment_list;
-	t_expension			   expension;
-	t_program_body		   program_body;
-	t_sequential_list_body sequential_list_body;
-	t_async_command_body   async_command_body;
-	t_and_list_body		   and_list_body;
-	t_or_list_body		   or_list_body;
-	t_and_or_list_body	   and_or_list_body;
-	t_not_body			   not_body;
-	t_command_inner		   command_inner;
-	t_compound_list_body   compound_list_body;
-	t_program			   program;
-	t_compound_list		   compound_list;
-	t_sequential_list	   sequential_list;
-	t_async_command		   async_command;
+	t_ast_type			   ast_type;
 	t_and_list			   and_list;
-	t_or_list			   or_list;
 	t_and_or_list		   and_or_list;
-	t_not				   not_;
+	t_arithmetic_expansion arithmetic_expansion;
+	t_assignment		   assignment;
+	t_assignment_list	   assignment_list;
+	t_ast_string		   ast_string;
+	t_async_command		   async_command;
+	t_brace_command		   brace_command;
+	t_case_command		   case_command;
+	t_case_item			   case_item;
 	t_command			   command;
-	t_pipe_list			   pipe_list;
-	t_simple_command	   simple_command;
-	t_compound_command	   compound_command;
+	t_command_backticks	   command_backticks;
+	t_command_substitution command_substitution;
+	t_compound_list		   compound_list;
+	t_elif_clause		   elif_clause;
+	t_else_clause		   else_clause;
+	t_for_command		   for_command;
 	t_function_definition  function_definition;
-	t_redirect			   redirect;
+	t_if_clause			   if_clause;
+	t_if_command		   if_command;
+	t_name				   name;
+	t_not				   not_;
+	t_or_list			   or_list;
+	t_parameter_expansion  parameter_expansion;
+	t_pipe_list			   pipe_list;
+	t_program			   program;
 	t_redirect_file		   redirect_file;
 	t_redirect_heredoc	   redirect_heredoc;
-	t_assignment		   assignment;
-	t_ast_string		   ast_string;
-	t_name				   name;
+	t_sequential_list	   sequential_list;
+	t_simple_command	   simple_command;
+	t_subshell_command	   subshell_command;
+	t_until_command		   until_command;
+	t_while_command		   while_command;
 	t_word				   word;
-	t_parameter_expansion  parameter_expansion;
-	t_arithmetic_expansion arithmetic_expansion;
-	t_command_substitution command_substitution;
-	t_command_backticks	   command_backticks;
 };
 
 #endif /* AST_H */
