@@ -6,19 +6,19 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 19:30:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/25 20:42:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/26 17:25:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AST_H
 #define AST_H
 
-#include "me/types.h"
 #include "ast/forward.h"
+#include "me/types.h"
 
 /// @brief Node types enumeration
 /// @details This enumeration is used to identify the type of a node
-typedef enum e_ast_type
+enum e_ast_type
 {
 	TY_EMPTY = 0,
 	TY_PROGRAM,
@@ -30,7 +30,7 @@ typedef enum e_ast_type
 	TY_AND_OR_LIST,
 	TY_NOT,
 	TY_PIPE_LIST
-} t_ast_type;
+};
 
 /// Can be either a t_sequential_list, t_async_command, t_and_or_list, t_not,
 /// t_pipe_list or an t_command
@@ -217,13 +217,13 @@ struct s_simple_command
 	t_usize				suffix_len;
 };
 
-typedef enum e_assignement_modifier
+enum e_assignement_modifier
 {
 	AM_NONE = 0,
 	AM_EXPORT,
 	AM_LOCAL,
 	AM_READONLY,
-} t_assignement_modifier;
+};
 
 struct s_assignment_list
 {
@@ -273,11 +273,11 @@ union u_if_clauses {
 
 struct s_if_command
 {
-	t_ast_type	 type;
+	t_ast_type	  type;
 	t_if_clauses *clauses;
-	t_usize		 clauses_len;
-	t_redirect	*redirect;
-	t_usize		 redirect_len;
+	t_usize		  clauses_len;
+	t_redirect	 *redirect;
+	t_usize		  redirect_len;
 };
 
 struct s_if_clause
@@ -363,7 +363,7 @@ union u_redirect {
 	t_redirect_heredoc *heredoc;
 };
 
-typedef enum e_redirect_file_op
+enum e_redirect_file_op
 {
 	RO_INPUT,		// <
 	RO_OUTPUT,		// >
@@ -372,7 +372,7 @@ typedef enum e_redirect_file_op
 	RO_DUP_OUTPUT,	// >&
 	RO_CLOBBER,		// >|
 	RO_INPUT_OUPUT, // <>
-} t_redirect_file_op;
+};
 
 struct s_redirect_file
 {
@@ -382,11 +382,11 @@ struct s_redirect_file
 	t_word			  *file;
 };
 
-typedef enum e_redirect_heredoc_op
+enum e_redirect_heredoc_op
 {
 	RH_HEREDOC,		 // <<
 	RH_HEREDOC_IDENT // <<-
-} t_redirect_heredoc_op;
+};
 
 struct s_redirect_heredoc
 {
@@ -432,12 +432,12 @@ struct s_word
 
 #define OP_NONE 0
 
-typedef enum e_op_pre
+enum e_op_pre
 {
 	OP_PRE_HASH = 1, // '#'
-} t_op_pre;
+};
 
-typedef enum e_op_in
+enum e_op_in
 {
 	OP_IN_COLON_MINUS = 1, // ':-'
 	OP_IN_MINUS,		   // '-'
@@ -454,7 +454,7 @@ typedef enum e_op_in
 	OP_IN_COLON,		   // ':'
 	OP_IN_SLASH_SLASH,	   // '//'
 	OP_IN_SLASH,		   // '/'
-} t_op_in;
+};
 
 /// is either a t_parameter_expansion, t_arithmetic_expansion,
 /// t_command_substitution or t_command_backticks

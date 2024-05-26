@@ -23,7 +23,7 @@
 #include <unistd.h>
 
 #ifndef _Nullable
-#define _Nullable
+# define _Nullable
 #endif
 
 /// @brief A string, null terminated

@@ -1,5 +1,7 @@
 CompileFlags: # Tweak the parse settings
+  Compiler: clang
   Add:
+    - "-xc"
     - "-I/usr/include/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/vendor/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/stdme/include/"
