@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 19:30:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/26 17:55:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/28 14:49:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "ast/forward.h"
 #include "me/types.h"
+#include <iso646.h>
 
 /// @brief Node types enumeration
 /// @details This enumeration is used to identify the type of a node
@@ -520,7 +521,7 @@ struct s_command_backticks
 };
 
 union u_ast_node {
-	t_ast_type			   ast_type;
+	t_ast_type			   type;
 	t_and_list			   and_list;
 	t_and_or_list		   and_or_list;
 	t_arithmetic_expansion arithmetic_expansion;
