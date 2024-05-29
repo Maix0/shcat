@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:30:54 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/28 13:34:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/29 16:20:52 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,21 @@ t_error	ft_counter(const t_str str, t_usize *i)
 	return (NO_ERROR);
 }
 
-t_error	ft_nblen(const t_str str, t_usize *int_len, t_usize *float_len)
+t_error	ft_nblen(const t_str str, t_usize *int_len, t_usize *float_len, t_u8 *sign)
 {
 	t_usize	i;
 
 	(*int_len) = 0;
 	(*float_len) = 0;
+	(*sign) = 1;
 	i = 0;
 	if (str == NULL)
 		return (ERROR);
+	if (str[i] == '-')
+	{
+		(*sign) = -1;
+		i++;
+	}
 	while (str[i] != '.' && str[i] != '\0')
 		ft_counter(str, &i);
 	(*int_len) = i;

@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/05/29 14:20:08 by rparodi          ###   ########.fr        #
+#    Updated: 2024/05/29 15:37:40 by rparodi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 # Variables
 
 # Name
-NAME = libmmath.a
+NAME = test
 LIBDIRNAME = libft
 SRCDIRNAME = sources
 
@@ -26,15 +26,17 @@ RM = rm -rf
 CFLAGS = -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD
 
 # Sources
-LIB =	./libft/ft_split.c
+LIB =	
 
-SRC =	./sources/operation/ft_pow.c \
+SRC =	./main.c \
+		./sources/operation/ft_pow.c \
 		./sources/operation/ft_add.c \
 		./sources/utils/ft_init_numbers.c \
 		./sources/utils/ft_nblen.c \
 		./sources/comparison/ft_is_less.c \
 		./sources/comparison/ft_equal.c \
-		./sources/comparison/ft_is_greater.c
+		./sources/comparison/ft_is_greater.c \
+		./sources/ft_split.c
 
 # Objects
 OBJDIRNAME = ./objects
@@ -83,7 +85,7 @@ $(NAME): $(OBJ) $(LIB_OBJ)
 	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
 	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
 	@printf '$(GREY) Creating $(END)$(GREEN)$(OBJDIRNAME)$(END)\n'
-	@ar rc $(NAME) $(OBJ) $(OBJBonus) 1>/dev/null
+	@ar rc $(NAME) $(OBJ) $(OBJBonus)
 	@ranlib $(NAME)
 # Creating the objects
 $(OBJDIRNAME)/%.o: %.c
@@ -125,5 +127,5 @@ footer:
 #	Phony
 .PHONY: all bonus clean fclean re
 
-# -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 -include	${OBJ:.o=.d}
