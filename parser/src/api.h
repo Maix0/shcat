@@ -3,12 +3,12 @@
 
 #include "me/mem/mem.h"
 #include <assert.h>
-#include <ctype.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "me/char/char.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)
 #define LANGUAGE_VERSION_WITH_PRIMARY_STATES 14

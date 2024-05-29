@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:35:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 16:23:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/29 14:46:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@
 typedef struct s_node
 {
 	t_u64		   kind;
-	const char	  *kind_str;
-	const char	  *input;
-	char		  *single_str;
+	t_const_str	   kind_str;
+	t_const_str	   field_str;
+	t_u64		   field;
+	t_const_str	   input;
+	t_str		   single_str;
 	t_usize		   start;
 	t_usize		   end;
 	t_usize		   childs_count;

@@ -36,6 +36,7 @@ typedef struct s_command_backticks	  t_command_backticks;
 typedef struct s_command_substitution t_command_substitution;
 typedef struct s_command			  t_command;
 typedef struct s_compound_list		  t_compound_list;
+typedef struct s_double_quote_string  t_double_quote_string;
 typedef struct s_elif_clause		  t_elif_clause;
 typedef struct s_else_clause		  t_else_clause;
 typedef struct s_for_command		  t_for_command;
@@ -55,7 +56,7 @@ typedef struct s_simple_command		  t_simple_command;
 typedef struct s_subshell_command	  t_subshell_command;
 typedef struct s_until_command		  t_until_command;
 typedef struct s_while_command		  t_while_command;
-typedef struct s_word				  t_word; 									
+typedef struct s_word				  t_word;
 
 typedef union u_and_list_body		 t_and_list_body;
 typedef union u_and_or_list_body	 t_and_or_list_body;

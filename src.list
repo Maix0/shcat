@@ -14,6 +14,5 @@ ft_echo.c
 ft_exit.c
 ft_pwd.c
 main.c
-node/create_node.c
 node/node.c
 signal_handler.c

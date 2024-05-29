@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/21 14:53:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/29 16:40:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@
 #include "gmr/symbols.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
-#include "me/str/str.h"
 #include "me/types.h"
 #include "minishell.h"
 #include "parser/api.h"
 #include <sys/types.h>
+
+#include "ast/from_node.h"
 
 #undef free
 #undef malloc
@@ -87,7 +88,6 @@ t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out)
 	*out = NULL;
 	if (self->kind == sym_word)
 	{
-		printf("word!!!\n");
 		*out = node_getstr(self);
 		return (NO_ERROR);
 	}
@@ -102,7 +102,11 @@ void print_node_data(t_node *t, t_usize depth)
 	t_usize idx;
 
 	idx = 0;
-	while (idx++ < depth)
+	if (t->kind == 7)
+		return;
+	printf("\x1b[%im[%s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32,
+		   t->field_str == NULL ? "nil" : t->field_str, t->field);
+	while (idx++ < depth + 1)
 		printf("\t");
 	idx = 0;
 	printf("%s(%lu) = %s\n", t->kind_str, t->kind, node_getstr(t));
@@ -122,30 +126,11 @@ t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 	ts_tree_delete(tree);
 	return (ret);
 }
+
 t_node parse_str(t_parser *parser, t_const_str input)
 {
 	return (parse_to_nodes(parser->parser, input));
 }
-
-// void ft_check(t_utils *shcat, char **input)
-// {
-// 	t_usize i;
-// 	t_usize prev_i;
-//
-// 	i = 0;
-// 	prev_i = 0;
-// 	while (input[i] != NULL)
-// 	{
-// 		if (ft_strcmp(input[i], "exit") == 0)
-// 			ft_exit(shcat, 0);
-// 		else if (ft_strcmp(input[i], "pwd") == 0)
-// 			ft_pwd();
-// 		else
-// 			ft_other_cmd(shcat, i, prev_i);
-// 		prev_i = i;
-// 		i++;
-// 	}
-// }
 
 t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret);
 
@@ -171,7 +156,7 @@ void exec_shcat(t_utils *shcat)
 {
 	t_i32 ret;
 
-	// print_node_data(&shcat->current_node, 0);
+	print_node_data(&shcat->current_node, 0);
 	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
 	(void)ret;
@@ -179,16 +164,20 @@ void exec_shcat(t_utils *shcat)
 
 void ft_take_args(t_utils *shcat)
 {
+	t_str cmd;
 
 	while (1)
 	{
-		shcat->str_input = readline((t_const_str)shcat->name_shell);
-		if (!shcat->str_input)
+		shcat->str_input = NULL;
+		cmd = readline((t_const_str)shcat->name_shell);
+		if (cmd == NULL)
 			ft_exit(shcat, 0);
+		shcat->str_input = str_clone(cmd);
+		free(cmd);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
 		add_history(shcat->str_input);
-		free(shcat->str_input);
+		mem_free(shcat->str_input);
 	}
 }
 
@@ -231,4 +220,5 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 					   "\001\x1B[0m\002"
 					   "$ ";
 	ft_take_args(&utils);
+	// (void)from_node(NULL);
 }

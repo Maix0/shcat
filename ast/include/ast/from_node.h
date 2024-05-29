@@ -13,6 +13,7 @@
 #ifndef FROM_PROGRAM_C
 #define FROM_PROGRAM_C
 
+#include "forward.h"
 #include "me/types.h"
 
 #include "app/node.h"
@@ -89,6 +90,11 @@ t_command *build_command(t_node *node, t_usize size);
 /// @param size the size of the nodes
 /// @note can be null in case of error
 t_compound_list *build_compound_list(t_node *node, t_usize size);
+
+/// @param node a pointer to an array of `t_node` of size `size`
+/// @param size the size of the nodes
+/// @note can be null in case of error
+t_double_quote_string *build_double_quote_string(t_node *node, t_usize size);
 
 /// @param node a pointer to an array of `t_node` of size `size`
 /// @param size the size of the nodes
@@ -189,7 +195,6 @@ t_while_command *build_while_command(t_node *node, t_usize size);
 /// @param size the size of the nodes
 /// @note can be null in case of error
 t_word *build_word(t_node *node, t_usize size);
-
 
 /// @param node a pointer to an array of `t_node` of size `size`
 /// @param size the size of the nodes

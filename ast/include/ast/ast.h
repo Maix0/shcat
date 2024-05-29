@@ -15,7 +15,6 @@
 
 #include "ast/forward.h"
 #include "me/types.h"
-#include <iso646.h>
 
 /// @brief Node types enumeration
 /// @details This enumeration is used to identify the type of a node
@@ -36,6 +35,7 @@ enum e_ast_type
 	TY_COMMAND_BACKTICKS,
 	TY_COMMAND_SUBSTITUTION,
 	TY_COMPOUND_LIST,
+	TY_DOUBLE_QUOTE_STRING,
 	TY_ELIF_CLAUSE,
 	TY_ELSE_CLAUSE,
 	TY_FOR_COMMAND,
@@ -200,9 +200,9 @@ struct s_not
 
 struct s_pipe_list
 {
-	t_ast_type type;
-	t_command *cmds;
-	t_usize	   cmds_len;
+	t_ast_type	 type;
+	t_ast_node **cmds;
+	t_usize		 cmds_len;
 };
 
 union u_command_inner {
@@ -433,7 +433,7 @@ struct s_assignment
 struct s_ast_string
 {
 	t_ast_type type;
-	t_str	  *value;
+	t_str	   value;
 };
 
 struct s_name
@@ -490,6 +490,14 @@ union u_expension {
 	t_arithmetic_expansion *arithmetic_expansion;
 	t_command_substitution *command_substitution;
 	t_command_backticks	   *command_backticks;
+	t_double_quote_string  *double_quote_string;
+};
+
+struct s_double_quote_string
+{
+	t_ast_type			   type;
+	t_expension_or_string *parts;
+	t_usize				   parts_len;
 };
 
 struct s_parameter_expansion
@@ -498,7 +506,7 @@ struct s_parameter_expansion
 	t_op_in		  op_pre;
 	t_ast_string *param;
 	t_op_in		  op_in;
-	t_ast_string *_Nullable word;
+	t_word *_Nullable word;
 };
 
 struct s_arithmetic_expansion
@@ -536,6 +544,7 @@ union u_ast_node {
 	t_command_backticks	   command_backticks;
 	t_command_substitution command_substitution;
 	t_compound_list		   compound_list;
+	t_double_quote_string  double_quote_string;
 	t_elif_clause		   elif_clause;
 	t_else_clause		   else_clause;
 	t_for_command		   for_command;
