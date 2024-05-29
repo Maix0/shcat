@@ -6,13 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 17:51:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 19:41:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/24 20:09:25 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/char/char.h"
 
-bool	me_isascii(char chr)
+bool	me_isascii(signed char chr)
 {
 	return (0 <= chr && chr);
 }

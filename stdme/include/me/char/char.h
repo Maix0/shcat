@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 17:11:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/19 17:11:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/24 20:10:07 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	me_isdigit(char chr);
 /// @brief Check if a character is in the ascii range
 /// @param chr char to check
 /// @return chr is a ascii character
-bool	me_isascii(char chr);
+bool	me_isascii(signed char chr);
 
 /// @brief Check if a character is lowercase
 /// @param chr char to check
