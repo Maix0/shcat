@@ -12,6 +12,7 @@
 
 #include "./array.h"
 #include "./api_structs.h"
+#include "./funcs.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)
 #define LANGUAGE_VERSION_WITH_PRIMARY_STATES 14
@@ -93,47 +94,6 @@ static inline uint32_t atomic_dec(volatile uint32_t *p)
 #endif
 }
 
-// A compact representation of a subtree.
-//
-// This representation is used for small leaf nodes that are not
-// errors, and were not created by an external scanner.
-//
-// The idea behind the layout of this struct is that the `is_inline`
-// bit will fall exactly into the same location as the least significant
-// bit of the pointer in `t_subtree` or `t_mutable_subtree`, respectively.
-// Because of alignment, for any valid pointer this will be 0, giving
-// us the opportunity to make use of this bit to signify whether to use
-// the pointer or the inline struct.
-
-// A heap-allocated representation of a subtree.
-//
-// This representation is used for parent nodes, external tokens,
-// errors, and other leaf nodes whose data is too large to fit into
-// the inline representation.
-
-void ts_range_array_get_changed_ranges(const t_parse_range *old_ranges,
-									   unsigned				old_range_count,
-									   const t_parse_range *new_ranges,
-									   unsigned				new_range_count,
-									   t_range_array	   *differences);
-
-bool ts_range_array_intersects(const t_range_array *self, unsigned start_index,
-							   uint32_t start_byte, uint32_t end_byte);
-
-unsigned ts_subtree_get_changed_ranges(
-	const t_subtree *old_tree, const t_subtree *new_tree,
-	t_tree_cursor *cursor1, t_tree_cursor *cursor2, const t_language *language,
-	const t_range_array *included_range_differences, t_parse_range **ranges);
-
-void ts_language_table_entry(const t_language *, t_state_id, t_symbol,
-							 t_table_entry *);
-
-t_symbol_metadata ts_language_symbol_metadata(const t_language *, t_symbol);
-
-t_symbol ts_language_public_symbol(const t_language *, t_symbol);
-
-t_state_id ts_language_next_state(const t_language *self, t_state_id state,
-								  t_symbol symbol);
 
 static inline bool ts_language_is_symbol_external(const t_language *self,
 												  t_symbol			symbol)
@@ -437,17 +397,7 @@ static inline t_length length_saturating_sub(t_length len1, t_length len2)
 	}
 }
 
-void ts_lexer_init(t_lexer *);
-void ts_lexer_delete(t_lexer *);
-void ts_lexer_set_input(t_lexer *, t_parse_input);
-void ts_lexer_reset(t_lexer *, t_length);
-void ts_lexer_start(t_lexer *);
-void ts_lexer_finish(t_lexer *, uint32_t *);
-void ts_lexer_advance_to_end(t_lexer *);
-void ts_lexer_mark_end(t_lexer *);
-bool ts_lexer_set_included_ranges(t_lexer *self, const t_parse_range *ranges,
-								  uint32_t count);
-t_parse_range *ts_lexer_included_ranges(const t_lexer *self, uint32_t *count);
+
 
 static inline bool set_contains(t_char_range *ranges, uint32_t len,
 								int32_t lookahead)
@@ -658,146 +608,7 @@ static inline void reusable_node_reset(t_reusable_node *self, t_subtree tree)
 	}
 }
 
-// Create a stack.
-t_stack *ts_stack_new(t_subtree_pool *);
 
-// Release the memory reserved for a given stack.
-void ts_stack_delete(t_stack *);
-
-// Get the stack's current number of versions.
-uint32_t ts_stack_version_count(const t_stack *);
-
-// Get the state at the top of the given version of the stack. If the stack is
-// empty, this returns the initial state, 0.
-t_state_id ts_stack_state(const t_stack *, t_stack_version);
-
-// Get the last external token associated with a given version of the stack.
-t_subtree ts_stack_last_external_token(const t_stack *, t_stack_version);
-
-// Set the last external token associated with a given version of the stack.
-void ts_stack_set_last_external_token(t_stack *, t_stack_version, t_subtree);
-
-// Get the position of the given version of the stack within the document.
-t_length ts_stack_position(const t_stack *, t_stack_version);
-
-// Push a tree and state onto the given version of the stack.
-//
-// This transfers ownership of the tree to the t_stack. Callers that
-// need to retain ownership of the tree for their own purposes should
-// first retain the tree.
-void ts_stack_push(t_stack *, t_stack_version, t_subtree, bool, t_state_id);
-
-// Pop the given number of entries from the given version of the stack. This
-// operation can increase the number of stack versions by revealing multiple
-// versions which had previously been merged. It returns an array that
-// specifies the index of each revealed version and the trees that were
-// removed from that version.
-t_stack_slice_array ts_stack_pop_count(t_stack *, t_stack_version,
-									   uint32_t count);
-
-// Remove an error at the top of the given version of the stack.
-t_subtree_array ts_stack_pop_error(t_stack *, t_stack_version);
-
-// Remove any pending trees from the top of the given version of the stack.
-t_stack_slice_array ts_stack_pop_pending(t_stack *, t_stack_version);
-
-// Remove any all trees from the given version of the stack.
-t_stack_slice_array ts_stack_pop_all(t_stack *, t_stack_version);
-
-// Get the maximum number of tree nodes reachable from this version of the stack
-// since the last error was detected.
-unsigned ts_stack_node_count_since_error(const t_stack *, t_stack_version);
-
-int ts_stack_dynamic_precedence(t_stack *, t_stack_version);
-
-bool ts_stack_has_advanced_since_error(const t_stack *, t_stack_version);
-
-// Compute a summary of all the parse states near the top of the given
-// version of the stack and store the summary for later retrieval.
-void ts_stack_record_summary(t_stack *, t_stack_version, unsigned max_depth);
-
-// Retrieve a summary of all the parse states near the top of the
-// given version of the stack.
-t_stack_summary *ts_stack_get_summary(t_stack *, t_stack_version);
-
-// Get the total cost of all errors on the given version of the stack.
-unsigned ts_stack_error_cost(const t_stack *, t_stack_version version);
-
-// Merge the given two stack versions if possible, returning true
-// if they were successfully merged and false otherwise.
-bool ts_stack_merge(t_stack *, t_stack_version, t_stack_version);
-
-// Determine whether the given two stack versions can be merged.
-bool ts_stack_can_merge(t_stack *, t_stack_version, t_stack_version);
-
-t_subtree ts_stack_resume(t_stack *, t_stack_version);
-
-void ts_stack_pause(t_stack *, t_stack_version, t_subtree);
-
-void ts_stack_halt(t_stack *, t_stack_version);
-
-bool ts_stack_is_active(const t_stack *, t_stack_version);
-
-bool ts_stack_is_paused(const t_stack *, t_stack_version);
-
-bool ts_stack_is_halted(const t_stack *, t_stack_version);
-
-void ts_stack_renumber_version(t_stack *, t_stack_version, t_stack_version);
-
-void ts_stack_swap_versions(t_stack *, t_stack_version, t_stack_version);
-
-t_stack_version ts_stack_copy_version(t_stack *, t_stack_version);
-
-// Remove the given version from the stack.
-void ts_stack_remove_version(t_stack *, t_stack_version);
-
-void ts_stack_clear(t_stack *);
-
-void ts_external_scanner_state_init(t_external_scanner_state *, const char *,
-									unsigned);
-const char *ts_external_scanner_state_data(const t_external_scanner_state *);
-bool		ts_external_scanner_state_eq(const t_external_scanner_state *self,
-										 const char *, unsigned);
-void		ts_external_scanner_state_delete(t_external_scanner_state *self);
-
-void ts_subtree_array_copy(t_subtree_array, t_subtree_array *);
-void ts_subtree_array_clear(t_subtree_pool *, t_subtree_array *);
-void ts_subtree_array_delete(t_subtree_pool *, t_subtree_array *);
-void ts_subtree_array_remove_trailing_extras(t_subtree_array *,
-											 t_subtree_array *);
-void ts_subtree_array_reverse(t_subtree_array *);
-
-t_subtree_pool ts_subtree_pool_new(uint32_t capacity);
-void		   ts_subtree_pool_delete(t_subtree_pool *);
-
-t_subtree ts_subtree_new_leaf(t_subtree_pool *, t_symbol, t_length, t_length,
-							  uint32_t, t_state_id, bool, bool, bool,
-							  const t_language *);
-t_subtree ts_subtree_new_error(t_subtree_pool *, int32_t, t_length, t_length,
-							   uint32_t, t_state_id, const t_language *);
-t_mutable_subtree ts_subtree_new_node(t_symbol, t_subtree_array *, unsigned,
-									  const t_language *);
-t_subtree		  ts_subtree_new_error_node(t_subtree_array *, bool,
-											const t_language *);
-t_subtree ts_subtree_new_missing_leaf(t_subtree_pool *, t_symbol, t_length,
-									  uint32_t, const t_language *);
-t_mutable_subtree ts_subtree_make_mut(t_subtree_pool *, t_subtree);
-void			  ts_subtree_retain(t_subtree);
-void			  ts_subtree_release(t_subtree_pool *, t_subtree);
-int				  ts_subtree_compare(t_subtree, t_subtree, t_subtree_pool *);
-void ts_subtree_set_symbol(t_mutable_subtree *, t_symbol, const t_language *);
-void ts_subtree_summarize(t_mutable_subtree, const t_subtree *, uint32_t,
-						  const t_language *);
-void ts_subtree_summarize_children(t_mutable_subtree, const t_language *);
-void ts_subtree_balance(t_subtree, t_subtree_pool *, const t_language *);
-t_subtree ts_subtree_edit(t_subtree, const t_input_edit *edit,
-						  t_subtree_pool *);
-char	 *ts_subtree_string(t_subtree, t_symbol, bool, const t_language *,
-							bool include_all);
-t_subtree ts_subtree_last_external_token(t_subtree);
-const t_external_scanner_state *ts_subtree_external_scanner_state(
-	t_subtree self);
-bool ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
 
 #define SUBTREE_GET(self, name)                                                \
 	((self).data.is_inline ? (self).data.name : (self).ptr->name)
@@ -1039,13 +850,6 @@ static inline t_mutable_subtree ts_subtree_to_mut_unsafe(t_subtree self)
 	return result;
 }
 
-void ts_tree_cursor_init(t_tree_cursor *, t_parse_node);
-void ts_tree_cursor_current_status(const t_tree_cursor *, t_field_id *, bool *,
-								   bool *, bool *, t_symbol *, unsigned *);
-
-t_tree_cursor_step ts_tree_cursor_goto_first_child_internal(t_tree_cursor *);
-t_tree_cursor_step ts_tree_cursor_goto_next_sibling_internal(t_tree_cursor *);
-
 static inline t_subtree ts_tree_cursor_current_subtree(
 	const t_tree_cursor *_self)
 {
@@ -1053,12 +857,5 @@ static inline t_subtree ts_tree_cursor_current_subtree(
 	t_tree_cursor_entry *last_entry = array_back(&self->stack);
 	return *last_entry->subtree;
 }
-
-t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *);
-
-t_first_tree *ts_tree_new(t_subtree root, const t_language *language,
-						  const t_parse_range *, unsigned);
-t_parse_node  ts_node_new(const t_first_tree *, const t_subtree *, t_length,
-						  t_symbol);
 
 #endif // TREE_SITTER_TREE_H_
