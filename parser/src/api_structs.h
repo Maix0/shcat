@@ -82,7 +82,6 @@ typedef Array(t_parse_range) t_range_array;
 typedef Array(t_subtree) t_subtree_array;
 typedef Array(t_mutable_subtree) t_mutable_subtree_array;
 typedef Array(t_reduce_action) t_reduce_action_set;
-typedef Array(void) Array;
 typedef Array(t_stack_slice) t_stack_slice_array;
 typedef Array(t_stack_summary_entry) t_stack_summary;
 typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
