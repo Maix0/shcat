@@ -1,6 +1,7 @@
 #ifndef TREE_SITTER_ARRAY_H_
 #define TREE_SITTER_ARRAY_H_
 
+#include "me/char/char.h"
 #include "me/mem/mem.h"
 #include <assert.h>
 #include <limits.h>
@@ -8,7 +9,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "me/char/char.h"
+
+#include "./api_structs.h"
+#include "./array.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)
 #define LANGUAGE_VERSION_WITH_PRIMARY_STATES 14
@@ -29,14 +32,14 @@
 #define MAX_ITERATOR_COUNT 64
 #define TS_MAX_INLINE_TREE_LENGTH UINT8_MAX
 #define TS_MAX_TREE_POOL_SIZE 32
-#define ts_builtin_sym_error ((t_symbol)-1)
+#define ts_builtin_sym_error ((t_symbol) - 1)
 #define ts_builtin_sym_end 0
-#define TREE_SITTER_SERIALIZATION_BUFFER_SIZE 1024
+
 #define POINT_ZERO ((t_point){0, 0})
 #define POINT_MAX ((t_point){UINT32_MAX, UINT32_MAX})
 #define TS_TREE_STATE_NONE USHRT_MAX
 #define NULL_SUBTREE ((t_subtree){.ptr = NULL})
-#define STACK_VERSION_NONE ((t_stack_version)-1)
+#define STACK_VERSION_NONE ((t_stack_version) - 1)
 #define TS_DECODE_ERROR (-1)
 
 #if true
@@ -51,305 +54,12 @@
 # define free(p) mem_free((p))
 #endif
 
-#define Array(T)                                                               \
-	struct                                                                     \
-	{                                                                          \
-		T		*contents;                                                     \
-		uint32_t size;                                                         \
-		uint32_t capacity;                                                     \
-	}
-
-#ifndef inline
-# define inline __inline__
-#endif
-
-/// Initialize an array.
-#define array_init(self)                                                       \
-	((self)->size = 0, (self)->capacity = 0, (self)->contents = NULL)
-
-/// Create an empty array.
-#define array_new()                                                            \
-	{                                                                          \
-		NULL, 0, 0                                                             \
-	}
-
-/// Get a pointer to the element at a given `index` in the array.
-#define array_get(self, _index)                                                \
-	(assert((uint32_t)(_index) < (self)->size), &(self)->contents[_index])
-
-/// Get a pointer to the first element in the array.
-#define array_front(self) array_get(self, 0)
-
-/// Get a pointer to the last element in the array.
-#define array_back(self) array_get(self, (self)->size - 1)
-
-/// Clear the array, setting its size to zero. Note that this does not free any
-/// memory allocated for the array's contents.
-#define array_clear(self) ((self)->size = 0)
-
-/// Reserve `new_capacity` elements of space in the array. If `new_capacity` is
-/// less than the array's current capacity, this function has no effect.
-#define array_reserve(self, new_capacity)                                      \
-	_array__reserve((Array *)(self), array_elem_size(self), new_capacity)
-
-/// Free any memory allocated for this array. Note that this does not free any
-/// memory allocated for the array's contents.
-#define array_delete(self) _array__delete((Array *)(self))
-
-/// Push a new `element` onto the end of the array.
-#define array_push(self, element)                                              \
-	(_array__grow((Array *)(self), 1, array_elem_size(self)),                  \
-	 (self)->contents[(self)->size++] = (element))
-
-/// Increase the array's size by `count` elements.
-/// New elements are zero-initialized.
-#define array_grow_by(self, count)                                             \
-	do                                                                         \
-	{                                                                          \
-		if ((count) == 0)                                                      \
-			break;                                                             \
-		_array__grow((Array *)(self), count, array_elem_size(self));           \
-		memset((self)->contents + (self)->size, 0,                             \
-			   (count) * array_elem_size(self));                               \
-		(self)->size += (count);                                               \
-	} while (0)
-
-/// Append all elements from one array to the end of another.
-#define array_push_all(self, other)                                            \
-	array_extend((self), (other)->size, (other)->contents)
-
-/// Append `count` elements to the end of the array, reading their values from
-/// the `contents` pointer.
-#define array_extend(self, count, contents)                                    \
-	_array__splice((Array *)(self), array_elem_size(self), (self)->size, 0,    \
-				   count, contents)
-
-/// Remove `old_count` elements from the array starting at the given `index`. At
-/// the same index, insert `new_count` new elements, reading their values from
-/// the `new_contents` pointer.
-#define array_splice(self, _index, old_count, new_count, new_contents)         \
-	_array__splice((Array *)(self), array_elem_size(self), _index, old_count,  \
-				   new_count, new_contents)
-
-/// Insert one `element` into the array at the given `index`.
-#define array_insert(self, _index, element)                                    \
-	_array__splice((Array *)(self), array_elem_size(self), _index, 0, 1,       \
-				   &(element))
-
-/// Remove one element from the array at the given `index`.
-#define array_erase(self, _index)                                              \
-	_array__erase((Array *)(self), array_elem_size(self), _index)
-
-/// Pop the last element off the array, returning the element by value.
-#define array_pop(self) ((self)->contents[--(self)->size])
-
-/// Assign the contents of one array to another, reallocating if necessary.
-#define array_assign(self, other)                                              \
-	_array__assign((Array *)(self), (const Array *)(other),                    \
-				   array_elem_size(self))
-
-/// Swap one array with another
-#define array_swap(self, other) _array__swap((Array *)(self), (Array *)(other))
-
-/// Get the size of the array contents
-#define array_elem_size(self) (sizeof *(self)->contents)
-
-/// Search a sorted array for a given `needle` value, using the given `compare`
-/// callback to determine the order.
-///
-/// If an existing element is found to be equal to `needle`, then the `index`
-/// out-parameter is set to the existing value's index, and the `exists`
-/// out-parameter is set to true. Otherwise, `index` is set to an index where
-/// `needle` should be inserted in order to preserve the sorting, and `exists`
-/// is set to false.
-#define array_search_sorted_with(self, compare, needle, _index, _exists)       \
-	_array__search_sorted(self, 0, compare, , needle, _index, _exists)
-
-/// Search a sorted array for a given `needle` value, using integer comparisons
-/// of a given struct field (specified with a leading dot) to determine the
-/// order.
-///
-/// See also `array_search_sorted_with`.
-#define array_search_sorted_by(self, field, needle, _index, _exists)           \
-	_array__search_sorted(self, 0, _compare_int, field, needle, _index, _exists)
-
-/// Insert a given `value` into a sorted array, using the given `compare`
-/// callback to determine the order.
-#define array_insert_sorted_with(self, compare, value)                         \
-	do                                                                         \
-	{                                                                          \
-		unsigned _index, _exists;                                              \
-		array_search_sorted_with(self, compare, &(value), &_index, &_exists);  \
-		if (!_exists)                                                          \
-			array_insert(self, _index, value);                                 \
-	} while (0)
-
-/// Insert a given `value` into a sorted array, using integer comparisons of
-/// a given struct field (specified with a leading dot) to determine the order.
-///
-/// See also `array_search_sorted_by`.
-#define array_insert_sorted_by(self, field, value)                             \
-	do                                                                         \
-	{                                                                          \
-		unsigned _index, _exists;                                              \
-		array_search_sorted_by(self, field, (value)field, &_index, &_exists);  \
-		if (!_exists)                                                          \
-			array_insert(self, _index, value);                                 \
-	} while (0)
-
 // Get a subtree's children, which are allocated immediately before the
 // tree's own heap data.
 #define ts_subtree_children(self)                                              \
 	((self).data.is_inline                                                     \
 		 ? NULL                                                                \
 		 : (t_subtree *)((self).ptr) - (self).ptr->child_count)
-
-typedef uint16_t					t_state_id;
-typedef uint16_t					t_symbol;
-typedef uint16_t					t_field_id;
-typedef struct s_language			t_language;
-typedef struct s_first_parser		t_first_parser;
-typedef struct s_first_tree			t_first_tree;
-typedef struct s_parse_query		t_parse_query;
-typedef struct s_query_cursor		t_query_cursor;
-typedef struct s_lookahead_iterator t_lookahead_iterator;
-
-typedef struct s_point
-{
-	uint32_t row;
-	uint32_t column;
-} t_point;
-
-typedef struct s_length
-{
-	uint32_t bytes;
-	t_point	 extent;
-} t_length;
-
-typedef enum e_input_encoding
-{
-	TSInputEncodingUTF8,
-	TSInputEncodingUTF16,
-} t_input_encoding;
-
-typedef enum e_symbol_type
-{
-	TSSymbolTypeRegular,
-	TSSymbolTypeAnonymous,
-	TSSymbolTypeAuxiliary,
-} t_symbol_type;
-
-typedef struct s_parse_range
-{
-	t_point	 start_point;
-	t_point	 end_point;
-	uint32_t start_byte;
-	uint32_t end_byte;
-} t_parse_range;
-
-typedef struct s_parse_input
-{
-	void *payload;
-	const char *(*read)(void *payload, uint32_t byte_index, t_point position,
-						uint32_t *bytes_read);
-	t_input_encoding encoding;
-} t_parse_input;
-
-typedef enum e_log_type
-{
-	TSLogTypeParse,
-	TSLogTypeLex,
-} t_log_type;
-
-typedef struct s_parse_logger
-{
-	void *payload;
-	void (*log)(void *payload, t_log_type log_type, const char *buffer);
-} t_parse_logger;
-
-typedef struct s_input_edit
-{
-	uint32_t start_byte;
-	uint32_t old_end_byte;
-	uint32_t new_end_byte;
-	t_point	 start_point;
-	t_point	 old_end_point;
-	t_point	 new_end_point;
-} t_input_edit;
-
-typedef struct s_parse_node
-{
-	uint32_t			context[4];
-	const void		   *id;
-	const t_first_tree *tree;
-} t_parse_node;
-
-typedef struct s_tree_cursor_entry
-{
-	const union u_subtree *subtree;
-	t_length			   position;
-	uint32_t			   child_index;
-	uint32_t			   structural_child_index;
-	uint32_t			   descendant_index;
-} t_tree_cursor_entry;
-
-typedef struct s_tree_cursor
-{
-	const t_first_tree *tree;
-	Array(t_tree_cursor_entry) stack;
-	t_symbol root_alias_symbol;
-} t_tree_cursor;
-
-typedef struct s_query_capture
-{
-	t_parse_node node;
-	uint32_t	 index;
-} t_query_capture;
-
-typedef enum e_quantifier
-{
-	TSQuantifierZero = 0, // must match the array initialization value
-	TSQuantifierZeroOrOne,
-	TSQuantifierZeroOrMore,
-	TSQuantifierOne,
-	TSQuantifierOneOrMore,
-} t_quantifier;
-
-typedef struct s_query_match
-{
-	uint32_t			   id;
-	uint16_t			   pattern_index;
-	uint16_t			   capture_count;
-	const t_query_capture *captures;
-} t_query_match;
-
-typedef enum e_query_predicate_step_type
-{
-	TSQueryPredicateStepTypeDone,
-	TSQueryPredicateStepTypeCapture,
-	TSQueryPredicateStepTypeString,
-} t_query_predicate_step_type;
-
-typedef struct s_query_predicate_step
-{
-	t_query_predicate_step_type type;
-	uint32_t					value_id;
-} t_query_predicate_step;
-
-typedef enum e_query_error
-{
-	TSQueryErrorNone = 0,
-	TSQueryErrorSyntax,
-	TSQueryErrorNodeType,
-	TSQueryErrorField,
-	TSQueryErrorCapture,
-	TSQueryErrorStructure,
-	TSQueryErrorLanguage,
-} t_query_error;
-
-// Private
-
-typedef Array(void) Array;
 
 /// This is not what you're looking for, see `array_delete`.
 static inline void _array__delete(Array *self)
@@ -497,10 +207,6 @@ static inline void _array__splice(Array *self, size_t element_size,
 /// function above.
 #define _compare_int(a, b) ((int)*(a) - (int)(b))
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
-
 static inline size_t atomic_load(const volatile size_t *p)
 {
 #ifdef __ATOMIC_RELAXED
@@ -528,25 +234,6 @@ static inline uint32_t atomic_dec(volatile uint32_t *p)
 #endif
 }
 
-// The serialized state of an external scanner.
-//
-// Every time an external token subtree is created after a call to an
-// external scanner, the scanner's `serialize` function is called to
-// retrieve a serialized copy of its state. The bytes are then copied
-// onto the subtree itself so that the scanner's state can later be
-// restored using its `deserialize` function.
-//
-// Small byte arrays are stored inline, and long ones are allocated
-// separately on the heap.
-typedef struct
-{
-	union {
-		char *long_data;
-		char  short_data[24];
-	};
-	uint32_t length;
-} t_external_scanner_state;
-
 // A compact representation of a subtree.
 //
 // This representation is used for small leaf nodes that are not
@@ -558,161 +245,12 @@ typedef struct
 // Because of alignment, for any valid pointer this will be 0, giving
 // us the opportunity to make use of this bit to signify whether to use
 // the pointer or the inline struct.
-typedef struct s_subtree_inline_data t_subtree_inline_data;
-
-#define SUBTREE_BITS                                                           \
-	bool visible : 1;                                                          \
-	bool named : 1;                                                            \
-	bool extra : 1;                                                            \
-	bool has_changes : 1;                                                      \
-	bool is_missing : 1;                                                       \
-	bool is_keyword : 1;
-
-#define SUBTREE_SIZE                                                           \
-	uint8_t padding_columns;                                                   \
-	uint8_t padding_rows : 4;                                                  \
-	uint8_t lookahead_bytes : 4;                                               \
-	uint8_t padding_bytes;                                                     \
-	uint8_t size_bytes;
-
-#if TS_BIG_ENDIAN
-# if TS_PTR_SIZE == 32
-
-struct s_subtree_inline_data
-{
-	uint16_t parse_state;
-	uint8_t	 symbol;
-	SUBTREE_BITS
-	bool unused : 1;
-	bool is_inline : 1;
-	SUBTREE_SIZE
-};
-
-# else
-
-struct s_subtree_inline_data
-{
-	SUBTREE_SIZE
-	uint16_t parse_state;
-	uint8_t	 symbol;
-	SUBTREE_BITS
-	bool unused : 1;
-	bool is_inline : 1;
-};
-
-# endif
-#else
-
-struct s_subtree_inline_data
-{
-	bool is_inline : 1;
-	SUBTREE_BITS
-	uint8_t	 symbol;
-	uint16_t parse_state;
-	SUBTREE_SIZE
-};
-
-#endif
-
-#undef SUBTREE_BITS
-#undef SUBTREE_SIZE
 
 // A heap-allocated representation of a subtree.
 //
 // This representation is used for parent nodes, external tokens,
 // errors, and other leaf nodes whose data is too large to fit into
 // the inline representation.
-typedef struct s_subtree_heap_data
-{
-	volatile uint32_t ref_count;
-	t_length		  padding;
-	t_length		  size;
-	uint32_t		  lookahead_bytes;
-	uint32_t		  error_cost;
-	uint32_t		  child_count;
-	t_symbol		  symbol;
-	t_state_id		  parse_state;
-
-	bool visible : 1;
-	bool named : 1;
-	bool extra : 1;
-	bool fragile_left : 1;
-	bool fragile_right : 1;
-	bool has_changes : 1;
-	bool has_external_tokens : 1;
-	bool has_external_scanner_state_change : 1;
-	bool depends_on_column : 1;
-	bool is_missing : 1;
-	bool is_keyword : 1;
-
-	union {
-		// Non-terminal subtrees (`child_count > 0`)
-		struct
-		{
-			uint32_t visible_child_count;
-			uint32_t named_child_count;
-			uint32_t visible_descendant_count;
-			int32_t	 dynamic_precedence;
-			uint16_t repeat_depth;
-			uint16_t production_id;
-			struct
-			{
-				t_symbol   symbol;
-				t_state_id parse_state;
-			} first_leaf;
-		};
-
-		// External terminal subtrees (`child_count == 0 &&
-		// has_external_tokens`)
-		t_external_scanner_state external_scanner_state;
-
-		// Error terminal subtrees (`child_count == 0 && symbol ==
-		// ts_builtin_sym_error`)
-		int32_t lookahead_char;
-	};
-} t_subtree_heap_data;
-
-// The fundamental building block of a syntax tree.
-typedef union u_subtree {
-	t_subtree_inline_data	   data;
-	const t_subtree_heap_data *ptr;
-} t_subtree;
-
-// Like t_subtree, but mutable.
-typedef union u_mutable_subtree {
-	t_subtree_inline_data data;
-	t_subtree_heap_data	 *ptr;
-} t_mutable_subtree;
-
-typedef Array(t_subtree) t_subtree_array;
-typedef Array(t_mutable_subtree) t_mutable_subtree_array;
-
-typedef struct
-{
-	t_mutable_subtree_array free_trees;
-	t_mutable_subtree_array tree_stack;
-} t_subtree_pool;
-
-typedef Array(t_parse_range) t_range_array;
-
-typedef union u_parse_action {
-	struct
-	{
-		uint8_t	   type;
-		t_state_id state;
-		bool	   extra;
-		bool	   repetition;
-	} shift;
-	struct
-	{
-		uint8_t	 type;
-		uint8_t	 child_count;
-		t_symbol symbol;
-		int16_t	 dynamic_precedence;
-		uint16_t production_id;
-	} reduce;
-	uint8_t type;
-} t_parse_action;
 
 void ts_range_array_get_changed_ranges(const t_parse_range *old_ranges,
 									   unsigned				old_range_count,
@@ -727,133 +265,6 @@ unsigned ts_subtree_get_changed_ranges(
 	const t_subtree *old_tree, const t_subtree *new_tree,
 	t_tree_cursor *cursor1, t_tree_cursor *cursor2, const t_language *language,
 	const t_range_array *included_range_differences, t_parse_range **ranges);
-
-typedef struct s_table_entry
-{
-	const t_parse_action *actions;
-	uint32_t			  action_count;
-	bool				  is_reusable;
-} t_table_entry;
-
-typedef struct s_lookahead_iterator
-{
-	const t_language *language;
-	const uint16_t	 *data;
-	const uint16_t	 *group_end;
-	t_state_id		  state;
-	uint16_t		  table_value;
-	uint16_t		  section_index;
-	uint16_t		  group_count;
-	bool			  is_small_state;
-
-	const t_parse_action *actions;
-	t_symbol			  symbol;
-	t_state_id			  next_state;
-	uint16_t			  action_count;
-} t_lookahead_iterator;
-
-typedef struct s_symbol_metadata
-{
-	bool visible;
-	bool named;
-	bool supertype;
-} t_symbol_metadata;
-
-typedef enum e_parse_action_type
-{
-	TSParseActionTypeShift,
-	TSParseActionTypeReduce,
-	TSParseActionTypeAccept,
-	TSParseActionTypeRecover,
-} t_parse_action_type;
-
-typedef union u_parse_action_entry {
-	t_parse_action action;
-	struct
-	{
-		uint8_t count;
-		bool	reusable;
-	} entry;
-} t_parse_action_entry;
-
-typedef struct s_field_map_entry
-{
-	t_field_id field_id;
-	uint8_t	   child_index;
-	bool	   inherited;
-} t_field_map_entry;
-
-typedef struct s_field_map_slice
-{
-	uint16_t index;
-	uint16_t length;
-} t_field_map_slice;
-
-typedef struct s_lexer_data t_lexer_data;
-
-struct s_lexer_data
-{
-	int32_t	 lookahead;
-	t_symbol result_symbol;
-	void (*advance)(t_lexer_data *, bool);
-	void (*mark_end)(t_lexer_data *);
-	uint32_t (*get_column)(t_lexer_data *);
-	bool (*is_at_included_range_start)(const t_lexer_data *);
-	bool (*eof)(const t_lexer_data *);
-};
-
-typedef struct s_lex_mode
-{
-	uint16_t lex_state;
-	uint16_t external_lex_state;
-} t_lex_mode;
-
-typedef struct s_char_range
-{
-	int32_t start;
-	int32_t end;
-} t_char_range;
-
-struct s_language
-{
-	uint32_t					version;
-	uint32_t					symbol_count;
-	uint32_t					alias_count;
-	uint32_t					token_count;
-	uint32_t					external_token_count;
-	uint32_t					state_count;
-	uint32_t					large_state_count;
-	uint32_t					production_id_count;
-	uint32_t					field_count;
-	uint16_t					max_alias_sequence_length;
-	const uint16_t			   *parse_table;
-	const uint16_t			   *small_parse_table;
-	const uint32_t			   *small_parse_table_map;
-	const t_parse_action_entry *parse_actions;
-	const char *const		   *symbol_names;
-	const char *const		   *field_names;
-	const t_field_map_slice	   *field_map_slices;
-	const t_field_map_entry	   *field_map_entries;
-	const t_symbol_metadata	   *symbol_metadata;
-	const t_symbol			   *public_symbol_map;
-	const uint16_t			   *alias_map;
-	const t_symbol			   *alias_sequences;
-	const t_lex_mode		   *lex_modes;
-	bool (*lex_fn)(t_lexer_data *, t_state_id);
-	bool (*keyword_lex_fn)(t_lexer_data *, t_state_id);
-	t_symbol keyword_capture_token;
-	struct
-	{
-		const bool	   *states;
-		const t_symbol *symbol_map;
-		void *(*create)(void);
-		void (*destroy)(void *);
-		bool (*scan)(void *, t_lexer_data *, const bool *symbol_whitelist);
-		unsigned (*serialize)(void *, char *);
-		void (*deserialize)(void *, const char *, unsigned);
-	} external_scanner;
-	const t_state_id *primary_state_ids;
-};
 
 void ts_language_table_entry(const t_language *, t_state_id, t_symbol,
 							 t_table_entry *);
@@ -1167,28 +578,6 @@ static inline t_length length_saturating_sub(t_length len1, t_length len2)
 	}
 }
 
-typedef struct s_lexer
-{
-	t_lexer_data data;
-	t_length	 current_position;
-	t_length	 token_start_position;
-	t_length	 token_end_position;
-
-	t_parse_range *included_ranges;
-	const char	  *chunk;
-	t_parse_input  input;
-	t_parse_logger logger;
-
-	uint32_t included_range_count;
-	uint32_t current_included_range_index;
-	uint32_t chunk_start;
-	uint32_t chunk_size;
-	uint32_t lookahead_size;
-	bool	 did_get_column;
-
-	char debug_buffer[TREE_SITTER_SERIALIZATION_BUFFER_SIZE];
-} t_lexer;
-
 void ts_lexer_init(t_lexer *);
 void ts_lexer_delete(t_lexer *);
 void ts_lexer_set_input(t_lexer *, t_parse_input);
@@ -1288,16 +677,6 @@ static inline t_point point_max(t_point a, t_point b)
 		return b;
 }
 
-typedef struct s_reduce_action
-{
-	uint32_t	   count;
-	t_symbol	   symbol;
-	int			   dynamic_precedence;
-	unsigned short production_id;
-} t_reduce_action;
-
-typedef Array(t_reduce_action) t_reduce_action_set;
-
 static inline void ts_reduce_action_set_add(t_reduce_action_set *self,
 											t_reduce_action		 new_action)
 {
@@ -1310,19 +689,6 @@ static inline void ts_reduce_action_set_add(t_reduce_action_set *self,
 	}
 	array_push(self, new_action);
 }
-
-typedef struct s_stack_entry
-{
-	t_subtree tree;
-	uint32_t  child_index;
-	uint32_t  byte_offset;
-} t_stack_entry;
-
-typedef struct s_reusable_node
-{
-	Array(t_stack_entry) stack;
-	t_subtree last_external_token;
-} t_reusable_node;
 
 static inline t_reusable_node reusable_node_new(void)
 {
@@ -1433,25 +799,6 @@ static inline void reusable_node_reset(t_reusable_node *self, t_subtree tree)
 	}
 }
 
-typedef struct s_stack t_stack;
-
-typedef unsigned t_stack_version;
-
-typedef struct s_stack_slice
-{
-	t_subtree_array subtrees;
-	t_stack_version version;
-} t_stack_slice;
-typedef Array(t_stack_slice) t_stack_slice_array;
-
-typedef struct s_stack_summary_entry
-{
-	t_length   position;
-	unsigned   depth;
-	t_state_id state;
-} t_stack_summary_entry;
-typedef Array(t_stack_summary_entry) t_stack_summary;
-
 // Create a stack.
 t_stack *ts_stack_new(t_subtree_pool *);
 
@@ -1546,8 +893,6 @@ t_stack_version ts_stack_copy_version(t_stack *, t_stack_version);
 void ts_stack_remove_version(t_stack *, t_stack_version);
 
 void ts_stack_clear(t_stack *);
-
-typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
 
 void ts_external_scanner_state_init(t_external_scanner_state *, const char *,
 									unsigned);
@@ -1835,13 +1180,6 @@ static inline t_mutable_subtree ts_subtree_to_mut_unsafe(t_subtree self)
 	return result;
 }
 
-typedef enum e_tree_cursor_step
-{
-	TreeCursorStepNone,
-	TreeCursorStepHidden,
-	TreeCursorStepVisible,
-} t_tree_cursor_step;
-
 void ts_tree_cursor_init(t_tree_cursor *, t_parse_node);
 void ts_tree_cursor_current_status(const t_tree_cursor *, t_field_id *, bool *,
 								   bool *, bool *, t_symbol *, unsigned *);
@@ -1859,28 +1197,9 @@ static inline t_subtree ts_tree_cursor_current_subtree(
 
 t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *);
 
-typedef struct s_parent_cache_entry
-{
-	const t_subtree *child;
-	const t_subtree *parent;
-	t_length		 position;
-	t_symbol		 alias_symbol;
-} t_parent_cache_entry;
-
-struct s_first_tree
-{
-	t_subtree		  root;
-	const t_language *language;
-	t_parse_range	 *included_ranges;
-	unsigned		  included_range_count;
-};
-
 t_first_tree *ts_tree_new(t_subtree root, const t_language *language,
 						  const t_parse_range *, unsigned);
 t_parse_node  ts_node_new(const t_first_tree *, const t_subtree *, t_length,
 						  t_symbol);
-
-typedef uint64_t t_parser_clock;
-typedef uint64_t t_parser_duration;
 
 #endif // TREE_SITTER_TREE_H_
