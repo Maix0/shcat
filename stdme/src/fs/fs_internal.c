@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/24 14:44:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/30 16:02:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void close_slot(struct s_file_slot *slot)
 	else if (slot->ty == SLOT_FILE)
 		close_file(&slot->slot.file);
 	else
-		write(2, "Unknown SLOT type", 17);
+		(void)!write(2, "Unknown SLOT type", 17);
 	mem_set_zero(slot, sizeof(*slot));
 }
 

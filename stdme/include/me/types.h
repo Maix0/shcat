@@ -6,16 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/25 20:43:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/30 13:38:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_H
 #define TYPES_H
-
-#ifdef _FORTIFY_SOURCE
-# undef _FORTIFY_SOURCE
-#endif
 
 #include <stdbool.h>
 #include <stddef.h>

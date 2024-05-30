@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/29 22:30:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/30 16:05:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,5 +220,4 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 					   "\001\x1B[0m\002"
 					   "$ ";
 	ft_take_args(&utils);
-	(void)from_node(NULL);
 }
