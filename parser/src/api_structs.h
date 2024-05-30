@@ -249,6 +249,7 @@ typedef enum e_tree_cursor_step
 // separately on the heap.
 struct s_external_scanner_state
 {
+	// TODO: extract this anonymous struct
 	union {
 		char *long_data;
 		char  short_data[24];
@@ -256,62 +257,23 @@ struct s_external_scanner_state
 	uint32_t length;
 };
 
-#define SUBTREE_BITS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           \
-	bool visible : 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          \
-	bool named : 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            \
-	bool extra : 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            \
-	bool has_changes : 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      \
-	bool is_missing : 1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       \
-	bool is_keyword : 1;
-
-#define SUBTREE_SIZE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           \
-	uint8_t padding_columns;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   \
-	uint8_t padding_rows : 4;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  \
-	uint8_t lookahead_bytes : 4;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               \
-	uint8_t padding_bytes;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     \
-	uint8_t size_bytes;
-
-#if TS_BIG_ENDIAN
-# if TS_PTR_SIZE == 32
-
 struct s_subtree_inline_data
 {
-	uint16_t parse_state;
-	uint8_t	 symbol;
-	SUBTREE_BITS
-	bool unused : 1;
-	bool is_inline : 1;
-	SUBTREE_SIZE
-};
-
-# else
-
-struct s_subtree_inline_data
-{
-	SUBTREE_SIZE
-	uint16_t parse_state;
-	uint8_t	 symbol;
-	SUBTREE_BITS
-	bool unused : 1;
-	bool is_inline : 1;
-};
-
-# endif
-#else
-
-struct s_subtree_inline_data
-{
-	bool is_inline : 1;
-	SUBTREE_BITS
+	bool	 is_inline : 1;
+	bool	 visible : 1;
+	bool	 named : 1;
+	bool	 extra : 1;
+	bool	 has_changes : 1;
+	bool	 is_missing : 1;
+	bool	 is_keyword : 1;
 	uint8_t	 symbol;
 	uint16_t parse_state;
-	SUBTREE_SIZE
+	uint8_t	 padding_columns;
+	uint8_t	 padding_rows : 4;
+	uint8_t	 lookahead_bytes : 4;
+	uint8_t	 padding_bytes;
+	uint8_t	 size_bytes;
 };
-
-#endif
-
-#undef SUBTREE_BITS
-#undef SUBTREE_SIZE
 
 struct s_subtree_heap_data
 {
@@ -336,6 +298,7 @@ struct s_subtree_heap_data
 	bool is_missing : 1;
 	bool is_keyword : 1;
 
+	// TODO: extract these anonymous struct
 	union {
 		// Non-terminal subtrees (`child_count > 0`)
 		struct
@@ -382,6 +345,7 @@ struct s_subtree_pool
 };
 
 union u_parse_action {
+	// TODO: extract this anonymous struct
 	struct
 	{
 		uint8_t	   type;
@@ -389,6 +353,7 @@ union u_parse_action {
 		bool	   extra;
 		bool	   repetition;
 	} shift;
+	// TODO: extract this anonymous struct
 	struct
 	{
 		uint8_t	 type;
@@ -441,6 +406,7 @@ enum e_parse_action_type
 
 union u_parse_action_entry {
 	t_parse_action action;
+	// TODO: extract this anonymous struct
 	struct
 	{
 		uint8_t count;
@@ -512,6 +478,7 @@ struct s_language
 	bool (*lex_fn)(t_lexer_data *, t_state_id);
 	bool (*keyword_lex_fn)(t_lexer_data *, t_state_id);
 	t_symbol keyword_capture_token;
+	// TODO: extract this anonymous struct
 	struct
 	{
 		const bool	   *states;
