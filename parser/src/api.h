@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./array.h"
 #include "./api_structs.h"
+#include "./array.h"
 #include "./funcs.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)
@@ -57,10 +57,7 @@
 
 // Get a subtree's children, which are allocated immediately before the
 // tree's own heap data.
-#define ts_subtree_children(self)                                              \
-	((self).data.is_inline                                                     \
-		 ? NULL                                                                \
-		 : (t_subtree *)((self).ptr) - (self).ptr->child_count)
+#define ts_subtree_children(self) ((self).data.is_inline ? NULL : (t_subtree *)((self).ptr) - (self).ptr->child_count)
 
 /// Helper macro for the `_sorted_by` routines below. This takes the left
 /// (existing) parameter by reference in order to work with the generic sorting
@@ -69,42 +66,25 @@
 
 static inline size_t atomic_load(const volatile size_t *p)
 {
-#ifdef __ATOMIC_RELAXED
-	return __atomic_load_n(p, __ATOMIC_RELAXED);
-#else
-	return __sync_fetch_and_add((volatile size_t *)p, 0);
-#endif
+	return (*p);
 }
 
 static inline uint32_t atomic_inc(volatile uint32_t *p)
 {
-#ifdef __ATOMIC_RELAXED
-	return __atomic_add_fetch(p, 1U, __ATOMIC_SEQ_CST);
-#else
-	return __sync_add_and_fetch(p, 1U);
-#endif
+	return (++(*p));
 }
 
 static inline uint32_t atomic_dec(volatile uint32_t *p)
 {
-#ifdef __ATOMIC_RELAXED
-	return __atomic_sub_fetch(p, 1U, __ATOMIC_SEQ_CST);
-#else
-	return __sync_sub_and_fetch(p, 1U);
-#endif
+	return (--(*p));
 }
 
-
-static inline bool ts_language_is_symbol_external(const t_language *self,
-												  t_symbol			symbol)
+static inline bool ts_language_is_symbol_external(const t_language *self, t_symbol symbol)
 {
 	return 0 < symbol && symbol < self->external_token_count + 1;
 }
 
-static inline const t_parse_action *ts_language_actions(const t_language *self,
-														t_state_id		  state,
-														t_symbol  symbol,
-														uint32_t *count)
+static inline const t_parse_action *ts_language_actions(const t_language *self, t_state_id state, t_symbol symbol, uint32_t *count)
 {
 	t_table_entry entry;
 	ts_language_table_entry(self, state, symbol, &entry);
@@ -112,14 +92,11 @@ static inline const t_parse_action *ts_language_actions(const t_language *self,
 	return entry.actions;
 }
 
-static inline bool ts_language_has_reduce_action(const t_language *self,
-												 t_state_id		   state,
-												 t_symbol		   symbol)
+static inline bool ts_language_has_reduce_action(const t_language *self, t_state_id state, t_symbol symbol)
 {
 	t_table_entry entry;
 	ts_language_table_entry(self, state, symbol, &entry);
-	return entry.action_count > 0 &&
-		   entry.actions[0].type == TSParseActionTypeReduce;
+	return entry.action_count > 0 && entry.actions[0].type == TSParseActionTypeReduce;
 }
 
 // Lookup the table value for a given symbol and state.
@@ -129,13 +106,11 @@ static inline bool ts_language_has_reduce_action(const t_language *self,
 // For 'large' parse states, this is a direct lookup. For 'small' parse
 // states, this requires searching through the symbol groups to find
 // the given symbol.
-static inline uint16_t ts_language_lookup(const t_language *self,
-										  t_state_id state, t_symbol symbol)
+static inline uint16_t ts_language_lookup(const t_language *self, t_state_id state, t_symbol symbol)
 {
 	if (state >= self->large_state_count)
 	{
-		uint32_t index =
-			self->small_parse_table_map[state - self->large_state_count];
+		uint32_t		index = self->small_parse_table_map[state - self->large_state_count];
 		const uint16_t *data = &self->small_parse_table[index];
 		uint16_t		group_count = *(data++);
 		for (unsigned i = 0; i < group_count; i++)
@@ -156,8 +131,7 @@ static inline uint16_t ts_language_lookup(const t_language *self,
 	}
 }
 
-static inline bool ts_language_has_actions(const t_language *self,
-										   t_state_id state, t_symbol symbol)
+static inline bool ts_language_has_actions(const t_language *self, t_state_id state, t_symbol symbol)
 {
 	return ts_language_lookup(self, state, symbol) != 0;
 }
@@ -168,8 +142,7 @@ static inline bool ts_language_has_actions(const t_language *self,
 // all possible symbols and checking the parse table for each one.
 // For 'small' parse states, this exploits the structure of the
 // table to only visit the valid symbols.
-static inline t_lookahead_iterator ts_language_lookaheads(
-	const t_language *self, t_state_id state)
+static inline t_lookahead_iterator ts_language_lookaheads(const t_language *self, t_state_id state)
 {
 	bool			is_small_state = state >= self->large_state_count;
 	const uint16_t *data;
@@ -177,8 +150,7 @@ static inline t_lookahead_iterator ts_language_lookaheads(
 	uint16_t		group_count = 0;
 	if (is_small_state)
 	{
-		uint32_t index =
-			self->small_parse_table_map[state - self->large_state_count];
+		uint32_t index = self->small_parse_table_map[state - self->large_state_count];
 		data = &self->small_parse_table[index];
 		group_end = data + 1;
 		group_count = *data;
@@ -241,8 +213,7 @@ static inline bool ts_lookahead_iterator__next(t_lookahead_iterator *self)
 	// either represents a list of actions or a successor state.
 	if (self->symbol < self->language->token_count)
 	{
-		const t_parse_action_entry *entry =
-			&self->language->parse_actions[self->table_value];
+		const t_parse_action_entry *entry = &self->language->parse_actions[self->table_value];
 		self->action_count = entry->entry.count;
 		self->actions = (const t_parse_action *)(entry + 1);
 		self->next_state = 0;
@@ -258,8 +229,7 @@ static inline bool ts_lookahead_iterator__next(t_lookahead_iterator *self)
 // Whether the state is a "primary state". If this returns false, it indicates
 // that there exists another state that behaves identically to this one with
 // respect to query analysis.
-static inline bool ts_language_state_is_primary(const t_language *self,
-												t_state_id		  state)
+static inline bool ts_language_state_is_primary(const t_language *self, t_state_id state)
 {
 	if (self->version >= LANGUAGE_VERSION_WITH_PRIMARY_STATES)
 	{
@@ -271,8 +241,7 @@ static inline bool ts_language_state_is_primary(const t_language *self,
 	}
 }
 
-static inline const bool *ts_language_enabled_external_tokens(
-	const t_language *self, unsigned external_scanner_state)
+static inline const bool *ts_language_enabled_external_tokens(const t_language *self, unsigned external_scanner_state)
 {
 	if (external_scanner_state == 0)
 	{
@@ -280,35 +249,21 @@ static inline const bool *ts_language_enabled_external_tokens(
 	}
 	else
 	{
-		return self->external_scanner.states +
-			   self->external_token_count * external_scanner_state;
+		return self->external_scanner.states + self->external_token_count * external_scanner_state;
 	}
 }
 
-static inline const t_symbol *ts_language_alias_sequence(const t_language *self,
-														 uint32_t production_id)
+static inline const t_symbol *ts_language_alias_sequence(const t_language *self, uint32_t production_id)
 {
-	return production_id
-			   ? &self->alias_sequences[production_id *
-										self->max_alias_sequence_length]
-			   : NULL;
+	return production_id ? &self->alias_sequences[production_id * self->max_alias_sequence_length] : NULL;
 }
 
-static inline t_symbol ts_language_alias_at(const t_language *self,
-											uint32_t		  production_id,
-											uint32_t		  child_index)
+static inline t_symbol ts_language_alias_at(const t_language *self, uint32_t production_id, uint32_t child_index)
 {
-	return production_id
-			   ? self->alias_sequences[production_id *
-										   self->max_alias_sequence_length +
-									   child_index]
-			   : 0;
+	return production_id ? self->alias_sequences[production_id * self->max_alias_sequence_length + child_index] : 0;
 }
 
-static inline void ts_language_field_map(const t_language *self,
-										 uint32_t		   production_id,
-										 const t_field_map_entry **start,
-										 const t_field_map_entry **end)
+static inline void ts_language_field_map(const t_language *self, uint32_t production_id, const t_field_map_entry **start, const t_field_map_entry **end)
 {
 	if (self->field_count == 0)
 	{
@@ -322,10 +277,7 @@ static inline void ts_language_field_map(const t_language *self,
 	*end = &self->field_map_entries[slice.index] + slice.length;
 }
 
-static inline void ts_language_aliases_for_symbol(const t_language *self,
-												  t_symbol original_symbol,
-												  const t_symbol **start,
-												  const t_symbol **end)
+static inline void ts_language_aliases_for_symbol(const t_language *self, t_symbol original_symbol, const t_symbol **start, const t_symbol **end)
 {
 	*start = &self->public_symbol_map[original_symbol];
 	*end = *start + 1;
@@ -397,10 +349,7 @@ static inline t_length length_saturating_sub(t_length len1, t_length len2)
 	}
 }
 
-
-
-static inline bool set_contains(t_char_range *ranges, uint32_t len,
-								int32_t lookahead)
+static inline bool set_contains(t_char_range *ranges, uint32_t len, int32_t lookahead)
 {
 	uint32_t index = 0;
 	uint32_t size = len - index;
@@ -486,14 +435,12 @@ static inline t_point point_max(t_point a, t_point b)
 		return b;
 }
 
-static inline void ts_reduce_action_set_add(t_reduce_action_set *self,
-											t_reduce_action		 new_action)
+static inline void ts_reduce_action_set_add(t_reduce_action_set *self, t_reduce_action new_action)
 {
 	for (uint32_t i = 0; i < self->size; i++)
 	{
 		t_reduce_action action = self->contents[i];
-		if (action.symbol == new_action.symbol &&
-			action.count == new_action.count)
+		if (action.symbol == new_action.symbol && action.count == new_action.count)
 			return;
 	}
 	array_push(self, new_action);
@@ -512,16 +459,12 @@ static inline void reusable_node_clear(t_reusable_node *self)
 
 static inline t_subtree reusable_node_tree(t_reusable_node *self)
 {
-	return self->stack.size > 0
-			   ? self->stack.contents[self->stack.size - 1].tree
-			   : NULL_SUBTREE;
+	return self->stack.size > 0 ? self->stack.contents[self->stack.size - 1].tree : NULL_SUBTREE;
 }
 
 static inline uint32_t reusable_node_byte_offset(t_reusable_node *self)
 {
-	return self->stack.size > 0
-			   ? self->stack.contents[self->stack.size - 1].byte_offset
-			   : UINT32_MAX;
+	return self->stack.size > 0 ? self->stack.contents[self->stack.size - 1].byte_offset : UINT32_MAX;
 }
 
 static inline void reusable_node_delete(t_reusable_node *self)
@@ -530,19 +473,16 @@ static inline void reusable_node_delete(t_reusable_node *self)
 }
 
 static inline uint32_t ts_subtree_total_bytes(t_subtree self);
-static inline bool	   ts_subtree_has_external_tokens(t_subtree self);
-t_subtree			   ts_subtree_last_external_token(t_subtree self);
 static inline uint32_t ts_subtree_child_count(t_subtree self);
+static inline bool	   ts_subtree_has_external_tokens(t_subtree self);
 
 static inline void reusable_node_advance(t_reusable_node *self)
 {
 	t_stack_entry last_entry = *array_back(&self->stack);
-	uint32_t	  byte_offset =
-		last_entry.byte_offset + ts_subtree_total_bytes(last_entry.tree);
+	uint32_t	  byte_offset = last_entry.byte_offset + ts_subtree_total_bytes(last_entry.tree);
 	if (ts_subtree_has_external_tokens(last_entry.tree))
 	{
-		self->last_external_token =
-			ts_subtree_last_external_token(last_entry.tree);
+		self->last_external_token = ts_subtree_last_external_token(last_entry.tree);
 	}
 
 	t_subtree tree;
@@ -568,12 +508,11 @@ static inline bool reusable_node_descend(t_reusable_node *self)
 	t_stack_entry last_entry = *array_back(&self->stack);
 	if (ts_subtree_child_count(last_entry.tree) > 0)
 	{
-		array_push(&self->stack,
-				   ((t_stack_entry){
-					   .tree = ts_subtree_children(last_entry.tree)[0],
-					   .child_index = 0,
-					   .byte_offset = last_entry.byte_offset,
-				   }));
+		array_push(&self->stack, ((t_stack_entry){
+									 .tree = ts_subtree_children(last_entry.tree)[0],
+									 .child_index = 0,
+									 .byte_offset = last_entry.byte_offset,
+								 }));
 		return true;
 	}
 	else
@@ -608,10 +547,7 @@ static inline void reusable_node_reset(t_reusable_node *self, t_subtree tree)
 	}
 }
 
-
-
-#define SUBTREE_GET(self, name)                                                \
-	((self).data.is_inline ? (self).data.name : (self).ptr->name)
+#define SUBTREE_GET(self, name) ((self).data.is_inline ? (self).data.name : (self).ptr->name)
 
 static inline t_symbol ts_subtree_symbol(t_subtree self)
 {
@@ -693,8 +629,7 @@ static inline t_length ts_subtree_padding(t_subtree self)
 {
 	if (self.data.is_inline)
 	{
-		t_length result = {self.data.padding_bytes,
-						   {self.data.padding_rows, self.data.padding_columns}};
+		t_length result = {self.data.padding_bytes, {self.data.padding_rows, self.data.padding_columns}};
 		return result;
 	}
 	else
@@ -738,16 +673,12 @@ static inline uint32_t ts_subtree_repeat_depth(t_subtree self)
 
 static inline uint32_t ts_subtree_is_repetition(t_subtree self)
 {
-	return self.data.is_inline ? 0
-							   : !self.ptr->named && !self.ptr->visible &&
-									 self.ptr->child_count != 0;
+	return self.data.is_inline ? 0 : !self.ptr->named && !self.ptr->visible && self.ptr->child_count != 0;
 }
 
 static inline uint32_t ts_subtree_visible_descendant_count(t_subtree self)
 {
-	return (self.data.is_inline || self.ptr->child_count == 0)
-			   ? 0
-			   : self.ptr->visible_descendant_count;
+	return (self.data.is_inline || self.ptr->child_count == 0) ? 0 : self.ptr->visible_descendant_count;
 }
 
 static inline uint32_t ts_subtree_visible_child_count(t_subtree self)
@@ -776,9 +707,7 @@ static inline uint32_t ts_subtree_error_cost(t_subtree self)
 
 static inline int32_t ts_subtree_dynamic_precedence(t_subtree self)
 {
-	return (self.data.is_inline || self.ptr->child_count == 0)
-			   ? 0
-			   : self.ptr->dynamic_precedence;
+	return (self.data.is_inline || self.ptr->child_count == 0) ? 0 : self.ptr->dynamic_precedence;
 }
 
 static inline uint16_t ts_subtree_production_id(t_subtree self)
@@ -810,8 +739,7 @@ static inline bool ts_subtree_has_external_tokens(t_subtree self)
 
 static inline bool ts_subtree_has_external_scanner_state_change(t_subtree self)
 {
-	return self.data.is_inline ? false
-							   : self.ptr->has_external_scanner_state_change;
+	return self.data.is_inline ? false : self.ptr->has_external_scanner_state_change;
 }
 
 static inline bool ts_subtree_depends_on_column(t_subtree self)
@@ -821,9 +749,7 @@ static inline bool ts_subtree_depends_on_column(t_subtree self)
 
 static inline bool ts_subtree_is_fragile(t_subtree self)
 {
-	return self.data.is_inline
-			   ? false
-			   : (self.ptr->fragile_left || self.ptr->fragile_right);
+	return self.data.is_inline ? false : (self.ptr->fragile_left || self.ptr->fragile_right);
 }
 
 static inline bool ts_subtree_is_error(t_subtree self)
@@ -850,8 +776,7 @@ static inline t_mutable_subtree ts_subtree_to_mut_unsafe(t_subtree self)
 	return result;
 }
 
-static inline t_subtree ts_tree_cursor_current_subtree(
-	const t_tree_cursor *_self)
+static inline t_subtree ts_tree_cursor_current_subtree(const t_tree_cursor *_self)
 {
 	const t_tree_cursor *self = (const t_tree_cursor *)_self;
 	t_tree_cursor_entry *last_entry = array_back(&self->stack);
