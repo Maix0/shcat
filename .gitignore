@@ -54,3 +54,4 @@ objects/
 minishell
 .envrc
 .idea
+parser/split_rust

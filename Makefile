@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/05/08 16:01:18 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/05/30 18:03:52 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,15 +25,25 @@ SRC_DIR = ./sources
 GEN_DIR = ./output
 NAME = minishell
 
+PMAKE =
+ifndef PMAKE_DISABLE
+ifeq ($(shell uname), Linux)
+	PMAKE = -j$(shell grep -c ^processor /proc/cpuinfo)
+endif
+ifeq ($(shell uname), Darwin)
+	PMAKE = -j$(shell sysctl -n hw.ncpu)
+endif
+endif
+
 # All (make all)
 all: 
 	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd) $(PMAKE)
 	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
 
 bonus: 
 	@$(MAKE) --no-print-directory header            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd) bonus
+	@$(MAKE) --no-print-directory -f./Minishell.mk  OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd) $(PMAKE) bonus
 	@$(MAKE) --no-print-directory footer            OBJDIRNAME=$(OBJDIRNAME) BASE_PATH=$(shell pwd)
 
 #	Header
