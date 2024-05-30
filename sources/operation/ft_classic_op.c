@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/30 15:33:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/30 16:07:58 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/05/30 16:12:59 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,10 @@ t_error	ft_divide(t_i32 first, t_i32 second, t_i64 *result)
 		return (NO_ERROR);
 }
 
-t_error ft_modulo(t_i32 first, t_i32 second, t_i64 *result)
+t_error	ft_modulo(t_i32 first, t_i32 second, t_i64 *result)
 {
-    if (second == 0) {
-        return (ERROR);
-    }
-    *result = first % second;
-    return (NO_ERROR);
+	if (second == 0)
+		return (ERROR);
+	*result = first % second;
+	return (NO_ERROR);
 }
