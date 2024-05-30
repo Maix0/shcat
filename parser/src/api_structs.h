@@ -7,76 +7,66 @@
 #include "me/types.h"
 #include <stdint.h>
 
+typedef uint16_t t_field_id;
 typedef uint16_t t_state_id;
 typedef uint16_t t_symbol;
-typedef uint16_t t_field_id;
-typedef unsigned t_stack_version;
 typedef uint64_t t_parser_clock;
 typedef uint64_t t_parser_duration;
+typedef unsigned t_stack_version;
 
 typedef union u_parse_action_entry t_parse_action_entry;
 typedef union u_subtree			   t_subtree;
 typedef union u_mutable_subtree	   t_mutable_subtree;
 typedef union u_parse_action	   t_parse_action;
 
-typedef struct s_language				t_language;
-typedef struct s_first_parser			t_first_parser;
-typedef struct s_first_tree				t_first_tree;
-typedef struct s_parse_query			t_parse_query;
-typedef struct s_query_cursor			t_query_cursor;
-typedef struct s_lookahead_iterator		t_lookahead_iterator;
-typedef struct s_point					t_point;
-typedef struct s_length					t_length;
-typedef struct s_parse_range			t_parse_range;
-typedef struct s_parse_input			t_parse_input;
-typedef struct s_parse_logger			t_parse_logger;
-typedef struct s_input_edit				t_input_edit;
-typedef struct s_parse_node				t_parse_node;
-typedef struct s_tree_cursor			t_tree_cursor;
-typedef struct s_query_capture			t_query_capture;
-typedef struct s_query_match			t_query_match;
-typedef struct s_query_predicate_step	t_query_predicate_step;
-typedef struct s_subtree_inline_data	t_subtree_inline_data;
-typedef struct s_subtree_heap_data		t_subtree_heap_data;
-typedef struct s_subtree_pool			t_subtree_pool;
-typedef struct s_table_entry			t_table_entry;
-typedef struct s_symbol_metadata		t_symbol_metadata;
+typedef struct s_char_range				t_char_range;
+typedef struct s_external_scanner_state t_external_scanner_state;
 typedef struct s_field_map_entry		t_field_map_entry;
 typedef struct s_field_map_slice		t_field_map_slice;
-typedef struct s_lexer_data				t_lexer_data;
+typedef struct s_first_parser			t_first_parser;
+typedef struct s_first_tree				t_first_tree;
+typedef struct s_input_edit				t_input_edit;
+typedef struct s_language				t_language;
+typedef struct s_length					t_length;
 typedef struct s_lex_mode				t_lex_mode;
-typedef struct s_char_range				t_char_range;
-typedef struct s_tree_cursor_entry		t_tree_cursor_entry;
-typedef struct s_external_scanner_state t_external_scanner_state;
+typedef struct s_lexer					t_lexer;
+typedef struct s_lexer_data				t_lexer_data;
+typedef struct s_lookahead_iterator		t_lookahead_iterator;
+typedef struct s_parse_input			t_parse_input;
+typedef struct s_parse_logger			t_parse_logger;
+typedef struct s_parse_node				t_parse_node;
+typedef struct s_parse_query			t_parse_query;
 typedef struct s_parse_query_cursor		t_parse_query_cursor;
 typedef struct s_parse_query_error		t_parse_query_error;
 typedef struct s_parse_query_error_cost t_parse_query_error_cost;
-typedef struct s_lexer_data				t_lexer_data;
-typedef struct s_subtree_inline_data	t_subtree_inline_data;
-typedef struct s_subtree_heap_data		t_subtree_heap_data;
-typedef struct s_subtree_pool			t_subtree_pool;
-typedef struct s_table_entry			t_table_entry;
-typedef struct s_symbol_metadata		t_symbol_metadata;
-typedef struct s_field_map_entry		t_field_map_entry;
-typedef struct s_field_map_slice		t_field_map_slice;
-typedef struct s_lexer_data				t_lexer_data;
-typedef struct s_lex_mode				t_lex_mode;
-typedef struct s_lexer					t_lexer;
+typedef struct s_parse_range			t_parse_range;
 typedef struct s_parse_state			t_parse_state;
+typedef struct s_point					t_point;
+typedef struct s_query_capture			t_query_capture;
+typedef struct s_query_cursor			t_query_cursor;
+typedef struct s_query_match			t_query_match;
+typedef struct s_query_predicate_step	t_query_predicate_step;
 typedef struct s_reduce_action			t_reduce_action;
-typedef struct s_stack_entry			t_stack_entry;
 typedef struct s_reusable_node			t_reusable_node;
-typedef struct s_stack_summary_entry	t_stack_summary_entry;
 typedef struct s_stack					t_stack;
+typedef struct s_stack_entry			t_stack_entry;
 typedef struct s_stack_slice			t_stack_slice;
+typedef struct s_stack_summary_entry	t_stack_summary_entry;
+typedef struct s_subtree_heap_data		t_subtree_heap_data;
+typedef struct s_subtree_inline_data	t_subtree_inline_data;
+typedef struct s_subtree_pool			t_subtree_pool;
+typedef struct s_symbol_metadata		t_symbol_metadata;
+typedef struct s_table_entry			t_table_entry;
+typedef struct s_tree_cursor			t_tree_cursor;
+typedef struct s_tree_cursor_entry		t_tree_cursor_entry;
 
 typedef enum e_input_encoding			 t_input_encoding;
-typedef enum e_symbol_type				 t_symbol_type;
 typedef enum e_log_type					 t_log_type;
+typedef enum e_parse_action_type		 t_parse_action_type;
 typedef enum e_quantifier				 t_quantifier;
 typedef enum e_query_error				 t_query_error;
 typedef enum e_query_predicate_step_type t_query_predicate_step_type;
-typedef enum e_parse_action_type		 t_parse_action_type;
+typedef enum e_symbol_type				 t_symbol_type;
 
 typedef Array(t_parse_range) t_range_array;
 typedef Array(t_subtree) t_subtree_array;
@@ -84,6 +74,7 @@ typedef Array(t_mutable_subtree) t_mutable_subtree_array;
 typedef Array(t_reduce_action) t_reduce_action_set;
 typedef Array(t_stack_slice) t_stack_slice_array;
 typedef Array(t_stack_summary_entry) t_stack_summary;
+
 typedef void (*StackIterateCallback)(void *, t_state_id, uint32_t);
 
 struct s_point

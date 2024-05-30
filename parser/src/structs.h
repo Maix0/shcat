@@ -5,51 +5,49 @@
 
 typedef unsigned t_stack_action;
 
+typedef struct s_analysis_state			 t_analysis_state;
+typedef struct s_analysis_state_entry	 t_analysis_state_entry;
+typedef struct s_analysis_subgraph		 t_analysis_subgraph;
+typedef struct s_analysis_subgraph_node	 t_analysis_subgraph_node;
+typedef struct s_capture_list_pool		 t_capture_list_pool;
+typedef struct s_cursor_child_iterator	 t_cursor_child_iterator;
 typedef struct s_edit					 t_edit;
 typedef struct s_edit_entry				 t_edit_entry;
-typedef struct s_cursor_child_iterator	 t_cursor_child_iterator;
-typedef struct s_summarize_stack_session t_summarize_stack_session;
-typedef struct s_stack_node				 t_stack_node;
-typedef struct s_stack_link				 t_stack_link;
-typedef struct s_stack_head				 t_stack_head;
-typedef struct s_stack_iterator			 t_stack_iterator;
+typedef struct s_error_status			 t_error_status;
+typedef struct s_first_parser			 t_first_parser;
+typedef struct s_iterator				 t_iterator;
+typedef struct s_node_child_iterator	 t_node_child_iterator;
+typedef struct s_parse_query			 t_parse_query;
+typedef struct s_pattern_entry			 t_pattern_entry;
+typedef struct s_query_analysis			 t_query_analysis;
+typedef struct s_query_cursor			 t_query_cursor;
+typedef struct s_query_pattern			 t_query_pattern;
+typedef struct s_query_state			 t_query_state;
+typedef struct s_query_step				 t_query_step;
+typedef struct s_slice					 t_slice;
 typedef struct s_stack					 t_stack;
 typedef struct s_stack_head				 t_stack_head;
 typedef struct s_stack_iterator			 t_stack_iterator;
-typedef struct s_query_cursor			 t_query_cursor;
-typedef struct s_parse_query			 t_parse_query;
+typedef struct s_stack_link				 t_stack_link;
+typedef struct s_stack_node				 t_stack_node;
 typedef struct s_state_predecessor_map	 t_state_predecessor_map;
-typedef struct s_analysis_subgraph		 t_analysis_subgraph;
-typedef struct s_analysis_subgraph_node	 t_analysis_subgraph_node;
-typedef struct s_query_analysis			 t_query_analysis;
-typedef struct s_analysis_state			 t_analysis_state;
-typedef struct s_analysis_state_entry	 t_analysis_state_entry;
-typedef struct s_capture_list_pool		 t_capture_list_pool;
-typedef struct s_query_state			 t_query_state;
 typedef struct s_step_offset			 t_step_offset;
-typedef struct s_query_pattern			 t_query_pattern;
-typedef struct s_pattern_entry			 t_pattern_entry;
-typedef struct s_symbol_table			 t_symbol_table;
-typedef struct s_slice					 t_slice;
-typedef struct s_query_step				 t_query_step;
 typedef struct s_stream					 t_stream;
 typedef struct s_string_input			 t_string_input;
-typedef struct s_error_status			 t_error_status;
-typedef struct s_first_parser			 t_first_parser;
+typedef struct s_summarize_stack_session t_summarize_stack_session;
+typedef struct s_symbol_table			 t_symbol_table;
 typedef struct s_token_cache			 t_token_cache;
-typedef struct s_node_child_iterator	 t_node_child_iterator;
-typedef struct s_iterator				 t_iterator;
-typedef struct s_parse_query			 t_parse_query;
 
 typedef t_stack_action (*t_stack_callback)(void *, const t_stack_iterator *);
-typedef Array(t_stack_node *) t_stack_node_array;
-typedef Array(t_analysis_subgraph) t_analysis_subgraph_array;
-typedef Array(t_analysis_state *) t_analysis_state_set;
-typedef Array(uint8_t) t_capture_quantifiers;
 typedef uint32_t (*t_unicode_decode_function)(const uint8_t *chunk,
 											  uint32_t		 size,
 											  int32_t		*codepoint);
+
+typedef Array(t_analysis_state *) t_analysis_state_set;
+typedef Array(t_analysis_subgraph) t_analysis_subgraph_array;
 typedef Array(t_query_capture) t_capture_list;
+typedef Array(t_stack_node *) t_stack_node_array;
+typedef Array(uint8_t) t_capture_quantifiers;
 
 typedef enum e_stack_status		   t_stack_status;
 typedef enum e_error_comparaison   t_error_comparaison;
