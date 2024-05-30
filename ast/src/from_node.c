@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 13:18:44 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/29 13:41:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/05/29 22:48:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,26 @@ t_not *build_not(t_node *node, t_usize size)
 	ptr->cmd.type = (void *)from_node(&node->childs[1]);
 	return (ptr);
 }
+
+t_command *build_command(t_node *node, t_usize size)
+{
+	t_command *ptr;
+
+	(void)(size);
+	if (node == NULL || size == 0 ||
+		(node->kind != sym_redirected_statement && node->kind != sym_command &&
+		 node->kind != sym_test_command &&
+		 node->kind != sym_declaration_command &&
+		 node->kind != sym_unset_command))
+		me_abort("Invalid arguments to build ast!");
+	ptr = (void *)alloc_node(TY_COMMAND);
+	if (node->kind == sym_redirected_statement)
+		ptr->inner.simple_command = NULL;
+
+	return (ptr);
+}
+/*
+ */
 
 t_ast_node *from_node(t_node *node)
 {
