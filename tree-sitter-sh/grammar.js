@@ -1,17 +1,7 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-const SPECIAL_CHARACTERS = [
-	'\'', '"',
-	'<', '>',
-	'{', '}',
-	'\\[', '\\]',
-	'(', ')',
-	'`', '$',
-	'|', '&', ';',
-	'\\',
-	'\\s',
-];
+const SPECIAL_CHARACTERS = ['|', '&', ';', '<', '>', '(', ')', '$', '`', '\\', '"', '\'', '\\s'];
 
 module.exports = grammar({
 	name: "sh",
@@ -45,29 +35,31 @@ module.exports = grammar({
 		),
 		complex_expansion_prefix: _ => prec(1, choice('#')),
 		complex_expansion_suffix: $ => choice(
-			...CESuffixRegex(['%', '%%', '#', '##'], $.suffix_matching),
-			...CESuffixWord(['+', '-', '=', '?'], $.suffix_word),
+			...CESuffixRegex(['%', '%%', '#', '##'], field("argument", $.suffix_matching)),
+			...CESuffixWord(['+', '-', '=', '?'], field("argument", $.suffix_word)),
 		),
 
 		suffix_matching: _ => 'matching',
-		suffix_word: _ => 'word',
+		suffix_word: $ => $.word,
 
 		varname: $ => choice($._special_varname, seq(/[a-zA-Z]/, repeat(/[a-zA-Z0-9_]/))),
-		_special_varname: _ => choice("@", "*", "#", "?", "?", "-", "$", "!", "0", /[1-9]/),
-		command_substitution: $ => seq("$(", repeat($.program), ")"),
+		_special_varname: _ => choice("@", "*", "#", "?", "?", "-", "$", "!", /[0-9]/),
+		command_substitution: $ => seq("$(", repeat(field("command", $.program)), ")"),
 		arithmetic_expansion: _ => seq("$((", "))"),
 
-		// word: _ => token(seq(
-		// 	choice(
-		// 		noneOf('#', ...SPECIAL_CHARACTERS),
-		// 		seq('\\', noneOf('\\s')),
-		// 	),
-		// 	repeat(choice(
-		// 		noneOf(...SPECIAL_CHARACTERS),
-		// 		seq('\\', noneOf('\\s')),
-		// 		'\\ ',
-		// 	)),
-		// )),
+		word: _ => token(seq(
+			choice(
+				noneOf('#', ...SPECIAL_CHARACTERS),
+				seq('\\', noneOf('\\s')),
+			),
+			repeat(choice(
+				noneOf(...SPECIAL_CHARACTERS),
+				seq('\\', noneOf('\\s')),
+				'\\ ',
+			)),
+		)),
+
+		comment: _ => /#.*$/,
 	}
 });
 
@@ -80,7 +72,7 @@ module.exports = grammar({
  */
 function noneOf(...characters) {
 	const negatedString = characters.map(c => c == '\\' ? '\\\\' : c).join('');
-	return new RegExp('[^' + negatedString + ']');
+	return new RegExp(`[^${negatedString}]`);
 }
 
 /**
@@ -115,7 +107,7 @@ function tokenLiterals(precedence, ...literals) {
  * @return {RuleOrLiteral[]}
  */
 function CESuffixRegex(op, rule) {
-	return (op.map(o => seq(o, rule)));
+	return (op.map(o => seq(field("operator", o), rule)));
 }
 
 /**
@@ -124,5 +116,5 @@ function CESuffixRegex(op, rule) {
  * @return {RuleOrLiteral[]}
  */
 function CESuffixWord(op, rule) {
-	return (op.flatMap(o => [seq(token.immediate(`${o}`), rule), seq(token.immediate(`:${o}`), rule)]));
+	return (op.flatMap(o => [seq(field("operator", token.immediate(`${o}`)), rule), seq(field("operator", token.immediate(`:${o}`)), rule)]));
 }
