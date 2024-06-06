@@ -21,7 +21,7 @@
 
 typedef struct s_small_parse_table_array
 {
-	uint16_t	a[324397];
+	uint16_t	a[150451];
 }	t_small_parse_table_array;
 
-#endif
+#endif // TYPE_SMALL_PARSE_TABLE_H

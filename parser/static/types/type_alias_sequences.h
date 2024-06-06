@@ -24,4 +24,4 @@ typedef struct s_alias_sequences_array
 	t_symbol	a[PRODUCTION_ID_COUNT][MAX_ALIAS_SEQUENCE_LENGTH];
 }	t_alias_sequences_array;
 
-#endif
+#endif // TYPE_ALIAS_SEQUENCES_H

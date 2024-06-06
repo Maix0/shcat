@@ -19,4 +19,4 @@
 # include "../../headers/constants.h"
 # include "../../../parse_types.h"
 
-#endif
+#endif // INLINE_H

@@ -24,4 +24,4 @@ typedef struct s_non_terminal_alias_map_array
 	uint16_t	a[5];
 }	t_non_terminal_alias_map_array;
 
-#endif
+#endif // TYPE_NON_TERMINAL_ALIAS_MAP_H

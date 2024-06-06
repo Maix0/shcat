@@ -21,7 +21,7 @@
 
 typedef struct s_unique_symbols_map_array
 {
-	t_symbol	a[280];
+	t_symbol	a[212];
 }	t_unique_symbols_map_array;
 
-#endif
+#endif // TYPE_UNIQUE_SYMBOLS_MAP_H

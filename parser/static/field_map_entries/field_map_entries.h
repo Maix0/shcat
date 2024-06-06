@@ -27,13 +27,5 @@ void	field_map_entries_3(t_field_map_entries_array *v);
 void	field_map_entries_4(t_field_map_entries_array *v);
 void	field_map_entries_5(t_field_map_entries_array *v);
 void	field_map_entries_6(t_field_map_entries_array *v);
-void	field_map_entries_7(t_field_map_entries_array *v);
-void	field_map_entries_8(t_field_map_entries_array *v);
-void	field_map_entries_9(t_field_map_entries_array *v);
-void	field_map_entries_10(t_field_map_entries_array *v);
-void	field_map_entries_11(t_field_map_entries_array *v);
-void	field_map_entries_12(t_field_map_entries_array *v);
-void	field_map_entries_13(t_field_map_entries_array *v);
-void	field_map_entries_14(t_field_map_entries_array *v);
 
-#endif
+#endif // FIELD_MAP_ENTRIES_H

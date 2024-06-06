@@ -125,21 +125,5 @@ void	lex_normal_array_24(t_lex_normal_array *v)
 	v->a[483] = lex_normal_s483;
 	v->a[484] = lex_normal_s484;
 	v->a[485] = lex_normal_s485;
-	v->a[486] = lex_normal_s486;
-	v->a[487] = lex_normal_s487;
-	v->a[488] = lex_normal_s488;
-	v->a[489] = lex_normal_s489;
-	v->a[490] = lex_normal_s490;
-	v->a[491] = lex_normal_s491;
-	v->a[492] = lex_normal_s492;
-	v->a[493] = lex_normal_s493;
-	v->a[494] = lex_normal_s494;
-	v->a[495] = lex_normal_s495;
-	v->a[496] = lex_normal_s496;
-	v->a[497] = lex_normal_s497;
-	v->a[498] = lex_normal_s498;
-	v->a[499] = lex_normal_s499;
-	lex_normal_array_25(v);
 }
-
 /* EOF lex_normal_array_4.c */

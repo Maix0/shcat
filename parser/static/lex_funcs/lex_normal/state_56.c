@@ -14,88 +14,55 @@
 
 bool	lex_normal_s280(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map280(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(280, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*')))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(280, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(26, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s281(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map281(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(281, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(805, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(281, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(89, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s282(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map282(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(282, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && (s->lookahead > ';' && s->lookahead \
-	< ']')))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(282, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(28, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s283(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map283(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(283, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(806, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= '_' && s->lookahead <= 'z')))
-		return (lex_advance(868, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < ')')))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(283, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(34, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s284(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map284(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(284, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && s->lookahead != ';' && s->lookahead \
-	!= '<'))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(284, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(40, lexer, s));
 	return (lex_end_state(lexer, s));
 }

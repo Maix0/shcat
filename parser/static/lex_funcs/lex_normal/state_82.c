@@ -14,95 +14,40 @@
 
 bool	lex_normal_s410(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map410(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(410, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && (s->lookahead > ';' && s->lookahead \
-	< ']')))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_PLUS3, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s411(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map411(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(411, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && (s->lookahead > ';' && s->lookahead \
-	< ']')))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_PERCENT_PERCENT, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s412(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map412(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(412, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && s->lookahead != ';' && s->lookahead \
-	!= '<'))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_PERCENT_PERCENT, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(213, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 12, \
+	s->lookahead)))
+		return (lex_advance(482, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s413(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map413(lexer, s))
-		return (true);
+	lex_accept_token(aux_sym__expansion_regex_token1, lexer, \
+	s);
 	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
 	s->lookahead == ' '))
-		return (lex_skip(413, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && s->lookahead != ';' && s->lookahead \
-	!= '<'))
-		return (lex_advance(958, lexer, s));
+		return (lex_advance(413, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s414(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map414(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
-	s->lookahead == ' '))
-		return (lex_skip(414, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(807, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(873, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*') && s->lookahead != ';' && s->lookahead \
-	!= '<'))
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_DOLLAR_LPAREN, lexer, s);
 	return (lex_end_state(lexer, s));
 }

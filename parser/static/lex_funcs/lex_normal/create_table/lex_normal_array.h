@@ -46,28 +46,5 @@ void	lex_normal_array_21(t_lex_normal_array *v);
 void	lex_normal_array_22(t_lex_normal_array *v);
 void	lex_normal_array_23(t_lex_normal_array *v);
 void	lex_normal_array_24(t_lex_normal_array *v);
-void	lex_normal_array_25(t_lex_normal_array *v);
-void	lex_normal_array_26(t_lex_normal_array *v);
-void	lex_normal_array_27(t_lex_normal_array *v);
-void	lex_normal_array_28(t_lex_normal_array *v);
-void	lex_normal_array_29(t_lex_normal_array *v);
-void	lex_normal_array_30(t_lex_normal_array *v);
-void	lex_normal_array_31(t_lex_normal_array *v);
-void	lex_normal_array_32(t_lex_normal_array *v);
-void	lex_normal_array_33(t_lex_normal_array *v);
-void	lex_normal_array_34(t_lex_normal_array *v);
-void	lex_normal_array_35(t_lex_normal_array *v);
-void	lex_normal_array_36(t_lex_normal_array *v);
-void	lex_normal_array_37(t_lex_normal_array *v);
-void	lex_normal_array_38(t_lex_normal_array *v);
-void	lex_normal_array_39(t_lex_normal_array *v);
-void	lex_normal_array_40(t_lex_normal_array *v);
-void	lex_normal_array_41(t_lex_normal_array *v);
-void	lex_normal_array_42(t_lex_normal_array *v);
-void	lex_normal_array_43(t_lex_normal_array *v);
-void	lex_normal_array_44(t_lex_normal_array *v);
-void	lex_normal_array_45(t_lex_normal_array *v);
-void	lex_normal_array_46(t_lex_normal_array *v);
-void	lex_normal_array_47(t_lex_normal_array *v);
 
-#endif
+#endif // LEX_NORMAL_ARRAY_H

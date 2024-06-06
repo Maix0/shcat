@@ -22,6 +22,5 @@
 
 void	alias_sequences_0(t_alias_sequences_array *v);
 void	alias_sequences_1(t_alias_sequences_array *v);
-void	alias_sequences_2(t_alias_sequences_array *v);
 
-#endif
+#endif // ALIAS_SEQUENCES_H

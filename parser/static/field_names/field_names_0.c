@@ -22,15 +22,12 @@ void	field_names_0(t_field_names_array *v)
 	v->a[field_descriptor] = "descriptor";
 	v->a[field_destination] = "destination";
 	v->a[field_fallthrough] = "fallthrough";
-	v->a[field_index] = "index";
-	v->a[field_initializer] = "initializer";
 	v->a[field_left] = "left";
 	v->a[field_name] = "name";
 	v->a[field_operator] = "operator";
 	v->a[field_redirect] = "redirect";
 	v->a[field_right] = "right";
 	v->a[field_termination] = "termination";
-	v->a[field_update] = "update";
 	v->a[field_value] = "value";
 	v->a[field_variable] = "variable";
 }

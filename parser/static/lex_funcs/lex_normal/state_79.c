@@ -14,56 +14,35 @@
 
 bool	lex_normal_s395(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(142, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(477, lexer, s));
+	lex_accept_token(aux_sym_number_token2, lexer, s);
+	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
+	(s->lookahead >= '@' && s->lookahead <= 'Z') || \
+	s->lookahead == '_' || (s->lookahead >= 'a' && \
+	s->lookahead <= 'z')))
+		return (lex_advance(393, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s396(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(143, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(488, lexer, s));
+	lex_accept_token(anon_sym_POUND, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s397(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(220, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(263, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_DOLLAR_LBRACE, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s398(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(223, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(269, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_RBRACE3, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s399(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(224, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(272, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_COLON_DASH, lexer, s);
 	return (lex_end_state(lexer, s));
 }

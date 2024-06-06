@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/02 14:40:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,14 @@ enum e_external_scanner_symbol_identifiers {
 	ts_external_token__bare_dollar = 15,
 	ts_external_token__brace_start = 16,
 	ts_external_token__immediate_double_hash = 17,
-	ts_external_token__external_expansion_sym_hash = 18,
-	ts_external_token__external_expansion_sym_bang = 19,
-	ts_external_token__external_expansion_sym_equal = 20,
-	ts_external_token_RBRACE = 21,
-	ts_external_token_RBRACK = 22,
-	ts_external_token_LT_LT = 23,
-	ts_external_token_LT_LT_DASH = 24,
-	ts_external_token_heredoc_redirect_token1 = 25,
-	ts_external_token_LPAREN = 26,
-	ts_external_token_esac = 27,
-	ts_external_token___error_recovery = 28,
+	ts_external_token_RBRACE = 18,
+	ts_external_token_RBRACK = 19,
+	ts_external_token_LT_LT = 20,
+	ts_external_token_LT_LT_DASH = 21,
+	ts_external_token_heredoc_redirect_token1 = 22,
+	ts_external_token_LPAREN = 23,
+	ts_external_token_esac = 24,
+	ts_external_token___error_recovery = 25,
 };
 
-#endif
+#endif // EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H

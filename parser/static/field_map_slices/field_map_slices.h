@@ -25,8 +25,5 @@ void	field_map_slices_1(t_field_map_slices_array *v);
 void	field_map_slices_2(t_field_map_slices_array *v);
 void	field_map_slices_3(t_field_map_slices_array *v);
 void	field_map_slices_4(t_field_map_slices_array *v);
-void	field_map_slices_5(t_field_map_slices_array *v);
-void	field_map_slices_6(t_field_map_slices_array *v);
-void	field_map_slices_7(t_field_map_slices_array *v);
 
-#endif
+#endif // FIELD_MAP_SLICES_H

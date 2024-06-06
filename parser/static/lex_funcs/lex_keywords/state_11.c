@@ -14,33 +14,34 @@
 
 bool	lex_keywords_s55(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == 'i')
-		return (lex_advance(70, lexer, s));
+	if (s->lookahead == 'c')
+		return (lex_advance(66, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_keywords_s56(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == 'l')
-		return (lex_advance(71, lexer, s));
+	lex_accept_token(anon_sym_then, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_keywords_s57(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_case, lexer, s);
+	if (s->lookahead == 's')
+		return (lex_advance(67, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_keywords_s58(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == 'a')
-		return (lex_advance(72, lexer, s));
+	if (s->lookahead == 't')
+		return (lex_advance(68, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_keywords_s59(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_done, lexer, s);
+	if (s->lookahead == 'l')
+		return (lex_advance(69, lexer, s));
 	return (lex_end_state(lexer, s));
 }

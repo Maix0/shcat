@@ -31,8 +31,5 @@ void	unique_symbols_map_7(t_unique_symbols_map_array *v);
 void	unique_symbols_map_8(t_unique_symbols_map_array *v);
 void	unique_symbols_map_9(t_unique_symbols_map_array *v);
 void	unique_symbols_map_10(t_unique_symbols_map_array *v);
-void	unique_symbols_map_11(t_unique_symbols_map_array *v);
-void	unique_symbols_map_12(t_unique_symbols_map_array *v);
-void	unique_symbols_map_13(t_unique_symbols_map_array *v);
 
-#endif
+#endif // UNIQUE_SYMBOLS_MAP_H

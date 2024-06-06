@@ -35,4 +35,4 @@ static inline t_char_range	*sym_word_character_set_1(void)
 	return (val);
 }
 
-#endif
+#endif // CHARSET_INLINE_H

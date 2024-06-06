@@ -14,60 +14,48 @@
 
 bool	lex_normal_s320(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(22, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(420, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_STAR_EQ, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(213, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 12, \
+	s->lookahead)))
+		return (lex_advance(482, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s321(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(23, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(239, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_SLASH_EQ, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s322(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(24, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(242, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_SLASH_EQ, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(213, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 12, \
+	s->lookahead)))
+		return (lex_advance(482, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s323(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(25, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(245, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_PERCENT_EQ, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s324(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->lookahead == '\r')
-		return (lex_skip(28, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_skip(248, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(958, lexer, s));
+	lex_accept_token(anon_sym_PERCENT_EQ, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(213, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 12, \
+	s->lookahead)))
+		return (lex_advance(482, lexer, s));
 	return (lex_end_state(lexer, s));
 }

@@ -22,9 +22,6 @@
 # include "./inline.h"
 # include "../../../parse_types.h"
 
-bool	lex_keywords_s0_bis(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s22_bis(t_lexer *lexer, t_lexer_state *s);
-
 bool	lex_keywords_s0(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s1(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s2(t_lexer *lexer, t_lexer_state *s);
@@ -111,17 +108,6 @@ bool	lex_keywords_s82(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s83(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s84(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_s85(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s86(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s87(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s88(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s89(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s90(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s91(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s92(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s93(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s94(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s95(t_lexer *lexer, t_lexer_state *s);
-bool	lex_keywords_s96(t_lexer *lexer, t_lexer_state *s);
 bool	lex_keywords_default(t_lexer *lexer, t_lexer_state *s);
 
-#endif
+#endif // LEX_KEYWORDS_FUNCS_H

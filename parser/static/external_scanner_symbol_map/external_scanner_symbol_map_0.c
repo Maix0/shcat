@@ -34,19 +34,13 @@ void	external_scanner_symbol_map_0(t_external_scanner_symbol_map_array *v)
 	v->a[ts_external_token__brace_start] = sym__brace_start;
 	v->a[ts_external_token__immediate_double_hash] \
 	= sym__immediate_double_hash;
-	v->a[ts_external_token__external_expansion_sym_hash] \
-	= sym__external_expansion_sym_hash;
-	v->a[ts_external_token__external_expansion_sym_bang] \
-	= sym__external_expansion_sym_bang;
+	v->a[ts_external_token_RBRACE] = anon_sym_RBRACE3;
+	v->a[ts_external_token_RBRACK] = anon_sym_RBRACK;
 	external_scanner_symbol_map_1(v);
 }
 
 void	external_scanner_symbol_map_1(t_external_scanner_symbol_map_array *v)
 {
-	v->a[ts_external_token__external_expansion_sym_equal] \
-	= sym__external_expansion_sym_equal;
-	v->a[ts_external_token_RBRACE] = anon_sym_RBRACE3;
-	v->a[ts_external_token_RBRACK] = anon_sym_RBRACK;
 	v->a[ts_external_token_LT_LT] = anon_sym_LT_LT;
 	v->a[ts_external_token_LT_LT_DASH] = anon_sym_LT_LT_DASH;
 	v->a[ts_external_token_heredoc_redirect_token1] \

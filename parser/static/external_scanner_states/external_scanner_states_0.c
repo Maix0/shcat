@@ -32,16 +32,13 @@ void	external_scanner_states_0(t_external_scanner_states_array *v)
 	v->a[1][ts_external_token__bare_dollar] = true;
 	v->a[1][ts_external_token__brace_start] = true;
 	v->a[1][ts_external_token__immediate_double_hash] = true;
-	v->a[1][ts_external_token__external_expansion_sym_hash] = true;
-	v->a[1][ts_external_token__external_expansion_sym_bang] = true;
+	v->a[1][ts_external_token_RBRACE] = true;
+	v->a[1][ts_external_token_RBRACK] = true;
 	external_scanner_states_1(v);
 }
 
 void	external_scanner_states_1(t_external_scanner_states_array *v)
 {
-	v->a[1][ts_external_token__external_expansion_sym_equal] = true;
-	v->a[1][ts_external_token_RBRACE] = true;
-	v->a[1][ts_external_token_RBRACK] = true;
 	v->a[1][ts_external_token_LT_LT] = true;
 	v->a[1][ts_external_token_LT_LT_DASH] = true;
 	v->a[1][ts_external_token_LPAREN] = true;
@@ -56,84 +53,87 @@ void	external_scanner_states_1(t_external_scanner_states_array *v)
 	v->a[3][ts_external_token_variable_name] = true;
 	v->a[3][ts_external_token_test_operator] = true;
 	v->a[3][ts_external_token__brace_start] = true;
-	v->a[3][ts_external_token_RBRACK] = true;
 	v->a[3][ts_external_token_LPAREN] = true;
+	v->a[3][ts_external_token_esac] = true;
 	v->a[4][ts_external_token_file_descriptor] = true;
+	v->a[4][ts_external_token_test_operator] = true;
+	v->a[4][ts_external_token__bare_dollar] = true;
+	v->a[4][ts_external_token__brace_start] = true;
 	external_scanner_states_2(v);
 }
 
 void	external_scanner_states_2(t_external_scanner_states_array *v)
 {
-	v->a[4][ts_external_token__concat] = true;
-	v->a[4][ts_external_token_test_operator] = true;
-	v->a[4][ts_external_token__bare_dollar] = true;
-	v->a[4][ts_external_token__brace_start] = true;
 	v->a[4][ts_external_token_LT_LT] = true;
 	v->a[4][ts_external_token_LT_LT_DASH] = true;
 	v->a[4][ts_external_token_heredoc_redirect_token1] = true;
 	v->a[4][ts_external_token_LPAREN] = true;
+	v->a[4][ts_external_token_esac] = true;
 	v->a[5][ts_external_token_file_descriptor] = true;
-	v->a[5][ts_external_token__concat] = true;
+	v->a[5][ts_external_token_variable_name] = true;
 	v->a[5][ts_external_token_test_operator] = true;
-	v->a[5][ts_external_token__bare_dollar] = true;
 	v->a[5][ts_external_token__brace_start] = true;
-	v->a[5][ts_external_token_RBRACK] = true;
 	v->a[5][ts_external_token_LT_LT] = true;
 	v->a[5][ts_external_token_LT_LT_DASH] = true;
-	v->a[5][ts_external_token_LPAREN] = true;
+	v->a[5][ts_external_token_heredoc_redirect_token1] = true;
+	v->a[5][ts_external_token_esac] = true;
 	v->a[6][ts_external_token_file_descriptor] = true;
 	v->a[6][ts_external_token_variable_name] = true;
 	v->a[6][ts_external_token_test_operator] = true;
+	v->a[6][ts_external_token__bare_dollar] = true;
+	v->a[6][ts_external_token__brace_start] = true;
+	v->a[6][ts_external_token_LT_LT] = true;
+	v->a[6][ts_external_token_LT_LT_DASH] = true;
 	external_scanner_states_3(v);
 }
 
 void	external_scanner_states_3(t_external_scanner_states_array *v)
 {
-	v->a[6][ts_external_token__brace_start] = true;
+	v->a[6][ts_external_token_heredoc_redirect_token1] = true;
 	v->a[6][ts_external_token_LPAREN] = true;
 	v->a[6][ts_external_token_esac] = true;
-	v->a[7][ts_external_token__concat] = true;
+	v->a[7][ts_external_token_file_descriptor] = true;
+	v->a[7][ts_external_token_variable_name] = true;
 	v->a[7][ts_external_token_test_operator] = true;
+	v->a[7][ts_external_token__bare_dollar] = true;
 	v->a[7][ts_external_token__brace_start] = true;
 	v->a[7][ts_external_token_LT_LT] = true;
+	v->a[7][ts_external_token_LT_LT_DASH] = true;
+	v->a[7][ts_external_token_heredoc_redirect_token1] = true;
 	v->a[7][ts_external_token_LPAREN] = true;
-	v->a[8][ts_external_token__concat] = true;
+	v->a[8][ts_external_token_file_descriptor] = true;
+	v->a[8][ts_external_token_variable_name] = true;
 	v->a[8][ts_external_token_test_operator] = true;
+	v->a[8][ts_external_token__bare_dollar] = true;
 	v->a[8][ts_external_token__brace_start] = true;
-	v->a[8][ts_external_token_RBRACK] = true;
 	v->a[8][ts_external_token_LT_LT] = true;
-	v->a[8][ts_external_token_LPAREN] = true;
-	v->a[9][ts_external_token_file_descriptor] = true;
-	v->a[9][ts_external_token_variable_name] = true;
-	v->a[9][ts_external_token_test_operator] = true;
-	v->a[9][ts_external_token__bare_dollar] = true;
-	v->a[9][ts_external_token__brace_start] = true;
-	v->a[9][ts_external_token_LT_LT] = true;
+	v->a[8][ts_external_token_LT_LT_DASH] = true;
+	v->a[8][ts_external_token_heredoc_redirect_token1] = true;
 	external_scanner_states_4(v);
 }
 
 void	external_scanner_states_4(t_external_scanner_states_array *v)
 {
+	v->a[8][ts_external_token_esac] = true;
+	v->a[9][ts_external_token_file_descriptor] = true;
+	v->a[9][ts_external_token_variable_name] = true;
+	v->a[9][ts_external_token_test_operator] = true;
+	v->a[9][ts_external_token__brace_start] = true;
+	v->a[9][ts_external_token_LT_LT] = true;
 	v->a[9][ts_external_token_LT_LT_DASH] = true;
 	v->a[9][ts_external_token_heredoc_redirect_token1] = true;
-	v->a[9][ts_external_token_LPAREN] = true;
 	v->a[10][ts_external_token_file_descriptor] = true;
-	v->a[10][ts_external_token_variable_name] = true;
 	v->a[10][ts_external_token_test_operator] = true;
 	v->a[10][ts_external_token__bare_dollar] = true;
 	v->a[10][ts_external_token__brace_start] = true;
-	v->a[10][ts_external_token_RBRACK] = true;
 	v->a[10][ts_external_token_LT_LT] = true;
 	v->a[10][ts_external_token_LT_LT_DASH] = true;
+	v->a[10][ts_external_token_heredoc_redirect_token1] = true;
 	v->a[10][ts_external_token_LPAREN] = true;
 	v->a[11][ts_external_token_file_descriptor] = true;
 	v->a[11][ts_external_token_test_operator] = true;
-	v->a[11][ts_external_token__bare_dollar] = true;
 	v->a[11][ts_external_token__brace_start] = true;
 	v->a[11][ts_external_token_LT_LT] = true;
-	v->a[11][ts_external_token_LT_LT_DASH] = true;
-	v->a[11][ts_external_token_heredoc_redirect_token1] = true;
-	v->a[11][ts_external_token_LPAREN] = true;
 	external_scanner_states_5(v);
 }
 

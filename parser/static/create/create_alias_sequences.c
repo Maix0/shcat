@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 18:14:24 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 t_alias_sequences_array	*create_alias_sequences(void)
 {
 	static t_alias_sequences_array	table = {};
-	static bool						init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 18:18:15 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 t_parse_actions_entries_array	*create_parse_actions_entries(void)
 {
 	static t_parse_actions_entries_array	table = {};
-	static bool								init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

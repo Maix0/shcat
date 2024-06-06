@@ -24,4 +24,4 @@ typedef struct s_primary_state_ids_array
 	t_state_id	a[STATE_COUNT];
 }	t_primary_state_ids_array;
 
-#endif
+#endif // TYPE_PRIMARY_STATE_IDS_H

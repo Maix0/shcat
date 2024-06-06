@@ -27,4 +27,4 @@ void	lex_keywords_array_2(t_lex_keywords_array *v);
 void	lex_keywords_array_3(t_lex_keywords_array *v);
 void	lex_keywords_array_4(t_lex_keywords_array *v);
 
-#endif
+#endif // LEX_KEYWORDS_ARRAY_H

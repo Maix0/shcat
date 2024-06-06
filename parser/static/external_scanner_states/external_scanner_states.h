@@ -42,15 +42,5 @@ void	external_scanner_states_18(t_external_scanner_states_array *v);
 void	external_scanner_states_19(t_external_scanner_states_array *v);
 void	external_scanner_states_20(t_external_scanner_states_array *v);
 void	external_scanner_states_21(t_external_scanner_states_array *v);
-void	external_scanner_states_22(t_external_scanner_states_array *v);
-void	external_scanner_states_23(t_external_scanner_states_array *v);
-void	external_scanner_states_24(t_external_scanner_states_array *v);
-void	external_scanner_states_25(t_external_scanner_states_array *v);
-void	external_scanner_states_26(t_external_scanner_states_array *v);
-void	external_scanner_states_27(t_external_scanner_states_array *v);
-void	external_scanner_states_28(t_external_scanner_states_array *v);
-void	external_scanner_states_29(t_external_scanner_states_array *v);
-void	external_scanner_states_30(t_external_scanner_states_array *v);
-void	external_scanner_states_31(t_external_scanner_states_array *v);
 
-#endif
+#endif // EXTERNAL_SCANNER_STATES_H

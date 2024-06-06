@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/28 18:18:30 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 t_primary_state_ids_array	*create_primary_state_ids(void)
 {
 	static t_primary_state_ids_array	table = {};
-	static bool							init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

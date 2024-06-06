@@ -125,16 +125,5 @@ void	lex_keywords_array_4(t_lex_keywords_array *v)
 	v->a[83] = lex_keywords_s83;
 	v->a[84] = lex_keywords_s84;
 	v->a[85] = lex_keywords_s85;
-	v->a[86] = lex_keywords_s86;
-	v->a[87] = lex_keywords_s87;
-	v->a[88] = lex_keywords_s88;
-	v->a[89] = lex_keywords_s89;
-	v->a[90] = lex_keywords_s90;
-	v->a[91] = lex_keywords_s91;
-	v->a[92] = lex_keywords_s92;
-	v->a[93] = lex_keywords_s93;
-	v->a[94] = lex_keywords_s94;
-	v->a[95] = lex_keywords_s95;
-	v->a[96] = lex_keywords_s96;
 }
 /* EOF lex_keywords_array_0.c */
