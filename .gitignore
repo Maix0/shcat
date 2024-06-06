@@ -55,4 +55,15 @@ minishell
 .envrc
 .idea
 parser/split_rust
-tree-sitter-sh/.editorconfig tree-sitter-sh/.gitattributes tree-sitter-sh/.gitignore tree-sitter-sh/Cargo.toml tree-sitter-sh/Makefile tree-sitter-sh/Package.swift tree-sitter-sh/binding.gyp tree-sitter-sh/bindings/ tree-sitter-sh/package-lock.json tree-sitter-sh/pyproject.toml tree-sitter-sh/setup.py tree-sitter-sh/src/
+tree-sitter-sh/.editorconfig
+tree-sitter-sh/.gitattributes
+tree-sitter-sh/.gitignore
+tree-sitter-sh/Cargo.toml
+tree-sitter-sh/Makefile
+tree-sitter-sh/Package.swift
+tree-sitter-sh/binding.gyp
+tree-sitter-sh/bindings/
+tree-sitter-sh/package-lock.json
+tree-sitter-sh/pyproject.toml
+tree-sitter-sh/setup.py
+tree-sitter-sh/src/
