@@ -61,6 +61,7 @@ tree-sitter-sh/.gitignore
 tree-sitter-sh/Cargo.toml
 tree-sitter-sh/Makefile
 tree-sitter-sh/Package.swift
+tree-sitter-sh/a.out.js
 tree-sitter-sh/binding.gyp
 tree-sitter-sh/bindings/
 tree-sitter-sh/package-lock.json
