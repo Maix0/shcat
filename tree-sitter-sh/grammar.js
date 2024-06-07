@@ -248,25 +248,20 @@ module.exports = grammar({
 		)),
 
 		compound_statement: $ => seq(
-			'{',
-			$._terminated_statement,
-			token(prec(1, '}')),
+			'{', $._terminated_statement, token(prec(1, '}'))
 		),
 
 		subshell: $ => seq('(', $._statements, ')'),
 
 		pipeline: $ => prec.right(seq(
 			$._statement_not_pipeline,
-			repeat1(seq(
-				choice('|', '|&'),
-				$._statement_not_pipeline,
-			)),
+			repeat1(seq('|', $._statement_not_pipeline)),
 		)),
 
 		list: $ => prec.left(-1, seq(
-			$._statement,
-			choice('&&', '||'),
-			$._statement,
+			field('cmd', $._statement),
+			field('op', choice('&&', '||')),
+			field('cmd', $._statement),
 		)),
 
 		// Commands
@@ -387,18 +382,11 @@ module.exports = grammar({
 			)),
 		),
 
-		_simple_heredoc_body: $ => seq(
-			alias($.simple_heredoc_body, $.heredoc_body),
-			$.heredoc_end,
-		),
+		_simple_heredoc_body: $ => seq(alias($.simple_heredoc_body, $.heredoc_body), $.heredoc_end),
 
 		// Literals
 
-		_literal: $ => choice(
-			$.concatenation,
-			$._primary_expression,
-			// alias(prec(-2, repeat1($._special_character)), $.word),
-		),
+		_literal: $ => choice($.concatenation, $._primary_expression),
 
 		_primary_expression: $ => choice(
 			$.word,
@@ -414,16 +402,16 @@ module.exports = grammar({
 		arithmetic_expansion: $ => seq('$((', optional($._arithmetic_expression), '))'),
 
 		_arithmetic_expression: $ => prec(1, choice(
-			$._arithmetic_literal,
-			alias($._arithmetic_unary_expression, $.unary_expression),
-			alias($._arithmetic_ternary_expression, $.ternary_expression),
-			alias($._arithmetic_binary_expression, $.binary_expression),
-			alias($._arithmetic_postfix_expression, $.postfix_expression),
-			alias($._arithmetic_parenthesized_expression, $.parenthesized_expression),
+			$.arithmetic_literal,
+			$.arithmetic_unary_expression,
+			$.arithmetic_ternary_expression,
+			$.arithmetic_binary_expression,
+			$.arithmetic_postfix_expression,
+			$.arithmetic_parenthesized_expression,
 			$.command_substitution,
 		)),
 
-		_arithmetic_literal: $ => prec(1, choice(
+		arithmetic_literal: $ => prec(1, choice(
 			$.number,
 			$.simple_expansion,
 			$.expansion,
@@ -432,7 +420,9 @@ module.exports = grammar({
 			$.string,
 		)),
 
-		_arithmetic_binary_expression: $ => {
+		arithmetic_binary_expression: $ => {
+
+			/** @type {[RuleOrLiteral, number][]} */
 			const table = [
 				[choice('+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '&=', '^=', '|='), PREC.UPDATE],
 				['=', PREC.ASSIGN],
@@ -448,18 +438,16 @@ module.exports = grammar({
 				[choice('*', '/', '%'), PREC.MULTIPLY],
 			];
 
-			return choice(...table.map(([operator, precedence]) => {
-				// @ts-ignore
-				return prec.left(precedence, seq(
+			return choice(...table.map(([operator, precedence]) =>
+				prec.left(precedence, seq(
 					field('left', $._arithmetic_expression),
-					// @ts-ignore
 					field('operator', operator),
 					field('right', $._arithmetic_expression),
-				));
-			}));
+				))
+			));
 		},
 
-		_arithmetic_ternary_expression: $ => prec.left(PREC.TERNARY, seq(
+		arithmetic_ternary_expression: $ => prec.left(PREC.TERNARY, seq(
 			field('condition', $._arithmetic_expression),
 			'?',
 			field('consequence', $._arithmetic_expression),
@@ -467,7 +455,7 @@ module.exports = grammar({
 			field('alternative', $._arithmetic_expression),
 		)),
 
-		_arithmetic_unary_expression: $ => choice(
+		arithmetic_unary_expression: $ => choice(
 			prec(PREC.PREFIX, seq(
 				field('operator', tokenLiterals(1, '++', '--')),
 				$._arithmetic_expression,
@@ -482,12 +470,12 @@ module.exports = grammar({
 			)),
 		),
 
-		_arithmetic_postfix_expression: $ => prec(PREC.POSTFIX, seq(
+		arithmetic_postfix_expression: $ => prec(PREC.POSTFIX, seq(
 			$._arithmetic_expression,
 			field('operator', choice('++', '--')),
 		)),
 
-		_arithmetic_parenthesized_expression: $ => seq('(', $._arithmetic_expression, ')'),
+		arithmetic_parenthesized_expression: $ => seq('(', $._arithmetic_expression, ')'),
 
 		concatenation: $ => prec(-1, seq(
 			$._primary_expression,
