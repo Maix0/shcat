@@ -67,4 +67,7 @@ tree-sitter-sh/bindings/
 tree-sitter-sh/package-lock.json
 tree-sitter-sh/pyproject.toml
 tree-sitter-sh/setup.py
-tree-sitter-sh/src/
+tree-sitter-sh/src/grammar.json
+tree-sitter-sh/src/parser.c
+tree-sitter-sh/src/tree_sitter/
+tree-sitter-sh/src/node-types.json

@@ -9,16 +9,8 @@
 // @ts-check
 
 const SPECIAL_CHARACTERS = [
-	'\'', '"',
-	'<', '>',
-	'{', '}',
-	'\\[', '\\]',
-	'(', ')',
-	'`', '$',
-	'|', '&', ';',
-	'\\',
-	'\\s',
-];
+	"|", "&", ";", "<", ">", "(", ")", "$", "`", "\\", "\"", "'", " ", "\t", "\n",
+]
 
 const PREC = {
 	UPDATE: 0,
@@ -63,7 +55,6 @@ module.exports = grammar({
 		$._multiline_variable_name,
 		$._special_variable_name,
 		$._statement_not_subshell,
-		$._redirect,
 	],
 
 	externals: $ => [
@@ -76,17 +67,11 @@ module.exports = grammar({
 		$._empty_value,
 		$._concat,
 		$.variable_name, // Variable name followed by an operator like '=' or '+='
-		$.test_operator,
 		$.regex,
-		$._regex_no_slash,
-		$._regex_no_space,
 		$._expansion_word,
 		$.extglob_pattern,
 		$._bare_dollar,
-		$._brace_start,
 		$._immediate_double_hash,
-		'}',
-		']',
 		'<<',
 		'<<-',
 		/\n/,
@@ -174,7 +159,7 @@ module.exports = grammar({
 				field('body', $._statement),
 				field('redirect', repeat1(choice($.file_redirect, $.heredoc_redirect))),
 			),
-			field('redirect', repeat1($._redirect)),
+			field('redirect', repeat1($.file_redirect)),
 		))),
 
 		for_statement: $ => seq(
@@ -229,64 +214,43 @@ module.exports = grammar({
 			'in',
 			optional($._terminator),
 			optional(seq(
-				repeat($.case_item),
-				alias($.last_case_item, $.case_item),
+				repeat(field('cases', $.case_item)),
+				field('cases', alias($._case_item_last, $.case_item))
 			)),
 			'esac',
 		),
 
-		case_item: $ => seq(
-			choice(
-				seq(
-					optional('('),
-					field('value', choice($._literal, $._extglob_blob)),
-					repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
-					')',
-				),
-			),
-			optional($._statements),
-			prec(1, choice(
-				field('termination', ';;'),
-				field('fallthrough', choice(';&', ';;&')),
-			)),
-		),
-
-		last_case_item: $ => seq(
+		_case_item_last: $ => seq(
 			optional('('),
 			field('value', choice($._literal, $._extglob_blob)),
 			repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
 			')',
-			optional($._statements),
-			optional(prec(1, ';;')),
+			repeat('\n'),
+			choice(field('statements', $._statements)),
+			optional(';;')
+		),
+
+		case_item: $ => seq(
+			optional('('),
+			field('value', choice($._literal, $._extglob_blob)),
+			repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
+			')',
+			repeat('\n'),
+			choice(field('statements', $._statements)),
+			';;'
 		),
 
 		function_definition: $ => prec.right(seq(
-			choice(
-				seq(
-					'function',
-					field('name', $.word),
-					optional(seq('(', ')')),
-				),
-				seq(
-					field('name', $.word),
-					'(', ')',
-				),
-			),
-			field(
-				'body',
-				choice(
-					$.compound_statement,
-					$.subshell,
-					$.if_statement,
-				),
-			),
-			field('redirect', optional($._redirect)),
+			field('name', $.word),
+			'(', ')',
+			field('body', choice($.compound_statement, $.subshell)),
+			field('redirect', optional($.file_redirect)),
 		)),
 
 		compound_statement: $ => seq(
 			'{',
-			optional($._terminated_statement),
-			token(prec(-1, '}')),
+			$._terminated_statement,
+			token(prec(1, '}')),
 		),
 
 		subshell: $ => seq('(', $._statements, ')'),
@@ -336,7 +300,7 @@ module.exports = grammar({
 		command: $ => prec.left(seq(
 			repeat(choice(
 				$.variable_assignment,
-				field('redirect', $._redirect),
+				field('redirect', $.file_redirect),
 			)),
 			field('name', $.command_name),
 			choice(
@@ -386,7 +350,7 @@ module.exports = grammar({
 			optional(choice(
 				alias($._heredoc_pipeline, $.pipeline),
 				seq(
-					field('redirect', repeat1($._redirect)),
+					field('redirect', repeat1($.file_redirect)),
 					optional($._heredoc_expression),
 				),
 				$._heredoc_expression,
@@ -428,19 +392,16 @@ module.exports = grammar({
 			$.heredoc_end,
 		),
 
-		_redirect: $ => $.file_redirect,
-
 		// Literals
 
 		_literal: $ => choice(
 			$.concatenation,
 			$._primary_expression,
-			alias(prec(-2, repeat1($._special_character)), $.word),
+			// alias(prec(-2, repeat1($._special_character)), $.word),
 		),
 
 		_primary_expression: $ => choice(
 			$.word,
-			alias($.test_operator, $.word),
 			$.string,
 			$.raw_string,
 			$.number,
@@ -448,18 +409,10 @@ module.exports = grammar({
 			$.simple_expansion,
 			$.command_substitution,
 			$.arithmetic_expansion,
-			$.brace_expression,
 		),
 
-		arithmetic_expansion: $ => seq('$((', commaSep1($._arithmetic_expression), '))'),
+		arithmetic_expansion: $ => seq('$((', optional($._arithmetic_expression), '))'),
 
-		brace_expression: $ => seq(
-			alias($._brace_start, '{'),
-			alias(token.immediate(/\d+/), $.number),
-			token.immediate('..'),
-			alias(token.immediate(/\d+/), $.number),
-			token.immediate('}'),
-		),
 		_arithmetic_expression: $ => prec(1, choice(
 			$._arithmetic_literal,
 			alias($._arithmetic_unary_expression, $.unary_expression),
@@ -534,31 +487,20 @@ module.exports = grammar({
 			field('operator', choice('++', '--')),
 		)),
 
-		_arithmetic_parenthesized_expression: $ => seq(
-			'(',
-			$._arithmetic_expression,
-			')',
-		),
-
+		_arithmetic_parenthesized_expression: $ => seq('(', $._arithmetic_expression, ')'),
 
 		concatenation: $ => prec(-1, seq(
-			choice(
-				$._primary_expression,
-				alias($._special_character, $.word),
-			),
+			$._primary_expression,
 			repeat1(seq(
 				choice($._concat, alias(/`\s*`/, '``')),
 				choice(
 					$._primary_expression,
-					alias($._special_character, $.word),
 					alias($._comment_word, $.word),
 					alias($._bare_dollar, '$'),
 				),
 			)),
 			optional(seq($._concat, '$')),
 		)),
-
-		_special_character: _ => token(prec(-1, choice('{', '}', '[', ']'))),
 
 		string: $ => seq(
 			'"',
