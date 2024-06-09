@@ -19,7 +19,7 @@ void	parse_actions_entries_50(t_parse_actions_entries_array *v)
 	v->a[1002] = entry(1, false);
 	v->a[1003] = reduce(sym__statement_not_pipeline, 1, 0, 0);
 	v->a[1004] = entry(1, false);
-	v->a[1005] = reduce(sym_list, 3, 0, 21);
+	v->a[1005] = reduce(sym_list, 3, 0, 22);
 	v->a[1006] = entry(1, true);
 	v->a[1007] = reduce(aux_sym_command_repeat1, 1, 0, 0);
 	v->a[1008] = entry(2, true);
@@ -101,7 +101,7 @@ void	parse_actions_entries_53(t_parse_actions_entries_array *v)
 	v->a[1069] = entry(1, false);
 	v->a[1070] = shift(767);
 	v->a[1071] = entry(1, true);
-	v->a[1072] = reduce(sym_list, 3, 0, 21);
+	v->a[1072] = reduce(sym_list, 3, 0, 22);
 	v->a[1073] = entry(1, false);
 	v->a[1074] = reduce(sym__statements, 1, 0, 0);
 	v->a[1075] = entry(1, false);

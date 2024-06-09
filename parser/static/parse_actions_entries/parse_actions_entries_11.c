@@ -103,7 +103,7 @@ void	parse_actions_entries_58(t_parse_actions_entries_array *v)
 	v->a[1171] = entry(1, false);
 	v->a[1172] = shift(740);
 	v->a[1173] = entry(2, false);
-	v->a[1174] = reduce(aux_sym_command_repeat2, 2, 0, 22);
+	v->a[1174] = reduce(aux_sym_command_repeat2, 2, 0, 23);
 	v->a[1175] = shift_repeat(759);
 	v->a[1176] = entry(1, false);
 	v->a[1177] = shift(758);

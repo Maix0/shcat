@@ -64,16 +64,16 @@ void	parse_actions_entries_221(t_parse_actions_entries_array *v)
 
 void	parse_actions_entries_222(t_parse_actions_entries_array *v)
 {
-	v->a[4440] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 37);
+	v->a[4440] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 38);
 	v->a[4441] = shift_repeat(1326);
 	v->a[4442] = entry(1, true);
-	v->a[4443] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 37);
+	v->a[4443] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 38);
 	v->a[4444] = entry(1, true);
 	v->a[4445] = shift(31);
 	v->a[4446] = entry(1, true);
 	v->a[4447] = shift(33);
 	v->a[4448] = entry(1, true);
-	v->a[4449] = reduce(sym__case_item_last, 5, 0, 54);
+	v->a[4449] = reduce(sym__case_item_last, 5, 0, 55);
 	v->a[4450] = entry(1, true);
 	v->a[4451] = shift(1695);
 	v->a[4452] = entry(1, true);
@@ -81,7 +81,7 @@ void	parse_actions_entries_222(t_parse_actions_entries_array *v)
 	v->a[4454] = entry(1, true);
 	v->a[4455] = shift(148);
 	v->a[4456] = entry(1, true);
-	v->a[4457] = reduce(sym__case_item_last, 5, 0, 52);
+	v->a[4457] = reduce(sym__case_item_last, 5, 0, 53);
 	v->a[4458] = entry(1, true);
 	v->a[4459] = shift(1671);
 	parse_actions_entries_223(v);
@@ -90,13 +90,13 @@ void	parse_actions_entries_222(t_parse_actions_entries_array *v)
 void	parse_actions_entries_223(t_parse_actions_entries_array *v)
 {
 	v->a[4460] = entry(1, true);
-	v->a[4461] = reduce(sym__case_item_last, 5, 0, 53);
+	v->a[4461] = reduce(sym__case_item_last, 5, 0, 54);
 	v->a[4462] = entry(1, true);
 	v->a[4463] = shift(1680);
 	v->a[4464] = entry(1, true);
 	v->a[4465] = shift(1683);
 	v->a[4466] = entry(1, true);
-	v->a[4467] = reduce(sym__case_item_last, 3, 0, 36);
+	v->a[4467] = reduce(sym__case_item_last, 3, 0, 37);
 	v->a[4468] = entry(1, true);
 	v->a[4469] = shift(1703);
 	v->a[4470] = entry(1, true);
@@ -119,21 +119,21 @@ void	parse_actions_entries_224(t_parse_actions_entries_array *v)
 	v->a[4482] = entry(1, true);
 	v->a[4483] = shift(155);
 	v->a[4484] = entry(1, true);
-	v->a[4485] = reduce(sym__case_item_last, 4, 0, 46);
+	v->a[4485] = reduce(sym__case_item_last, 4, 0, 47);
 	v->a[4486] = entry(1, true);
 	v->a[4487] = shift(1676);
 	v->a[4488] = entry(1, true);
 	v->a[4489] = shift(1709);
 	v->a[4490] = entry(1, true);
-	v->a[4491] = reduce(sym__case_item_last, 6, 0, 57);
+	v->a[4491] = reduce(sym__case_item_last, 6, 0, 58);
 	v->a[4492] = entry(1, true);
 	v->a[4493] = shift(1714);
 	v->a[4494] = entry(1, true);
-	v->a[4495] = reduce(sym__case_item_last, 4, 0, 45);
+	v->a[4495] = reduce(sym__case_item_last, 4, 0, 46);
 	v->a[4496] = entry(1, true);
 	v->a[4497] = shift(1711);
 	v->a[4498] = entry(1, true);
-	v->a[4499] = reduce(sym__case_item_last, 4, 0, 43);
+	v->a[4499] = reduce(sym__case_item_last, 4, 0, 44);
 	parse_actions_entries_225(v);
 }
 

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/29 14:52:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/09 20:53:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,15 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_node		 build_node(t_parse_node current, t_const_str input);
-t_parse_node ts_node_child(t_parse_node parent, t_usize idx);
-t_symbol	 ts_node_symbol(t_parse_node self);
-t_const_str	 ts_node_type(t_parse_node self);
-t_u32		 ts_node_start_byte(t_parse_node self);
-t_u32		 ts_node_end_byte(t_parse_node self);
-t_u32		 ts_node_child_count(t_parse_node self);
 t_const_str	 ts_node_field_name_for_child(t_parse_node self, t_u32 child_index);
-t_u64		 ts_language_field_id_for_name(t_language *lang, t_const_str name,
-										   t_u64 name_len);
+t_const_str	 ts_node_type(t_parse_node self);
+t_node		 build_node(t_parse_node current, t_const_str input);
+t_parse_node ts_node_named_child(t_parse_node parent, t_usize idx);
+t_symbol	 ts_node_symbol(t_parse_node self);
+t_u32		 ts_node_end_byte(t_parse_node self);
+t_u32		 ts_node_named_child_count(t_parse_node self);
+t_u32		 ts_node_start_byte(t_parse_node self);
+t_u64		 ts_language_field_id_for_name(t_language *lang, t_const_str name, t_u64 name_len);
 
 t_language *tree_sitter_bash(void);
 
@@ -41,12 +40,10 @@ t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 	idx = 0;
 	while (idx < count)
 	{
-		child = ts_node_child(parent, idx);
+		child = ts_node_named_child(parent, idx);
 		ret[idx] = build_node(child, input);
 		ret[idx].field_str = ts_node_field_name_for_child(parent, idx);
-		ret[idx].field = ts_language_field_id_for_name(
-			tree_sitter_bash(), ret[idx].field_str,
-			str_len(ret[idx].field_str));
+		ret[idx].field = ts_language_field_id_for_name(tree_sitter_bash(), ret[idx].field_str, str_len(ret[idx].field_str));
 		idx++;
 	}
 	return (ret);
@@ -63,7 +60,7 @@ t_node build_node(t_parse_node curr, t_const_str input)
 	out.input = input;
 	out.single_str = NULL;
 	out.field_str = NULL;
-	out.childs_count = ts_node_child_count(curr);
+	out.childs_count = ts_node_named_child_count(curr);
 	if (out.childs_count == 0)
 		out.childs = NULL;
 	else

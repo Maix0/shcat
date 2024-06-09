@@ -41,22 +41,22 @@ void	symbols_metadata_1(t_symbols_metadata_array *v)
 {
 	v->a[anon_sym_LBRACE] = sym_metadata(true, false, false);
 	v->a[anon_sym_RBRACE] = sym_metadata(true, false, false);
-	v->a[anon_sym_AMP_AMP] = sym_metadata(true, false, false);
-	v->a[anon_sym_PIPE_PIPE] = sym_metadata(true, false, false);
+	v->a[anon_sym_AMP_AMP] = sym_metadata(true, true, false);
+	v->a[anon_sym_PIPE_PIPE] = sym_metadata(true, true, false);
 	v->a[anon_sym_BANG] = sym_metadata(true, false, false);
 	v->a[anon_sym_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_GT] = sym_metadata(true, false, false);
-	v->a[anon_sym_AMP_GT] = sym_metadata(true, false, false);
-	v->a[anon_sym_AMP_GT_GT] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_AMP] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_AMP] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_PIPE] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_AMP_DASH] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_AMP_DASH] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_LT] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_LT_DASH] = sym_metadata(true, false, false);
+	v->a[anon_sym_LT] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_GT] = sym_metadata(true, true, false);
+	v->a[anon_sym_AMP_GT] = sym_metadata(true, true, false);
+	v->a[anon_sym_AMP_GT_GT] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_AMP] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_AMP] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_PIPE] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_AMP_DASH] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_AMP_DASH] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_LT] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_LT_DASH] = sym_metadata(true, true, false);
 	v->a[aux_sym_heredoc_redirect_token1] = sym_metadata(false, false, false);
 	v->a[anon_sym_PIPE_AMP] = sym_metadata(true, false, false);
 	symbols_metadata_2(v);
@@ -66,41 +66,41 @@ void	symbols_metadata_2(t_symbols_metadata_array *v)
 {
 	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = sym_metadata(true, false, false);
 	v->a[anon_sym_RPAREN_RPAREN] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_STAR_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_SLASH_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_PERCENT_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_LT_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_GT_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_AMP_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_CARET_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_PIPE_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_CARET] = sym_metadata(true, false, false);
+	v->a[anon_sym_PLUS_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_STAR_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_SLASH_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_PERCENT_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_LT_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_GT_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_AMP_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_CARET_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_PIPE_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_CARET] = sym_metadata(true, true, false);
 	v->a[anon_sym_AMP] = sym_metadata(true, false, false);
-	v->a[anon_sym_EQ_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_BANG_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_LT_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_GT_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH] = sym_metadata(true, false, false);
+	v->a[anon_sym_EQ_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_BANG_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_LT_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_GT_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_PLUS] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH] = sym_metadata(true, true, false);
 	symbols_metadata_3(v);
 }
 
 void	symbols_metadata_3(t_symbols_metadata_array *v)
 {
-	v->a[anon_sym_STAR] = sym_metadata(true, false, false);
-	v->a[anon_sym_SLASH] = sym_metadata(true, false, false);
-	v->a[anon_sym_PERCENT] = sym_metadata(true, false, false);
+	v->a[anon_sym_STAR] = sym_metadata(true, true, false);
+	v->a[anon_sym_SLASH] = sym_metadata(true, true, false);
+	v->a[anon_sym_PERCENT] = sym_metadata(true, true, false);
 	v->a[anon_sym_QMARK] = sym_metadata(true, false, false);
 	v->a[anon_sym_COLON] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS_PLUS] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH_DASH] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH2] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS2] = sym_metadata(true, false, false);
-	v->a[anon_sym_TILDE] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS_PLUS2] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH_DASH2] = sym_metadata(true, false, false);
+	v->a[anon_sym_PLUS_PLUS] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH_DASH] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH2] = sym_metadata(true, true, false);
+	v->a[anon_sym_PLUS2] = sym_metadata(true, true, false);
+	v->a[anon_sym_TILDE] = sym_metadata(true, true, false);
+	v->a[anon_sym_PLUS_PLUS2] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH_DASH2] = sym_metadata(true, true, false);
 	v->a[aux_sym_concatenation_token1] = sym_metadata(true, false, false);
 	v->a[anon_sym_DOLLAR] = sym_metadata(true, false, false);
 	v->a[anon_sym_DQUOTE] = sym_metadata(true, false, false);
@@ -108,22 +108,22 @@ void	symbols_metadata_3(t_symbols_metadata_array *v)
 	v->a[sym_raw_string] = sym_metadata(true, true, false);
 	v->a[aux_sym_number_token1] = sym_metadata(false, false, false);
 	v->a[aux_sym_number_token2] = sym_metadata(false, false, false);
-	v->a[anon_sym_POUND] = sym_metadata(true, false, false);
+	v->a[anon_sym_POUND] = sym_metadata(true, true, false);
 	symbols_metadata_4(v);
 }
 
 void	symbols_metadata_4(t_symbols_metadata_array *v)
 {
 	v->a[anon_sym_DOLLAR_LBRACE] = sym_metadata(true, false, false);
-	v->a[anon_sym_COLON_DASH] = sym_metadata(true, false, false);
-	v->a[anon_sym_DASH3] = sym_metadata(true, false, false);
-	v->a[anon_sym_COLON_EQ] = sym_metadata(true, false, false);
-	v->a[anon_sym_EQ2] = sym_metadata(true, false, false);
-	v->a[anon_sym_COLON_QMARK] = sym_metadata(true, false, false);
-	v->a[anon_sym_QMARK2] = sym_metadata(true, false, false);
-	v->a[anon_sym_COLON_PLUS] = sym_metadata(true, false, false);
-	v->a[anon_sym_PLUS3] = sym_metadata(true, false, false);
-	v->a[anon_sym_PERCENT_PERCENT] = sym_metadata(true, false, false);
+	v->a[anon_sym_COLON_DASH] = sym_metadata(true, true, false);
+	v->a[anon_sym_DASH3] = sym_metadata(true, true, false);
+	v->a[anon_sym_COLON_EQ] = sym_metadata(true, true, false);
+	v->a[anon_sym_EQ2] = sym_metadata(true, true, false);
+	v->a[anon_sym_COLON_QMARK] = sym_metadata(true, true, false);
+	v->a[anon_sym_QMARK2] = sym_metadata(true, true, false);
+	v->a[anon_sym_COLON_PLUS] = sym_metadata(true, true, false);
+	v->a[anon_sym_PLUS3] = sym_metadata(true, true, false);
+	v->a[anon_sym_PERCENT_PERCENT] = sym_metadata(true, true, false);
 	v->a[aux_sym_expansion_regex_token1] = sym_metadata(true, true, false);
 	v->a[anon_sym_DOLLAR_LPAREN] = sym_metadata(true, false, false);
 	v->a[anon_sym_BQUOTE] = sym_metadata(true, false, false);

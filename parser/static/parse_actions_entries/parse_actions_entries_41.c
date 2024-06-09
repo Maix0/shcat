@@ -18,7 +18,7 @@ void	parse_actions_entries_205(t_parse_actions_entries_array *v)
 	v->a[4101] = entry(1, false);
 	v->a[4102] = shift(1907);
 	v->a[4103] = entry(1, false);
-	v->a[4104] = reduce(sym_expansion_regex, 1, 0, 1);
+	v->a[4104] = reduce(sym_expansion_regex, 1, 0, 16);
 	v->a[4105] = entry(1, false);
 	v->a[4106] = shift(1759);
 	v->a[4107] = entry(1, false);
@@ -47,7 +47,7 @@ void	parse_actions_entries_206(t_parse_actions_entries_array *v)
 	v->a[4125] = entry(1, true);
 	v->a[4126] = shift(1875);
 	v->a[4127] = entry(1, false);
-	v->a[4128] = reduce(sym_expansion_regex, 2, 0, 1);
+	v->a[4128] = reduce(sym_expansion_regex, 2, 0, 16);
 	v->a[4129] = entry(1, false);
 	v->a[4130] = shift(1865);
 	v->a[4131] = entry(1, true);

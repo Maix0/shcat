@@ -90,7 +90,7 @@ void	parse_actions_entries_217(t_parse_actions_entries_array *v)
 void	parse_actions_entries_218(t_parse_actions_entries_array *v)
 {
 	v->a[4360] = entry(1, true);
-	v->a[4361] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 26);
+	v->a[4361] = reduce(aux_sym__case_item_last_repeat1, 2, 0, 27);
 	v->a[4362] = entry(1, true);
 	v->a[4363] = shift(1691);
 	v->a[4364] = entry(1, true);

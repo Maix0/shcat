@@ -98,9 +98,9 @@ void	parse_actions_entries_193(t_parse_actions_entries_array *v)
 	v->a[3866] = entry(1, false);
 	v->a[3867] = shift(1128);
 	v->a[3868] = entry(1, false);
-	v->a[3869] = reduce(aux_sym_case_statement_repeat1, 1, 0, 27);
+	v->a[3869] = reduce(aux_sym_case_statement_repeat1, 1, 0, 28);
 	v->a[3870] = entry(1, true);
-	v->a[3871] = reduce(aux_sym_case_statement_repeat1, 1, 0, 27);
+	v->a[3871] = reduce(aux_sym_case_statement_repeat1, 1, 0, 28);
 	v->a[3872] = entry(1, false);
 	v->a[3873] = shift(1641);
 	v->a[3874] = entry(1, false);

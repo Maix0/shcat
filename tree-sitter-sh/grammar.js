@@ -249,7 +249,7 @@ module.exports = grammar({
 
     list: $ => prec.left(-1, seq(
       field('cmd', $._statement),
-      field('op', choice('&&', '||')),
+      field('op', alias(choice('&&', '||'), $.operator)),
       field('cmd', $._statement),
     )),
 
@@ -300,11 +300,11 @@ module.exports = grammar({
       field('fd', optional($.file_descriptor)),
       choice(
         seq(
-          field('op', choice('<', '>', '>>', '&>', '&>>', '<&', '>&', '>|')),
+          field('op', alias(choice('<', '>', '>>', '&>', '&>>', '<&', '>&', '>|'), $.operator)),
           field('dest', repeat1($._literal)),
         ),
         seq(
-          field('op', choice('<&-', '>&-')),
+          field('op', alias(choice('<&-', '>&-'), $.operator)),
           field('dest', optional($._literal)),
         ),
       ),
@@ -312,7 +312,7 @@ module.exports = grammar({
 
     heredoc_redirect: $ => seq(
       field('fd', optional($.file_descriptor)),
-      field('op', choice('<<', '<<-')),
+      field('op', alias(choice('<<', '<<-'), $.operator)),
       $.heredoc_start,
       optional(choice(
         alias($._heredoc_pipeline, $.pipeline),
@@ -333,7 +333,7 @@ module.exports = grammar({
     ),
 
     _heredoc_expression: $ => seq(
-      field('op', choice('||', '&&')),
+      field('op', alias(choice('||', '&&'), $.operator)),
       field('right', $._statement),
     ),
 
@@ -413,7 +413,7 @@ module.exports = grammar({
       return choice(...table.map(([operator, precedence]) =>
         prec.left(precedence, seq(
           field('left', $._arithmetic_expression),
-          field('op', operator),
+          field('op', alias(operator, $.operator)),
           field('right', $._arithmetic_expression),
         ))
       ));
@@ -429,22 +429,22 @@ module.exports = grammar({
 
     arithmetic_unary_expression: $ => choice(
       prec(PREC.PREFIX, seq(
-        field('op', tokenLiterals(1, '++', '--')),
+        field('op', alias(tokenLiterals(1, '++', '--'), $.operator)),
         $._arithmetic_expression,
       )),
       prec(PREC.UNARY, seq(
-        field('op', tokenLiterals(1, '-', '+', '~')),
+        field('op', alias(tokenLiterals(1, '-', '+', '~'), $.operator)),
         $._arithmetic_expression,
       )),
       prec.right(PREC.UNARY, seq(
-        field('op', '!'),
+        field('op', alias('!', $.operator)),
         $._arithmetic_expression,
       )),
     ),
 
     arithmetic_postfix_expression: $ => prec(PREC.POSTFIX, seq(
       $._arithmetic_expression,
-      field('op', choice('++', '--')),
+      field('op', alias(choice('++', '--'), $.operator)),
     )),
 
     arithmetic_parenthesized_expression: $ => seq('(', $._arithmetic_expression, ')'),
@@ -500,8 +500,6 @@ module.exports = grammar({
       ),
     ),
 
-    string_expansion: $ => seq('$', $.string),
-
     expansion: $ => seq(
       '${',
       optional($._expansion_body),
@@ -514,7 +512,7 @@ module.exports = grammar({
 
 
     expansion_expression: $ => prec(1, seq(
-      field('op', immediateLiterals(':-', '-', ':=', '=', ':?', '?', ':+', '+',)),
+      field('op', alias(immediateLiterals(':-', '-', ':=', '=', ':?', '?', ':+', '+'), $.operator)),
       optional(seq(
         choice(
           alias($._concatenation_in_expansion, $.concatenation),
@@ -528,7 +526,7 @@ module.exports = grammar({
     )),
 
     expansion_regex: $ => seq(
-      field('op', choice('#', alias($._immediate_double_hash, '##'), '%', '%%')),
+      field('op', alias(choice('#', $._immediate_double_hash, '%', '%%'), $.operator)),
       repeat(choice(
         $.regex,
         alias(')', $.regex),

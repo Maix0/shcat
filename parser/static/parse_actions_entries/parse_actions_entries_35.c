@@ -133,7 +133,7 @@ void	parse_actions_entries_179(t_parse_actions_entries_array *v)
 	v->a[3596] = entry(1, true);
 	v->a[3597] = shift(1969);
 	v->a[3598] = entry(1, false);
-	v->a[3599] = reduce(sym_case_item, 6, 0, 52);
+	v->a[3599] = reduce(sym_case_item, 6, 0, 53);
 	parse_actions_entries_180(v);
 }
 

@@ -44,9 +44,9 @@ void	parse_actions_entries_241(t_parse_actions_entries_array *v)
 	v->a[4822] = entry(1, true);
 	v->a[4823] = shift(441);
 	v->a[4824] = entry(1, true);
-	v->a[4825] = reduce(sym__expansion_body, 2, 0, 18);
+	v->a[4825] = reduce(sym__expansion_body, 2, 0, 19);
 	v->a[4826] = entry(1, true);
-	v->a[4827] = reduce(sym__expansion_body, 2, 0, 17);
+	v->a[4827] = reduce(sym__expansion_body, 2, 0, 18);
 	v->a[4828] = entry(1, true);
 	v->a[4829] = shift(1248);
 	v->a[4830] = entry(1, true);

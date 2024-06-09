@@ -6,12 +6,12 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/06/09 19:05:51 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/09 19:17:04 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Objdir
-BUILD_DIR = $(shell realpath build)
+BUILD_DIR = $(shell realpath ./build)
 
 # Colors
 GREEN = \033[32m
@@ -42,14 +42,14 @@ endif
 
 # All (make all)
 all: 
-	@$(MAKE) --no-print-directory header            BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd) $(PMAKE)
-	@$(MAKE) --no-print-directory footer            BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
+	@$(MAKE) --no-print-directory -f./Minishell.mk  "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE)
+	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
 
 bonus: 
-	@$(MAKE) --no-print-directory header            BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd)
-	@$(MAKE) --no-print-directory -f./Minishell.mk  BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd) $(PMAKE) bonus
-	@$(MAKE) --no-print-directory footer            BUILD_DIR=$(BUILD_DIR) BASE_PATH=$(shell pwd)
+	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
+	@$(MAKE) --no-print-directory -f./Minishell.mk  "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE) bonus
+	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
 
 #	Header
 header:

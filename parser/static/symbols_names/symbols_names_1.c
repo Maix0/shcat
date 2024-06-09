@@ -28,7 +28,7 @@ void	symbols_names_5(t_symbols_names_array *v)
 	v->a[sym__expansion_word] = "word";
 	v->a[sym_extglob_pattern] = "extglob_pattern";
 	v->a[sym__bare_dollar] = "$";
-	v->a[sym__immediate_double_hash] = "##";
+	v->a[sym__immediate_double_hash] = "operator";
 	v->a[sym___error_recovery] = "__error_recovery";
 	v->a[sym_program] = "program";
 	v->a[sym__statements] = "_statements";

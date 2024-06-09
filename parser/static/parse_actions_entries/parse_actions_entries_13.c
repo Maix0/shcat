@@ -24,13 +24,13 @@ void	parse_actions_entries_65(t_parse_actions_entries_array *v)
 	v->a[1307] = reduce(aux_sym_concatenation_repeat1, 2, 0, 0);
 	v->a[1308] = shift_repeat(1494);
 	v->a[1309] = entry(1, false);
-	v->a[1310] = reduce(sym_command_substitution, 3, 0, 20);
+	v->a[1310] = reduce(sym_command_substitution, 3, 0, 21);
 	v->a[1311] = entry(1, true);
-	v->a[1312] = reduce(sym_command_substitution, 3, 0, 20);
+	v->a[1312] = reduce(sym_command_substitution, 3, 0, 21);
 	v->a[1313] = entry(1, false);
-	v->a[1314] = reduce(sym_expansion, 3, 0, 19);
+	v->a[1314] = reduce(sym_expansion, 3, 0, 20);
 	v->a[1315] = entry(1, true);
-	v->a[1316] = reduce(sym_expansion, 3, 0, 19);
+	v->a[1316] = reduce(sym_expansion, 3, 0, 20);
 	v->a[1317] = entry(1, false);
 	v->a[1318] = reduce(sym_string, 3, 0, 0);
 	v->a[1319] = entry(1, true);
@@ -133,7 +133,7 @@ void	parse_actions_entries_69(t_parse_actions_entries_array *v)
 	v->a[1396] = entry(1, true);
 	v->a[1397] = shift(1458);
 	v->a[1398] = entry(1, false);
-	v->a[1399] = reduce(sym_arithmetic_binary_expression, 3, 0, 28);
+	v->a[1399] = reduce(sym_arithmetic_binary_expression, 3, 0, 29);
 	parse_actions_entries_70(v);
 }
 

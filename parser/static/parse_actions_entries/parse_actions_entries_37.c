@@ -15,13 +15,13 @@
 void	parse_actions_entries_185(t_parse_actions_entries_array *v)
 {
 	v->a[3700] = entry(1, true);
-	v->a[3701] = reduce(sym_case_item, 5, 0, 45);
+	v->a[3701] = reduce(sym_case_item, 5, 0, 46);
 	v->a[3702] = entry(1, false);
-	v->a[3703] = reduce(sym_case_item, 5, 0, 43);
+	v->a[3703] = reduce(sym_case_item, 5, 0, 44);
 	v->a[3704] = entry(1, false);
-	v->a[3705] = reduce(sym__case_item_last, 5, 0, 43);
+	v->a[3705] = reduce(sym__case_item_last, 5, 0, 44);
 	v->a[3706] = entry(1, true);
-	v->a[3707] = reduce(sym_case_item, 5, 0, 43);
+	v->a[3707] = reduce(sym_case_item, 5, 0, 44);
 	v->a[3708] = entry(1, true);
 	v->a[3709] = shift(993);
 	v->a[3710] = entry(1, true);

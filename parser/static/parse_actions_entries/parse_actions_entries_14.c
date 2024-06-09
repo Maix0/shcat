@@ -15,7 +15,7 @@
 void	parse_actions_entries_70(t_parse_actions_entries_array *v)
 {
 	v->a[1400] = entry(1, true);
-	v->a[1401] = reduce(sym_arithmetic_binary_expression, 3, 0, 28);
+	v->a[1401] = reduce(sym_arithmetic_binary_expression, 3, 0, 29);
 	v->a[1402] = entry(1, true);
 	v->a[1403] = shift(438);
 	v->a[1404] = entry(1, true);
@@ -130,9 +130,9 @@ void	parse_actions_entries_74(t_parse_actions_entries_array *v)
 	v->a[1493] = entry(1, false);
 	v->a[1494] = shift(111);
 	v->a[1495] = entry(1, false);
-	v->a[1496] = reduce(sym_arithmetic_postfix_expression, 2, 0, 16);
+	v->a[1496] = reduce(sym_arithmetic_postfix_expression, 2, 0, 17);
 	v->a[1497] = entry(1, true);
-	v->a[1498] = reduce(sym_arithmetic_postfix_expression, 2, 0, 16);
+	v->a[1498] = reduce(sym_arithmetic_postfix_expression, 2, 0, 17);
 	v->a[1499] = entry(2, false);
 	parse_actions_entries_75(v);
 }

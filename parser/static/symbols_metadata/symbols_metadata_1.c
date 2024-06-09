@@ -28,7 +28,7 @@ void	symbols_metadata_5(t_symbols_metadata_array *v)
 	v->a[sym__expansion_word] = sym_metadata(true, true, false);
 	v->a[sym_extglob_pattern] = sym_metadata(true, true, false);
 	v->a[sym__bare_dollar] = sym_metadata(true, false, false);
-	v->a[sym__immediate_double_hash] = sym_metadata(true, false, false);
+	v->a[sym__immediate_double_hash] = sym_metadata(true, true, false);
 	v->a[sym___error_recovery] = sym_metadata(false, true, false);
 	v->a[sym_program] = sym_metadata(true, true, false);
 	v->a[sym__statements] = sym_metadata(false, true, false);

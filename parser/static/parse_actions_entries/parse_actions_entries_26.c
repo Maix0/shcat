@@ -14,7 +14,7 @@
 
 void	parse_actions_entries_130(t_parse_actions_entries_array *v)
 {
-	v->a[2600] = reduce(sym_case_statement, 7, 0, 47);
+	v->a[2600] = reduce(sym_case_statement, 7, 0, 48);
 	v->a[2601] = entry(2, false);
 	v->a[2602] = reduce(aux_sym_redirected_statement_repeat2, 2, 0, 0);
 	v->a[2603] = shift_repeat(1461);
@@ -25,9 +25,9 @@ void	parse_actions_entries_130(t_parse_actions_entries_array *v)
 	v->a[2608] = reduce(aux_sym_redirected_statement_repeat2, 2, 0, 0);
 	v->a[2609] = shift_repeat(1850);
 	v->a[2610] = entry(1, true);
-	v->a[2611] = reduce(sym_if_statement, 4, 0, 25);
+	v->a[2611] = reduce(sym_if_statement, 4, 0, 26);
 	v->a[2612] = entry(1, false);
-	v->a[2613] = reduce(sym_if_statement, 4, 0, 25);
+	v->a[2613] = reduce(sym_if_statement, 4, 0, 26);
 	v->a[2614] = entry(2, true);
 	v->a[2615] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
 	v->a[2616] = shift_repeat(2174);

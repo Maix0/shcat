@@ -65,7 +65,7 @@ void	parse_actions_entries_41(t_parse_actions_entries_array *v)
 void	parse_actions_entries_42(t_parse_actions_entries_array *v)
 {
 	v->a[840] = entry(2, false);
-	v->a[841] = reduce(aux_sym_command_repeat2, 2, 0, 22);
+	v->a[841] = reduce(aux_sym_command_repeat2, 2, 0, 23);
 	v->a[842] = shift_repeat(452);
 	v->a[843] = entry(2, false);
 	v->a[844] = reduce(aux_sym_for_statement_repeat1, 2, 0, 0);

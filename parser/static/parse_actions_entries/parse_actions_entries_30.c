@@ -24,15 +24,15 @@ void	parse_actions_entries_150(t_parse_actions_entries_array *v)
 	v->a[3007] = entry(1, true);
 	v->a[3008] = shift(2069);
 	v->a[3009] = entry(2, false);
-	v->a[3010] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3010] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3011] = shift_repeat(1614);
 	v->a[3012] = entry(1, false);
-	v->a[3013] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3013] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3014] = entry(2, false);
-	v->a[3015] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3015] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3016] = shift_repeat(826);
 	v->a[3017] = entry(2, false);
-	v->a[3018] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3018] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3019] = shift_repeat(1734);
 	parse_actions_entries_151(v);
 }
@@ -40,22 +40,22 @@ void	parse_actions_entries_150(t_parse_actions_entries_array *v)
 void	parse_actions_entries_151(t_parse_actions_entries_array *v)
 {
 	v->a[3020] = entry(2, false);
-	v->a[3021] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3021] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3022] = shift_repeat(1735);
 	v->a[3023] = entry(2, false);
-	v->a[3024] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3024] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3025] = shift_repeat(1578);
 	v->a[3026] = entry(2, false);
-	v->a[3027] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3027] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3028] = shift_repeat(1915);
 	v->a[3029] = entry(2, false);
-	v->a[3030] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3030] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3031] = shift_repeat(1698);
 	v->a[3032] = entry(2, false);
-	v->a[3033] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3033] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3034] = shift_repeat(77);
 	v->a[3035] = entry(2, false);
-	v->a[3036] = reduce(aux_sym__heredoc_command, 2, 0, 22);
+	v->a[3036] = reduce(aux_sym__heredoc_command, 2, 0, 23);
 	v->a[3037] = shift_repeat(39);
 	v->a[3038] = entry(1, true);
 	v->a[3039] = shift(1406);

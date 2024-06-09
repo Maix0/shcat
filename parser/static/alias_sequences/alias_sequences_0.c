@@ -14,10 +14,12 @@
 
 void	alias_sequences_0(t_alias_sequences_array *v)
 {
-	v->a[6][1] = anon_sym_AT;
-	v->a[7][0] = anon_sym_AT;
-	v->a[18][0] = anon_sym_AT;
-	v->a[29][0] = sym_regex;
+	v->a[6][1] = anon_sym_POUND;
+	v->a[7][0] = anon_sym_POUND;
+	v->a[16][0] = sym__immediate_double_hash;
+	v->a[19][0] = anon_sym_POUND;
+	v->a[29][1] = sym__immediate_double_hash;
+	v->a[30][0] = sym_regex;
 }
 
 /* EOF alias_sequences_0.c */

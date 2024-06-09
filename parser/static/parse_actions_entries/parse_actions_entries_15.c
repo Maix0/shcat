@@ -28,9 +28,9 @@ void	parse_actions_entries_75(t_parse_actions_entries_array *v)
 	v->a[1511] = entry(1, true);
 	v->a[1512] = shift(1386);
 	v->a[1513] = entry(1, false);
-	v->a[1514] = reduce(sym_arithmetic_unary_expression, 2, 0, 1);
+	v->a[1514] = reduce(sym_arithmetic_unary_expression, 2, 0, 16);
 	v->a[1515] = entry(1, true);
-	v->a[1516] = reduce(sym_arithmetic_unary_expression, 2, 0, 1);
+	v->a[1516] = reduce(sym_arithmetic_unary_expression, 2, 0, 16);
 	v->a[1517] = entry(1, true);
 	v->a[1518] = shift(1412);
 	v->a[1519] = entry(1, true);
@@ -55,9 +55,9 @@ void	parse_actions_entries_76(t_parse_actions_entries_array *v)
 	v->a[1533] = entry(1, true);
 	v->a[1534] = shift(1485);
 	v->a[1535] = entry(1, false);
-	v->a[1536] = reduce(sym_arithmetic_ternary_expression, 5, 0, 39);
+	v->a[1536] = reduce(sym_arithmetic_ternary_expression, 5, 0, 40);
 	v->a[1537] = entry(1, true);
-	v->a[1538] = reduce(sym_arithmetic_ternary_expression, 5, 0, 39);
+	v->a[1538] = reduce(sym_arithmetic_ternary_expression, 5, 0, 40);
 	v->a[1539] = entry(1, false);
 	parse_actions_entries_77(v);
 }
@@ -125,7 +125,7 @@ void	parse_actions_entries_79(t_parse_actions_entries_array *v)
 	v->a[1588] = entry(1, false);
 	v->a[1589] = shift(152);
 	v->a[1590] = entry(1, false);
-	v->a[1591] = reduce(sym__heredoc_expression, 2, 0, 33);
+	v->a[1591] = reduce(sym__heredoc_expression, 2, 0, 34);
 	v->a[1592] = entry(1, false);
 	v->a[1593] = reduce(sym__heredoc_pipeline, 2, 0, 0);
 	v->a[1594] = entry(1, true);

@@ -41,22 +41,22 @@ void	symbols_names_1(t_symbols_names_array *v)
 {
 	v->a[anon_sym_LBRACE] = "{";
 	v->a[anon_sym_RBRACE] = "}";
-	v->a[anon_sym_AMP_AMP] = "&&";
-	v->a[anon_sym_PIPE_PIPE] = "||";
+	v->a[anon_sym_AMP_AMP] = "operator";
+	v->a[anon_sym_PIPE_PIPE] = "operator";
 	v->a[anon_sym_BANG] = "!";
 	v->a[anon_sym_EQ] = "=";
-	v->a[anon_sym_LT] = "<";
-	v->a[anon_sym_GT] = ">";
-	v->a[anon_sym_GT_GT] = ">>";
-	v->a[anon_sym_AMP_GT] = "&>";
-	v->a[anon_sym_AMP_GT_GT] = "&>>";
-	v->a[anon_sym_LT_AMP] = "<&";
-	v->a[anon_sym_GT_AMP] = ">&";
-	v->a[anon_sym_GT_PIPE] = ">|";
-	v->a[anon_sym_LT_AMP_DASH] = "<&-";
-	v->a[anon_sym_GT_AMP_DASH] = ">&-";
-	v->a[anon_sym_LT_LT] = "<<";
-	v->a[anon_sym_LT_LT_DASH] = "<<-";
+	v->a[anon_sym_LT] = "operator";
+	v->a[anon_sym_GT] = "operator";
+	v->a[anon_sym_GT_GT] = "operator";
+	v->a[anon_sym_AMP_GT] = "operator";
+	v->a[anon_sym_AMP_GT_GT] = "operator";
+	v->a[anon_sym_LT_AMP] = "operator";
+	v->a[anon_sym_GT_AMP] = "operator";
+	v->a[anon_sym_GT_PIPE] = "operator";
+	v->a[anon_sym_LT_AMP_DASH] = "operator";
+	v->a[anon_sym_GT_AMP_DASH] = "operator";
+	v->a[anon_sym_LT_LT] = "operator";
+	v->a[anon_sym_LT_LT_DASH] = "operator";
 	v->a[aux_sym_heredoc_redirect_token1] = "heredoc_redirect_token1";
 	v->a[anon_sym_PIPE_AMP] = "|&";
 	symbols_names_2(v);
@@ -66,41 +66,41 @@ void	symbols_names_2(t_symbols_names_array *v)
 {
 	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = "$((";
 	v->a[anon_sym_RPAREN_RPAREN] = "))";
-	v->a[anon_sym_PLUS_EQ] = "+=";
-	v->a[anon_sym_DASH_EQ] = "-=";
-	v->a[anon_sym_STAR_EQ] = "*=";
-	v->a[anon_sym_SLASH_EQ] = "/=";
-	v->a[anon_sym_PERCENT_EQ] = "%=";
-	v->a[anon_sym_LT_LT_EQ] = "<<=";
-	v->a[anon_sym_GT_GT_EQ] = ">>=";
-	v->a[anon_sym_AMP_EQ] = "&=";
-	v->a[anon_sym_CARET_EQ] = "^=";
-	v->a[anon_sym_PIPE_EQ] = "|=";
-	v->a[anon_sym_CARET] = "^";
+	v->a[anon_sym_PLUS_EQ] = "operator";
+	v->a[anon_sym_DASH_EQ] = "operator";
+	v->a[anon_sym_STAR_EQ] = "operator";
+	v->a[anon_sym_SLASH_EQ] = "operator";
+	v->a[anon_sym_PERCENT_EQ] = "operator";
+	v->a[anon_sym_LT_LT_EQ] = "operator";
+	v->a[anon_sym_GT_GT_EQ] = "operator";
+	v->a[anon_sym_AMP_EQ] = "operator";
+	v->a[anon_sym_CARET_EQ] = "operator";
+	v->a[anon_sym_PIPE_EQ] = "operator";
+	v->a[anon_sym_CARET] = "operator";
 	v->a[anon_sym_AMP] = "&";
-	v->a[anon_sym_EQ_EQ] = "==";
-	v->a[anon_sym_BANG_EQ] = "!=";
-	v->a[anon_sym_LT_EQ] = "<=";
-	v->a[anon_sym_GT_EQ] = ">=";
-	v->a[anon_sym_PLUS] = "+";
-	v->a[anon_sym_DASH] = "-";
+	v->a[anon_sym_EQ_EQ] = "operator";
+	v->a[anon_sym_BANG_EQ] = "operator";
+	v->a[anon_sym_LT_EQ] = "operator";
+	v->a[anon_sym_GT_EQ] = "operator";
+	v->a[anon_sym_PLUS] = "operator";
+	v->a[anon_sym_DASH] = "operator";
 	symbols_names_3(v);
 }
 
 void	symbols_names_3(t_symbols_names_array *v)
 {
-	v->a[anon_sym_STAR] = "*";
-	v->a[anon_sym_SLASH] = "/";
-	v->a[anon_sym_PERCENT] = "%";
+	v->a[anon_sym_STAR] = "operator";
+	v->a[anon_sym_SLASH] = "operator";
+	v->a[anon_sym_PERCENT] = "operator";
 	v->a[anon_sym_QMARK] = "\\\?";
 	v->a[anon_sym_COLON] = ":";
-	v->a[anon_sym_PLUS_PLUS] = "++";
-	v->a[anon_sym_DASH_DASH] = "--";
-	v->a[anon_sym_DASH2] = "-";
-	v->a[anon_sym_PLUS2] = "+";
-	v->a[anon_sym_TILDE] = "~";
-	v->a[anon_sym_PLUS_PLUS2] = "++";
-	v->a[anon_sym_DASH_DASH2] = "--";
+	v->a[anon_sym_PLUS_PLUS] = "operator";
+	v->a[anon_sym_DASH_DASH] = "operator";
+	v->a[anon_sym_DASH2] = "operator";
+	v->a[anon_sym_PLUS2] = "operator";
+	v->a[anon_sym_TILDE] = "operator";
+	v->a[anon_sym_PLUS_PLUS2] = "operator";
+	v->a[anon_sym_DASH_DASH2] = "operator";
 	v->a[aux_sym_concatenation_token1] = "``";
 	v->a[anon_sym_DOLLAR] = "$";
 	v->a[anon_sym_DQUOTE] = "\\\"";
@@ -108,22 +108,22 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[sym_raw_string] = "raw_string";
 	v->a[aux_sym_number_token1] = "number_token1";
 	v->a[aux_sym_number_token2] = "number_token2";
-	v->a[anon_sym_POUND] = "#";
+	v->a[anon_sym_POUND] = "special_variable_name";
 	symbols_names_4(v);
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
 {
 	v->a[anon_sym_DOLLAR_LBRACE] = "${";
-	v->a[anon_sym_COLON_DASH] = ":-";
-	v->a[anon_sym_DASH3] = "-";
-	v->a[anon_sym_COLON_EQ] = ":=";
-	v->a[anon_sym_EQ2] = "=";
-	v->a[anon_sym_COLON_QMARK] = ":\\\?";
-	v->a[anon_sym_QMARK2] = "\\\?";
-	v->a[anon_sym_COLON_PLUS] = ":+";
-	v->a[anon_sym_PLUS3] = "+";
-	v->a[anon_sym_PERCENT_PERCENT] = "%%";
+	v->a[anon_sym_COLON_DASH] = "operator";
+	v->a[anon_sym_DASH3] = "operator";
+	v->a[anon_sym_COLON_EQ] = "operator";
+	v->a[anon_sym_EQ2] = "operator";
+	v->a[anon_sym_COLON_QMARK] = "operator";
+	v->a[anon_sym_QMARK2] = "operator";
+	v->a[anon_sym_COLON_PLUS] = "operator";
+	v->a[anon_sym_PLUS3] = "operator";
+	v->a[anon_sym_PERCENT_PERCENT] = "operator";
 	v->a[aux_sym_expansion_regex_token1] = "regex";
 	v->a[anon_sym_DOLLAR_LPAREN] = "$(";
 	v->a[anon_sym_BQUOTE] = "`";
