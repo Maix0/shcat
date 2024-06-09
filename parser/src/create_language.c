@@ -6,50 +6,48 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/01 17:38:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/09 21:46:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../parse_types.h"
 #include "../static/headers/constants.h"
 #include "../static/headers/symbols.h"
-#include "../parse_types.h"
 
+bool						lex_keywords_main(t_lexer *lexer, t_state_id state);
+bool						lex_normal_main(t_lexer *lexer, t_state_id state);
+bool						tree_sitter_sh_external_scanner_scan(void *ctx, t_lexer *lexer, const bool *ret);
+const bool				   *create_external_scanner_states(void);
+const char *const		   *create_field_names(void);
+const char *const		   *create_symbols_names(void);
+const t_field_map_entry	   *create_field_map_entries(void);
+const t_field_map_slice	   *create_field_map_slices(void);
+const t_lex_modes		   *create_lex_modes(void);
+const t_parse_action_entry *create_parse_actions_entries(void);
+const t_state_id		   *create_primary_state_ids(void);
+const t_symbol			   *create_alias_sequences(void);
+const t_symbol			   *create_external_scanner_symbol_map(void);
+const t_symbol			   *create_non_terminal_alias_map(void);
+const t_symbol			   *create_unique_symbols_map(void);
+const t_symbol_metadata	   *create_symbols_metadata(void);
 const uint16_t			   *create_parse_table(void);
 const uint16_t			   *create_small_parse_table(void);
 const uint32_t			   *create_small_parse_table_map(void);
-const t_parse_action_entry *create_parse_actions_entries(void);
-const char *const		   *create_symbols_names(void);
-const char *const		   *create_field_names(void);
-const t_field_map_slice	   *create_field_map_slices(void);
-const t_field_map_entry	   *create_field_map_entries(void);
-const t_symbol_metadata	   *create_symbols_metadata(void);
-const t_symbol			   *create_unique_symbols_map(void);
-const t_symbol			   *create_non_terminal_alias_map(void);
-const t_symbol			   *create_alias_sequences(void);
-const t_lex_modes		   *create_lex_modes(void);
-const t_state_id		   *create_primary_state_ids(void);
-const bool				   *create_external_scanner_states(void);
-const t_symbol			   *create_external_scanner_symbol_map(void);
-bool						lex_normal_main(t_lexer *lexer, t_state_id state);
-bool						lex_keywords_main(t_lexer *lexer, t_state_id state);
-void					   *tree_sitter_bash_external_scanner_create(void);
-void	 tree_sitter_bash_external_scanner_destroy(void *ctx);
-bool	 tree_sitter_bash_external_scanner_scan(void *ctx, t_lexer *lexer,
-												const bool *ret);
-uint32_t tree_sitter_bash_external_scanner_serialize(void *ctx, char *s);
-void	 tree_sitter_bash_external_scanner_deserialize(void *ctx, const char *s,
-													   uint32_t val);
+uint32_t					tree_sitter_sh_external_scanner_serialize(void *ctx, char *s);
+void						tree_sitter_sh_external_scanner_deserialize(void *ctx, const char *s, uint32_t val);
+void						tree_sitter_sh_external_scanner_destroy(void *ctx);
+void					   *tree_sitter_sh_external_scanner_create(void);
 
 static t_scanner init_scanner(void)
 {
 	return ((t_scanner){
 		create_external_scanner_states(),
 		create_external_scanner_symbol_map(),
-		tree_sitter_bash_external_scanner_create,
-		tree_sitter_bash_external_scanner_destroy,
-		tree_sitter_bash_external_scanner_scan,
-		tree_sitter_bash_external_scanner_serialize,
-		tree_sitter_bash_external_scanner_deserialize,
+		tree_sitter_sh_external_scanner_create,
+		tree_sitter_sh_external_scanner_destroy,
+		tree_sitter_sh_external_scanner_scan,
+		tree_sitter_sh_external_scanner_serialize,
+		tree_sitter_sh_external_scanner_deserialize,
 	});
 }
 

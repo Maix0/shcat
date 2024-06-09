@@ -28,40 +28,38 @@ enum TokenType
 	ESAC,
 	ERROR_RECOVERY,
 };
-
-/*
-enum TokenType {
-	HEREDOC_START,
-	SIMPLE_HEREDOC_BODY,
-	HEREDOC_BODY_BEGINNING,
-	HEREDOC_CONTENT,
-	HEREDOC_END,
-	FILE_DESCRIPTOR,
-	EMPTY_VALUE,
-	CONCAT,
-	VARIABLE_NAME,
-	TEST_OPERATOR,
-	REGEX,
-	REGEX_NO_SLASH,
-	REGEX_NO_SPACE,
-	EXPANSION_WORD,
-	EXTGLOB_PATTERN,
-	BARE_DOLLAR,
-	BRACE_START,
-	IMMEDIATE_DOUBLE_HASH,
-	EXTERNAL_EXPANSION_SYM_HASH,
-	EXTERNAL_EXPANSION_SYM_BANG,
-	EXTERNAL_EXPANSION_SYM_EQUAL,
-	CLOSING_BRACE,
-	CLOSING_BRACKET,
-	HEREDOC_ARROW,
-	HEREDOC_ARROW_DASH,
-	NEWLINE,
-	OPENING_PAREN,
-	ESAC,
-	ERROR_RECOVERY,
-};
-*/
+// enum TokenType {
+//     HEREDOC_START,
+//     SIMPLE_HEREDOC_BODY,
+//     HEREDOC_BODY_BEGINNING,
+//     HEREDOC_CONTENT,
+//     HEREDOC_END,
+//     FILE_DESCRIPTOR,
+//     EMPTY_VALUE,
+//     CONCAT,
+//     VARIABLE_NAME,
+//     TEST_OPERATOR,
+//     REGEX,
+//     REGEX_NO_SLASH,
+//     REGEX_NO_SPACE,
+//     EXPANSION_WORD,
+//     EXTGLOB_PATTERN,
+//     BARE_DOLLAR,
+//     BRACE_START,
+//     IMMEDIATE_DOUBLE_HASH,
+//     EXTERNAL_EXPANSION_SYM_HASH,
+//     EXTERNAL_EXPANSION_SYM_BANG,
+//     EXTERNAL_EXPANSION_SYM_EQUAL,
+//     CLOSING_BRACE,
+//     CLOSING_BRACKET,
+//     HEREDOC_ARROW,
+//     HEREDOC_ARROW_DASH,
+//     NEWLINE,
+//     OPENING_PAREN,
+//     ESAC,
+//     ERROR_RECOVERY,
+// };
+typedef struct s_lexer_data TSLexer;
 
 typedef Array(char) String;
 
@@ -91,12 +89,12 @@ typedef struct
 	Array(Heredoc) heredocs;
 } Scanner;
 
-static inline void advance(t_lexer_data *lexer)
+static inline void advance(TSLexer *lexer)
 {
 	lexer->advance(lexer, false);
 }
 
-static inline void skip(t_lexer_data *lexer)
+static inline void skip(TSLexer *lexer)
 {
 	lexer->advance(lexer, true);
 }
@@ -215,11 +213,11 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
  * POSIX-mandated substitution, and assumes the default value for
  * IFS.
  */
-static bool advance_word(t_lexer_data *lexer, String *unquoted_word)
+static bool advance_word(TSLexer *lexer, String *unquoted_word)
 {
-	bool empty = true;
-
+	bool	empty = true;
 	int32_t quote = 0;
+
 	if (lexer->lookahead == '\'' || lexer->lookahead == '"')
 	{
 		quote = lexer->lookahead;
@@ -233,9 +231,7 @@ static bool advance_word(t_lexer_data *lexer, String *unquoted_word)
 		{
 			advance(lexer);
 			if (!lexer->lookahead)
-			{
 				return false;
-			}
 		}
 		empty = false;
 		array_push(unquoted_word, lexer->lookahead);
@@ -244,32 +240,29 @@ static bool advance_word(t_lexer_data *lexer, String *unquoted_word)
 	array_push(unquoted_word, '\0');
 
 	if (quote && lexer->lookahead == quote)
-	{
 		advance(lexer);
-	}
 
 	return !empty;
 }
 
-static inline bool scan_bare_dollar(t_lexer_data *lexer)
+static inline bool scan_bare_dollar(TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
-	{
 		skip(lexer);
-	}
+	
 
 	if (lexer->lookahead == '$')
 	{
 		advance(lexer);
 		lexer->result_symbol = BARE_DOLLAR;
 		lexer->mark_end(lexer);
-		return iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == '\"';
+		return (iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == '\"');
 	}
 
 	return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, t_lexer_data *lexer)
+static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead))
 	{
@@ -288,7 +281,7 @@ static bool scan_heredoc_start(Heredoc *heredoc, t_lexer_data *lexer)
 	return found_delimiter;
 }
 
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, t_lexer_data *lexer)
+static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
 {
 	reset_string(&heredoc->current_leading_word);
 	// Scan the first 'n' characters on this line, to see if they match the
@@ -308,7 +301,7 @@ static bool scan_heredoc_end_identifier(Heredoc *heredoc, t_lexer_data *lexer)
 	return heredoc->delimiter.size == 0 ? false : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
 }
 
-static bool scan_heredoc_content(Scanner *scanner, t_lexer_data *lexer, enum TokenType middle_type, enum TokenType end_type)
+static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
 {
 	bool	 did_advance = false;
 	Heredoc *heredoc = array_back(&scanner->heredocs);
@@ -434,7 +427,7 @@ static bool scan_heredoc_content(Scanner *scanner, t_lexer_data *lexer, enum Tok
 	}
 }
 
-static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbols)
+static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 {
 	if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols))
 	{
@@ -483,11 +476,6 @@ static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbol
 			{
 				return true;
 			}
-		}
-		if (iswspace(lexer->lookahead) && !valid_symbols[EXPANSION_WORD])
-		{
-			lexer->result_symbol = CONCAT;
-			return true;
 		}
 	}
 
@@ -739,7 +727,7 @@ static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbol
 		return true;
 	}
 
-	if (valid_symbols[REGEX] && !in_error_recovery(valid_symbols))
+	if ((valid_symbols[REGEX]) && !in_error_recovery(valid_symbols))
 	{
 		if (valid_symbols[REGEX])
 		{
@@ -805,32 +793,24 @@ static bool scan(Scanner *scanner, t_lexer_data *lexer, const bool *valid_symbol
 					break;
 				case '{':
 					if (!state.last_was_escape)
-					{
 						state.brace_depth++;
-					}
 					state.last_was_escape = false;
 					break;
 				case ')':
 					if (state.paren_depth == 0)
-					{
 						state.done = true;
-					}
 					state.paren_depth--;
 					state.last_was_escape = false;
 					break;
 				case ']':
 					if (state.bracket_depth == 0)
-					{
 						state.done = true;
-					}
 					state.bracket_depth--;
 					state.last_was_escape = false;
 					break;
 				case '}':
 					if (state.brace_depth == 0)
-					{
 						state.done = true;
-					}
 					state.brace_depth--;
 					state.last_was_escape = false;
 					break;
@@ -1220,36 +1200,35 @@ expansion_word:
 	}
 
 brace_start:
-
 	return false;
 }
 
-void *tree_sitter_bash_external_scanner_create()
+void *tree_sitter_sh_external_scanner_create()
 {
 	Scanner *scanner = calloc(1, sizeof(Scanner));
 	array_init(&scanner->heredocs);
 	return scanner;
 }
 
-bool tree_sitter_bash_external_scanner_scan(void *payload, t_lexer_data *lexer, const bool *valid_symbols)
+bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols)
 {
 	Scanner *scanner = (Scanner *)payload;
 	return scan(scanner, lexer, valid_symbols);
 }
 
-unsigned tree_sitter_bash_external_scanner_serialize(void *payload, char *state)
+unsigned tree_sitter_sh_external_scanner_serialize(void *payload, char *state)
 {
 	Scanner *scanner = (Scanner *)payload;
 	return serialize(scanner, state);
 }
 
-void tree_sitter_bash_external_scanner_deserialize(void *payload, const char *state, unsigned length)
+void tree_sitter_sh_external_scanner_deserialize(void *payload, const char *state, unsigned length)
 {
 	Scanner *scanner = (Scanner *)payload;
 	deserialize(scanner, state, length);
 }
 
-void tree_sitter_bash_external_scanner_destroy(void *payload)
+void tree_sitter_sh_external_scanner_destroy(void *payload)
 {
 	Scanner *scanner = (Scanner *)payload;
 	for (size_t i = 0; i < scanner->heredocs.size; i++)

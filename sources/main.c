@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/30 16:05:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/09 21:39:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 #include "minishell.h"
 #include "parser/api.h"
 #include <sys/types.h>
-
-#include "ast/from_node.h"
 
 #undef free
 #undef malloc
