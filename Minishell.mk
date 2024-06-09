@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/30 19:52:58 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/09 19:08:50 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ link_group = -Wl,--start-group $(1) -Wl,--end-group
 
 # Variables
 
-OBJDIRNAME ?=
+BUILD_DIR ?= $(shell realpath ./build/)
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -lreadline  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
@@ -36,7 +36,6 @@ SRC_DIR = sources
 GEN_DIR = output
 
 SRC =	$(addprefix $(SRC_DIR)/,$(shell cat ./src.list)) $(addprefix $(GEN_DIR)/,$(shell cat ./gen.list))
-# Name
 NAME = minishell
 
 # Commands
@@ -44,7 +43,7 @@ CC ?= clang
 RM = rm -rf
 
 # Objects
-OBJ = $(addprefix $(OBJDIRNAME)/sh/,$(SRC:.c=.o))
+OBJ = $(addprefix $(BUILD_DIR)/sh/,$(SRC:.c=.o))
 
 # Colors
 GREEN = \033[32m
@@ -56,34 +55,33 @@ END = \033[0m
 .PHONY: all Bonus
 
 LIBS_NAMES = me gmr aq ast parser
-LIBS_FILES = $(addprefix $(OBJDIRNAME)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
+LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
 all:
-	@$(MAKE) -C ./stdme/ "LIB_NAME=$(shell realpath ./stdme)/"							"BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libme.a
-	@$(MAKE) -C ./allocator/ "LIB_NAME=$(shell realpath ./allocator)/"					"BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libaq.a
-	@$(MAKE) -C ./ast/ "LIB_NAME=$(shell realpath ./ast)/"								"BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libast.a
-	@$(MAKE) -C ./parser/ -f./Grammar.mk "LIB_NAME=$(shell realpath ./parser)/" 	"BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libgmr.a
-	@$(MAKE) -C ./parser/ -f./Parser.mk 	"LIB_NAME=$(shell realpath ./parser)/" 	"BUILD_DIR=$(shell realpath ./$(OBJDIRNAME))" libparser.a
+	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		"BUILD_DIR=$(BUILD_DIR)" libme.a
+	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	"BUILD_DIR=$(BUILD_DIR)" libaq.a
+	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			"BUILD_DIR=$(BUILD_DIR)" libast.a
+	@$(MAKE) -C ./parser/ -f./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libgmr.a
+	@$(MAKE) -C ./parser/ -f./Parser.mk		"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libparser.a
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
 
 # Bonus (make bonus)
 bonus: $(OBJ) $(LIBS_FILES)
-	@mkdir -p $(OBJDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(LIBDIRNAME)
-	@mkdir -p $(OBJDIRNAME)/$(SRCDIRNAME)
+	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -D DEBUG=42 -o $(NAME) $(OBJ) -L$(OBJDIRNAME) $(call link_group,$(LIBS_FLAGS))
+	@$(CC) $(CFLAGS) -DDEBUG=1 -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Dependences for all
 $(NAME): $(OBJ) $(LIBS_FILES)
 	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L$(OBJDIRNAME) $(call link_group,$(LIBS_FLAGS))
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Creating the objects
-$(OBJDIRNAME)/sh/%.o: %.c
+$(BUILD_DIR)/sh/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
 	@$(CC) $(CFLAGS) -o $@ -c $<

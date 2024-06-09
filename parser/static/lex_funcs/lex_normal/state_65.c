@@ -14,36 +14,61 @@
 
 bool	lex_normal_s325(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LT_LT_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(325, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(36, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(497, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s326(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_GT_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(326, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(173, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(498, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s327(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_AMP_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(327, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(102, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s328(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_CARET_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(328, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(39, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(499, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s329(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_CARET_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(329, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(213, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 12, \
-	s->lookahead)))
-		return (lex_advance(482, lexer, s));
+		return (lex_advance(80, lexer, s));
 	return (lex_end_state(lexer, s));
 }

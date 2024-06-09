@@ -38,5 +38,6 @@
 # include "./inline/inline_impl17.h"
 # include "./inline/inline_impl18.h"
 # include "./inline/inline_impl19.h"
+# include "./inline/inline_impl20.h"
 
 #endif // INLINE_H

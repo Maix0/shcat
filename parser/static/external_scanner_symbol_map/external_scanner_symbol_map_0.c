@@ -24,23 +24,12 @@ void	external_scanner_symbol_map_0(t_external_scanner_symbol_map_array *v)
 	v->a[ts_external_token__empty_value] = sym__empty_value;
 	v->a[ts_external_token__concat] = sym__concat;
 	v->a[ts_external_token_variable_name] = sym_variable_name;
-	v->a[ts_external_token_test_operator] = sym_test_operator;
 	v->a[ts_external_token_regex] = sym_regex;
-	v->a[ts_external_token__regex_no_slash] = sym__regex_no_slash;
-	v->a[ts_external_token__regex_no_space] = sym__regex_no_space;
 	v->a[ts_external_token__expansion_word] = sym__expansion_word;
 	v->a[ts_external_token_extglob_pattern] = sym_extglob_pattern;
 	v->a[ts_external_token__bare_dollar] = sym__bare_dollar;
-	v->a[ts_external_token__brace_start] = sym__brace_start;
 	v->a[ts_external_token__immediate_double_hash] \
 	= sym__immediate_double_hash;
-	v->a[ts_external_token_RBRACE] = anon_sym_RBRACE3;
-	v->a[ts_external_token_RBRACK] = anon_sym_RBRACK;
-	external_scanner_symbol_map_1(v);
-}
-
-void	external_scanner_symbol_map_1(t_external_scanner_symbol_map_array *v)
-{
 	v->a[ts_external_token_LT_LT] = anon_sym_LT_LT;
 	v->a[ts_external_token_LT_LT_DASH] = anon_sym_LT_LT_DASH;
 	v->a[ts_external_token_heredoc_redirect_token1] \

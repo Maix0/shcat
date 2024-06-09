@@ -46,5 +46,7 @@ void	lex_normal_array_21(t_lex_normal_array *v);
 void	lex_normal_array_22(t_lex_normal_array *v);
 void	lex_normal_array_23(t_lex_normal_array *v);
 void	lex_normal_array_24(t_lex_normal_array *v);
+void	lex_normal_array_25(t_lex_normal_array *v);
+void	lex_normal_array_26(t_lex_normal_array *v);
 
 #endif // LEX_NORMAL_ARRAY_H

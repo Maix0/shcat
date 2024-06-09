@@ -30,6 +30,5 @@ void	symbols_names_6(t_symbols_names_array *v);
 void	symbols_names_7(t_symbols_names_array *v);
 void	symbols_names_8(t_symbols_names_array *v);
 void	symbols_names_9(t_symbols_names_array *v);
-void	symbols_names_10(t_symbols_names_array *v);
 
 #endif // SYMBOLS_NAMES_H

@@ -17,20 +17,18 @@
 
 static inline t_char_range	*sym__comment_word_character_set_1(void)
 {
-	static t_char_range	val[12] = {{0, 0x08}, {0x0e, 0x1f}, \
+	static t_char_range	val[10] = {{0, 0x08}, {0x0b, 0x1f}, \
 		{'!', '!'}, {'#', '#'}, {'%', '%'}, {'*', ':'}, {'=', \
-		'='}, {'?', 'Z'}, {'\\', '\\'}, {'^', '_'}, {'a', 'z'}, \
-		{'~', 0x10ffff}};
+		'='}, {'?', '_'}, {'a', '{'}, {'}', 0x10ffff}};
 
 	return (val);
 }
 
 static inline t_char_range	*sym_word_character_set_1(void)
 {
-	static t_char_range	val[11] = {{0, 0x08}, {0x0e, 0x1f}, \
+	static t_char_range	val[9] = {{0, 0x08}, {0x0b, 0x1f}, \
 		{'!', '!'}, {'%', '%'}, {'*', ':'}, {'=', '='}, {'?', \
-		'Z'}, {'\\', '\\'}, {'^', '_'}, {'a', 'z'}, {'~', \
-		0x10ffff}};
+		'_'}, {'a', '{'}, {'}', 0x10ffff}};
 
 	return (val);
 }

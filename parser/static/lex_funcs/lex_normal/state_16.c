@@ -14,53 +14,47 @@
 
 bool	lex_normal_s80(t_lexer *lexer, t_lexer_state *s)
 {
-	if (lex_normal_map80(lexer, s))
-		return (true);
-	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
+	if (s->lookahead == '\n')
+		return (lex_advance(464, lexer, s));
+	if (s->lookahead == '\r')
+		return (lex_advance(79, lexer, s));
+	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
 	s->lookahead == ' '))
-		return (lex_skip(80, lexer, s));
-	if ((s->lookahead >= '1' && s->lookahead <= '9'))
-		return (lex_advance(389, lexer, s));
-	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	(s->lookahead >= 'a' && s->lookahead <= 'z')))
-		return (lex_advance(432, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*')))
-		return (lex_advance(482, lexer, s));
+		return (lex_skip(123, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s81(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_skip(124, lexer, s));
+		return (lex_skip(212, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s82(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_advance(443, lexer, s));
+		return (lex_skip(206, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s83(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_advance(443, lexer, s));
+		return (lex_advance(396, lexer, s));
 	if (s->lookahead == '\r')
-		return (lex_advance(82, lexer, s));
+		return (lex_advance(392, lexer, s));
 	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
 	s->lookahead == ' '))
-		return (lex_skip(102, lexer, s));
+		return (lex_advance(396, lexer, s));
 	if (s->lookahead != 0)
-		return (lex_advance(482, lexer, s));
+		return (lex_advance(399, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s84(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_skip(127, lexer, s));
+		return (lex_advance(472, lexer, s));
 	return (lex_end_state(lexer, s));
 }

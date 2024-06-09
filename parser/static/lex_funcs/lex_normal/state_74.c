@@ -14,50 +14,50 @@
 
 bool	lex_normal_s370(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_DOLLAR, lexer, s);
-	if (s->lookahead == '(')
-		return (lex_advance(415, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(418, lexer, s));
-	if (s->lookahead == '{')
-		return (lex_advance(397, lexer, s));
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '%')
+		return (lex_advance(428, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(343, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(234, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 10, \
+	s->lookahead)))
+		return (lex_advance(533, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s371(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_DOLLAR, lexer, s);
-	if (s->lookahead == '(')
-		return (lex_advance(414, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(418, lexer, s));
-	if (s->lookahead == '{')
-		return (lex_advance(397, lexer, s));
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '%')
+		return (lex_advance(427, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s372(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym__special_character, lexer, s);
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(342, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s373(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_DQUOTE, lexer, s);
+	lex_accept_token(anon_sym_QMARK, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s374(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_string_content, lexer, s);
-	if (s->lookahead == '\n')
-		return (lex_advance(378, lexer, s));
+	lex_accept_token(anon_sym_QMARK, lexer, s);
 	if (s->lookahead == '\\')
-		return (lex_advance(134, lexer, s));
-	if ((s->lookahead != 0 && s->lookahead != '\r' && \
-	s->lookahead != '"' && s->lookahead != '$' && s->lookahead \
-	!= '`'))
-		return (lex_advance(381, lexer, s));
+		return (lex_advance(234, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 10, \
+	s->lookahead)))
+		return (lex_advance(533, lexer, s));
 	return (lex_end_state(lexer, s));
 }

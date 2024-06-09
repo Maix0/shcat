@@ -14,44 +14,51 @@
 
 bool	lex_normal_s330(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PIPE_EQ, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(330, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(99, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(500, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s331(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_CARET, lexer, s);
-	if (s->lookahead == '=')
-		return (lex_advance(329, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(331, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(213, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 12, \
-	s->lookahead)))
-		return (lex_advance(482, lexer, s));
+		return (lex_advance(71, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(501, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s332(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_CARET, lexer, s);
-	if (s->lookahead == '=')
-		return (lex_advance(328, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(332, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(76, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(502, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s333(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_AMP, lexer, s);
+	lex_accept_token(anon_sym_PIPE_AMP, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s334(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_AMP, lexer, s);
-	if (s->lookahead == '&')
-		return (lex_advance(245, lexer, s));
-	if (s->lookahead == '=')
-		return (lex_advance(327, lexer, s));
+	lex_accept_token(anon_sym_DOLLAR_LPAREN_LPAREN, lexer, s);
 	return (lex_end_state(lexer, s));
 }

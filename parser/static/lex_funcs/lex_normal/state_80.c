@@ -14,42 +14,62 @@
 
 bool	lex_normal_s400(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_DASH3, lexer, s);
+	lex_accept_token(sym_string_content, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(129, lexer, s));
+	if ((s->lookahead != 0 && s->lookahead != '\r' && \
+	s->lookahead != '"' && s->lookahead != '$' && s->lookahead \
+	!= '`'))
+		return (lex_advance(399, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s401(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_COLON_EQ, lexer, s);
+	lex_accept_token(sym_string_content, lexer, s);
+	if (s->lookahead == '\\')
+		return (lex_advance(434, lexer, s));
+	if ((s->lookahead != 0 && s->lookahead != '\n' && \
+	s->lookahead != '\r' && s->lookahead != '"' && \
+	s->lookahead != '$' && s->lookahead != '`'))
+		return (lex_advance(401, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s402(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_COLON_EQ, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(213, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 12, \
-	s->lookahead)))
-		return (lex_advance(482, lexer, s));
+	lex_accept_token(sym_raw_string, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s403(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ2, lexer, s);
+	lex_accept_token(aux_sym_number_token1, lexer, s);
+	if (s->lookahead == '#')
+		return (lex_advance(410, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(234, lexer, s));
+	if (s->lookahead == 'x')
+		return (lex_advance(532, lexer, s));
+	if ((s->lookahead >= '0' && s->lookahead <= '9'))
+		return (lex_advance(404, lexer, s));
+	if ((!s->eof && set_contains(sym_word_character_set_1(), \
+	9, s->lookahead)))
+		return (lex_advance(533, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s404(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ2, lexer, s);
+	lex_accept_token(aux_sym_number_token1, lexer, s);
+	if (s->lookahead == '#')
+		return (lex_advance(410, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(213, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 12, \
-	s->lookahead)))
-		return (lex_advance(482, lexer, s));
+		return (lex_advance(234, lexer, s));
+	if ((s->lookahead >= '0' && s->lookahead <= '9'))
+		return (lex_advance(404, lexer, s));
+	if ((!s->eof && set_contains(sym_word_character_set_1(), \
+	9, s->lookahead)))
+		return (lex_advance(533, lexer, s));
 	return (lex_end_state(lexer, s));
 }

@@ -14,55 +14,50 @@
 
 bool	lex_normal_s290(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(290, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(97, lexer, s));
+	lex_accept_token(anon_sym_GT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(298, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(359, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(294, lexer, s));
+	if (s->lookahead == '|')
+		return (lex_advance(299, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s291(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(291, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(66, lexer, s));
+	lex_accept_token(anon_sym_GT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(298, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(293, lexer, s));
+	if (s->lookahead == '|')
+		return (lex_advance(299, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s292(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(292, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(140, lexer, s));
+	lex_accept_token(anon_sym_GT, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(359, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(294, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s293(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(293, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(93, lexer, s));
+	lex_accept_token(anon_sym_GT_GT, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s294(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(294, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(141, lexer, s));
+	lex_accept_token(anon_sym_GT_GT, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(345, lexer, s));
 	return (lex_end_state(lexer, s));
 }

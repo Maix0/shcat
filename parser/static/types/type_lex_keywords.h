@@ -21,7 +21,7 @@
 
 typedef struct s_lex_keywords_array
 {
-	void	*a[86];
+	void	*a[30];
 }	t_lex_keywords_array;
 
 #endif // TYPE_LEX_KEYWORDS_H
