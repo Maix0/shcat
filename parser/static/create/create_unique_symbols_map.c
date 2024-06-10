@@ -16,7 +16,7 @@
 t_unique_symbols_map_array	*create_unique_symbols_map(void)
 {
 	static t_unique_symbols_map_array	table = {};
-	static bool	init = false;
+	static bool							init = false;
 
 	if (!init)
 	{

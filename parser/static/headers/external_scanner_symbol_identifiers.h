@@ -13,7 +13,8 @@
 #ifndef EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H
 # define EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H
 
-enum e_external_scanner_symbol_identifiers {
+enum e_external_scanner_symbol_identifiers
+{
 	ts_external_token_heredoc_start = 0,
 	ts_external_token_simple_heredoc_body = 1,
 	ts_external_token__heredoc_body_beginning = 2,

@@ -16,7 +16,7 @@
 t_field_map_slices_array	*create_field_map_slices(void)
 {
 	static t_field_map_slices_array	table = {};
-	static bool	init = false;
+	static bool						init = false;
 
 	if (!init)
 	{

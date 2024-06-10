@@ -13,7 +13,8 @@
 #ifndef FIELD_IDENTIFIERS_H
 # define FIELD_IDENTIFIERS_H
 
-enum e_field_identifiers {
+enum e_field_identifiers
+{
 	field_alternative = 1,
 	field_arg = 2,
 	field_body = 3,

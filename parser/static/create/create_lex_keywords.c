@@ -16,7 +16,7 @@
 t_lex_keywords_array	*create_lex_keywords(void)
 {
 	static t_lex_keywords_array	table = {};
-	static bool	init = false;
+	static bool					init = false;
 
 	if (!init)
 	{

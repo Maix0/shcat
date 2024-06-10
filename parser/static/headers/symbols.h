@@ -13,7 +13,8 @@
 #ifndef SYMBOLS_H
 # define SYMBOLS_H
 
-enum e_symbols {
+enum e_symbols
+{
 	sym_word = 1,
 	anon_sym_for = 2,
 	anon_sym_in = 3,

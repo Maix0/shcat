@@ -14,22 +14,10 @@
 
 bool	lex_normal_s250(t_lexer *lexer, t_lexer_state *s)
 {
-	if (s->eof)
-		return (lex_advance(251, lexer, s));
-	if (lex_normal_map250(lexer, s))
-		return (true);
-	if (s->lookahead == '\\')
-		return (lex_skip(245, lexer, s));
-	if (s->lookahead == '^')
-		return (lex_advance(351, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(432, lexer, s));
-	if (s->lookahead == 'd')
-		return (lex_advance(231, lexer, s));
-	if (s->lookahead == 'e')
-		return (lex_advance(229, lexer, s));
-	if (s->lookahead == 'f')
-		return (lex_advance(227, lexer, s));
+	bool	ret;
+
+	if (lex_normal_s250_bis(lexer, s, &ret))
+		return (ret);
 	if (s->lookahead == 'i')
 		return (lex_advance(230, lexer, s));
 	if (s->lookahead == '|')

@@ -16,7 +16,7 @@
 t_lex_modes_array	*create_lex_modes(void)
 {
 	static t_lex_modes_array	table = {};
-	static bool	init = false;
+	static bool					init = false;
 
 	if (!init)
 	{

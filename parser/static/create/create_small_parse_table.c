@@ -16,7 +16,7 @@
 t_small_parse_table_array	*create_small_parse_table(void)
 {
 	static t_small_parse_table_array	table = {};
-	static bool	init = false;
+	static bool							init = false;
 
 	if (!init)
 	{

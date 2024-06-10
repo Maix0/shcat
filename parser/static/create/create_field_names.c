@@ -16,7 +16,7 @@
 t_field_names_array	*create_field_names(void)
 {
 	static t_field_names_array	table = {};
-	static bool	init = false;
+	static bool					init = false;
 
 	if (!init)
 	{

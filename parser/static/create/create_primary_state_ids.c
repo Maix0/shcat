@@ -16,7 +16,7 @@
 t_primary_state_ids_array	*create_primary_state_ids(void)
 {
 	static t_primary_state_ids_array	table = {};
-	static bool	init = false;
+	static bool							init = false;
 
 	if (!init)
 	{

@@ -16,7 +16,7 @@
 t_symbols_metadata_array	*create_symbols_metadata(void)
 {
 	static t_symbols_metadata_array	table = {};
-	static bool	init = false;
+	static bool						init = false;
 
 	if (!init)
 	{

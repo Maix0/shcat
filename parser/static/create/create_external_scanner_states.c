@@ -16,7 +16,7 @@
 t_external_scanner_states_array	*create_external_scanner_states(void)
 {
 	static t_external_scanner_states_array	table = {};
-	static bool	init = false;
+	static bool								init = false;
 
 	if (!init)
 	{

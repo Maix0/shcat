@@ -22,6 +22,10 @@
 # include "./inline.h"
 # include "../../../parse_types.h"
 
+bool	lex_normal_s237_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
+bool	lex_normal_s238_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
+bool	lex_normal_s250_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
+
 bool	lex_normal_s0(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s1(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s2(t_lexer *lexer, t_lexer_state *s);
