@@ -14,48 +14,48 @@
 
 bool	lex_normal_s260(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_elif, lexer, s);
+	lex_accept_token(anon_sym_do, lexer, s);
 	if (s->lookahead == '\\')
-		return (lex_advance(234, lexer, s));
+		return (lex_advance(238, lexer, s));
 	if ((!s->eof && \
 	set_contains(sym__comment_word_character_set_1(), 10, \
 	s->lookahead)))
-		return (lex_advance(533, lexer, s));
+		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s261(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_else, lexer, s);
+	lex_accept_token(anon_sym_fi, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s262(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_else, lexer, s);
+	lex_accept_token(anon_sym_fi, lexer, s);
 	if (s->lookahead == '\\')
-		return (lex_advance(234, lexer, s));
+		return (lex_advance(238, lexer, s));
 	if ((!s->eof && \
 	set_contains(sym__comment_word_character_set_1(), 10, \
 	s->lookahead)))
-		return (lex_advance(533, lexer, s));
+		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s263(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_esac, lexer, s);
+	lex_accept_token(anon_sym_elif, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s264(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_esac, lexer, s);
+	lex_accept_token(anon_sym_elif, lexer, s);
 	if (s->lookahead == '\\')
-		return (lex_advance(234, lexer, s));
+		return (lex_advance(238, lexer, s));
 	if ((!s->eof && \
 	set_contains(sym__comment_word_character_set_1(), 10, \
 	s->lookahead)))
-		return (lex_advance(533, lexer, s));
+		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }

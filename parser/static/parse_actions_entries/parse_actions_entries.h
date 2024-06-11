@@ -266,5 +266,10 @@ void	parse_actions_entries_242(t_parse_actions_entries_array *v);
 void	parse_actions_entries_243(t_parse_actions_entries_array *v);
 void	parse_actions_entries_244(t_parse_actions_entries_array *v);
 void	parse_actions_entries_245(t_parse_actions_entries_array *v);
+void	parse_actions_entries_246(t_parse_actions_entries_array *v);
+void	parse_actions_entries_247(t_parse_actions_entries_array *v);
+void	parse_actions_entries_248(t_parse_actions_entries_array *v);
+void	parse_actions_entries_249(t_parse_actions_entries_array *v);
+void	parse_actions_entries_250(t_parse_actions_entries_array *v);
 
 #endif // PARSE_ACTIONS_ENTRIES_H

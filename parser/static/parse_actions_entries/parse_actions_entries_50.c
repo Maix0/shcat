@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state_107.c                                        :+:      :+:    :+:   */
+/*   parse_actions_entries_50.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./lex_normal_funcs.h"
+#include "./parse_actions_entries.h"
 
-bool	lex_normal_s535(t_lexer *lexer, t_lexer_state *s)
+void	parse_actions_entries_250(t_parse_actions_entries_array *v)
 {
-	lex_accept_token(anon_sym_SEMI, lexer, s);
-	if (s->lookahead == ';')
-		return (lex_advance(275, lexer, s));
-	return (lex_end_state(lexer, s));
+	v->a[5000] = entry(1, true);
+	v->a[5001] = shift(1735);
+	v->a[5002] = entry(1, true);
+	v->a[5003] = shift(2204);
+	v->a[5004] = entry(1, true);
+	v->a[5005] = shift(1652);
+	v->a[5006] = entry(1, true);
+	v->a[5007] = shift(1355);
+	v->a[5008] = entry(1, true);
+	v->a[5009] = shift(1008);
+	v->a[5010] = entry(1, true);
+	v->a[5011] = shift(1005);
+	v->a[5012] = entry(1, true);
+	v->a[5013] = shift(1004);
+	v->a[5014] = entry(1, true);
+	v->a[5015] = shift(2079);
+	v->a[5016] = entry(1, true);
+	v->a[5017] = shift(405);
+	v->a[5018] = entry(1, true);
+	v->a[5019] = shift(408);
 }
 
-bool	lex_normal_default(t_lexer *lexer, t_lexer_state *s)
-{
-	(void)(lexer);
-	(void)(s);
-	s->result = false;
-	return (false);
-}
+/* EOF parse_actions_entries_50.c */

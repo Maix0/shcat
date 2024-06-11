@@ -19,7 +19,7 @@ bool	lex_normal_call(t_lexer *lexer, t_lexer_state *s)
 	t_lex_normal_array	*t;
 
 	t = create_lex_normal();
-	if (s->state < 536)
+	if (s->state < 531)
 	{
 		return (((bool (*)(t_lexer *, t_lexer_state \
 	*))(t->a[s->state]))(lexer, s));

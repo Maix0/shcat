@@ -19,9 +19,9 @@ bool	lex_normal_s310(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == '\n')
 		return (lex_advance(310, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(146, lexer, s));
+		return (lex_advance(13, lexer, s));
 	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(486, lexer, s));
+		return (lex_advance(480, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
@@ -32,9 +32,7 @@ bool	lex_normal_s311(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == '\n')
 		return (lex_advance(311, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(148, lexer, s));
-	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(487, lexer, s));
+		return (lex_advance(51, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
@@ -44,10 +42,6 @@ bool	lex_normal_s312(t_lexer *lexer, t_lexer_state *s)
 	s);
 	if (s->lookahead == '\n')
 		return (lex_advance(312, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(31, lexer, s));
-	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(488, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
@@ -58,7 +52,9 @@ bool	lex_normal_s313(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == '\n')
 		return (lex_advance(313, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(53, lexer, s));
+		return (lex_advance(22, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(481, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
@@ -69,8 +65,8 @@ bool	lex_normal_s314(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == '\n')
 		return (lex_advance(314, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(22, lexer, s));
+		return (lex_advance(147, lexer, s));
 	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(489, lexer, s));
+		return (lex_advance(482, lexer, s));
 	return (lex_end_state(lexer, s));
 }

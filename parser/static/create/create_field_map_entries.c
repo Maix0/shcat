@@ -16,7 +16,7 @@
 t_field_map_entries_array	*create_field_map_entries(void)
 {
 	static t_field_map_entries_array	table = {};
-	static bool							init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

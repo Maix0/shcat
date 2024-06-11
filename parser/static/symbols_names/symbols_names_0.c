@@ -106,15 +106,14 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[anon_sym_DQUOTE] = "\\\"";
 	v->a[sym_string_content] = "string_content";
 	v->a[sym_raw_string] = "raw_string";
-	v->a[aux_sym_number_token1] = "number_token1";
-	v->a[aux_sym_number_token2] = "number_token2";
+	v->a[sym_number] = "number";
 	v->a[anon_sym_POUND] = "special_variable_name";
+	v->a[anon_sym_DOLLAR_LBRACE] = "${";
 	symbols_names_4(v);
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
 {
-	v->a[anon_sym_DOLLAR_LBRACE] = "${";
 	v->a[anon_sym_COLON_DASH] = "operator";
 	v->a[anon_sym_DASH3] = "operator";
 	v->a[anon_sym_COLON_EQ] = "operator";
@@ -134,6 +133,7 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_AT] = "special_variable_name";
 	v->a[anon_sym_0] = "special_variable_name";
 	v->a[anon_sym__] = "special_variable_name";
+	v->a[anon_sym_SEMI] = ";";
 	symbols_names_5(v);
 }
 

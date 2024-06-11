@@ -16,7 +16,7 @@
 t_lex_normal_array	*create_lex_normal(void)
 {
 	static t_lex_normal_array	table = {};
-	static bool					init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

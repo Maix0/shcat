@@ -16,7 +16,7 @@
 t_non_terminal_alias_map_array	*create_non_terminal_alias_map(void)
 {
 	static t_non_terminal_alias_map_array	table = {};
-	static bool								init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

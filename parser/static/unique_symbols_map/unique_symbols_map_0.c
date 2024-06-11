@@ -106,15 +106,14 @@ void	unique_symbols_map_3(t_unique_symbols_map_array *v)
 	v->a[anon_sym_DQUOTE] = anon_sym_DQUOTE;
 	v->a[sym_string_content] = sym_string_content;
 	v->a[sym_raw_string] = sym_raw_string;
-	v->a[aux_sym_number_token1] = aux_sym_number_token1;
-	v->a[aux_sym_number_token2] = aux_sym_number_token2;
+	v->a[sym_number] = sym_number;
 	v->a[anon_sym_POUND] = anon_sym_POUND;
+	v->a[anon_sym_DOLLAR_LBRACE] = anon_sym_DOLLAR_LBRACE;
 	unique_symbols_map_4(v);
 }
 
 void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 {
-	v->a[anon_sym_DOLLAR_LBRACE] = anon_sym_DOLLAR_LBRACE;
 	v->a[anon_sym_COLON_DASH] = sym__immediate_double_hash;
 	v->a[anon_sym_DASH3] = sym__immediate_double_hash;
 	v->a[anon_sym_COLON_EQ] = sym__immediate_double_hash;
@@ -134,6 +133,7 @@ void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 	v->a[anon_sym_AT] = anon_sym_POUND;
 	v->a[anon_sym_0] = anon_sym_POUND;
 	v->a[anon_sym__] = anon_sym_POUND;
+	v->a[anon_sym_SEMI] = anon_sym_SEMI;
 	unique_symbols_map_5(v);
 }
 

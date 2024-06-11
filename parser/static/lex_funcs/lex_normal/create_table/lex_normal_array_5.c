@@ -55,10 +55,5 @@ void	lex_normal_array_26(t_lex_normal_array *v)
 	v->a[528] = lex_normal_s528;
 	v->a[529] = lex_normal_s529;
 	v->a[530] = lex_normal_s530;
-	v->a[531] = lex_normal_s531;
-	v->a[532] = lex_normal_s532;
-	v->a[533] = lex_normal_s533;
-	v->a[534] = lex_normal_s534;
-	v->a[535] = lex_normal_s535;
 }
 /* EOF lex_normal_array_5.c */

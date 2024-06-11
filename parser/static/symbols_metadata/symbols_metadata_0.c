@@ -106,15 +106,14 @@ void	symbols_metadata_3(t_symbols_metadata_array *v)
 	v->a[anon_sym_DQUOTE] = sym_metadata(true, false, false);
 	v->a[sym_string_content] = sym_metadata(true, true, false);
 	v->a[sym_raw_string] = sym_metadata(true, true, false);
-	v->a[aux_sym_number_token1] = sym_metadata(false, false, false);
-	v->a[aux_sym_number_token2] = sym_metadata(false, false, false);
+	v->a[sym_number] = sym_metadata(true, true, false);
 	v->a[anon_sym_POUND] = sym_metadata(true, true, false);
+	v->a[anon_sym_DOLLAR_LBRACE] = sym_metadata(true, false, false);
 	symbols_metadata_4(v);
 }
 
 void	symbols_metadata_4(t_symbols_metadata_array *v)
 {
-	v->a[anon_sym_DOLLAR_LBRACE] = sym_metadata(true, false, false);
 	v->a[anon_sym_COLON_DASH] = sym_metadata(true, true, false);
 	v->a[anon_sym_DASH3] = sym_metadata(true, true, false);
 	v->a[anon_sym_COLON_EQ] = sym_metadata(true, true, false);
@@ -136,6 +135,7 @@ void	symbols_metadata_4(t_symbols_metadata_array *v)
 	v->a[anon_sym_AT] = sym_metadata(true, true, false);
 	v->a[anon_sym_0] = sym_metadata(true, true, false);
 	v->a[anon_sym__] = sym_metadata(true, true, false);
+	v->a[anon_sym_SEMI] = sym_metadata(true, false, false);
 	symbols_metadata_5(v);
 }
 

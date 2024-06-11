@@ -16,7 +16,7 @@
 t_symbols_names_array	*create_symbols_names(void)
 {
 	static t_symbols_names_array	table = {};
-	static bool						init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

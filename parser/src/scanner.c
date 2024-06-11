@@ -5,6 +5,8 @@
 #include <string.h>
 #include <wctype.h>
 
+typedef t_lexer_data TSLexer;
+
 enum TokenType
 {
 	HEREDOC_START,
@@ -59,7 +61,6 @@ enum TokenType
 //     ESAC,
 //     ERROR_RECOVERY,
 // };
-typedef struct s_lexer_data TSLexer;
 
 typedef Array(char) String;
 
@@ -727,6 +728,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		return true;
 	}
 
+//regex:
 	if ((valid_symbols[REGEX]) && !in_error_recovery(valid_symbols))
 	{
 		if (valid_symbols[REGEX])

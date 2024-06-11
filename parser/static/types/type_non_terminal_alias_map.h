@@ -21,7 +21,7 @@
 
 typedef struct s_non_terminal_alias_map_array
 {
-	uint16_t	a[2];
+	uint16_t	a[9];
 }	t_non_terminal_alias_map_array;
 
 #endif // TYPE_NON_TERMINAL_ALIAS_MAP_H

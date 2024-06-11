@@ -16,7 +16,7 @@
 t_external_scanner_symbol_map_array	*create_external_scanner_symbol_map(void)
 {
 	static t_external_scanner_symbol_map_array	table = {};
-	static bool									init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

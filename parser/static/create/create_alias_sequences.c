@@ -16,7 +16,7 @@
 t_alias_sequences_array	*create_alias_sequences(void)
 {
 	static t_alias_sequences_array	table = {};
-	static bool						init = false;
+	static bool	init = false;
 
 	if (!init)
 	{

@@ -22,10 +22,6 @@
 # include "./inline.h"
 # include "../../../parse_types.h"
 
-bool	lex_normal_s237_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
-bool	lex_normal_s238_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
-bool	lex_normal_s250_bis(t_lexer *lexer, t_lexer_state *s, bool *ret);
-
 bool	lex_normal_s0(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s1(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s2(t_lexer *lexer, t_lexer_state *s);
@@ -557,11 +553,6 @@ bool	lex_normal_s527(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s528(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s529(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s530(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s531(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s532(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s533(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s534(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s535(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_default(t_lexer *lexer, t_lexer_state *s);
 
 #endif // LEX_NORMAL_FUNCS_H
