@@ -99,14 +99,17 @@ module.exports = grammar({
 
     _statements: $ => prec(1, seq(
       repeat(seq(
-        $._statement,
-        $._terminator,
+        field('stmt', $._statement),
+        field('terminator', alias($._terminator, $.terminator)),
       )),
-      $._statement,
-      optional($._terminator),
+      field('stmt', $._statement),
+      field('terminator', optional(alias($._terminator, $.terminator))),
     )),
 
-    _terminated_statement: $ => repeat1(seq($._statement, $._terminator)),
+    _terminated_statement: $ => repeat1(seq(
+      field('stmt', $._statement),
+      field('terminator', alias($._terminator, $.terminator))
+    )),
 
     // Statements
 
@@ -180,24 +183,24 @@ module.exports = grammar({
 
     if_statement: $ => seq(
       'if',
-      field('condition', $._terminated_statement),
+      field('condition', alias($._terminated_statement, $.statements)),
       'then',
-      optional($._terminated_statement),
-      repeat($.elif_clause),
-      optional($.else_clause),
+      field('body', alias(optional($._terminated_statement), $.statements)),
+      field('elif', repeat($.elif_clause)),
+      field('else', optional($.else_clause)),
       'fi',
     ),
 
     elif_clause: $ => seq(
       'elif',
-      $._terminated_statement,
+      field('condition', alias($._terminated_statement, $.statements)),
       'then',
-      optional($._terminated_statement),
+      field('body', alias(optional($._terminated_statement), $.statements)),
     ),
 
     else_clause: $ => seq(
       'else',
-      optional($._terminated_statement),
+      field('body', alias(optional($._terminated_statement), $.statements)),
     ),
 
     case_statement: $ => seq(
@@ -219,7 +222,7 @@ module.exports = grammar({
       repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
       ')',
       repeat('\n'),
-      choice(field('cmds', $._statements)),
+      choice(field('body', alias($._statements, $.statements)),),
       optional(';;')
     ),
 
@@ -229,7 +232,7 @@ module.exports = grammar({
       repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
       ')',
       repeat('\n'),
-      choice(field('cmds', $._statements)),
+      choice(field('body', alias($._statements, $.statements))),
       ';;'
     ),
 
@@ -288,7 +291,6 @@ module.exports = grammar({
       '=',
       field('value', choice(
         $._literal,
-
         $._empty_value,
         alias($._comment_word, $.word),
       )),
@@ -456,10 +458,11 @@ module.exports = grammar({
         choice(
           $._primary_expression,
           alias($._comment_word, $.word),
-          alias($._bare_dollar, '$'),
+          alias($._bare_dollar, $.word),
+          alias(/`\s*`/, '``')
         ),
       )),
-      optional(seq($._concat, '$')),
+      optional(seq($._concat, alias('$', $.word))),
     )),
 
     string: $ => seq(
@@ -474,7 +477,7 @@ module.exports = grammar({
         ),
         optional($._concat),
       )),
-      optional('$'),
+      optional(alias('$', $.string_content)),
       '"',
     ),
 
@@ -482,11 +485,7 @@ module.exports = grammar({
 
     raw_string: _ => /'[^']*'/,
 
-    number: $ => choice(
-      /-?(0x)?[0-9]+(#[0-9A-Za-z@_]+)?/,
-      // the base can be an expansion or command substitution
-      seq(/-?(0x)?[0-9]+#/, choice($.expansion, $.command_substitution)),
-    ),
+    number: _ => /[0-9]+/,
 
     simple_expansion: $ => seq(
       '$',
