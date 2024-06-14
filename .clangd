@@ -2,6 +2,8 @@ CompileFlags: # Tweak the parse settings
   Compiler: clang
   Add:
     - "-xc"
+    - "-I/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/"
+    - "-I/nix/store/wxxgsgjxbnkkyczgf8lkbfrsqiywm8bi-clang-17.0.6-lib/lib/clang/17/include"
     - "-I/usr/include/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/vendor/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/stdme/include/"

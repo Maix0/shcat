@@ -15,6 +15,7 @@
 
 #include "ast/ast_forward_def.h"
 #include "me/types.h"
+#include "me/vec/vec_ast.h"
 
 /*
 	ast_statement:
@@ -33,14 +34,23 @@
 		variable_assignments
 		while_statement
 
-	ast_statement_not_pipeline == ast_statement-pipeline
-	ast_statement_not_subshell == ast_statement-subshell
+	ast_statement_not_pipeline == ast_statement - pipeline
+	ast_statement_not_subshell == ast_statement - subshell
 */
+
+struct s_ast_empty
+{
+};
+
+enum e_ast_list_kind
+{
+	AST_LIST_AND,
+	AST_LIST_OR,
+};
 
 enum e_ast_node_kind
 {
 	AST_EMPTY,
-	AST_COMMAND,
 };
 
 enum e_ast_word_kind
@@ -51,31 +61,33 @@ enum e_ast_word_kind
 	AST_WORD_BACK_QUOTED,
 };
 
-struct s_ast_empty
-{
-};
-
 struct s_ast_raw_string
 {
 	t_str	str;
 	t_usize len;
 };
 
-/// @brief A string that is double quoted
+struct s_ast_list
+{
+	t_ast_node	   *left;
+	t_ast_list_kind op;
+	t_ast_node	   *right;
+};
+
+/// @brief A string that is may be quoted or not
 /// @param parts this can be multiple things:
 ///		- a "raw" string (no processing needed)
 ///		- a expension (variable, command substitution, artihmetic expansion, etc.)
 /// @param parts_len the number of parts in the string
-struct s_ast_built_string
+/// @note if the string isn't quoted, it needs to be split into parts using $IFS
+struct s_ast_string
 {
-	t_ast_node *parts;
-	t_usize		parts_len;
+	t_vec_ast parts;
 };
 
 struct s_ast_pipeline
 {
-	t_ast_node *statements;
-	t_usize		statements_len;
+	t_vec_ast statements;
 };
 
 struct s_ast_word
@@ -86,12 +98,9 @@ struct s_ast_word
 
 struct s_ast_command
 {
-	t_ast_node *prefixes;
-	t_ast_node *cmd_word;
-	t_ast_node *suffixes;
-	t_usize		prefixes_len;
-	t_usize		cmd_word_len;
-	t_usize		suffixes_len;
+	t_vec_ast prefixes;
+	t_vec_ast cmd_word;
+	t_vec_ast suffixes;
 };
 
 union u_ast_node_data {

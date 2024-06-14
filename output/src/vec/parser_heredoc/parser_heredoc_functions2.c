@@ -27,7 +27,7 @@ t_error vec_parser_heredoc_find(t_vec_parser_heredoc *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_heredoc *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -48,7 +48,7 @@ t_error vec_parser_heredoc_find_starting(t_vec_parser_heredoc *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_heredoc *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -69,7 +69,7 @@ t_error vec_parser_heredoc_all(t_vec_parser_heredoc *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn(&vec->buffer[idx]))
+		if (!fn((const t_heredoc *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
@@ -87,7 +87,7 @@ t_error vec_parser_heredoc_any(t_vec_parser_heredoc *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_heredoc *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}

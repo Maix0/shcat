@@ -15,6 +15,7 @@
 
 typedef enum e_ast_node_kind t_ast_node_kind;
 typedef enum e_ast_word_kind t_ast_word_kind;
+typedef enum e_ast_list_kind t_ast_list_kind;
 
 typedef union u_ast_node_data t_ast_node_data;
 
@@ -26,5 +27,6 @@ typedef struct s_ast_word		  t_ast_word;
 typedef struct s_ast_pipeline	  t_ast_pipeline;
 typedef struct s_ast_raw_string	  t_ast_raw_string;
 typedef struct s_ast_built_string t_ast_built_string;
+typedef struct s_ast_list		  t_ast_list;
 
 #endif /* AST_FORWARD_DEF_H */

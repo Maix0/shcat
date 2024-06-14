@@ -1,6 +1,9 @@
 src/hashmap/env/env.c
 src/hashmap/env/env_iter.c
 src/hashmap/env/env_utils.c
+src/vec/ast/ast.c
+src/vec/ast/ast_functions2.c
+src/vec/ast/ast_functions3.c
 src/vec/parser_heredoc/parser_heredoc.c
 src/vec/parser_heredoc/parser_heredoc_functions2.c
 src/vec/parser_heredoc/parser_heredoc_functions3.c

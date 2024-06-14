@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_parser_range.c                                  :+:      :+:    :+:   */
+/*   vec_ast.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,11 +14,11 @@
 #include "me/mem/mem.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
-#include "me/vec/vec_parser_range.h"
+#include "me/vec/vec_ast.h"
 #include <stdlib.h>
 
-t_error vec_parser_range_find(t_vec_parser_range *vec,
-							 bool (*fn)(const t_parser_range *), t_usize *index)
+t_error vec_ast_find(t_vec_ast *vec,
+							 bool (*fn)(const t_ast_node * *), t_usize *index)
 {
 	t_usize idx;
 
@@ -27,7 +27,7 @@ t_error vec_parser_range_find(t_vec_parser_range *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn((const t_parser_range *)&vec->buffer[idx]))
+		if (fn((const t_ast_node * *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -37,8 +37,8 @@ t_error vec_parser_range_find(t_vec_parser_range *vec,
 	return (ERROR);
 }
 
-t_error vec_parser_range_find_starting(t_vec_parser_range *vec,
-									  bool (*fn)(const t_parser_range *),
+t_error vec_ast_find_starting(t_vec_ast *vec,
+									  bool (*fn)(const t_ast_node * *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -48,7 +48,7 @@ t_error vec_parser_range_find_starting(t_vec_parser_range *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn((const t_parser_range *)&vec->buffer[idx]))
+		if (fn((const t_ast_node * *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -58,8 +58,8 @@ t_error vec_parser_range_find_starting(t_vec_parser_range *vec,
 	return (ERROR);
 }
 
-t_error vec_parser_range_all(t_vec_parser_range *vec,
-							bool (*fn)(const t_parser_range *), bool *result)
+t_error vec_ast_all(t_vec_ast *vec,
+							bool (*fn)(const t_ast_node * *), bool *result)
 {
 	t_usize idx;
 
@@ -69,15 +69,15 @@ t_error vec_parser_range_all(t_vec_parser_range *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn((const t_parser_range *)&vec->buffer[idx]))
+		if (!fn((const t_ast_node * *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
 	return (ERROR);
 }
 
-t_error vec_parser_range_any(t_vec_parser_range *vec,
-							bool (*fn)(const t_parser_range *), bool *result)
+t_error vec_ast_any(t_vec_ast *vec,
+							bool (*fn)(const t_ast_node * *), bool *result)
 {
 	t_usize idx;
 
@@ -87,15 +87,15 @@ t_error vec_parser_range_any(t_vec_parser_range *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn((const t_parser_range *)&vec->buffer[idx]))
+		if (fn((const t_ast_node * *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}
 	return (ERROR);
 }
 
-void vec_parser_range_iter(t_vec_parser_range *vec,
-						  void (*fn)(t_usize index, t_parser_range *value,
+void vec_ast_iter(t_vec_ast *vec,
+						  void (*fn)(t_usize index, t_ast_node * *value,
 									 void *state),
 						  void *state)
 {
