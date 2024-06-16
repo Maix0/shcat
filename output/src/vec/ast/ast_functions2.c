@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 t_error vec_ast_find(t_vec_ast *vec,
-							 bool (*fn)(const t_ast_node * *), t_usize *index)
+							 bool (*fn)(const t_ast_node *), t_usize *index)
 {
 	t_usize idx;
 
@@ -27,7 +27,7 @@ t_error vec_ast_find(t_vec_ast *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn((const t_ast_node * *)&vec->buffer[idx]))
+		if (fn((const t_ast_node *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -38,7 +38,7 @@ t_error vec_ast_find(t_vec_ast *vec,
 }
 
 t_error vec_ast_find_starting(t_vec_ast *vec,
-									  bool (*fn)(const t_ast_node * *),
+									  bool (*fn)(const t_ast_node *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -48,7 +48,7 @@ t_error vec_ast_find_starting(t_vec_ast *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn((const t_ast_node * *)&vec->buffer[idx]))
+		if (fn((const t_ast_node *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -59,7 +59,7 @@ t_error vec_ast_find_starting(t_vec_ast *vec,
 }
 
 t_error vec_ast_all(t_vec_ast *vec,
-							bool (*fn)(const t_ast_node * *), bool *result)
+							bool (*fn)(const t_ast_node *), bool *result)
 {
 	t_usize idx;
 
@@ -69,7 +69,7 @@ t_error vec_ast_all(t_vec_ast *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn((const t_ast_node * *)&vec->buffer[idx]))
+		if (!fn((const t_ast_node *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
@@ -77,7 +77,7 @@ t_error vec_ast_all(t_vec_ast *vec,
 }
 
 t_error vec_ast_any(t_vec_ast *vec,
-							bool (*fn)(const t_ast_node * *), bool *result)
+							bool (*fn)(const t_ast_node *), bool *result)
 {
 	t_usize idx;
 
@@ -87,7 +87,7 @@ t_error vec_ast_any(t_vec_ast *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn((const t_ast_node * *)&vec->buffer[idx]))
+		if (fn((const t_ast_node *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}
@@ -95,7 +95,7 @@ t_error vec_ast_any(t_vec_ast *vec,
 }
 
 void vec_ast_iter(t_vec_ast *vec,
-						  void (*fn)(t_usize index, t_ast_node * *value,
+						  void (*fn)(t_usize index, t_ast_node *value,
 									 void *state),
 						  void *state)
 {

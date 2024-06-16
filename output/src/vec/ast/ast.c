@@ -25,14 +25,14 @@ t_vec_ast vec_ast_new(t_usize				  capacity,
 
 	out = (t_vec_ast){0};
 	out.free_func = free_function;
-	out.buffer = mem_alloc_array(capacity, sizeof(t_ast_node *));
+	out.buffer = mem_alloc_array(capacity, sizeof(t_ast_node));
 	if (out.buffer)
 		out.capacity = capacity;
 	return (out);
 }
 
 /// Return true in case of an error
-t_error vec_ast_push(t_vec_ast *vec, t_ast_node * element)
+t_error vec_ast_push(t_vec_ast *vec, t_ast_node element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -54,7 +54,7 @@ t_error vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_ast_node *));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_ast_node));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -62,10 +62,10 @@ t_error vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error vec_ast_pop(t_vec_ast *vec, t_ast_node * *value)
+t_error vec_ast_pop(t_vec_ast *vec, t_ast_node *value)
 {
-	t_ast_node *  temp_value;
-	t_ast_node * *ptr;
+	t_ast_node  temp_value;
+	t_ast_node *ptr;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -76,7 +76,7 @@ t_error vec_ast_pop(t_vec_ast *vec, t_ast_node * *value)
 		ptr = &temp_value;
 	vec->len--;
 	*ptr = vec->buffer[vec->len];
-	mem_set_zero(&vec->buffer[vec->len], sizeof(t_ast_node *));
+	mem_set_zero(&vec->buffer[vec->len], sizeof(t_ast_node));
 	return (NO_ERROR);
 }
 
