@@ -6,44 +6,55 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/11 14:24:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/17 13:27:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef AST_H
 #define AST_H
 
-#include "ast/ast_forward_def.h"
-#include "ast/ast_raw_structs.h"
+#include "ast/ast_forward_def.h" // IWYU pragma: keep
+#include "ast/ast_raw_structs.h" // IWYU pragma: keep
 
 enum e_ast_node_kind
 {
-	AST_ARITHMETIC_EXPANSION,
-	AST_CASE_ITEM,
-	AST_CASE,
-	AST_COMMAND_SUBSTITUTION,
-	AST_COMMAND,
-	AST_COMPOUND_STATEMENT,
-	AST_ELIF,
-	AST_ELSE,
-	AST_EMPTY,
-	AST_EXPANSION,
-	AST_FILE_REDIRECTION,
-	AST_FOR,
-	AST_FUNCTION_DEFINITION,
-	AST_HEREDOC_REDIRECTION,
-	AST_IF,
-	AST_LIST,
-	AST_PIPELINE,
-	AST_RAW_STRING,
-	AST_STRING,
-	AST_SUBSHELL,
-	AST_UNTIL,
-	AST_VARIABLE_ASSIGNMENT,
-	AST_WHILE,
-	AST_WORD,
+	S_AST_CATEGORY_MASK = 0xFFFF0000,
+	S_AST_NODETYPE_MASK = 0x0000FFFF,
 
-	__AST_LAST_NODETYPE__,
+	S_AST_NONE = 0,
+	S_AST_COMPOUND_COMMAND = 1 << 16,
+	S_AST_COMMAND = 1 << 17,
+	S_AST_REDIRECT = 1 << 18,
+	S_AST_EXPANSION = 1 << 19,
+
+	AST_ARITHMETIC_EXPANSION = S_AST_EXPANSION | 0x0001,
+	AST_COMMAND_SUBSTITUTION = S_AST_EXPANSION | 0x0002,
+	AST_EXPANSION = S_AST_EXPANSION | 0x0003,
+
+	AST_COMMAND = S_AST_COMMAND | 0x0004,
+
+	AST_CASE_ITEM = S_AST_NONE | 0x0005,
+	AST_ELIF = S_AST_NONE | 0x0006,
+	AST_ELSE = S_AST_NONE | 0x0007,
+	AST_EMPTY = S_AST_NONE | 0x0008,
+	AST_LIST = S_AST_NONE | 0x0009,
+	AST_RAW_STRING = S_AST_NONE | 0x000A,
+	AST_STRING = S_AST_NONE | 0x000B,
+	AST_WORD = S_AST_NONE | 0x000C,
+	AST_FUNCTION_DEFINITION = S_AST_NONE | 0x000D,
+	AST_VARIABLE_ASSIGNMENT = S_AST_NONE | 0x000E,
+
+	AST_FILE_REDIRECTION = S_AST_REDIRECT | 0x000F,
+	AST_HEREDOC_REDIRECTION = S_AST_REDIRECT | 0x0010,
+
+	AST_FOR = S_AST_COMPOUND_COMMAND | 0x0011,
+	AST_CASE = S_AST_COMPOUND_COMMAND | 0x0012,
+	AST_COMPOUND_STATEMENT = S_AST_COMPOUND_COMMAND | 0x0013,
+	AST_IF = S_AST_COMPOUND_COMMAND | 0x0014,
+	AST_PIPELINE = S_AST_COMPOUND_COMMAND | 0x00015,
+	AST_SUBSHELL = S_AST_COMPOUND_COMMAND | 0x00016,
+	AST_UNTIL = S_AST_COMPOUND_COMMAND | 0x0017,
+	AST_WHILE = S_AST_COMPOUND_COMMAND | 0x0018,
 };
 
 union u_ast_node_data {
@@ -69,7 +80,6 @@ union u_ast_node_data {
 	t_ast_subshell			   subshell;
 	t_ast_until				   until;
 	t_ast_variable_assignment  variable_assignment;
-	t_ast_while				   while_;
 	t_ast_word				   word;
 };
 
@@ -78,5 +88,15 @@ struct s_ast_node
 	t_ast_node_kind kind;
 	t_ast_node_data data;
 };
+
+static inline bool ast_category(t_ast_node node)
+{
+	return (node->kind & S_AST_CATEGORY_MASK);
+}
+
+static inline bool ast_nodetype(t_ast_node node)
+{
+	return (node->kind & S_AST_NODETYPE_MASK);
+}
 
 #endif /* AST_H */

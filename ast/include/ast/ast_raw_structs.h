@@ -53,7 +53,6 @@ enum e_ast_word_kind
 	AST_WORD_NO_QUOTE,
 	AST_WORD_SINGLE_STRING,
 	AST_WORD_DOUBLE_QUOTED,
-	AST_WORD_BACK_QUOTED,
 };
 
 struct s_ast_raw_string

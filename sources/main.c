@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/09 21:39:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/17 13:27:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@
 #undef malloc
 #undef realloc
 #undef calloc
+
+#include "ast/ast.h"
+
+t_error from_node();
 
 t_first_parser *ts_parser_new();
 void			ts_tree_delete(t_first_tree *);
@@ -153,8 +157,10 @@ void print_node_concat(t_node *self)
 void exec_shcat(t_utils *shcat)
 {
 	t_i32 ret;
+	t_ast_node out;
 
 	print_node_data(&shcat->current_node, 0);
+	from_node(&shcat->current_node, &out);
 	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
 	(void)ret;

@@ -6,13 +6,13 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/25 16:29:47 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/17 13:12:53 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 BUILD_DIR		?=	../build
 SRC_DIR			=	src
-INCLUDE_DIR		=	include output/include ../includes
+INCLUDE_DIR		=	include output/include ../includes ../output/include/
 LIBS_DIR		=	. 
 GENERIC_DIR		=	output/src
 GENERIC_INCLUDE	=	output/include
@@ -25,6 +25,7 @@ TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
 CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
 # CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
+CFLAGS 			+= -O2
 BONUS_FILES		=	
 LIBS_NAME		=	
 SUBJECT_URL		=	
