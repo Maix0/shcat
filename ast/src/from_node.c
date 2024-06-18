@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/18 16:55:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/18 17:17:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/api.h"
 #include "ast/ast.h"
 #include "gmr/symbols.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
+#include "parser/api.h"
 
 /*
 sym_arithmetic_binary_expression
@@ -125,20 +125,19 @@ t_error build_sym_word(t_parse_node *self, t_ast_node *out);
 t_error build_sym_program(t_parse_node *self, t_ast_node *out)
 {
 	t_ast_node ret;
-	t_usize i;
+	t_usize	   i;
 
 	if (self == NULL || out == NULL)
 		return (ERROR);
-	if (ts_child_grammar_symbol(self) != sym_program)
+	if (ts_node_grammar_symbol(*self) != sym_program)
 		return (ERROR);
 	ret = mem_alloc(sizeof(*ret));
 	i = 0;
 	ret->kind = AST_COMPOUND_STATEMENT;
-	while (i < self->childs_count)
+	while (i < ts_node_child_count(*self))
 	{
 		i++;
 	}
-	
 
 	return (*out = ret, NO_ERROR);
 	return (mem_free(ret), ERROR);
