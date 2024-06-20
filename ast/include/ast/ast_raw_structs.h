@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/20 14:29:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/20 22:17:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,6 @@
 #include "ast/ast_forward_def.h"
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
-
-/*
-	ast_statement:
-		case_statement
-		command
-		compound_statement
-		for_statement
-		function_definition
-		if_statement
-		list
-		negated_command
-		pipeline
-		redirected_statement
-		subshell
-		variable_assignment
-		variable_assignments
-		while_statement
-
-	ast_statement_not_pipeline == ast_statement - pipeline
-	ast_statement_not_subshell == ast_statement - subshell
-*/
 
 enum e_ast_list_kind
 {
@@ -89,28 +68,9 @@ struct s_ast_raw_string
 	t_usize len;
 };
 
-struct s_ast_list
-{
-	t_ast_node		left;
-	t_ast_list_kind op;
-	t_ast_node		right;
-};
-
-/// @brief A string that is may be quoted or not
-/// @param parts this can be multiple things:
-///		- a "raw" string (no processing needed)
-///		- a expension (variable, command substitution, artihmetic expansion, etc.)
-/// @param parts_len the number of parts in the string
-/// @note if the string isn't quoted, it needs to be split into parts using $IFS
 struct s_ast_string
 {
 	t_vec_ast parts;
-};
-
-struct s_ast_pipeline
-{
-	bool	  bang;
-	t_vec_ast statements;
 };
 
 struct s_ast_word
@@ -119,14 +79,61 @@ struct s_ast_word
 	t_vec_ast		inner;
 };
 
+struct s_ast_program
+{
+	t_vec_ast body;
+};
+
+///	Pipeline Statemen
+///	```shell
+///		cmd1 || cmd2
+///		cmd1 && cmd2
+///		cmd1 || cmd2 >outfile
+///	```
+struct s_ast_list
+{
+	t_ast_node			  left;
+	t_ast_list_kind		  op;
+	t_ast_node			  right;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
+};
+
+///	Pipeline Statement
+///	```shell
+///		cat file | grep stuff | banane | truc
+///		echo "$sutff" | if truc; then banane; fi | lololol
+///	```
+struct s_ast_pipeline
+{
+	bool				  bang;
+	t_vec_ast			  statements;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
+};
+
+///	Command Statement
+///	```shell
+///		cmd1 arg1 argN
+///		>output yes
+///		banane >output
+///		VALUE=something echo $VALUE >&1 2>somewhere
+///	```
 struct s_ast_command
 {
 	t_vec_ast			  prefixes;
 	t_vec_ast			  cmd_word;
-	t_vec_ast			  suffixes;
+	t_vec_ast			  suffixes_redirections;
 	t_ast_terminator_kind term;
 };
 
+///	If Statement
+///	```shell
+///		if cmd_condition; then
+///			cmd $varname;
+///		fi
+///	```
+///	Closely related to `t_ast_elif` and `t_ast_else`
 struct s_ast_if
 {
 	t_vec_ast			  condition;
@@ -134,39 +141,92 @@ struct s_ast_if
 	t_vec_ast			  elif_;
 	t_ast_node			  else_;
 	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+///	Elif Statement
+///	```shell
+///		elif cmd_condition; then
+///			cmd $varname;
+///		fi
+///	```
+///	Closely related to `t_ast_if` and `t_ast_else`
 struct s_ast_elif
 {
 	t_vec_ast condition;
 	t_vec_ast then;
 };
 
+///	Else Statement
+///	```shell
+///		else cmd_condition; then
+///			cmd $varname;
+///		fi
+///	```
+///	Closely related to `t_ast_if` and `t_ast_elif`
 struct s_ast_else
 {
 	t_vec_ast then;
 };
 
+///	While loop
+///	```shell
+///		while cmd_condition; do
+///			cmd $varname;
+///		done
+///	```
 struct s_ast_while
 {
-	t_vec_ast condition;
-	t_vec_ast do_;
+	t_vec_ast			  condition;
+	t_vec_ast			  do_;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+///	For loop
+///	```shell
+///		for varname in words truc bidule; do
+///			cmd $varname;
+///		done
+///	```
 struct s_ast_for
 {
-	t_str	  var_name;
-	t_vec_ast words;
-	t_vec_ast do_;
+	t_str				  var_name;
+	t_vec_ast			  words;
+	t_vec_ast			  do_;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+/// Case Statement
+/// ```shell
+///		case truc; in
+///			*pattern)
+///				dosmth;
+///			*other_pattern | *another)
+///				cmd2;
+///			*)
+///				fallback;
+///		esac
+/// ```
 struct s_ast_case
 {
 	t_ast_node			  word;
 	t_vec_ast			  cases;
 	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+///	Case Statement
+///	```shell
+///		*pattern)
+///			dosmth;
+///		*other_pattern | *another)
+///			cmd2;
+///		*)
+///			fallback;
+///	```
+///	Closely tied to `t_ast_case`
 struct s_ast_case_item
 {
 	t_vec_ast			  pattern;
@@ -174,47 +234,97 @@ struct s_ast_case_item
 	t_ast_terminator_kind term;
 };
 
+/// Until loop
+/// ```shell
+///		until cmd arg1 arg2 argN; do
+///			cmd1;
+///			cmd2;
+///			truc;
+///		done
+/// ```
 struct s_ast_until
 {
-	t_vec_ast condition;
-	t_vec_ast do_;
+	t_vec_ast			  condition;
+	t_vec_ast			  do_;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+///	Function Definition
+///	```shell
+///		function_name() (comand1; command2 truc banane pomme;)
+///		function_name() {comand1; command2 truc banane pomme;}
+///	```
 struct s_ast_function_definition
 {
 	t_str	  name;
 	t_vec_ast body;
 };
 
+/// Parenthesis block
+/// ```shell
+/// 	(comand1; command2 truc banane pomme;)
+/// ```
 struct s_ast_subshell
 {
-	t_vec_ast body;
+	t_vec_ast			  body;
+	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+/// Brace block
+/// ```shell
+/// 	{ command1; command2 truc banane pomme; }
+/// ```
 struct s_ast_compound_statement
 {
 	t_vec_ast			  body;
 	t_ast_terminator_kind term;
+	t_vec_ast			  suffixes_redirections;
 };
 
+/// Variable Assignment
+/// ```shell
+/// 	VARIABLE=something
+/// ```
 struct s_ast_variable_assignment
 {
 	t_str	   name;
 	t_ast_node value;
 };
 
+/// File Redirection
+/// ```shell
+/// 	<infile
+/// 	>>outfile
+/// 	2>&1
+/// ```
 struct s_ast_file_redirection
 {
 	t_ast_node output;
 	t_ast_node input;
 };
 
+/// File Redirection
+/// ```shell
+/// 	<< EOF
+/// 	TEXT blablabla
+/// 	EOF
+/// ```
 struct s_ast_heredoc_redirection
 {
 	t_ast_node output;
 	t_ast_node delimiter;
 };
 
+/// Variable Expension
+/// ```shell
+/// 	$VARNAME
+/// 	${VARNAME}
+/// 	${VARNAME:?truc}
+/// 	${VARNAME%%trucmuch pattern}
+/// 	$@
+/// ```
 struct s_ast_expansion
 {
 	t_str					 var_name;
@@ -222,18 +332,25 @@ struct s_ast_expansion
 	t_vec_ast				 args;
 };
 
+/// Variable Expension
+/// ```shell
+/// 	$((VARNAME))
+/// 	$((1 + 2))
+/// 	$((- 1))
+/// 	$((1-1))
+/// ```
 struct s_ast_arithmetic_expansion
 {
 	t_ast_node expr;
 };
 
+/// Command Substitution
+/// ```shell
+/// 	$(command)
+/// ```
 struct s_ast_command_substitution
 {
 	t_ast_node cmd;
-};
-
-struct s_ast_program {
-	t_vec_ast body;
 };
 
 #endif /* AST_RAW_STRUCTS_H */

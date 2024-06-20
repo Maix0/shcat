@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/20 14:23:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:22:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ enum e_ast_node_kind
 	AST_ELIF = S_AST_NONE | 0x0006,
 	AST_ELSE = S_AST_NONE | 0x0007,
 	AST_EMPTY = S_AST_NONE | 0x0008,
-	AST_LIST = S_AST_NONE | 0x0009,
 	AST_RAW_STRING = S_AST_NONE | 0x000A,
 	AST_STRING = S_AST_NONE | 0x000B,
 	AST_WORD = S_AST_NONE | 0x000C,
-	AST_FUNCTION_DEFINITION = S_AST_NONE | 0x000D,
 	AST_VARIABLE_ASSIGNMENT = S_AST_NONE | 0x000E,
 
 	AST_FILE_REDIRECTION = S_AST_REDIRECT | 0x000F,
@@ -51,6 +49,8 @@ enum e_ast_node_kind
 	AST_CASE = S_AST_COMPOUND_COMMAND | 0x0012,
 	AST_COMPOUND_STATEMENT = S_AST_COMPOUND_COMMAND | 0x0013,
 	AST_IF = S_AST_COMPOUND_COMMAND | 0x0014,
+	AST_FUNCTION_DEFINITION = S_AST_COMPOUND_COMMAND | 0x000D,
+	AST_LIST = S_AST_COMPOUND_COMMAND | 0x0009,
 	AST_PIPELINE = S_AST_COMPOUND_COMMAND | 0x00015,
 	AST_PROGRAM = S_AST_COMPOUND_COMMAND | 0x0016,
 	AST_SUBSHELL = S_AST_COMPOUND_COMMAND | 0x00017,
@@ -82,6 +82,7 @@ union u_ast_node_data {
 	t_ast_subshell			   subshell;
 	t_ast_until				   until;
 	t_ast_variable_assignment  variable_assignment;
+	t_ast_while				   while_;
 	t_ast_word				   word;
 };
 

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/19 13:45:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/20 23:04:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 #include "ast/ast.h"
 
-t_error from_node(t_parse_node *node, t_ast_node *out);
+t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
@@ -108,6 +108,8 @@ void print_node_data(t_node *t, t_usize depth)
 
 t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 {
+	void ast_free(t_ast_node node);
+
 	t_first_tree *tree;
 	t_parse_node  node;
 	t_node		  ret;
@@ -115,9 +117,10 @@ t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
 	node = ts_tree_root_node(tree);
-	if (from_node(&node, &out))
+	if (ast_from_node(node, (t_str)input, &out))
 		printf("Error when building node\n");
-	(void)(out);
+	else
+		ast_free(out);
 	ret = build_node(node, input);
 	ts_tree_delete(tree);
 	return (ret);
@@ -150,7 +153,7 @@ void print_node_concat(t_node *self)
 
 void exec_shcat(t_utils *shcat)
 {
-	t_i32	   ret;
+	t_i32 ret;
 
 	print_node_data(&shcat->current_node, 0);
 	handle_program(&shcat->current_node, shcat, &ret);
