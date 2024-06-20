@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/14 17:46:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/20 14:29:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,6 @@
 	ast_statement_not_subshell == ast_statement - subshell
 */
 
-struct s_ast_empty
-{
-};
-
 enum e_ast_list_kind
 {
 	AST_LIST_AND,
@@ -53,6 +49,38 @@ enum e_ast_word_kind
 	AST_WORD_NO_QUOTE,
 	AST_WORD_SINGLE_STRING,
 	AST_WORD_DOUBLE_QUOTED,
+};
+
+enum e_ast_terminator_kind
+{
+	AST_TERM_NONE,
+	AST_TERM_NEWLINE,
+	AST_TERM_DOUBLE_SEMI,
+	AST_TERM_SEMI,
+	AST_TERM_FORK,
+};
+
+enum e_ast_expansion_operator
+{
+
+	E_OP_NONE = 0,			   // ${var}
+	E_OP_DEFAULT,			   // ${var-word}
+	E_OP_ASSIGN_DEFAULT,	   // ${var=word}
+	E_OP_ERROR,				   // ${var?word}
+	E_OP_ALTERNATE,			   // ${var+word}
+	E_OP_DEFAULT_COLON,		   // ${var:-word}
+	E_OP_ASSIGN_DEFAULT_COLON, // ${var:=word}
+	E_OP_ERROR_COLON,		   // ${var:?word}
+	E_OP_ALTERNATE_COLON,	   // ${var:+word}
+	E_OP_LENGTH,			   // ${#var}
+	E_OP_SMALLEST_PREFIX,	   // ${var#pattern}
+	E_OP_LARGEST_PREFIX,	   // ${var##pattern}
+	E_OP_SMALLEST_SUFFIX,	   // ${var%pattern}
+	E_OP_LARGEST_SUFFIX,	   // ${var%%pattern}
+};
+
+struct s_ast_empty
+{
 };
 
 struct s_ast_raw_string
@@ -93,17 +121,19 @@ struct s_ast_word
 
 struct s_ast_command
 {
-	t_vec_ast prefixes;
-	t_vec_ast cmd_word;
-	t_vec_ast suffixes;
+	t_vec_ast			  prefixes;
+	t_vec_ast			  cmd_word;
+	t_vec_ast			  suffixes;
+	t_ast_terminator_kind term;
 };
 
 struct s_ast_if
 {
-	t_vec_ast  condition;
-	t_vec_ast  then;
-	t_vec_ast  elif_;
-	t_ast_node else_;
+	t_vec_ast			  condition;
+	t_vec_ast			  then;
+	t_vec_ast			  elif_;
+	t_ast_node			  else_;
+	t_ast_terminator_kind term;
 };
 
 struct s_ast_elif
@@ -132,14 +162,16 @@ struct s_ast_for
 
 struct s_ast_case
 {
-	t_ast_node word;
-	t_vec_ast  cases;
+	t_ast_node			  word;
+	t_vec_ast			  cases;
+	t_ast_terminator_kind term;
 };
 
 struct s_ast_case_item
 {
-	t_vec_ast pattern;
-	t_vec_ast body;
+	t_vec_ast			  pattern;
+	t_vec_ast			  body;
+	t_ast_terminator_kind term;
 };
 
 struct s_ast_until
@@ -161,7 +193,8 @@ struct s_ast_subshell
 
 struct s_ast_compound_statement
 {
-	t_vec_ast body;
+	t_vec_ast			  body;
+	t_ast_terminator_kind term;
 };
 
 struct s_ast_variable_assignment
@@ -182,25 +215,6 @@ struct s_ast_heredoc_redirection
 	t_ast_node delimiter;
 };
 
-enum e_ast_expansion_operator
-{
-
-	E_OP_NONE = 0,			   // ${var}
-	E_OP_DEFAULT,			   // ${var-word}
-	E_OP_ASSIGN_DEFAULT,	   // ${var=word}
-	E_OP_ERROR,				   // ${var?word}
-	E_OP_ALTERNATE,			   // ${var+word}
-	E_OP_DEFAULT_COLON,		   // ${var:-word}
-	E_OP_ASSIGN_DEFAULT_COLON, // ${var:=word}
-	E_OP_ERROR_COLON,		   // ${var:?word}
-	E_OP_ALTERNATE_COLON,	   // ${var:+word}
-	E_OP_LENGTH,			   // ${#var}
-	E_OP_SMALLEST_PREFIX,	   // ${var#pattern}
-	E_OP_LARGEST_PREFIX,	   // ${var##pattern}
-	E_OP_SMALLEST_SUFFIX,	   // ${var%pattern}
-	E_OP_LARGEST_SUFFIX,	   // ${var%%pattern}
-};
-
 struct s_ast_expansion
 {
 	t_str					 var_name;
@@ -216,6 +230,10 @@ struct s_ast_arithmetic_expansion
 struct s_ast_command_substitution
 {
 	t_ast_node cmd;
+};
+
+struct s_ast_program {
+	t_vec_ast body;
 };
 
 #endif /* AST_RAW_STRUCTS_H */

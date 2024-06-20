@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/17 13:27:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/20 14:23:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,10 @@ enum e_ast_node_kind
 	AST_COMPOUND_STATEMENT = S_AST_COMPOUND_COMMAND | 0x0013,
 	AST_IF = S_AST_COMPOUND_COMMAND | 0x0014,
 	AST_PIPELINE = S_AST_COMPOUND_COMMAND | 0x00015,
-	AST_SUBSHELL = S_AST_COMPOUND_COMMAND | 0x00016,
-	AST_UNTIL = S_AST_COMPOUND_COMMAND | 0x0017,
-	AST_WHILE = S_AST_COMPOUND_COMMAND | 0x0018,
+	AST_PROGRAM = S_AST_COMPOUND_COMMAND | 0x0016,
+	AST_SUBSHELL = S_AST_COMPOUND_COMMAND | 0x00017,
+	AST_UNTIL = S_AST_COMPOUND_COMMAND | 0x0018,
+	AST_WHILE = S_AST_COMPOUND_COMMAND | 0x0019,
 };
 
 union u_ast_node_data {
@@ -75,6 +76,7 @@ union u_ast_node_data {
 	t_ast_if				   if_;
 	t_ast_list				   list;
 	t_ast_pipeline			   pipeline;
+	t_ast_program			   program;
 	t_ast_raw_string		   raw_string;
 	t_ast_string			   string;
 	t_ast_subshell			   subshell;

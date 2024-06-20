@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/17 13:27:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:45:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,23 +30,14 @@
 
 #include "ast/ast.h"
 
-t_error from_node();
-
-t_first_parser *ts_parser_new();
-void			ts_tree_delete(t_first_tree *);
-t_parse_node	ts_tree_root_node(t_first_tree *);
-t_first_tree   *ts_parser_parse_string(t_first_parser *, t_first_tree *oldtree,
-									   t_const_str input, t_usize len);
-void			ts_parser_delete(t_first_parser *self);
-void			ts_parser_set_language(t_first_parser *self, t_language *lang);
+t_error from_node(t_parse_node *node, t_ast_node *out);
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
 // cle avant le =
 // data apres le =
 
-t_error split_str_first(t_const_str s, char splitter, t_str *before,
-						t_str *after)
+t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *after)
 {
 	t_usize i;
 
@@ -106,8 +97,7 @@ void print_node_data(t_node *t, t_usize depth)
 	idx = 0;
 	if (t->kind == 7)
 		return;
-	printf("\x1b[%im[%s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32,
-		   t->field_str == NULL ? "nil" : t->field_str, t->field);
+	printf("\x1b[%im[%s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
 	while (idx++ < depth + 1)
 		printf("\t");
 	idx = 0;
@@ -121,9 +111,13 @@ t_node parse_to_nodes(t_first_parser *parser, t_const_str input)
 	t_first_tree *tree;
 	t_parse_node  node;
 	t_node		  ret;
+	t_ast_node	  out;
 
 	tree = ts_parser_parse_string(parser, NULL, input, str_len(input));
 	node = ts_tree_root_node(tree);
+	if (from_node(&node, &out))
+		printf("Error when building node\n");
+	(void)(out);
 	ret = build_node(node, input);
 	ts_tree_delete(tree);
 	return (ret);
@@ -156,11 +150,9 @@ void print_node_concat(t_node *self)
 
 void exec_shcat(t_utils *shcat)
 {
-	t_i32 ret;
-	t_ast_node out;
+	t_i32	   ret;
 
 	print_node_data(&shcat->current_node, 0);
-	from_node(&shcat->current_node, &out);
 	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
 	(void)ret;

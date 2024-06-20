@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/09 20:53:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:38:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_const_str	 ts_node_field_name_for_child(t_parse_node self, t_u32 child_index);
-t_const_str	 ts_node_type(t_parse_node self);
 t_node		 build_node(t_parse_node current, t_const_str input);
-t_parse_node ts_node_named_child(t_parse_node parent, t_usize idx);
-t_symbol	 ts_node_symbol(t_parse_node self);
-t_u32		 ts_node_end_byte(t_parse_node self);
-t_u32		 ts_node_named_child_count(t_parse_node self);
-t_u32		 ts_node_start_byte(t_parse_node self);
-t_u64		 ts_language_field_id_for_name(t_language *lang, t_const_str name, t_u64 name_len);
 
 t_language *tree_sitter_bash(void);
 

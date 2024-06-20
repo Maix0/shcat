@@ -52,8 +52,8 @@ bool ts_range_array_intersects(const t_range_array *self, unsigned start_index, 
 	return false;
 }
 
-void ts_range_array_get_changed_ranges(const t_parse_range *old_ranges, unsigned old_range_count, const t_parse_range *new_ranges, unsigned new_range_count,
-									   t_range_array *differences)
+void ts_range_array_get_changed_ranges(const t_parse_range *old_ranges, unsigned old_range_count, const t_parse_range *new_ranges,
+									   unsigned new_range_count, t_range_array *differences)
 {
 	unsigned new_index = 0;
 	unsigned old_index = 0;
@@ -391,8 +391,8 @@ static inline void iterator_print_state(t_iterator *self)
 	t_point				start = iterator_start_position(self).extent;
 	t_point				end = iterator_end_position(self).extent;
 	const char		   *name = ts_language_symbol_name(self->language, ts_subtree_symbol(*entry.subtree));
-	printf("(%-25s %s\t depth:%u [%u, %u] - [%u, %u])", name, self->in_padding ? "(p)" : "   ", self->visible_depth, start.row + 1, start.column, end.row + 1,
-		   end.column);
+	printf("(%-25s %s\t depth:%u [%u, %u] - [%u, %u])", name, self->in_padding ? "(p)" : "   ", self->visible_depth, start.row + 1,
+		   start.column, end.row + 1, end.column);
 }
 #endif
 
@@ -435,8 +435,8 @@ unsigned ts_subtree_get_changed_ranges(const t_subtree *old_tree, const t_subtre
 		// Even if the two subtrees appear to be identical, they could differ
 		// internally if they contain a range of text that was previously
 		// excluded from the parse, and is now included, or vice-versa.
-		if (comparison == IteratorMatches &&
-			ts_range_array_intersects(included_range_differences, included_range_difference_index, position.bytes, iterator_end_position(&old_iter).bytes))
+		if (comparison == IteratorMatches && ts_range_array_intersects(included_range_differences, included_range_difference_index,
+																	   position.bytes, iterator_end_position(&old_iter).bytes))
 		{
 			comparison = IteratorMayDiffer;
 		}
@@ -902,7 +902,8 @@ static void ts_lexer_goto(t_lexer *self, t_length position)
 	{
 		// If the current position is outside of the current chunk of text,
 		// then clear out the current chunk of text.
-		if (self->chunk && (self->current_position.bytes < self->chunk_start || self->current_position.bytes >= self->chunk_start + self->chunk_size))
+		if (self->chunk &&
+			(self->current_position.bytes < self->chunk_start || self->current_position.bytes >= self->chunk_start + self->chunk_size))
 		{
 			ts_lexer__clear_chunk(self);
 		}
@@ -1593,7 +1594,8 @@ static inline t_parse_node ts_node__first_child_for_byte(t_parse_node self, uint
 	return ts_node__null();
 }
 
-static inline t_parse_node ts_node__descendant_for_byte_range(t_parse_node self, uint32_t range_start, uint32_t range_end, bool include_anonymous)
+static inline t_parse_node ts_node__descendant_for_byte_range(t_parse_node self, uint32_t range_start, uint32_t range_end,
+															  bool include_anonymous)
 {
 	t_parse_node node = self;
 	t_parse_node last_visible_node = self;
@@ -1634,7 +1636,8 @@ static inline t_parse_node ts_node__descendant_for_byte_range(t_parse_node self,
 	return last_visible_node;
 }
 
-static inline t_parse_node ts_node__descendant_for_point_range(t_parse_node self, t_point range_start, t_point range_end, bool include_anonymous)
+static inline t_parse_node ts_node__descendant_for_point_range(t_parse_node self, t_point range_start, t_point range_end,
+															   bool include_anonymous)
 {
 	t_parse_node node = self;
 	t_parse_node last_visible_node = self;
@@ -1722,8 +1725,8 @@ const char *ts_node_grammar_type(t_parse_node self)
 char *ts_node_string(t_parse_node self)
 {
 	t_symbol alias_symbol = ts_node__alias(&self);
-	return ts_subtree_string(ts_node__subtree(self), alias_symbol, ts_language_symbol_metadata(self.tree->language, alias_symbol).visible, self.tree->language,
-							 false);
+	return ts_subtree_string(ts_node__subtree(self), alias_symbol, ts_language_symbol_metadata(self.tree->language, alias_symbol).visible,
+							 self.tree->language, false);
 }
 
 bool ts_node_eq(t_parse_node self, t_parse_node other)
@@ -1937,6 +1940,20 @@ static inline const char *ts_node__field_name_from_language(t_parse_node self, u
 	return NULL;
 }
 
+static inline t_field_id ts_node__field_id_from_language(t_parse_node self, uint32_t structural_child_index)
+{
+	const t_field_map_entry *field_map, *field_map_end;
+	ts_language_field_map(self.tree->language, ts_node__subtree(self).ptr->production_id, &field_map, &field_map_end);
+	for (; field_map != field_map_end; field_map++)
+	{
+		if (!field_map->inherited && field_map->child_index == structural_child_index)
+		{
+			return field_map->field_id;
+		}
+	}
+	return 0;
+}
+
 const char *ts_node_field_name_for_child(t_parse_node self, uint32_t child_index)
 {
 	t_parse_node result = self;
@@ -1988,6 +2005,56 @@ const char *ts_node_field_name_for_child(t_parse_node self, uint32_t child_index
 	}
 
 	return NULL;
+}
+
+t_field_id ts_node_field_id_for_child(t_parse_node self, uint32_t child_index)
+{
+	t_parse_node result = self;
+	bool		 did_descend = true;
+	t_field_id	 inherited_field_name = 0;
+
+	while (did_descend)
+	{
+		did_descend = false;
+
+		t_parse_node		  child;
+		uint32_t			  index = 0;
+		t_node_child_iterator iterator = ts_node_iterate_children(&result);
+		while (ts_node_child_iterator_next(&iterator, &child))
+		{
+			if (ts_node__is_relevant(child, true))
+			{
+				if (index == child_index)
+				{
+					if (ts_node_is_extra(child))
+						return 0;
+					t_field_id field_name = ts_node__field_id_from_language(result, iterator.structural_child_index - 1);
+					if (field_name)
+						return field_name;
+					return inherited_field_name;
+				}
+				index++;
+			}
+			else
+			{
+				uint32_t grandchild_index = child_index - index;
+				uint32_t grandchild_count = ts_node__relevant_child_count(child, true);
+				if (grandchild_index < grandchild_count)
+				{
+					t_field_id field_name = ts_node__field_id_from_language(result, iterator.structural_child_index - 1);
+					if (field_name)
+						inherited_field_name = field_name;
+					did_descend = true;
+					result = child;
+					child_index = grandchild_index;
+					break;
+				}
+				index += grandchild_count;
+			}
+		}
+	}
+
+	return 0;
 }
 
 t_parse_node ts_node_child_by_field_name(t_parse_node self, const char *name, uint32_t name_length)
@@ -2441,8 +2508,8 @@ static t_subtree ts_parser__lex(t_first_parser *self, t_stack_version version, t
 			if (found_token)
 			{
 				external_scanner_state_len = ts_parser__external_scanner_serialize(self);
-				external_scanner_state_changed =
-					!ts_external_scanner_state_eq(ts_subtree_external_scanner_state(external_token), self->lexer.debug_buffer, external_scanner_state_len);
+				external_scanner_state_changed = !ts_external_scanner_state_eq(ts_subtree_external_scanner_state(external_token),
+																			   self->lexer.debug_buffer, external_scanner_state_len);
 
 				// When recovering from an error, ignore any zero-length
 				// external tokens unless they have changed the external
@@ -2543,8 +2610,8 @@ static t_subtree ts_parser__lex(t_first_parser *self, t_stack_version version, t
 			}
 		}
 
-		result = ts_subtree_new_leaf(&self->tree_pool, symbol, padding, size, lookahead_bytes, parse_state, found_external_token, called_get_column, is_keyword,
-									 self->language);
+		result = ts_subtree_new_leaf(&self->tree_pool, symbol, padding, size, lookahead_bytes, parse_state, found_external_token,
+									 called_get_column, is_keyword, self->language);
 
 		if (found_external_token)
 		{
@@ -2556,10 +2623,12 @@ static t_subtree ts_parser__lex(t_first_parser *self, t_stack_version version, t
 	return result;
 }
 
-static t_subtree ts_parser__get_cached_token(t_first_parser *self, t_state_id state, size_t position, t_subtree last_external_token, t_table_entry *table_entry)
+static t_subtree ts_parser__get_cached_token(t_first_parser *self, t_state_id state, size_t position, t_subtree last_external_token,
+											 t_table_entry *table_entry)
 {
 	t_token_cache *cache = &self->token_cache;
-	if (cache->token.ptr && cache->byte_index == position && ts_subtree_external_scanner_state_eq(cache->last_external_token, last_external_token))
+	if (cache->token.ptr && cache->byte_index == position &&
+		ts_subtree_external_scanner_state_eq(cache->last_external_token, last_external_token))
 	{
 		ts_language_table_entry(self->language, state, ts_subtree_symbol(cache->token), table_entry);
 		if (ts_parser__can_reuse_first_leaf(self, state, cache->token, table_entry))
@@ -2589,11 +2658,12 @@ static void ts_parser__set_cached_token(t_first_parser *self, uint32_t byte_inde
 
 static bool ts_parser__has_included_range_difference(const t_first_parser *self, uint32_t start_position, uint32_t end_position)
 {
-	return ts_range_array_intersects(&self->included_range_differences, self->included_range_difference_index, start_position, end_position);
+	return ts_range_array_intersects(&self->included_range_differences, self->included_range_difference_index, start_position,
+									 end_position);
 }
 
-static t_subtree ts_parser__reuse_node(t_first_parser *self, t_stack_version version, t_state_id *state, uint32_t position, t_subtree last_external_token,
-									   t_table_entry *table_entry)
+static t_subtree ts_parser__reuse_node(t_first_parser *self, t_stack_version version, t_state_id *state, uint32_t position,
+									   t_subtree last_external_token, t_table_entry *table_entry)
 {
 	t_subtree result;
 	while ((result = reusable_node_tree(&self->reusable_node)).ptr)
@@ -2756,8 +2826,8 @@ static void ts_parser__shift(t_first_parser *self, t_stack_version version, t_st
 	}
 }
 
-static t_stack_version ts_parser__reduce(t_first_parser *self, t_stack_version version, t_symbol symbol, uint32_t count, int dynamic_precedence,
-										 uint16_t production_id, bool is_fragile, bool end_of_non_terminal_extra)
+static t_stack_version ts_parser__reduce(t_first_parser *self, t_stack_version version, t_symbol symbol, uint32_t count,
+										 int dynamic_precedence, uint16_t production_id, bool is_fragile, bool end_of_non_terminal_extra)
 {
 	uint32_t initial_version_count = ts_stack_version_count(self->stack);
 
@@ -3000,7 +3070,8 @@ static bool ts_parser__do_all_potential_reductions(t_first_parser *self, t_stack
 		{
 			t_reduce_action action = self->reduce_actions.contents[j];
 
-			reduction_version = ts_parser__reduce(self, version, action.symbol, action.count, action.dynamic_precedence, action.production_id, true, false);
+			reduction_version =
+				ts_parser__reduce(self, version, action.symbol, action.count, action.dynamic_precedence, action.production_id, true, false);
 		}
 
 		if (has_shift_action)
@@ -3312,7 +3383,8 @@ static void ts_parser__handle_error(t_first_parser *self, t_stack_version versio
 					uint32_t lookahead_bytes = ts_subtree_total_bytes(lookahead) + ts_subtree_lookahead_bytes(lookahead);
 
 					t_stack_version version_with_missing_tree = ts_stack_copy_version(self->stack, v);
-					t_subtree		missing_tree = ts_subtree_new_missing_leaf(&self->tree_pool, missing_symbol, padding, lookahead_bytes, self->language);
+					t_subtree		missing_tree =
+						ts_subtree_new_missing_leaf(&self->tree_pool, missing_symbol, padding, lookahead_bytes, self->language);
 					ts_stack_push(self->stack, version_with_missing_tree, missing_tree, false, state_after_missing_symbol);
 
 					if (ts_parser__do_all_potential_reductions(self, version_with_missing_tree, ts_subtree_leaf_symbol(lookahead)))
@@ -4024,7 +4096,8 @@ static void stream_scan_identifier(t_stream *stream)
 	do
 	{
 		stream_advance(stream);
-	} while (me_isalnum(stream->next) || stream->next == '_' || stream->next == '-' || stream->next == '.' || stream->next == '?' || stream->next == '!');
+	} while (me_isalnum(stream->next) || stream->next == '_' || stream->next == '-' || stream->next == '.' || stream->next == '?' ||
+			 stream->next == '!');
 }
 
 static uint32_t stream_offset(t_stream *self)
@@ -4637,7 +4710,8 @@ static inline t_analysis_state *analysis_state_pool__clone_or_reuse(t_analysis_s
 //
 // The caller retains ownership of the passed-in memory. However, the clone that
 // is created by this function will be managed by the state set.
-static inline void analysis_state_set__insert_sorted(t_analysis_state_set *self, t_analysis_state_set *pool, t_analysis_state *borrowed_item)
+static inline void analysis_state_set__insert_sorted(t_analysis_state_set *self, t_analysis_state_set *pool,
+													 t_analysis_state *borrowed_item)
 {
 	unsigned index, exists;
 	array_search_sorted_with(self, analysis_state__compare, &borrowed_item, &index, &exists);
@@ -4843,8 +4917,8 @@ static void ts_query__perform_analysis(t_parse_query *self, const t_analysis_sub
 			printf("  %3u: step: %u, stack: [", j, state->step_index);
 			for (unsigned k = 0; k < state->depth; k++)
 			{
-				printf(" {%s, child: %u, state: %4u", self->language->symbol_names[state->stack[k].parent_symbol], state->stack[k].child_index,
-					   state->stack[k].parse_state);
+				printf(" {%s, child: %u, state: %4u", self->language->symbol_names[state->stack[k].parent_symbol],
+					   state->stack[k].child_index, state->stack[k].parse_state);
 				if (state->stack[k].field_id)
 					printf(", field: %s", self->language->field_names[state->stack[k].field_id]);
 				if (state->stack[k].done)
@@ -4971,7 +5045,9 @@ static void ts_query__perform_analysis(t_parse_query *self, const t_analysis_sub
 					// Use the subgraph to determine what alias and field will
 					// eventually be applied to this child node.
 					t_symbol   alias = ts_language_alias_at(self->language, node->production_id, child_index);
-					t_symbol   visible_symbol = alias ? alias : self->language->symbol_metadata[sym].visible ? self->language->public_symbol_map[sym] : 0;
+					t_symbol   visible_symbol = alias										   ? alias
+												: self->language->symbol_metadata[sym].visible ? self->language->public_symbol_map[sym]
+																							   : 0;
 					t_field_id field_id = parent_field_id;
 					if (!field_id)
 					{
@@ -5566,8 +5642,8 @@ static bool ts_query__analyze_patterns(t_parse_query *self, unsigned *error_offs
 			printf("  %u: {symbol: %s, field: %s, depth: %u, "
 				   "parent_pattern_guaranteed: %d, root_pattern_guaranteed: %d}\n",
 				   i, (step->symbol == WILDCARD_SYMBOL) ? "ANY" : ts_language_symbol_name(self->language, step->symbol),
-				   (step->field ? ts_language_field_name_for_id(self->language, step->field) : "-"), step->depth, step->parent_pattern_guaranteed,
-				   step->root_pattern_guaranteed);
+				   (step->field ? ts_language_field_name_for_id(self->language, step->field) : "-"), step->depth,
+				   step->parent_pattern_guaranteed, step->root_pattern_guaranteed);
 		}
 	}
 #endif
@@ -6374,7 +6450,8 @@ static t_query_error ts_query__parse_pattern(t_parse_query *self, t_stream *stre
 	return 0;
 }
 
-t_parse_query *ts_query_new(const t_language *language, const char *source, uint32_t source_len, uint32_t *error_offset, t_query_error *error_type)
+t_parse_query *ts_query_new(const t_language *language, const char *source, uint32_t source_len, uint32_t *error_offset,
+							t_query_error *error_type)
 {
 
 	t_parse_query *self = malloc(sizeof(t_parse_query));
@@ -6473,8 +6550,9 @@ t_parse_query *ts_query_new(const t_language *language, const char *source, uint
 				}
 			}
 
-			ts_query__pattern_map_insert(self, step->symbol,
-										 (t_pattern_entry){.step_index = start_step_index, .pattern_index = pattern_index, .is_rooted = is_rooted});
+			ts_query__pattern_map_insert(
+				self, step->symbol,
+				(t_pattern_entry){.step_index = start_step_index, .pattern_index = pattern_index, .is_rooted = is_rooted});
 			if (step->symbol == WILDCARD_SYMBOL)
 			{
 				self->wildcard_root_pattern_count++;
@@ -6796,8 +6874,8 @@ void ts_query_cursor_set_point_range(t_query_cursor *self, t_point start_point, 
 
 // Search through all of the in-progress states, and find the captured
 // node that occurs earliest in the document.
-static bool ts_query_cursor__first_in_progress_capture(t_query_cursor *self, uint32_t *state_index, uint32_t *byte_offset, uint32_t *pattern_index,
-													   bool *root_pattern_guaranteed)
+static bool ts_query_cursor__first_in_progress_capture(t_query_cursor *self, uint32_t *state_index, uint32_t *byte_offset,
+													   uint32_t *pattern_index, bool *root_pattern_guaranteed)
 {
 	bool result = false;
 	*state_index = UINT32_MAX;
@@ -6867,8 +6945,8 @@ int ts_query_cursor__compare_nodes(t_parse_node left, t_parse_node right)
 }
 
 // Determine if either state contains a superset of the other state's captures.
-void ts_query_cursor__compare_captures(t_query_cursor *self, t_query_state *left_state, t_query_state *right_state, bool *left_contains_right,
-									   bool *right_contains_left)
+void ts_query_cursor__compare_captures(t_query_cursor *self, t_query_state *left_state, t_query_state *right_state,
+									   bool *left_contains_right, bool *right_contains_left)
 {
 	const t_capture_list *left_captures = capture_list_pool_get(&self->capture_list_pool, left_state->capture_list_id);
 	const t_capture_list *right_captures = capture_list_pool_get(&self->capture_list_pool, right_state->capture_list_id);
@@ -7002,7 +7080,8 @@ static t_capture_list *ts_query_cursor__prepare_to_capture(t_query_cursor *self,
 		{
 			self->did_exceed_match_limit = true;
 			uint32_t state_index, byte_offset, pattern_index;
-			if (ts_query_cursor__first_in_progress_capture(self, &state_index, &byte_offset, &pattern_index, NULL) && state_index != state_index_to_preserve)
+			if (ts_query_cursor__first_in_progress_capture(self, &state_index, &byte_offset, &pattern_index, NULL) &&
+				state_index != state_index_to_preserve)
 			{
 				LOG("  abandon state. index:%u, pattern:%u, offset:%u.\n", state_index, pattern_index, byte_offset);
 				t_query_state *other_state = &self->states.contents[state_index];
@@ -7224,14 +7303,14 @@ static inline bool ts_query_cursor__advance(t_query_cursor *self, bool stop_on_d
 			// Get the properties of the current node.
 			t_parse_node node = ts_tree_cursor_current_node(&self->cursor);
 			t_parse_node parent_node = ts_tree_cursor_parent_node(&self->cursor);
-			bool		 parent_precedes_range = !ts_node_is_null(parent_node) &&
-										 (ts_node_end_byte(parent_node) <= self->start_byte || point_lte(ts_node_end_point(parent_node), self->start_point));
-			bool parent_follows_range = !ts_node_is_null(parent_node) &&
-										(ts_node_start_byte(parent_node) >= self->end_byte || point_gte(ts_node_start_point(parent_node), self->end_point));
-			bool node_precedes_range =
-				parent_precedes_range || (ts_node_end_byte(node) <= self->start_byte || point_lte(ts_node_end_point(node), self->start_point));
-			bool node_follows_range =
-				parent_follows_range || (ts_node_start_byte(node) >= self->end_byte || point_gte(ts_node_start_point(node), self->end_point));
+			bool		 parent_precedes_range = !ts_node_is_null(parent_node) && (ts_node_end_byte(parent_node) <= self->start_byte ||
+																		   point_lte(ts_node_end_point(parent_node), self->start_point));
+			bool		 parent_follows_range = !ts_node_is_null(parent_node) && (ts_node_start_byte(parent_node) >= self->end_byte ||
+																		  point_gte(ts_node_start_point(parent_node), self->end_point));
+			bool		 node_precedes_range = parent_precedes_range || (ts_node_end_byte(node) <= self->start_byte ||
+																 point_lte(ts_node_end_point(node), self->start_point));
+			bool		 node_follows_range = parent_follows_range ||
+									  (ts_node_start_byte(node) >= self->end_byte || point_gte(ts_node_start_point(node), self->end_point));
 			bool parent_intersects_range = !parent_precedes_range && !parent_follows_range;
 			bool node_intersects_range = !node_precedes_range && !node_follows_range;
 
@@ -7249,8 +7328,8 @@ static inline bool ts_query_cursor__advance(t_query_cursor *self, bool stop_on_d
 											  &can_have_later_siblings_with_this_field, supertypes, &supertype_count);
 				LOG("enter node. depth:%u, type:%s, field:%s, row:%u "
 					"state_count:%u, finished_state_count:%u\n",
-					self->depth, ts_node_type(node), ts_language_field_name_for_id(self->query->language, field_id), ts_node_start_point(node).row,
-					self->states.size, self->finished_states.size);
+					self->depth, ts_node_type(node), ts_language_field_name_for_id(self->query->language, field_id),
+					ts_node_start_point(node).row, self->states.size, self->finished_states.size);
 
 				bool node_is_error = symbol == ts_builtin_sym_error;
 				bool parent_is_error = !ts_node_is_null(parent_node) && ts_node_symbol(parent_node) == ts_builtin_sym_error;
@@ -7441,7 +7520,8 @@ static inline bool ts_query_cursor__advance(t_query_cursor *self, bool stop_on_d
 							do
 							{
 								skipped_wildcard_step--;
-							} while (skipped_wildcard_step->is_dead_end || skipped_wildcard_step->is_pass_through || skipped_wildcard_step->depth > 0);
+							} while (skipped_wildcard_step->is_dead_end || skipped_wildcard_step->is_pass_through ||
+									 skipped_wildcard_step->depth > 0);
 							if (skipped_wildcard_step->capture_ids[0] != NONE)
 							{
 								LOG("  capture wildcard parent\n");
@@ -7514,7 +7594,8 @@ static inline bool ts_query_cursor__advance(t_query_cursor *self, bool stop_on_d
 								LOG("  split state for branch. pattern:%u, "
 									"from_step:%u, to_step:%u, immediate:%d, "
 									"capture_count: %u\n",
-									copy->pattern_index, copy->step_index, next_step->alternative_index, next_step->alternative_is_immediate,
+									copy->pattern_index, copy->step_index, next_step->alternative_index,
+									next_step->alternative_is_immediate,
 									capture_list_pool_get(&self->capture_list_pool, copy->capture_list_id)->size);
 								end_index++;
 								copy_count++;
@@ -7701,8 +7782,8 @@ bool ts_query_cursor_next_capture(t_query_cursor *self, t_query_match *match, ui
 		uint32_t first_unfinished_pattern_index;
 		uint32_t first_unfinished_state_index;
 		bool	 first_unfinished_state_is_definite = false;
-		ts_query_cursor__first_in_progress_capture(self, &first_unfinished_state_index, &first_unfinished_capture_byte, &first_unfinished_pattern_index,
-												   &first_unfinished_state_is_definite);
+		ts_query_cursor__first_in_progress_capture(self, &first_unfinished_state_index, &first_unfinished_capture_byte,
+												   &first_unfinished_pattern_index, &first_unfinished_state_is_definite);
 
 		// Then find the earliest capture in a finished match. It must occur
 		// before the first capture in an *unfinished* match.
@@ -7724,7 +7805,8 @@ bool ts_query_cursor_next_capture(t_query_cursor *self, t_query_match *match, ui
 
 			t_parse_node node = captures->contents[state->consumed_capture_count].node;
 
-			bool node_precedes_range = (ts_node_end_byte(node) <= self->start_byte || point_lte(ts_node_end_point(node), self->start_point));
+			bool node_precedes_range =
+				(ts_node_end_byte(node) <= self->start_byte || point_lte(ts_node_end_point(node), self->start_point));
 			bool node_follows_range = (ts_node_start_byte(node) >= self->end_byte || point_gte(ts_node_start_point(node), self->end_point));
 			bool node_outside_of_range = node_precedes_range || node_follows_range;
 
@@ -7865,7 +7947,8 @@ static uint32_t stack__subtree_node_count(t_subtree subtree)
 	return count;
 }
 
-static t_stack_node *stack_node_new(t_stack_node *previous_node, t_subtree subtree, bool is_pending, t_state_id state, t_stack_node_array *pool)
+static t_stack_node *stack_node_new(t_stack_node *previous_node, t_subtree subtree, bool is_pending, t_state_id state,
+									t_stack_node_array *pool)
 {
 	t_stack_node *node = pool->size > 0 ? array_pop(pool) : malloc(sizeof(t_stack_node));
 	*node = (t_stack_node){.ref_count = 1, .link_count = 0, .state = state};
@@ -7916,9 +7999,9 @@ static bool stack__subtree_is_equivalent(t_subtree left, t_subtree right)
 	if (ts_subtree_error_cost(left) > 0 && ts_subtree_error_cost(right) > 0)
 		return true;
 
-	return (ts_subtree_padding(left).bytes == ts_subtree_padding(right).bytes && ts_subtree_size(left).bytes == ts_subtree_size(right).bytes &&
-			ts_subtree_child_count(left) == ts_subtree_child_count(right) && ts_subtree_extra(left) == ts_subtree_extra(right) &&
-			ts_subtree_external_scanner_state_eq(left, right));
+	return (ts_subtree_padding(left).bytes == ts_subtree_padding(right).bytes &&
+			ts_subtree_size(left).bytes == ts_subtree_size(right).bytes && ts_subtree_child_count(left) == ts_subtree_child_count(right) &&
+			ts_subtree_extra(left) == ts_subtree_extra(right) && ts_subtree_external_scanner_state_eq(left, right));
 }
 
 static void stack_node_add_link(t_stack_node *self, t_stack_link link, t_subtree_pool *subtree_pool)
@@ -8046,7 +8129,8 @@ static void ts_stack__add_slice(t_stack *self, t_stack_version original_version,
 	array_push(&self->slices, slice);
 }
 
-static t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_callback callback, void *payload, int goal_subtree_count)
+static t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_callback callback, void *payload,
+									   int goal_subtree_count)
 {
 	array_clear(&self->slices);
 	array_clear(&self->iterators);
@@ -8729,12 +8813,13 @@ static void ts_subtree_pool_free(t_subtree_pool *self, t_subtree_heap_data *tree
 
 static inline bool ts_subtree_can_inline(t_length padding, t_length size, uint32_t lookahead_bytes)
 {
-	return padding.bytes < TS_MAX_INLINE_TREE_LENGTH && padding.extent.row < 16 && padding.extent.column < TS_MAX_INLINE_TREE_LENGTH && size.extent.row == 0 &&
-		   size.extent.column < TS_MAX_INLINE_TREE_LENGTH && lookahead_bytes < 16;
+	return padding.bytes < TS_MAX_INLINE_TREE_LENGTH && padding.extent.row < 16 && padding.extent.column < TS_MAX_INLINE_TREE_LENGTH &&
+		   size.extent.row == 0 && size.extent.column < TS_MAX_INLINE_TREE_LENGTH && lookahead_bytes < 16;
 }
 
-t_subtree ts_subtree_new_leaf(t_subtree_pool *pool, t_symbol symbol, t_length padding, t_length size, uint32_t lookahead_bytes, t_state_id parse_state,
-							  bool has_external_tokens, bool depends_on_column, bool is_keyword, const t_language *language)
+t_subtree ts_subtree_new_leaf(t_subtree_pool *pool, t_symbol symbol, t_length padding, t_length size, uint32_t lookahead_bytes,
+							  t_state_id parse_state, bool has_external_tokens, bool depends_on_column, bool is_keyword,
+							  const t_language *language)
 {
 	t_symbol_metadata metadata = ts_language_symbol_metadata(language, symbol);
 	bool			  extra = symbol == ts_builtin_sym_end;
@@ -8805,10 +8890,11 @@ void ts_subtree_set_symbol(t_mutable_subtree *self, t_symbol symbol, const t_lan
 	}
 }
 
-t_subtree ts_subtree_new_error(t_subtree_pool *pool, int32_t lookahead_char, t_length padding, t_length size, uint32_t bytes_scanned, t_state_id parse_state,
-							   const t_language *language)
+t_subtree ts_subtree_new_error(t_subtree_pool *pool, int32_t lookahead_char, t_length padding, t_length size, uint32_t bytes_scanned,
+							   t_state_id parse_state, const t_language *language)
 {
-	t_subtree			 result = ts_subtree_new_leaf(pool, ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
+	t_subtree result =
+		ts_subtree_new_leaf(pool, ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
 	t_subtree_heap_data *data = (t_subtree_heap_data *)result.ptr;
 	data->fragile_left = true;
 	data->fragile_right = true;
@@ -8871,7 +8957,8 @@ static void ts_subtree__compress(t_mutable_subtree self, unsigned count, const t
 			break;
 
 		t_mutable_subtree grandchild = ts_subtree_to_mut_unsafe(ts_subtree_children(child)[0]);
-		if (grandchild.data.is_inline || grandchild.ptr->child_count < 2 || grandchild.ptr->ref_count > 1 || grandchild.ptr->symbol != symbol)
+		if (grandchild.data.is_inline || grandchild.ptr->child_count < 2 || grandchild.ptr->ref_count > 1 ||
+			grandchild.ptr->symbol != symbol)
 			break;
 
 		ts_subtree_children(tree)[0] = ts_subtree_from_mut(grandchild);
@@ -9045,8 +9132,8 @@ void ts_subtree_summarize_children(t_mutable_subtree self, const t_language *lan
 
 	if (self.ptr->symbol == ts_builtin_sym_error || self.ptr->symbol == ts_builtin_sym_error_repeat)
 	{
-		self.ptr->error_cost +=
-			ERROR_COST_PER_RECOVERY + ERROR_COST_PER_SKIPPED_CHAR * self.ptr->size.bytes + ERROR_COST_PER_SKIPPED_LINE * self.ptr->size.extent.row;
+		self.ptr->error_cost += ERROR_COST_PER_RECOVERY + ERROR_COST_PER_SKIPPED_CHAR * self.ptr->size.bytes +
+								ERROR_COST_PER_SKIPPED_LINE * self.ptr->size.extent.row;
 	}
 
 	if (self.ptr->child_count > 0)
@@ -9128,7 +9215,8 @@ t_subtree ts_subtree_new_error_node(t_subtree_array *children, bool extra, const
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-t_subtree ts_subtree_new_missing_leaf(t_subtree_pool *pool, t_symbol symbol, t_length padding, uint32_t lookahead_bytes, const t_language *language)
+t_subtree ts_subtree_new_missing_leaf(t_subtree_pool *pool, t_symbol symbol, t_length padding, uint32_t lookahead_bytes,
+									  const t_language *language)
 {
 	t_subtree result = ts_subtree_new_leaf(pool, symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
 	if (result.data.is_inline)
@@ -9425,8 +9513,8 @@ t_subtree ts_subtree_last_external_token(t_subtree tree)
 
 static const char *const ROOT_FIELD = "__ROOT__";
 
-static size_t ts_subtree__write_to_string(t_subtree self, char *string, size_t limit, const t_language *language, bool include_all, t_symbol alias_symbol,
-										  bool alias_is_named, const char *field_name)
+static size_t ts_subtree__write_to_string(t_subtree self, char *string, size_t limit, const t_language *language, bool include_all,
+										  t_symbol alias_symbol, bool alias_is_named, const char *field_name)
 {
 	(void)(self);
 	(void)(string);
@@ -9571,11 +9659,12 @@ t_parse_range *ts_tree_get_changed_ranges(const t_first_tree *old_tree, const t_
 	ts_tree_cursor_init(&cursor2, ts_tree_root_node(new_tree));
 
 	t_range_array included_range_differences = array_new();
-	ts_range_array_get_changed_ranges(old_tree->included_ranges, old_tree->included_range_count, new_tree->included_ranges, new_tree->included_range_count,
-									  &included_range_differences);
+	ts_range_array_get_changed_ranges(old_tree->included_ranges, old_tree->included_range_count, new_tree->included_ranges,
+									  new_tree->included_range_count, &included_range_differences);
 
 	t_parse_range *result;
-	*length = ts_subtree_get_changed_ranges(&old_tree->root, &new_tree->root, &cursor1, &cursor2, old_tree->language, &included_range_differences, &result);
+	*length = ts_subtree_get_changed_ranges(&old_tree->root, &new_tree->root, &cursor1, &cursor2, old_tree->language,
+											&included_range_differences, &result);
 
 	array_delete(&included_range_differences);
 	array_delete(&cursor1.stack);
@@ -9944,7 +10033,8 @@ int64_t ts_tree_cursor_goto_first_child_for_point(t_tree_cursor *self, t_point g
 	return ts_tree_cursor_goto_first_child_for_byte_and_point(self, 0, goal_point);
 }
 
-t_tree_cursor_step ts_tree_cursor_goto_sibling_internal(t_tree_cursor *_self, bool (*advance)(t_cursor_child_iterator *, t_tree_cursor_entry *, bool *))
+t_tree_cursor_step ts_tree_cursor_goto_sibling_internal(t_tree_cursor *_self,
+														bool (*advance)(t_cursor_child_iterator *, t_tree_cursor_entry *, bool *))
 {
 	t_tree_cursor *self = (t_tree_cursor *)_self;
 	uint32_t	   initial_size = self->stack.size;
@@ -10077,8 +10167,8 @@ void ts_tree_cursor_goto_descendant(t_tree_cursor *_self, uint32_t goal_descenda
 	{
 		uint32_t			 i = self->stack.size - 1;
 		t_tree_cursor_entry *entry = &self->stack.contents[i];
-		uint32_t			 next_descendant_index =
-			entry->descendant_index + (ts_tree_cursor_is_entry_visible(self, i) ? 1 : 0) + ts_subtree_visible_descendant_count(*entry->subtree);
+		uint32_t			 next_descendant_index = entry->descendant_index + (ts_tree_cursor_is_entry_visible(self, i) ? 1 : 0) +
+										 ts_subtree_visible_descendant_count(*entry->subtree);
 		if ((entry->descendant_index <= goal_descendant_index) && (next_descendant_index > goal_descendant_index))
 		{
 			break;
@@ -10140,15 +10230,17 @@ t_parse_node ts_tree_cursor_current_node(const t_tree_cursor *_self)
 	if (self->stack.size > 1 && !ts_subtree_extra(*last_entry->subtree))
 	{
 		t_tree_cursor_entry *parent_entry = &self->stack.contents[self->stack.size - 2];
-		alias_symbol = ts_language_alias_at(self->tree->language, parent_entry->subtree->ptr->production_id, last_entry->structural_child_index);
+		alias_symbol =
+			ts_language_alias_at(self->tree->language, parent_entry->subtree->ptr->production_id, last_entry->structural_child_index);
 	}
 	return ts_node_new(self->tree, last_entry->subtree, last_entry->position, alias_symbol);
 }
 
 // Private - Get various facts about the current node that are needed
 // when executing tree queries.
-void ts_tree_cursor_current_status(const t_tree_cursor *_self, t_field_id *field_id, bool *has_later_siblings, bool *has_later_named_siblings,
-								   bool *can_have_later_siblings_with_this_field, t_symbol *supertypes, unsigned *supertype_count)
+void ts_tree_cursor_current_status(const t_tree_cursor *_self, t_field_id *field_id, bool *has_later_siblings,
+								   bool *has_later_named_siblings, bool *can_have_later_siblings_with_this_field, t_symbol *supertypes,
+								   unsigned *supertype_count)
 {
 	const t_tree_cursor *self = (const t_tree_cursor *)_self;
 	unsigned			 max_supertypes = *supertype_count;
@@ -10167,8 +10259,8 @@ void ts_tree_cursor_current_status(const t_tree_cursor *_self, t_field_id *field
 
 		const t_symbol *alias_sequence = ts_language_alias_sequence(self->tree->language, parent_entry->subtree->ptr->production_id);
 
-#define subtree_symbol(subtree, structural_child_index)                                                                                                        \
-	((!ts_subtree_extra(subtree) && alias_sequence && alias_sequence[structural_child_index]) ? alias_sequence[structural_child_index]                         \
+#define subtree_symbol(subtree, structural_child_index)                                                                                    \
+	((!ts_subtree_extra(subtree) && alias_sequence && alias_sequence[structural_child_index]) ? alias_sequence[structural_child_index]     \
 																							  : ts_subtree_symbol(subtree))
 
 		// Stop walking up when a visible ancestor is found.
@@ -10194,7 +10286,8 @@ void ts_tree_cursor_current_status(const t_tree_cursor *_self, t_field_id *field
 			for (unsigned j = entry->child_index + 1; j < sibling_count; j++)
 			{
 				t_subtree		  sibling = ts_subtree_children(*parent_entry->subtree)[j];
-				t_symbol_metadata sibling_metadata = ts_language_symbol_metadata(self->tree->language, subtree_symbol(sibling, structural_child_index));
+				t_symbol_metadata sibling_metadata =
+					ts_language_symbol_metadata(self->tree->language, subtree_symbol(sibling, structural_child_index));
 				if (sibling_metadata.visible)
 				{
 					*has_later_siblings = true;
@@ -10284,7 +10377,8 @@ t_parse_node ts_tree_cursor_parent_node(const t_tree_cursor *_self)
 		if (i > 0)
 		{
 			t_tree_cursor_entry *parent_entry = &self->stack.contents[i - 1];
-			alias_symbol = ts_language_alias_at(self->tree->language, parent_entry->subtree->ptr->production_id, entry->structural_child_index);
+			alias_symbol =
+				ts_language_alias_at(self->tree->language, parent_entry->subtree->ptr->production_id, entry->structural_child_index);
 			is_visible = (alias_symbol != 0) || ts_subtree_visible(*entry->subtree);
 		}
 		if (is_visible)

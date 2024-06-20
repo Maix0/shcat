@@ -77,6 +77,7 @@ void							ts_node_edit(t_parse_node *self, const t_input_edit *edit);
 t_u32							ts_node_end_byte(t_parse_node self);
 t_point							ts_node_end_point(t_parse_node self);
 bool							ts_node_eq(t_parse_node self, t_parse_node other);
+t_field_id                      ts_node_field_id_for_child(t_parse_node self, t_u32 child_index);
 const char					   *ts_node_field_name_for_child(t_parse_node self, t_u32 child_index);
 t_parse_node					ts_node_first_child_for_byte(t_parse_node self, t_u32 byte);
 t_parse_node					ts_node_first_named_child_for_byte(t_parse_node self, t_u32 byte);
