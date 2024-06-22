@@ -6,7 +6,7 @@
 /*   By: rparodi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 15:00:53 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/23 15:27:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/21 13:55:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 {
 	t_usize		 i;
 	t_spawn_info spawn_info;
-	t_str		 tmp;
 
 	spawn_info.arguments =
 		vec_str_new(64, (void (*)(t_str))mem_free); // TODO: FIX VECTOR
@@ -58,10 +57,6 @@ t_error handle_command(t_node *self, t_utils *shcat, t_i32 *out_exit_code)
 			printf("PAS ENCORE HANDLE FDP asignement!\n");
 		else
 		{
-			if (handle_node_getstr(&self->childs[i], shcat, &tmp))
-				return (vec_str_free(spawn_info.arguments), ERROR);
-			if (vec_str_push(&spawn_info.arguments, str_clone(tmp)))
-				return (ERROR);
 		}
 		i++;
 	}

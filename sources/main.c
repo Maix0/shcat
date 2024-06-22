@@ -6,16 +6,13 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/20 23:04:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/21 13:53:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/env.h"
 #include "app/node.h"
-#include "app/node/handle_concat.h"
-#include "app/node/handle_program.h"
 #include "app/signal_handler.h"
-#include "gmr/symbols.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
 #include "me/types.h"
@@ -76,20 +73,6 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 	return (NO_ERROR);
 }
 
-t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out)
-{
-	*out = NULL;
-	if (self->kind == sym_word)
-	{
-		*out = node_getstr(self);
-		return (NO_ERROR);
-	}
-	if (self->kind == sym_concatenation)
-		return (handle_concat(self, shcat, out));
-
-	return (ERROR);
-}
-
 void print_node_data(t_node *t, t_usize depth)
 {
 	t_usize idx;
@@ -131,34 +114,10 @@ t_node parse_str(t_parser *parser, t_const_str input)
 	return (parse_to_nodes(parser->parser, input));
 }
 
-t_error handle_concat(t_node *self, t_utils *shcat, t_str *ret);
-
-void print_node_concat(t_node *self)
-{
-	if (self->kind != sym_concatenation)
-	{
-		t_usize i = 0;
-		while (i < self->childs_count)
-			print_node_concat(&self->childs[i++]);
-	}
-	else
-	{
-		t_str ret;
-		if (handle_concat(self, NULL, &ret))
-			return ((void)printf("ERROR\n"));
-		printf("concat value = '%s'\n", ret);
-		free(ret);
-	}
-}
-
 void exec_shcat(t_utils *shcat)
 {
-	t_i32 ret;
-
 	print_node_data(&shcat->current_node, 0);
-	handle_program(&shcat->current_node, shcat, &ret);
 	free_node(shcat->current_node);
-	(void)ret;
 }
 
 void ft_take_args(t_utils *shcat)
