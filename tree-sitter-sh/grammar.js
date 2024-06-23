@@ -38,7 +38,7 @@ module.exports = grammar({
   name: 'sh',
 
   conflicts: $ => [
-    [$.command, $.variable_assignments],
+    [$.command, $._variable_assignments],
     [$.redirected_statement, $.command],
     [$.redirected_statement, $.command_substitution],
     [$.function_definition, $.command_name],
@@ -87,10 +87,10 @@ module.exports = grammar({
     /\\( |\t|\v|\f)/,
   ],
 
-  supertypes: $ => [
-    $._statement,
-    $._primary_expression,
-  ],
+  // supertypes: $ => [
+  //   $._statement,
+  //   $._primary_expression,
+  // ],
 
   word: $ => $.word,
 
@@ -130,7 +130,7 @@ module.exports = grammar({
       $.pipeline,
       $.redirected_statement,
       $.variable_assignment,
-      $.variable_assignments,
+      $._variable_assignments,
       $.while_statement,
     ),
 
@@ -146,7 +146,7 @@ module.exports = grammar({
       $.redirected_statement,
       $.subshell,
       $.variable_assignment,
-      $.variable_assignments,
+      $._variable_assignments,
       $.while_statement,
     )),
 
@@ -239,7 +239,7 @@ module.exports = grammar({
     function_definition: $ => prec.right(seq(
       field('name', $.word),
       '(', ')',
-      field('body', choice($.compound_statement, $.subshell, $.command, $.while_statement, $.if_statement, $.for_statement, $.variable_assignments, repeat1($.file_redirect))),
+      field('body', choice($.compound_statement, $.subshell, $.command, $.while_statement, $.if_statement, $.for_statement, $._variable_assignments, repeat1($.file_redirect))),
     )),
 
     compound_statement: $ => seq('{', $._terminated_statement, '}'),
@@ -296,7 +296,7 @@ module.exports = grammar({
       )),
     ),
 
-    variable_assignments: $ => seq($.variable_assignment, repeat1($.variable_assignment)),
+    _variable_assignments: $ => seq($.variable_assignment, repeat1($.variable_assignment)),
 
     file_redirect: $ => prec.left(seq(
       field('fd', optional($.file_descriptor)),
