@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/23 22:03:59 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/24 00:37:07 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ CC				?=	cc
 CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -g3
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
-SRC_FILES		=	combined scanner funcs create_language
+SRC_FILES		=	lib
 GEN_FILES		=
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES))) $(addsuffix .c,$(addprefix $(GEN_DIR)/,$(GEN_FILES)))

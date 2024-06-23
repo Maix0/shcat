@@ -1,9 +1,6 @@
-#include "tree_sitter/array.h"
-#include "tree_sitter/parser.h"
-/*
 #include "array.h"
 #include "parser.h"
-*/
+
 #include <assert.h>
 #include <ctype.h>
 #include <string.h>
@@ -252,7 +249,7 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
 		skip(lexer);
-
+	
 
 	if (lexer->lookahead == '$')
 	{

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/23 18:45:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/24 00:51:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,14 @@ sym_while_statement
 sym_word
 */
 
+#include <stdio.h>
+
 #undef ERROR
 #define ERROR ((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)
 
 void ast_free(t_ast_node elem)
 {
+	printf("elem = %p\n", elem);
 	if (elem == NULL)
 		return;
 
@@ -190,6 +193,7 @@ void ast_free(t_ast_node elem)
 	}
 	if (elem->kind == AST_VARIABLE_ASSIGNMENT)
 	{
+		printf("value = %p\n", elem->data.variable_assignment.value);
 		ast_free(elem->data.variable_assignment.value);
 		mem_free(elem->data.variable_assignment.name);
 	}
@@ -822,6 +826,7 @@ sym_word
 
 t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out)
 {
+	return (ERROR);
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_grammar_symbol(node) == sym_arithmetic_binary_expression)
