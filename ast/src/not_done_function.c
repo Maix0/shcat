@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 13:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/20 22:36:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/23 17:39:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,3 +75,4 @@ t_error __attribute__((weak, alias("_build_not_finished"))) build_sym_variable_a
 t_error __attribute__((weak, alias("_build_not_finished"))) build_sym_variable_name(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error __attribute__((weak, alias("_build_not_finished"))) build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error __attribute__((weak, alias("_build_not_finished"))) build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error __attribute__((weak, alias("_build_not_finished"))) build_sym__bare_dollar(t_parse_node self, t_const_str input, t_ast_node *out);

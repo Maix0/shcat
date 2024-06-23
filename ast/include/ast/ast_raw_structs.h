@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/20 22:17:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/23 16:35:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ enum e_ast_list_kind
 enum e_ast_word_kind
 {
 	AST_WORD_NO_QUOTE,
-	AST_WORD_SINGLE_STRING,
-	AST_WORD_DOUBLE_QUOTED,
+	AST_WORD_SINGLE_QUOTE,
+	AST_WORD_DOUBLE_QUOTE,
 };
 
 enum e_ast_terminator_kind

@@ -18,13 +18,22 @@
       system: let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [(import rust-overlay)];
+          overlays = [
+            (import rust-overlay)
+            (final: prev: {
+              clang-analyzer = prev.clang-analyzer.override {
+                clang = final.llvmPackages_18.clang;
+                llvmPackages = final.llvmPackages_18;
+              };
+            })
+          ];
         };
       in {
         devShell = pkgs.mkShell {
           packages = with pkgs; [
-            valgrind.dev
+            clang-analyzer
             clang
+            valgrind.dev
             valgrind
             gnumake
             readline.out

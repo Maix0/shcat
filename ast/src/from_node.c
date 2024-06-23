@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/22 02:19:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/23 18:45:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,10 +385,12 @@ t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE DONE */
 
+t_error build_sym__bare_dollar(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
 
@@ -426,22 +428,102 @@ t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node 
 t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_simple_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_string(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_variable_assignments(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_variable_name(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 
 #include <stdio.h>
 
+t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_str	   temp_str;
+
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_variable_assignment)
+		return (ERROR);
+	ret = ast_alloc(AST_VARIABLE_ASSIGNMENT);
+	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	ret->data.raw_string.str = temp_str;
+	ret->data.raw_string.len = str_len(temp_str);
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_variable_name(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_str	   temp_str;
+
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_string)
+		return (ERROR);
+	ret = ast_alloc(AST_RAW_STRING);
+	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	ret->data.raw_string.str = temp_str;
+	ret->data.raw_string.len = str_len(temp_str);
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym__bare_dollar(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_str	   temp_str;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym__bare_dollar)
+		return (ERROR);
+	ret = ast_alloc(AST_RAW_STRING);
+	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	ret->data.raw_string.str = temp_str;
+	ret->data.raw_string.len = str_len(temp_str);
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_string(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_usize	   i;
+	t_ast_node temp;
+
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_string)
+		return (ERROR);
+	ret = ast_alloc(AST_WORD);
+	ret->data.word.kind = AST_WORD_DOUBLE_QUOTE;
+	i = 0;
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+			return (ast_free(ret), ERROR);
+		vec_ast_push(&ret->data.word.inner, temp);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
 t_error build_sym_concatenation(t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	t_ast_node ret;
+	t_usize	   i;
+	t_ast_node temp;
+
 	(void)(self);
 	(void)(input);
 	(void)(out);
@@ -449,7 +531,18 @@ t_error build_sym_concatenation(t_parse_node self, t_const_str input, t_ast_node
 		return (ERROR);
 	if (ts_node_grammar_symbol(self) != sym_concatenation)
 		return (ERROR);
-	return (ERROR);
+	ret = ast_alloc(AST_WORD);
+	ret->data.word.kind = AST_WORD_NO_QUOTE;
+	i = 0;
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+			return (ast_free(ret), ERROR);
+		vec_ast_push(&ret->data.word.inner, temp);
+		i++;
+	}
+
+	return (*out = ret, NO_ERROR);
 }
 
 t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out)
@@ -465,7 +558,26 @@ t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_nod
 	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
 	ret->data.raw_string.str = temp_str;
 	ret->data.raw_string.len = str_len(temp_str);
-	printf("temp_str = '%s'\n", temp_str);
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_ast_node temp;
+	t_str	   temp_str;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_raw_string)
+		return (ERROR);
+	ret = ast_alloc(AST_WORD);
+	temp = ast_alloc(AST_RAW_STRING);
+	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	temp->data.raw_string.str = temp_str;
+	temp->data.raw_string.len = str_len(temp_str);
+	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
+	vec_ast_push(&ret->data.word.inner, temp);
 	return (*out = ret, NO_ERROR);
 }
 
@@ -634,6 +746,80 @@ t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 	return (*out = ret, NO_ERROR);
 }
 
+/*
+alias_sym_statements
+alias_sym_terminator
+sym___error_recovery
+sym__arithmetic_expression
+sym__bare_dollar
+sym__case_item_last
+sym__comment_word
+sym__concat
+sym__concatenation_in_expansion
+sym__empty_value
+sym__expansion_body
+sym__expansion_word
+sym__extglob_blob
+sym__heredoc_body
+sym__heredoc_body_beginning
+sym__heredoc_expression
+sym__heredoc_pipeline
+sym__immediate_double_hash
+sym__simple_heredoc_body
+sym__statement_not_pipeline
+sym__statements
+sym_arithmetic_binary_expression
+sym_arithmetic_expansion
+sym_arithmetic_literal
+sym_arithmetic_parenthesized_expression
+sym_arithmetic_postfix_expression
+sym_arithmetic_ternary_expression
+sym_arithmetic_unary_expression
+sym_case_item
+sym_case_statement
+sym_command
+sym_command_name
+sym_command_substitution
+sym_comment
+sym_compound_statement
+sym_concatenation
+sym_do_group
+sym_elif_clause
+sym_else_clause
+sym_expansion
+sym_expansion_expression
+sym_expansion_regex
+sym_extglob_pattern
+sym_file_descriptor
+sym_file_redirect
+sym_for_statement
+sym_function_definition
+sym_heredoc_body
+sym_heredoc_content
+sym_heredoc_end
+sym_heredoc_redirect
+sym_heredoc_start
+sym_if_statement
+sym_list
+sym_negated_command
+sym_number
+sym_pipeline
+sym_program
+sym_raw_string
+sym_redirected_statement
+sym_regex
+sym_simple_expansion
+sym_simple_heredoc_body
+sym_string
+sym_string_content
+sym_subshell
+sym_variable_assignment
+sym_variable_assignments
+sym_variable_name
+sym_while_statement
+sym_word
+*/
+
 t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out)
 {
 	if (out == NULL)
@@ -730,13 +916,16 @@ t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out)
 		return (build_sym_subshell(node, input, out));
 	if (ts_node_grammar_symbol(node) == sym_variable_assignment)
 		return (build_sym_variable_assignment(node, input, out));
-	if (ts_node_grammar_symbol(node) == sym_variable_assignments)
-		return (build_sym_variable_assignments(node, input, out));
+	// if (ts_node_grammar_symbol(node) == sym_variable_assignments)
+	// 	return (build_sym_variable_assignments(node, input, out));
 	if (ts_node_grammar_symbol(node) == sym_variable_name)
 		return (build_sym_variable_name(node, input, out));
 	if (ts_node_grammar_symbol(node) == sym_while_statement)
 		return (build_sym_while_statement(node, input, out));
 	if (ts_node_grammar_symbol(node) == sym_word)
 		return (build_sym_word(node, input, out));
+	if (ts_node_grammar_symbol(node) == sym__bare_dollar)
+		return (build_sym__bare_dollar(node, input, out));
+	printf("UNKNOWN KIND = [%d]%s\n", ts_node_grammar_symbol(node), ts_node_grammar_type(node));
 	return (ERROR);
 }
