@@ -30,21 +30,21 @@ void	parse_actions_entries_105(t_parse_actions_entries_array *v)
 	v->a[2113] = entry(1, false);
 	v->a[2114] = shift(672);
 	v->a[2115] = entry(1, false);
-	v->a[2116] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2116] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2117] = entry(1, true);
-	v->a[2118] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2118] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2119] = entry(2, true);
 	parse_actions_entries_106(v);
 }
 
 void	parse_actions_entries_106(t_parse_actions_entries_array *v)
 {
-	v->a[2120] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2120] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2121] = shift_repeat(2451);
 	v->a[2122] = entry(1, false);
-	v->a[2123] = reduce(sym_variable_assignments, 2, 0, 0);
+	v->a[2123] = reduce(sym__variable_assignments, 2, 0, 0);
 	v->a[2124] = entry(1, true);
-	v->a[2125] = reduce(sym_variable_assignments, 2, 0, 0);
+	v->a[2125] = reduce(sym__variable_assignments, 2, 0, 0);
 	v->a[2126] = entry(1, true);
 	v->a[2127] = shift(2451);
 	v->a[2128] = entry(1, false);
@@ -52,7 +52,7 @@ void	parse_actions_entries_106(t_parse_actions_entries_array *v)
 	v->a[2130] = entry(1, true);
 	v->a[2131] = shift(1654);
 	v->a[2132] = entry(2, true);
-	v->a[2133] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2133] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2134] = shift_repeat(2286);
 	v->a[2135] = entry(1, true);
 	v->a[2136] = reduce(aux_sym_redirected_statement_repeat1, 2, 0, 0);
@@ -76,7 +76,7 @@ void	parse_actions_entries_107(t_parse_actions_entries_array *v)
 	v->a[2149] = reduce(aux_sym_redirected_statement_repeat1, 2, 0, 0);
 	v->a[2150] = shift_repeat(2048);
 	v->a[2151] = entry(2, true);
-	v->a[2152] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2152] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2153] = shift_repeat(2446);
 	v->a[2154] = entry(1, true);
 	v->a[2155] = shift(2446);

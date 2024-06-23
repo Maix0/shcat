@@ -78,7 +78,7 @@ void	parse_actions_entries_142(t_parse_actions_entries_array *v)
 	v->a[2851] = entry(1, false);
 	v->a[2852] = reduce(sym_if_statement, 4, 0, 35);
 	v->a[2853] = entry(2, true);
-	v->a[2854] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2854] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2855] = shift_repeat(2396);
 	v->a[2856] = entry(1, true);
 	v->a[2857] = reduce(sym_do_group, 2, 0, 0);

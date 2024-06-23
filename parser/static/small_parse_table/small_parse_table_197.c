@@ -127,7 +127,7 @@ void	small_parse_table_989(t_small_parse_table_array *v)
 	v->a[19790] = sym_compound_statement;
 	v->a[19791] = sym_subshell;
 	v->a[19792] = sym_command;
-	v->a[19793] = sym_variable_assignments;
+	v->a[19793] = sym__variable_assignments;
 	v->a[19794] = actions(105);
 	v->a[19795] = 8;
 	v->a[19796] = anon_sym_LT;

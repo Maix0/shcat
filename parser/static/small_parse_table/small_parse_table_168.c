@@ -24,7 +24,7 @@ void	small_parse_table_840(t_small_parse_table_array *v)
 	v->a[16807] = sym_file_redirect;
 	v->a[16808] = state(1187);
 	v->a[16809] = 1;
-	v->a[16810] = sym_variable_assignments;
+	v->a[16810] = sym__variable_assignments;
 	v->a[16811] = state(1242);
 	v->a[16812] = 1;
 	v->a[16813] = sym_command;

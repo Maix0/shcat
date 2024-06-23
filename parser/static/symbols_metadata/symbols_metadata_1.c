@@ -57,7 +57,7 @@ void	symbols_metadata_6(t_symbols_metadata_array *v)
 	v->a[sym_command] = sym_metadata(true, true, false);
 	v->a[sym_command_name] = sym_metadata(true, true, false);
 	v->a[sym_variable_assignment] = sym_metadata(true, true, false);
-	v->a[sym_variable_assignments] = sym_metadata(true, true, false);
+	v->a[sym__variable_assignments] = sym_metadata(false, true, false);
 	v->a[sym_file_redirect] = sym_metadata(true, true, false);
 	symbols_metadata_7(v);
 }
@@ -108,7 +108,7 @@ void	symbols_metadata_8(t_symbols_metadata_array *v)
 	v->a[aux_sym_pipeline_repeat1] = sym_metadata(false, false, false);
 	v->a[aux_sym_command_repeat1] = sym_metadata(false, false, false);
 	v->a[aux_sym_command_repeat2] = sym_metadata(false, false, false);
-	v->a[aux_sym_variable_assignments_repeat1] \
+	v->a[aux_sym__variable_assignments_repeat1] \
 	= sym_metadata(false, false, false);
 	v->a[aux_sym_heredoc_body_repeat1] = sym_metadata(false, false, false);
 	v->a[aux_sym_concatenation_repeat1] = sym_metadata(false, false, false);

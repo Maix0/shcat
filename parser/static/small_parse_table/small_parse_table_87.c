@@ -106,7 +106,7 @@ void	small_parse_table_438(t_small_parse_table_array *v)
 	v->a[8774] = sym_list;
 	v->a[8775] = sym_negated_command;
 	v->a[8776] = sym_command;
-	v->a[8777] = sym_variable_assignments;
+	v->a[8777] = sym__variable_assignments;
 	v->a[8778] = 32;
 	v->a[8779] = actions(3);
 	small_parse_table_439(v);

@@ -101,7 +101,7 @@ void	small_parse_table_3878(t_small_parse_table_array *v)
 	v->a[77569] = state(1199);
 	v->a[77570] = 2;
 	v->a[77571] = sym_variable_assignment;
-	v->a[77572] = aux_sym_variable_assignments_repeat1;
+	v->a[77572] = aux_sym__variable_assignments_repeat1;
 	v->a[77573] = actions(805);
 	v->a[77574] = 19;
 	v->a[77575] = anon_sym_LT;

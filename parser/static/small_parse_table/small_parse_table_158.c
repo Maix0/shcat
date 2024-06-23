@@ -71,7 +71,7 @@ void	small_parse_table_792(t_small_parse_table_array *v)
 	v->a[15844] = sym_command;
 	v->a[15845] = state(1234);
 	v->a[15846] = 1;
-	v->a[15847] = sym_variable_assignments;
+	v->a[15847] = sym__variable_assignments;
 	v->a[15848] = state(1406);
 	v->a[15849] = 1;
 	v->a[15850] = sym_pipeline;

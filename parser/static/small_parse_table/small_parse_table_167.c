@@ -16,7 +16,7 @@ void	small_parse_table_835(t_small_parse_table_array *v)
 {
 	v->a[16700] = state(1407);
 	v->a[16701] = 1;
-	v->a[16702] = sym_variable_assignments;
+	v->a[16702] = sym__variable_assignments;
 	v->a[16703] = state(1446);
 	v->a[16704] = 1;
 	v->a[16705] = sym_pipeline;

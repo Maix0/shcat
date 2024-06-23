@@ -14,7 +14,7 @@
 
 void	small_parse_table_4065(t_small_parse_table_array *v)
 {
-	v->a[81300] = aux_sym_variable_assignments_repeat1;
+	v->a[81300] = aux_sym__variable_assignments_repeat1;
 	v->a[81301] = actions(2115);
 	v->a[81302] = 15;
 	v->a[81303] = anon_sym_PIPE;

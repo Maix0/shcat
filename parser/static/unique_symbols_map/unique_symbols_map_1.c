@@ -57,7 +57,7 @@ void	unique_symbols_map_6(t_unique_symbols_map_array *v)
 	v->a[sym_command] = sym_command;
 	v->a[sym_command_name] = sym_command_name;
 	v->a[sym_variable_assignment] = sym_variable_assignment;
-	v->a[sym_variable_assignments] = sym_variable_assignments;
+	v->a[sym__variable_assignments] = sym__variable_assignments;
 	v->a[sym_file_redirect] = sym_file_redirect;
 	unique_symbols_map_7(v);
 }
@@ -110,8 +110,8 @@ void	unique_symbols_map_8(t_unique_symbols_map_array *v)
 	v->a[aux_sym_pipeline_repeat1] = aux_sym_pipeline_repeat1;
 	v->a[aux_sym_command_repeat1] = aux_sym_command_repeat1;
 	v->a[aux_sym_command_repeat2] = aux_sym_command_repeat2;
-	v->a[aux_sym_variable_assignments_repeat1] \
-	= aux_sym_variable_assignments_repeat1;
+	v->a[aux_sym__variable_assignments_repeat1] \
+	= aux_sym__variable_assignments_repeat1;
 	v->a[aux_sym_heredoc_body_repeat1] = aux_sym_heredoc_body_repeat1;
 	v->a[aux_sym_concatenation_repeat1] = aux_sym_concatenation_repeat1;
 	v->a[aux_sym_string_repeat1] = aux_sym_string_repeat1;

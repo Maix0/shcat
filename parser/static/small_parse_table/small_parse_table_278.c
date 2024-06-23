@@ -20,7 +20,7 @@ void	small_parse_table_1390(t_small_parse_table_array *v)
 	v->a[27803] = state(1415);
 	v->a[27804] = 2;
 	v->a[27805] = sym_variable_assignment;
-	v->a[27806] = aux_sym_variable_assignments_repeat1;
+	v->a[27806] = aux_sym__variable_assignments_repeat1;
 	v->a[27807] = state(1322);
 	v->a[27808] = 3;
 	v->a[27809] = sym_file_redirect;

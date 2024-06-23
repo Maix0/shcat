@@ -48,7 +48,7 @@ void	parse_actions_entries_146(t_parse_actions_entries_array *v)
 	v->a[2926] = entry(1, false);
 	v->a[2927] = shift(2256);
 	v->a[2928] = entry(2, true);
-	v->a[2929] = reduce(aux_sym_variable_assignments_repeat1, 2, 0, 0);
+	v->a[2929] = reduce(aux_sym__variable_assignments_repeat1, 2, 0, 0);
 	v->a[2930] = shift_repeat(2456);
 	v->a[2931] = entry(1, false);
 	v->a[2932] = shift(2253);

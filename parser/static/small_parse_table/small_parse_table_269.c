@@ -64,7 +64,7 @@ void	small_parse_table_1346(t_small_parse_table_array *v)
 
 void	small_parse_table_1347(t_small_parse_table_array *v)
 {
-	v->a[26940] = aux_sym_variable_assignments_repeat1;
+	v->a[26940] = aux_sym__variable_assignments_repeat1;
 	v->a[26941] = state(1322);
 	v->a[26942] = 3;
 	v->a[26943] = sym_file_redirect;

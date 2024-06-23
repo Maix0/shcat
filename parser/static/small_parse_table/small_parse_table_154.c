@@ -57,7 +57,7 @@ void	small_parse_table_771(t_small_parse_table_array *v)
 	v->a[15435] = sym_redirected_statement;
 	v->a[15436] = state(1212);
 	v->a[15437] = 1;
-	v->a[15438] = sym_variable_assignments;
+	v->a[15438] = sym__variable_assignments;
 	v->a[15439] = state(1215);
 	small_parse_table_772(v);
 }

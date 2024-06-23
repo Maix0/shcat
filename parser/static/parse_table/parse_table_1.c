@@ -28,7 +28,7 @@ void	parse_table_5(t_parse_table_array *v)
 	v->a[1][sym_command] = state(1210);
 	v->a[1][sym_command_name] = state(185);
 	v->a[1][sym_variable_assignment] = state(259);
-	v->a[1][sym_variable_assignments] = state(1210);
+	v->a[1][sym__variable_assignments] = state(1210);
 	v->a[1][sym_file_redirect] = state(760);
 	v->a[1][sym_arithmetic_expansion] = state(291);
 	v->a[1][sym_concatenation] = state(639);
