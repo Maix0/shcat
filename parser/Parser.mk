@@ -6,14 +6,14 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/11 15:46:54 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/23 22:03:59 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ANAME			= 	parser
 
 BUILD_DIR		=	../build
-SRC_DIR			=   ./src
+SRC_DIR			=   ./nsrc
 GEN_DIR 		=   ./generic
 
 BONUS_FLAGS		=
