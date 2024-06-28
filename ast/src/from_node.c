@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/24 00:51:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/24 17:38:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ sym_word
 
 void ast_free(t_ast_node elem)
 {
-	printf("elem = %p\n", elem);
 	if (elem == NULL)
 		return;
 
@@ -193,7 +192,6 @@ void ast_free(t_ast_node elem)
 	}
 	if (elem->kind == AST_VARIABLE_ASSIGNMENT)
 	{
-		printf("value = %p\n", elem->data.variable_assignment.value);
 		ast_free(elem->data.variable_assignment.value);
 		mem_free(elem->data.variable_assignment.name);
 	}
@@ -445,7 +443,8 @@ t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_no
 t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node ret;
-	t_str	   temp_str;
+	t_parse_node temp_ast;
+	//t_str	   temp_str;
 
 	(void)(self);
 	(void)(input);
@@ -455,9 +454,18 @@ t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_as
 	if (ts_node_grammar_symbol(self) != sym_variable_assignment)
 		return (ERROR);
 	ret = ast_alloc(AST_VARIABLE_ASSIGNMENT);
-	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
-	ret->data.raw_string.str = temp_str;
-	ret->data.raw_string.len = str_len(temp_str);
+	//temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	if (ts_node_named_child_count(self) >= 1)
+	{
+		temp_ast = ts_node_named_child(self, 0);
+		if (ts_node_grammar_symbol(temp_ast) != sym_variable_name)
+			return (ast_free(ret), ERROR);
+		ret->data.variable_assignment.name = str_substring(input, ts_node_start_byte(temp_ast), ts_node_end_byte(temp_ast) - ts_node_start_byte(temp_ast));
+	}
+	if (ts_node_named_child_count(self) > 1){
+		if (ast_from_node(ts_node_named_child(self, 1) ,input,&ret->data.variable_assignment.value))
+			return (ast_free(ret), ERROR);
+	}
 	return (*out = ret, NO_ERROR);
 }
 
@@ -826,7 +834,6 @@ sym_word
 
 t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out)
 {
-	return (ERROR);
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_grammar_symbol(node) == sym_arithmetic_binary_expression)
