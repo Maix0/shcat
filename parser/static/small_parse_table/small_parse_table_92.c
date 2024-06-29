@@ -16,22 +16,22 @@ void	small_parse_table_460(t_small_parse_table_array *v)
 {
 	v->a[9200] = 1;
 	v->a[9201] = sym_variable_assignment;
-	v->a[9202] = state(647);
+	v->a[9202] = state(624);
 	v->a[9203] = 1;
 	v->a[9204] = sym_concatenation;
-	v->a[9205] = state(746);
+	v->a[9205] = state(702);
 	v->a[9206] = 1;
-	v->a[9207] = aux_sym_command_repeat1;
-	v->a[9208] = state(905);
+	v->a[9207] = sym_file_redirect;
+	v->a[9208] = state(765);
 	v->a[9209] = 1;
-	v->a[9210] = sym_file_redirect;
-	v->a[9211] = state(1422);
+	v->a[9210] = aux_sym_command_repeat1;
+	v->a[9211] = state(1110);
 	v->a[9212] = 1;
 	v->a[9213] = sym_pipeline;
-	v->a[9214] = state(1429);
+	v->a[9214] = state(1188);
 	v->a[9215] = 1;
 	v->a[9216] = aux_sym_redirected_statement_repeat2;
-	v->a[9217] = state(2271);
+	v->a[9217] = state(2115);
 	v->a[9218] = 1;
 	v->a[9219] = sym__statement_not_pipeline;
 	small_parse_table_461(v);
@@ -39,22 +39,22 @@ void	small_parse_table_460(t_small_parse_table_array *v)
 
 void	small_parse_table_461(t_small_parse_table_array *v)
 {
-	v->a[9220] = state(2382);
+	v->a[9220] = state(2197);
 	v->a[9221] = 1;
 	v->a[9222] = sym__statements;
 	v->a[9223] = actions(11);
 	v->a[9224] = 2;
 	v->a[9225] = anon_sym_while;
 	v->a[9226] = anon_sym_until;
-	v->a[9227] = actions(57);
+	v->a[9227] = actions(226);
 	v->a[9228] = 2;
 	v->a[9229] = anon_sym_LT_AMP_DASH;
 	v->a[9230] = anon_sym_GT_AMP_DASH;
-	v->a[9231] = actions(65);
+	v->a[9231] = actions(228);
 	v->a[9232] = 2;
 	v->a[9233] = sym_raw_string;
 	v->a[9234] = sym_number;
-	v->a[9235] = state(394);
+	v->a[9235] = state(299);
 	v->a[9236] = 5;
 	v->a[9237] = sym_arithmetic_expansion;
 	v->a[9238] = sym_string;
@@ -66,7 +66,7 @@ void	small_parse_table_462(t_small_parse_table_array *v)
 {
 	v->a[9240] = sym_expansion;
 	v->a[9241] = sym_command_substitution;
-	v->a[9242] = actions(55);
+	v->a[9242] = actions(224);
 	v->a[9243] = 8;
 	v->a[9244] = anon_sym_LT;
 	v->a[9245] = anon_sym_GT;
@@ -76,7 +76,7 @@ void	small_parse_table_462(t_small_parse_table_array *v)
 	v->a[9249] = anon_sym_LT_AMP;
 	v->a[9250] = anon_sym_GT_AMP;
 	v->a[9251] = anon_sym_GT_PIPE;
-	v->a[9252] = state(1211);
+	v->a[9252] = state(1072);
 	v->a[9253] = 12;
 	v->a[9254] = sym_redirected_statement;
 	v->a[9255] = sym_for_statement;

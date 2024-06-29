@@ -57,8 +57,6 @@ bool	lex_normal_s482(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(529, lexer, s));
 	if (s->lookahead == '\\')
 		return (lex_advance(146, lexer, s));
-	if (s->lookahead == 'e')
-		return (lex_advance(527, lexer, s));
 	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
 		return (lex_advance(482, lexer, s));
 	if ((s->lookahead >= '0' && s->lookahead <= '9'))
@@ -78,6 +76,8 @@ bool	lex_normal_s483(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(529, lexer, s));
 	if (s->lookahead == '\\')
 		return (lex_advance(148, lexer, s));
+	if (s->lookahead == 'e')
+		return (lex_advance(527, lexer, s));
 	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
 		return (lex_advance(483, lexer, s));
 	if ((s->lookahead >= '0' && s->lookahead <= '9'))

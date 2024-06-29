@@ -95,6 +95,7 @@ void	symbols_names_8(t_symbols_names_array *v)
 	v->a[sym__concatenation_in_expansion] = "concatenation";
 	v->a[sym_command_substitution] = "command_substitution";
 	v->a[sym__extglob_blob] = "_extglob_blob";
+	v->a[sym_terminator] = "terminator";
 	v->a[aux_sym__statements_repeat1] = "_statements_repeat1";
 	v->a[aux_sym_redirected_statement_repeat1] \
 	= "redirected_statement_repeat1";
@@ -112,17 +113,16 @@ void	symbols_names_8(t_symbols_names_array *v)
 	= "_variable_assignments_repeat1";
 	v->a[aux_sym_heredoc_body_repeat1] = "heredoc_body_repeat1";
 	v->a[aux_sym_concatenation_repeat1] = "concatenation_repeat1";
-	v->a[aux_sym_string_repeat1] = "string_repeat1";
 	symbols_names_9(v);
 }
 
 void	symbols_names_9(t_symbols_names_array *v)
 {
+	v->a[aux_sym_string_repeat1] = "string_repeat1";
 	v->a[aux_sym_expansion_regex_repeat1] = "expansion_regex_repeat1";
 	v->a[aux_sym__concatenation_in_expansion_repeat1] \
 	= "_concatenation_in_expansion_repeat1";
 	v->a[alias_sym_statements] = "statements";
-	v->a[alias_sym_terminator] = "terminator";
 }
 
 /* EOF symbols_names_1.c */

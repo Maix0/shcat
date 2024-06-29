@@ -14,7 +14,7 @@
 
 void	small_parse_table_1005(t_small_parse_table_array *v)
 {
-	v->a[20100] = anon_sym_esac;
+	v->a[20100] = anon_sym_LPAREN;
 	v->a[20101] = anon_sym_PIPE;
 	v->a[20102] = anon_sym_SEMI_SEMI;
 	v->a[20103] = anon_sym_AMP_AMP;
@@ -51,14 +51,14 @@ void	small_parse_table_1006(t_small_parse_table_array *v)
 	v->a[20129] = actions(3);
 	v->a[20130] = 1;
 	v->a[20131] = sym_comment;
-	v->a[20132] = actions(411);
+	v->a[20132] = actions(405);
 	v->a[20133] = 1;
 	v->a[20134] = sym_variable_name;
-	v->a[20135] = actions(379);
+	v->a[20135] = actions(385);
 	v->a[20136] = 2;
 	v->a[20137] = sym_file_descriptor;
 	v->a[20138] = sym__bare_dollar;
-	v->a[20139] = actions(409);
+	v->a[20139] = actions(403);
 	small_parse_table_1007(v);
 }
 
@@ -67,7 +67,7 @@ void	small_parse_table_1007(t_small_parse_table_array *v)
 	v->a[20140] = 2;
 	v->a[20141] = aux_sym__simple_variable_name_token1;
 	v->a[20142] = aux_sym__multiline_variable_name_token1;
-	v->a[20143] = actions(407);
+	v->a[20143] = actions(401);
 	v->a[20144] = 9;
 	v->a[20145] = anon_sym_BANG;
 	v->a[20146] = anon_sym_DASH;
@@ -78,10 +78,10 @@ void	small_parse_table_1007(t_small_parse_table_array *v)
 	v->a[20151] = anon_sym_AT;
 	v->a[20152] = anon_sym_0;
 	v->a[20153] = anon_sym__;
-	v->a[20154] = actions(381);
+	v->a[20154] = actions(379);
 	v->a[20155] = 28;
-	v->a[20156] = anon_sym_PIPE;
-	v->a[20157] = anon_sym_RPAREN;
+	v->a[20156] = anon_sym_esac;
+	v->a[20157] = anon_sym_PIPE;
 	v->a[20158] = anon_sym_SEMI_SEMI;
 	v->a[20159] = anon_sym_AMP_AMP;
 	small_parse_table_1008(v);
@@ -122,18 +122,18 @@ void	small_parse_table_1009(t_small_parse_table_array *v)
 	v->a[20185] = actions(3);
 	v->a[20186] = 1;
 	v->a[20187] = sym_comment;
-	v->a[20188] = actions(393);
+	v->a[20188] = actions(411);
 	v->a[20189] = 1;
 	v->a[20190] = sym_variable_name;
-	v->a[20191] = actions(379);
+	v->a[20191] = actions(385);
 	v->a[20192] = 2;
 	v->a[20193] = sym_file_descriptor;
 	v->a[20194] = sym__bare_dollar;
-	v->a[20195] = actions(391);
+	v->a[20195] = actions(409);
 	v->a[20196] = 2;
 	v->a[20197] = aux_sym__simple_variable_name_token1;
 	v->a[20198] = aux_sym__multiline_variable_name_token1;
-	v->a[20199] = actions(389);
+	v->a[20199] = actions(407);
 	small_parse_table_1010(v);
 }
 

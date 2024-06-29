@@ -15,25 +15,25 @@
 void	small_parse_table_240(t_small_parse_table_array *v)
 {
 	v->a[4800] = sym_variable_name;
-	v->a[4801] = state(126);
+	v->a[4801] = state(138);
 	v->a[4802] = 1;
 	v->a[4803] = aux_sym__statements_repeat1;
-	v->a[4804] = state(184);
+	v->a[4804] = state(185);
 	v->a[4805] = 1;
 	v->a[4806] = sym_command_name;
-	v->a[4807] = state(268);
+	v->a[4807] = state(235);
 	v->a[4808] = 1;
 	v->a[4809] = sym_variable_assignment;
-	v->a[4810] = state(647);
+	v->a[4810] = state(624);
 	v->a[4811] = 1;
 	v->a[4812] = sym_concatenation;
-	v->a[4813] = state(813);
+	v->a[4813] = state(675);
 	v->a[4814] = 1;
 	v->a[4815] = sym_file_redirect;
-	v->a[4816] = state(828);
+	v->a[4816] = state(765);
 	v->a[4817] = 1;
 	v->a[4818] = aux_sym_command_repeat1;
-	v->a[4819] = state(1314);
+	v->a[4819] = state(1110);
 	small_parse_table_241(v);
 }
 
@@ -41,13 +41,13 @@ void	small_parse_table_241(t_small_parse_table_array *v)
 {
 	v->a[4820] = 1;
 	v->a[4821] = sym_pipeline;
-	v->a[4822] = state(1331);
+	v->a[4822] = state(1188);
 	v->a[4823] = 1;
 	v->a[4824] = aux_sym_redirected_statement_repeat2;
-	v->a[4825] = state(2252);
+	v->a[4825] = state(2115);
 	v->a[4826] = 1;
 	v->a[4827] = sym__statement_not_pipeline;
-	v->a[4828] = state(2391);
+	v->a[4828] = state(2323);
 	v->a[4829] = 1;
 	v->a[4830] = sym__statements;
 	v->a[4831] = actions(11);
@@ -67,7 +67,7 @@ void	small_parse_table_242(t_small_parse_table_array *v)
 	v->a[4840] = 2;
 	v->a[4841] = sym_raw_string;
 	v->a[4842] = sym_number;
-	v->a[4843] = state(294);
+	v->a[4843] = state(299);
 	v->a[4844] = 5;
 	v->a[4845] = sym_arithmetic_expansion;
 	v->a[4846] = sym_string;
@@ -89,7 +89,7 @@ void	small_parse_table_242(t_small_parse_table_array *v)
 
 void	small_parse_table_243(t_small_parse_table_array *v)
 {
-	v->a[4860] = state(1188);
+	v->a[4860] = state(1072);
 	v->a[4861] = 12;
 	v->a[4862] = sym_redirected_statement;
 	v->a[4863] = sym_for_statement;
@@ -127,13 +127,13 @@ void	small_parse_table_244(t_small_parse_table_array *v)
 	v->a[4890] = actions(19);
 	v->a[4891] = 1;
 	v->a[4892] = anon_sym_LBRACE;
-	v->a[4893] = actions(45);
+	v->a[4893] = actions(59);
 	v->a[4894] = 1;
-	v->a[4895] = sym_word;
-	v->a[4896] = actions(53);
+	v->a[4895] = anon_sym_DOLLAR_LPAREN_LPAREN;
+	v->a[4896] = actions(61);
 	v->a[4897] = 1;
-	v->a[4898] = anon_sym_BANG;
-	v->a[4899] = actions(59);
+	v->a[4898] = anon_sym_DOLLAR;
+	v->a[4899] = actions(63);
 	small_parse_table_245(v);
 }
 

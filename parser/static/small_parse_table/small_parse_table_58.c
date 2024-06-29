@@ -15,10 +15,10 @@
 void	small_parse_table_290(t_small_parse_table_array *v)
 {
 	v->a[5800] = aux_sym_redirected_statement_repeat2;
-	v->a[5801] = state(2252);
+	v->a[5801] = state(2115);
 	v->a[5802] = 1;
 	v->a[5803] = sym__statement_not_pipeline;
-	v->a[5804] = state(2473);
+	v->a[5804] = state(2265);
 	v->a[5805] = 1;
 	v->a[5806] = sym__statements;
 	v->a[5807] = actions(11);
@@ -33,7 +33,7 @@ void	small_parse_table_290(t_small_parse_table_array *v)
 	v->a[5816] = 2;
 	v->a[5817] = sym_raw_string;
 	v->a[5818] = sym_number;
-	v->a[5819] = state(294);
+	v->a[5819] = state(299);
 	small_parse_table_291(v);
 }
 
@@ -55,7 +55,7 @@ void	small_parse_table_291(t_small_parse_table_array *v)
 	v->a[5833] = anon_sym_LT_AMP;
 	v->a[5834] = anon_sym_GT_AMP;
 	v->a[5835] = anon_sym_GT_PIPE;
-	v->a[5836] = state(1188);
+	v->a[5836] = state(1072);
 	v->a[5837] = 12;
 	v->a[5838] = sym_redirected_statement;
 	v->a[5839] = sym_for_statement;

@@ -96,7 +96,7 @@ bool	lex_normal_s194(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(407, lexer, s));
 	if ((s->lookahead != 0 && (s->lookahead > '&' && \
 	s->lookahead < ')') && s->lookahead != ';' && s->lookahead \
-	!= '<' && (s->lookahead > '{' && s->lookahead < '}')))
+	!= '<' && s->lookahead != '{' && s->lookahead != '|'))
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }

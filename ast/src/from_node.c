@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/29 16:14:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/29 23:18:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -447,24 +447,18 @@ void _append_redirection(t_ast_node node, t_ast_node redirection)
 		ast_free(redirection);
 }
 
-t_ast_terminator_kind _select_term(t_const_str input, t_usize term_start_byte, t_usize term_end_byte)
+t_ast_terminator_kind _select_term(t_parse_node node)
 {
-	char term_start;
-	char term_end;
+	t_symbol symbol;
 
-	term_end = '\0';
-	if (term_end_byte != term_start_byte)
-		term_end = input[term_end_byte];
-	term_start = input[term_start_byte];
-
-	if (term_start == '&' && term_end == '\0')
+	symbol = ts_node_grammar_symbol(node);
+	printf("term_symbol = %hu\n", symbol);
+	if (symbol == anon_sym_AMP)
 		return (AST_TERM_FORK);
-	if (term_start == ';' && term_end == '\0')
+	if (symbol == anon_sym_SEMI)
 		return (AST_TERM_SEMI);
-	if (term_start == ';' && term_end == ';')
+	if (symbol == anon_sym_SEMI_SEMI)
 		return (AST_TERM_DOUBLE_SEMI);
-	if (term_start == '\n')
-		return (AST_TERM_NEWLINE);
 	return (AST_TERM_NONE);
 }
 
@@ -477,6 +471,7 @@ t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out)
 t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -488,6 +483,10 @@ t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out
 t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 
@@ -501,11 +500,6 @@ t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str inp
 t_error build_sym_case_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_case_item(t_parse_node self, t_const_str input, t_ast_node *out);
 
-t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-
-t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_function_definition(t_parse_node self, t_const_str input, t_ast_node *out);
 
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -530,6 +524,117 @@ t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node
 
 #include <stdio.h>
 
+// t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out)
+// {
+// 	t_ast_node	 ret;
+// 	t_ast_node	 tmp;
+// 	t_usize		 i;
+// 	t_parse_node child;
+//
+// 	(void)(out);
+// 	(void)(input);
+// 	(void)(self);
+// 	if (out == NULL)
+// 		return (ERROR);
+// 	if (ts_node_grammar_symbol(self) != sym_if_statement)
+// 		return (ERROR);
+// 	ret = ast_alloc(AST_IF);
+// 	i = 0;
+// 	while (i < ts_node_child_count(self))
+// 	{
+// 		i++;
+// 	}
+// 	return (*out = ret, NO_ERROR);
+// }
+// t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out)
+// {
+// 	 t_ast_node	 ret;
+// 	 t_ast_node	 tmp;
+// 	 t_usize		 i;
+// 	 t_parse_node child;
+//
+// 	 (void)(out);
+// 	 (void)(input);
+// 	 (void)(self);
+// 	 if (out == NULL)
+// 	 	return (ERROR);
+// 	 if (ts_node_grammar_symbol(self) != sym_elif_clause)
+// 	 	return (ERROR);
+// 	 ret = ast_alloc(AST_ELIF);
+// 	 i = 0;
+// 	 while (i < ts_node_child_count(self))
+// 	 {
+// 	 	// if (a)
+// 	 	i++;
+// 	 }
+// 	 return (*out = ret, NO_ERROR);
+//
+// }
+// t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out)
+// {
+// 	t_ast_node	 ret;
+// 	t_ast_node	 tmp;
+// 	t_usize		 i;
+// 	t_parse_node child;
+//
+// 	(void)(out);
+// 	(void)(input);
+// 	(void)(self);
+// 	if (out == NULL)
+// 		return (ERROR);
+// 	if (ts_node_grammar_symbol(self) != sym_else_clause)
+// 		return (ERROR);
+// 	ret = ast_alloc(AST_ELSE);
+// 	i = 0;
+// 	while (i < ts_node_child_count(self))
+// 	{
+// 		i++;
+// 	}
+// 	return (*out = ret, NO_ERROR);
+// }
+
+t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node	 ret;
+	t_ast_node	 tmp;
+	t_usize		 i;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_for_statement)
+		return (ERROR);
+	ret = ast_alloc(AST_FOR);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ts_node_field_id_for_child(self, i) == field_variable)
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.for_.do_, tmp);
+		}
+		if (ts_node_field_id_for_child(self, i) == field_value)
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.for_.words, tmp);
+		}
+		if (ts_node_field_id_for_child(self, i) == field_body)
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.for_.do_, tmp);
+		}
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
 t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 
@@ -546,9 +651,11 @@ t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out
 		return (ERROR);
 	ret = ast_alloc(AST_PIPELINE);
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
-		if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ast_from_node(ts_node_child(self, i), input, &tmp))
 			return (ast_free(ret), ERROR);
 		vec_ast_push(&ret->data.pipeline.statements, tmp);
 		i++;
@@ -572,17 +679,16 @@ t_error build_sym_do_group(t_parse_node self, t_const_str input, t_ast_node *out
 		return (ERROR);
 	ret = ast_alloc(AST_COMPOUND_STATEMENT);
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.compound_statement.body.len != 0)
 		{
-			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
-
+			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.compound_statement.body.buffer[ret->data.compound_statement.body.len - 1], term);
 		}
 		else
 		{
-			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
 				return (ast_free(ret), ERROR);
 			vec_ast_push(&ret->data.compound_statement.body, tmp);
 		}
@@ -606,19 +712,20 @@ t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out
 	if (ts_node_grammar_symbol(self) != sym_subshell)
 		return (ERROR);
 	ret = ast_alloc(AST_SUBSHELL);
-	// ret->data.subshell.body
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
 		{
-			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
-
+			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
 		}
 		else
 		{
-			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+
+			if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+				continue;
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
 				return (ast_free(ret), ERROR);
 			vec_ast_push(&ret->data.subshell.body, tmp);
 		}
@@ -642,8 +749,6 @@ t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_no
 		return (ERROR);
 	if (ts_node_grammar_symbol(self) != sym_while_statement)
 		return (ERROR);
-	if (ts_node_named_child_count(self) != 1)
-		return (ERROR);
 	i = 0;
 	if (ts_node_grammar_symbol(ts_node_child(self, 0)) == anon_sym_until)
 		ret = ast_alloc(AST_UNTIL);
@@ -651,16 +756,18 @@ t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_no
 		ret = ast_alloc(AST_WHILE);
 	else
 		return (ERROR);
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
-		child = ts_node_named_child(self, i);
+		child = ts_node_child(self, i);
+		if (!ts_node_is_named(child) && (i++, true))
+			continue;
 		if (ast_from_node(child, input, &tmp))
 			return (ast_free(ret), ERROR);
 		if (ts_node_field_id_for_child(self, i) == field_stmt)
 			vec_ast_push(&ret->data.while_.condition, tmp);
 		if (ts_node_field_id_for_child(self, i) == field_terminator)
 		{
-			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.while_.condition.buffer[ret->data.while_.condition.len - 1], term);
 		}
 		if (ts_node_field_id_for_child(self, i) == field_body)
@@ -683,14 +790,16 @@ t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_a
 		return (ERROR);
 	if (ts_node_grammar_symbol(self) != sym_negated_command)
 		return (ERROR);
-	if (ts_node_named_child_count(self) != 1)
+	if (ts_node_child_count(self) != 1)
 		return (ERROR);
 	i = 0;
-	if (ast_from_node(ts_node_named_child(self, i++), input, &ret))
+	if (ast_from_node(ts_node_child(self, i++), input, &ret))
 		return (ERROR);
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
-		if (ast_from_node(ts_node_named_child(self, i++), input, &tmp))
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ast_from_node(ts_node_child(self, i++), input, &tmp))
 			return (ast_free(ret), ERROR);
 		_append_redirection(ret, tmp);
 	}
@@ -711,9 +820,9 @@ t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_no
 		return (ERROR);
 	if (ts_node_grammar_symbol(self) != sym_negated_command)
 		return (ERROR);
-	if (ts_node_named_child_count(self) != 1)
+	if (ts_node_child_count(self) != 1)
 		return (ERROR);
-	if (ast_from_node(ts_node_named_child(self, 0), input, &ret))
+	if (ast_from_node(ts_node_child(self, 1), input, &ret))
 		return (ERROR);
 	_add_negation(&ret);
 	return (*out = ret, NO_ERROR);
@@ -735,17 +844,19 @@ t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast
 		return (ERROR);
 	ret = ast_alloc(AST_COMPOUND_STATEMENT);
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.compound_statement.body.len != 0)
 		{
-			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+			term = _select_term(ts_node_child(self, i));
 
 			ast_set_term(&ret->data.compound_statement.body.buffer[ret->data.compound_statement.body.len - 1], term);
 		}
 		else
 		{
-			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+			if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+				continue;
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
 				return (ast_free(ret), ERROR);
 			vec_ast_push(&ret->data.compound_statement.body, tmp);
 		}
@@ -771,17 +882,17 @@ t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast
 // 	ret = ast_alloc(AST_SUBSHELL);
 // 	// ret->data.subshell.body
 // 	i = 0;
-// 	while (i < ts_node_named_child_count(self))
+// 	while (i < ts_node_child_count(self))
 // 	{
 // 		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
 // 		{
-// 			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+// 			term = _select_term(input, ts_node_start_byte(ts_node_child(self, i)), ts_node_end_byte(ts_node_child(self, i)));
 //
 // 			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
 // 		}
 // 		else
 // 		{
-// 			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+// 			if (ast_from_node(ts_node_child(self, i), input, &tmp))
 // 				return (ast_free(ret), ERROR);
 // 			vec_ast_push(&ret->data.subshell.body, tmp);
 // 		}
@@ -816,17 +927,17 @@ t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_as
 		return (ERROR);
 	ret = ast_alloc(AST_VARIABLE_ASSIGNMENT);
 	// temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
-	if (ts_node_named_child_count(self) >= 1)
+	if (ts_node_child_count(self) >= 2)
 	{
-		temp_ast = ts_node_named_child(self, 0);
+		temp_ast = ts_node_child(self, 0);
 		if (ts_node_grammar_symbol(temp_ast) != sym_variable_name)
 			return (ast_free(ret), ERROR);
 		ret->data.variable_assignment.name =
 			str_substring(input, ts_node_start_byte(temp_ast), ts_node_end_byte(temp_ast) - ts_node_start_byte(temp_ast));
 	}
-	if (ts_node_named_child_count(self) > 1)
+	if (ts_node_child_count(self) > 2)
 	{
-		if (ast_from_node(ts_node_named_child(self, 1), input, &ret->data.variable_assignment.value))
+		if (ast_from_node(ts_node_child(self, 2), input, &ret->data.variable_assignment.value))
 			return (ast_free(ret), ERROR);
 	}
 	return (*out = ret, NO_ERROR);
@@ -864,9 +975,11 @@ t_error build_sym_string(t_parse_node self, t_const_str input, t_ast_node *out)
 	ret = ast_alloc(AST_WORD);
 	ret->data.word.kind = AST_WORD_DOUBLE_QUOTE;
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
-		if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ast_from_node(ts_node_child(self, i), input, &temp))
 			return (ast_free(ret), ERROR);
 		vec_ast_push(&ret->data.word.inner, temp);
 		i++;
@@ -890,9 +1003,9 @@ t_error build_sym_concatenation(t_parse_node self, t_const_str input, t_ast_node
 	ret = ast_alloc(AST_WORD);
 	ret->data.word.kind = AST_WORD_NO_QUOTE;
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
-		if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+		if (ast_from_node(ts_node_child(self, i), input, &temp))
 			return (ast_free(ret), ERROR);
 		vec_ast_push(&ret->data.word.inner, temp);
 		i++;
@@ -949,18 +1062,18 @@ t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 		return (ERROR);
 	ret = ast_alloc(AST_PROGRAM);
 	i = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		temp = NULL;
-		if (i < ts_node_named_child_count(self) && ts_node_field_id_for_child(self, i) == field_stmt)
+		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_stmt)
 		{
-			if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+			if (ast_from_node(ts_node_child(self, i), input, &temp))
 				return (ast_free(ret), ERROR);
 			i++;
 		}
-		if (i < ts_node_named_child_count(self) && ts_node_field_id_for_child(self, i) == field_terminator)
+		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_terminator)
 		{
-			printf("%s\n", (ts_node_grammar_type(ts_node_named_child(self, i))));
+			printf("%s\n", (ts_node_grammar_type(ts_node_child(self, i))));
 			i++;
 		}
 		if (temp == NULL)
@@ -976,7 +1089,7 @@ t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node 
 		return (ERROR);
 	if (ts_node_grammar_symbol(self) != sym_command_name)
 		return (ERROR);
-	return (ast_from_node(ts_node_named_child(self, 0), input, out));
+	return (ast_from_node(ts_node_child(self, 0), input, out));
 }
 
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out)
@@ -1013,12 +1126,12 @@ t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out)
 	ret = ast_alloc(AST_COMMAND);
 	i = 0;
 	vec_idx = 0;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		temp = NULL;
 		if (ts_node_field_id_for_child(self, i) == field_name)
 			vec_idx++;
-		if (ast_from_node(ts_node_named_child(self, i), input, &temp))
+		if (ast_from_node(ts_node_child(self, i), input, &temp))
 			return (ast_free(ret), ERROR);
 		vec_ast_push(_vec_command(&ret->data.command, vec_idx), temp);
 		i++;
@@ -1039,16 +1152,16 @@ t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 	ret = ast_alloc(AST_LIST);
 	i = 0;
 	output = &ret->data.list.left;
-	while (i < ts_node_named_child_count(self))
+	while (i < ts_node_child_count(self))
 	{
 		if (ts_node_field_id_for_child(self, i) == field_cmd)
 		{
-			if (ast_from_node(ts_node_named_child(self, i), input, output))
+			if (ast_from_node(ts_node_child(self, i), input, output))
 				return (ast_free(ret), ERROR);
 		}
 		else if (ts_node_field_id_for_child(self, i) == field_op)
 		{
-			temp = ts_node_grammar_symbol(ts_node_named_child(self, i));
+			temp = ts_node_grammar_symbol(ts_node_child(self, i));
 			if (temp == anon_sym_PIPE_PIPE)
 				ret->data.list.op = AST_LIST_OR;
 			if (temp == anon_sym_AMP_AMP)

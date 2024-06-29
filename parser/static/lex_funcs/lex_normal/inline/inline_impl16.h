@@ -69,7 +69,7 @@ static inline bool	lex_normal_map480(t_lexer *lexer, \
 {
 	static uint32_t	map[] = {'\n', 310, '!', 286, '#', 411, \
 	'*', 371, '-', 367, '0', 474, '?', 378, '@', 472, '\\', \
-	12, '_', 477};
+	12, '_', 477, 'e', 439};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));

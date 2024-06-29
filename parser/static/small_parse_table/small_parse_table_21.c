@@ -58,7 +58,7 @@ void	small_parse_table_106(t_small_parse_table_array *v)
 	v->a[2136] = actions(75);
 	v->a[2137] = 1;
 	v->a[2138] = sym_variable_name;
-	v->a[2139] = actions(133);
+	v->a[2139] = actions(137);
 	small_parse_table_107(v);
 }
 
@@ -66,42 +66,42 @@ void	small_parse_table_107(t_small_parse_table_array *v)
 {
 	v->a[2140] = 1;
 	v->a[2141] = anon_sym_LF;
-	v->a[2142] = state(24);
+	v->a[2142] = state(13);
 	v->a[2143] = 1;
 	v->a[2144] = aux_sym__case_item_last_repeat2;
-	v->a[2145] = state(136);
+	v->a[2145] = state(130);
 	v->a[2146] = 1;
 	v->a[2147] = aux_sym__statements_repeat1;
-	v->a[2148] = state(187);
+	v->a[2148] = state(191);
 	v->a[2149] = 1;
 	v->a[2150] = sym_command_name;
-	v->a[2151] = state(275);
+	v->a[2151] = state(262);
 	v->a[2152] = 1;
 	v->a[2153] = sym_variable_assignment;
-	v->a[2154] = state(647);
+	v->a[2154] = state(624);
 	v->a[2155] = 1;
 	v->a[2156] = sym_concatenation;
-	v->a[2157] = state(736);
+	v->a[2157] = state(726);
 	v->a[2158] = 1;
-	v->a[2159] = aux_sym_command_repeat1;
+	v->a[2159] = sym_file_redirect;
 	small_parse_table_108(v);
 }
 
 void	small_parse_table_108(t_small_parse_table_array *v)
 {
-	v->a[2160] = state(738);
+	v->a[2160] = state(733);
 	v->a[2161] = 1;
-	v->a[2162] = sym_file_redirect;
-	v->a[2163] = state(1450);
+	v->a[2162] = aux_sym_command_repeat1;
+	v->a[2163] = state(1216);
 	v->a[2164] = 1;
 	v->a[2165] = sym_pipeline;
-	v->a[2166] = state(1460);
+	v->a[2166] = state(1307);
 	v->a[2167] = 1;
 	v->a[2168] = aux_sym_redirected_statement_repeat2;
-	v->a[2169] = state(2269);
+	v->a[2169] = state(2117);
 	v->a[2170] = 1;
 	v->a[2171] = sym__statement_not_pipeline;
-	v->a[2172] = state(2345);
+	v->a[2172] = state(2172);
 	v->a[2173] = 1;
 	v->a[2174] = sym__statements;
 	v->a[2175] = actions(11);
@@ -121,7 +121,7 @@ void	small_parse_table_109(t_small_parse_table_array *v)
 	v->a[2184] = 2;
 	v->a[2185] = sym_raw_string;
 	v->a[2186] = sym_number;
-	v->a[2187] = state(394);
+	v->a[2187] = state(420);
 	v->a[2188] = 5;
 	v->a[2189] = sym_arithmetic_expansion;
 	v->a[2190] = sym_string;

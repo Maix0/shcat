@@ -17,10 +17,10 @@ bool	lex_normal_s250(t_lexer *lexer, t_lexer_state *s)
 	if (s->eof)
 		return (lex_advance(255, lexer, s));
 	if (s->lookahead == '\r')
-		return (lex_skip(242, lexer, s));
+		return (lex_skip(240, lexer, s));
 	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
 	s->lookahead == ' '))
-		return (lex_skip(243, lexer, s));
+		return (lex_skip(241, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
@@ -29,10 +29,10 @@ bool	lex_normal_s251(t_lexer *lexer, t_lexer_state *s)
 	if (s->eof)
 		return (lex_advance(255, lexer, s));
 	if (s->lookahead == '\r')
-		return (lex_skip(245, lexer, s));
+		return (lex_skip(243, lexer, s));
 	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
 	s->lookahead == ' '))
-		return (lex_skip(244, lexer, s));
+		return (lex_skip(242, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 

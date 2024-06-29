@@ -53,7 +53,7 @@ bool	lex_normal_s447(t_lexer *lexer, t_lexer_state *s)
 		return (true);
 	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \
 	s->lookahead == ' '))
-		return (lex_skip(49, lexer, s));
+		return (lex_skip(48, lexer, s));
 	if (((s->lookahead >= '1' && s->lookahead <= '9') || \
 	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
 	(s->lookahead >= 'a' && s->lookahead <= 'z')))
@@ -97,7 +97,8 @@ bool	lex_normal_s449(t_lexer *lexer, t_lexer_state *s)
 	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
 	(s->lookahead >= 'a' && s->lookahead <= 'z')))
 		return (lex_advance(440, lexer, s));
-	if (s->lookahead != 0)
+	if ((s->lookahead != 0 && (s->lookahead > '&' && \
+	s->lookahead < '*')))
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }

@@ -1,6 +1,7 @@
 #include "./language.h"
 #include "./subtree.h"
 #include "./tree.h"
+#include "me/str/str.h"
 #include <stdbool.h>
 
 typedef struct NodeChildIterator
@@ -738,59 +739,6 @@ static inline const char *ts_node__field_name_from_language(TSNode self, uint32_
 	return NULL;
 }
 
-TSFieldId ts_node_field_id_for_child(TSNode self, uint32_t child_index)
-{
-	TSNode	  result = self;
-	bool	  did_descend = true;
-	TSFieldId inherited_field_name = 0;
-
-	while (did_descend)
-	{
-		did_descend = false;
-
-		TSNode			  child;
-		uint32_t		  index = 0;
-		NodeChildIterator iterator = ts_node_iterate_children(&result);
-		while (ts_node_child_iterator_next(&iterator, &child))
-		{
-			if (ts_node__is_relevant(child, true))
-			{
-				if (index == child_index)
-				{
-					if (ts_node_is_extra(child))
-					{
-						return 0;
-					}
-					TSFieldId field_name = ts_node__field_id_from_language(result, iterator.structural_child_index - 1);
-					if (field_name)
-						return field_name;
-					return inherited_field_name;
-				}
-				index++;
-			}
-			else
-			{
-				uint32_t grandchild_index = child_index - index;
-				uint32_t grandchild_count = ts_node__relevant_child_count(child, true);
-				if (grandchild_index < grandchild_count)
-				{
-					TSFieldId field_name = ts_node__field_id_from_language(result, iterator.structural_child_index - 1);
-					if (field_name)
-						inherited_field_name = field_name;
-
-					did_descend = true;
-					result = child;
-					child_index = grandchild_index;
-					break;
-				}
-				index += grandchild_count;
-			}
-		}
-	}
-
-	return 0;
-}
-
 const char *ts_node_field_name_for_child(TSNode self, uint32_t child_index)
 {
 	TSNode		result = self;
@@ -874,6 +822,17 @@ uint32_t ts_node_named_child_count(TSNode self)
 	{
 		return 0;
 	}
+}
+
+TSFieldId ts_node_field_id_for_child(TSNode self, uint32_t child_index)
+{
+	const char *field_name;
+
+	field_name = ts_node_field_name_for_child(self, child_index);
+	if (field_name != NULL)
+		return (ts_language_field_id_for_name(ts_node_language(self), field_name, str_len(field_name)));
+
+	return 0;
 }
 
 TSNode ts_node_next_sibling(TSNode self)

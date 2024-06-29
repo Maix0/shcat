@@ -47,7 +47,7 @@ module.exports = grammar({
 
   inline: $ => [
     $._statement,
-    $._terminator,
+    // $._terminator,
     $._literal,
     $._terminated_statement,
     $._primary_expression,
@@ -100,15 +100,15 @@ module.exports = grammar({
     _statements: $ => prec(1, seq(
       repeat(seq(
         field('stmt', $._statement),
-        field('terminator', alias($._terminator, $.terminator)),
+        field('terminator', $.terminator),
       )),
       field('stmt', $._statement),
-      field('terminator', optional(alias($._terminator, $.terminator))),
+      field('terminator', optional($.terminator)),
     )),
 
     _terminated_statement: $ => repeat1(seq(
       field('stmt', $._statement),
-      field('terminator', alias($._terminator, $.terminator))
+      field('terminator', $.terminator)
     )),
 
     // Statements
@@ -165,7 +165,7 @@ module.exports = grammar({
         'in',
         field('value', repeat1($._literal)),
       )),
-      $._terminator,
+      $.terminator,
       field('body', $.do_group),
     ),
 
@@ -206,9 +206,9 @@ module.exports = grammar({
     case_statement: $ => seq(
       'case',
       field('value', $._literal),
-      optional($._terminator),
+      optional($.terminator),
       'in',
-      optional($._terminator),
+      optional($.terminator),
       optional(seq(
         repeat(field('cases', $.case_item)),
         field('cases', alias($._case_item_last, $.case_item))
@@ -610,7 +610,7 @@ module.exports = grammar({
         '\\ ',
       )),
     )),
-    _terminator: _ => choice(';', ';;', /\n/, '&'),
+    terminator: _ => choice(';', ';;', /\n/, '&'),
   },
 });
 

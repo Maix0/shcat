@@ -49,7 +49,7 @@ bool	lex_normal_s211(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == ')')
 		return (lex_advance(277, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_skip(184, lexer, s));
+		return (lex_skip(185, lexer, s));
 	if (s->lookahead == '}')
 		return (lex_advance(281, lexer, s));
 	if (((s->lookahead >= '\t' && s->lookahead <= '\r') || \

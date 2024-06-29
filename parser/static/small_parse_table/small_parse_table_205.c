@@ -42,7 +42,7 @@ void	small_parse_table_1026(t_small_parse_table_array *v)
 	v->a[20520] = actions(441);
 	v->a[20521] = 1;
 	v->a[20522] = sym_variable_name;
-	v->a[20523] = actions(379);
+	v->a[20523] = actions(385);
 	v->a[20524] = 2;
 	v->a[20525] = sym_file_descriptor;
 	v->a[20526] = ts_builtin_sym_end;
@@ -66,7 +66,7 @@ void	small_parse_table_1027(t_small_parse_table_array *v)
 {
 	v->a[20540] = anon_sym_0;
 	v->a[20541] = anon_sym__;
-	v->a[20542] = actions(381);
+	v->a[20542] = actions(379);
 	v->a[20543] = 27;
 	v->a[20544] = anon_sym_PIPE;
 	v->a[20545] = anon_sym_SEMI_SEMI;
@@ -104,7 +104,7 @@ void	small_parse_table_1028(t_small_parse_table_array *v)
 	v->a[20572] = actions(3);
 	v->a[20573] = 1;
 	v->a[20574] = sym_comment;
-	v->a[20575] = actions(379);
+	v->a[20575] = actions(385);
 	v->a[20576] = 1;
 	v->a[20577] = sym_file_descriptor;
 	v->a[20578] = actions(447);
@@ -130,10 +130,10 @@ void	small_parse_table_1029(t_small_parse_table_array *v)
 	v->a[20593] = anon_sym_AT;
 	v->a[20594] = anon_sym_0;
 	v->a[20595] = anon_sym__;
-	v->a[20596] = actions(381);
+	v->a[20596] = actions(379);
 	v->a[20597] = 28;
-	v->a[20598] = anon_sym_esac;
-	v->a[20599] = anon_sym_PIPE;
+	v->a[20598] = anon_sym_PIPE;
+	v->a[20599] = anon_sym_RPAREN;
 	small_parse_table_1030(v);
 }
 

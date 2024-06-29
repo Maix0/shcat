@@ -77,7 +77,7 @@ bool	lex_normal_s208(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == ')')
 		return (lex_advance(277, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_skip(183, lexer, s));
+		return (lex_skip(184, lexer, s));
 	if (s->lookahead == '`')
 		return (lex_advance(430, lexer, s));
 	if (s->lookahead == '|')

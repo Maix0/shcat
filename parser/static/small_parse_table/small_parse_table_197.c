@@ -25,13 +25,13 @@ void	small_parse_table_985(t_small_parse_table_array *v)
 	v->a[19708] = actions(3);
 	v->a[19709] = 1;
 	v->a[19710] = sym_comment;
-	v->a[19711] = actions(91);
+	v->a[19711] = actions(89);
 	v->a[19712] = 1;
 	v->a[19713] = anon_sym_for;
-	v->a[19714] = actions(95);
+	v->a[19714] = actions(93);
 	v->a[19715] = 1;
 	v->a[19716] = anon_sym_if;
-	v->a[19717] = actions(99);
+	v->a[19717] = actions(97);
 	v->a[19718] = 1;
 	v->a[19719] = anon_sym_LPAREN;
 	small_parse_table_986(v);
@@ -71,19 +71,19 @@ void	small_parse_table_987(t_small_parse_table_array *v)
 	v->a[19744] = actions(377);
 	v->a[19745] = 1;
 	v->a[19746] = sym_variable_name;
-	v->a[19747] = state(182);
+	v->a[19747] = state(184);
 	v->a[19748] = 1;
 	v->a[19749] = sym_command_name;
-	v->a[19750] = state(621);
+	v->a[19750] = state(622);
 	v->a[19751] = 1;
 	v->a[19752] = sym_concatenation;
-	v->a[19753] = state(692);
+	v->a[19753] = state(727);
 	v->a[19754] = 1;
-	v->a[19755] = sym_file_redirect;
-	v->a[19756] = state(810);
+	v->a[19755] = aux_sym_command_repeat1;
+	v->a[19756] = state(744);
 	v->a[19757] = 1;
-	v->a[19758] = aux_sym_command_repeat1;
-	v->a[19759] = state(1337);
+	v->a[19758] = sym_file_redirect;
+	v->a[19759] = state(1249);
 	small_parse_table_988(v);
 }
 
@@ -91,10 +91,10 @@ void	small_parse_table_988(t_small_parse_table_array *v)
 {
 	v->a[19760] = 1;
 	v->a[19761] = aux_sym_redirected_statement_repeat2;
-	v->a[19762] = state(1339);
+	v->a[19762] = state(1290);
 	v->a[19763] = 1;
 	v->a[19764] = sym_variable_assignment;
-	v->a[19765] = actions(93);
+	v->a[19765] = actions(91);
 	v->a[19766] = 2;
 	v->a[19767] = anon_sym_while;
 	v->a[19768] = anon_sym_until;
@@ -107,7 +107,7 @@ void	small_parse_table_988(t_small_parse_table_array *v)
 	v->a[19775] = sym_raw_string;
 	v->a[19776] = sym_number;
 	v->a[19777] = sym_word;
-	v->a[19778] = state(282);
+	v->a[19778] = state(289);
 	v->a[19779] = 5;
 	small_parse_table_989(v);
 }
@@ -119,7 +119,7 @@ void	small_parse_table_989(t_small_parse_table_array *v)
 	v->a[19782] = sym_simple_expansion;
 	v->a[19783] = sym_expansion;
 	v->a[19784] = sym_command_substitution;
-	v->a[19785] = state(1512);
+	v->a[19785] = state(1384);
 	v->a[19786] = 7;
 	v->a[19787] = sym_for_statement;
 	v->a[19788] = sym_while_statement;

@@ -22,8 +22,7 @@ bool	lex_normal_s105(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(482, lexer, s));
 	if ((s->lookahead >= '0' && s->lookahead <= '9'))
 		return (lex_advance(407, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < ')')))
+	if (s->lookahead != 0)
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }
@@ -38,7 +37,8 @@ bool	lex_normal_s106(t_lexer *lexer, t_lexer_state *s)
 		return (lex_advance(483, lexer, s));
 	if ((s->lookahead >= '0' && s->lookahead <= '9'))
 		return (lex_advance(407, lexer, s));
-	if (s->lookahead != 0)
+	if ((s->lookahead != 0 && (s->lookahead > '&' && \
+	s->lookahead < ')')))
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }
@@ -56,7 +56,8 @@ bool	lex_normal_s107(t_lexer *lexer, t_lexer_state *s)
 	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
 	(s->lookahead >= 'a' && s->lookahead <= 'z')))
 		return (lex_advance(440, lexer, s));
-	if (s->lookahead != 0)
+	if ((s->lookahead != 0 && (s->lookahead > '&' && \
+	s->lookahead < '*')))
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }
@@ -88,8 +89,7 @@ bool	lex_normal_s109(t_lexer *lexer, t_lexer_state *s)
 	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
 	(s->lookahead >= 'a' && s->lookahead <= 'z')))
 		return (lex_advance(440, lexer, s));
-	if ((s->lookahead != 0 && (s->lookahead > '&' && \
-	s->lookahead < '*')))
+	if (s->lookahead != 0)
 		return (lex_advance(528, lexer, s));
 	return (lex_end_state(lexer, s));
 }

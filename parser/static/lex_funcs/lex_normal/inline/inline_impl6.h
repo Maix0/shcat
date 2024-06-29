@@ -25,7 +25,7 @@ static inline bool	lex_normal_map188(t_lexer *lexer, \
 	static uint32_t	map[] = {'!', 286, '"', 395, '#', 410, \
 	'$', 393, '&', 218, '\'', 219, '(', 271, '*', 371, '-', \
 	367, '0', 474, '<', 292, '>', 295, '?', 378, '@', 472, \
-	'\\', 39, '_', 477, '`', 430, '|', 276};
+	'\\', 42, '_', 477, '`', 430, '|', 276};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));

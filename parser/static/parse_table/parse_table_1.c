@@ -14,24 +14,24 @@
 
 void	parse_table_5(t_parse_table_array *v)
 {
-	v->a[1][sym_redirected_statement] = state(1210);
-	v->a[1][sym_for_statement] = state(1210);
-	v->a[1][sym_while_statement] = state(1210);
-	v->a[1][sym_if_statement] = state(1210);
-	v->a[1][sym_case_statement] = state(1210);
-	v->a[1][sym_function_definition] = state(1210);
-	v->a[1][sym_compound_statement] = state(1210);
-	v->a[1][sym_subshell] = state(1210);
-	v->a[1][sym_pipeline] = state(1421);
-	v->a[1][sym_list] = state(1210);
-	v->a[1][sym_negated_command] = state(1210);
-	v->a[1][sym_command] = state(1210);
-	v->a[1][sym_command_name] = state(185);
-	v->a[1][sym_variable_assignment] = state(259);
-	v->a[1][sym__variable_assignments] = state(1210);
-	v->a[1][sym_file_redirect] = state(760);
+	v->a[1][sym_redirected_statement] = state(1006);
+	v->a[1][sym_for_statement] = state(1006);
+	v->a[1][sym_while_statement] = state(1006);
+	v->a[1][sym_if_statement] = state(1006);
+	v->a[1][sym_case_statement] = state(1006);
+	v->a[1][sym_function_definition] = state(1006);
+	v->a[1][sym_compound_statement] = state(1006);
+	v->a[1][sym_subshell] = state(1006);
+	v->a[1][sym_pipeline] = state(1175);
+	v->a[1][sym_list] = state(1006);
+	v->a[1][sym_negated_command] = state(1006);
+	v->a[1][sym_command] = state(1006);
+	v->a[1][sym_command_name] = state(183);
+	v->a[1][sym_variable_assignment] = state(236);
+	v->a[1][sym__variable_assignments] = state(1006);
+	v->a[1][sym_file_redirect] = state(685);
 	v->a[1][sym_arithmetic_expansion] = state(291);
-	v->a[1][sym_concatenation] = state(639);
+	v->a[1][sym_concatenation] = state(636);
 	v->a[1][sym_string] = state(291);
 	v->a[1][sym_simple_expansion] = state(291);
 	parse_table_6(v);
@@ -41,9 +41,9 @@ void	parse_table_6(t_parse_table_array *v)
 {
 	v->a[1][sym_expansion] = state(291);
 	v->a[1][sym_command_substitution] = state(291);
-	v->a[1][aux_sym__statements_repeat1] = state(137);
-	v->a[1][aux_sym_redirected_statement_repeat2] = state(1419);
-	v->a[1][aux_sym_command_repeat1] = state(745);
+	v->a[1][aux_sym__statements_repeat1] = state(133);
+	v->a[1][aux_sym_redirected_statement_repeat2] = state(1219);
+	v->a[1][aux_sym_command_repeat1] = state(743);
 	v->a[1][ts_builtin_sym_end] = actions(5);
 	v->a[1][sym_word] = actions(7);
 	v->a[1][anon_sym_for] = actions(9);

@@ -27,21 +27,21 @@ bool	lex_normal_s90(t_lexer *lexer, t_lexer_state *s)
 bool	lex_normal_s91(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_skip(208, lexer, s));
+		return (lex_skip(67, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s92(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_skip(211, lexer, s));
+		return (lex_skip(208, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s93(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_skip(66, lexer, s));
+		return (lex_skip(211, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 

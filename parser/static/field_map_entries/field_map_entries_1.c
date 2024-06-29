@@ -30,21 +30,21 @@ void	field_map_entries_5(t_field_map_entries_array *v)
 	v->a[113] = fmap_entry(field_else, 4, false);
 	v->a[114] = fmap_entry(field_stmt, 1, true);
 	v->a[115] = fmap_entry(field_terminator, 1, true);
-	v->a[116] = fmap_entry(field_body, 4, true);
-	v->a[117] = fmap_entry(field_cases, 4, false);
-	v->a[118] = fmap_entry(field_value, 1, false);
-	v->a[119] = fmap_entry(field_value, 4, true);
+	v->a[116] = fmap_entry(field_body, 2, false);
+	v->a[117] = fmap_entry(field_stmt, 2, true);
+	v->a[118] = fmap_entry(field_terminator, 2, true);
+	v->a[119] = fmap_entry(field_value, 0, false);
 	field_map_entries_6(v);
 }
 
 void	field_map_entries_6(t_field_map_entries_array *v)
 {
-	v->a[120] = fmap_entry(field_body, 2, false);
-	v->a[121] = fmap_entry(field_stmt, 2, true);
-	v->a[122] = fmap_entry(field_terminator, 2, true);
-	v->a[123] = fmap_entry(field_value, 0, false);
-	v->a[124] = fmap_entry(field_value, 0, true);
-	v->a[125] = fmap_entry(field_value, 1, true);
+	v->a[120] = fmap_entry(field_value, 0, true);
+	v->a[121] = fmap_entry(field_value, 1, true);
+	v->a[122] = fmap_entry(field_body, 4, true);
+	v->a[123] = fmap_entry(field_cases, 4, false);
+	v->a[124] = fmap_entry(field_value, 1, false);
+	v->a[125] = fmap_entry(field_value, 4, true);
 	v->a[126] = fmap_entry(field_body, 4, true);
 	v->a[127] = fmap_entry(field_cases, 3, true);
 	v->a[128] = fmap_entry(field_cases, 4, false);
@@ -77,25 +77,25 @@ void	field_map_entries_7(t_field_map_entries_array *v)
 	v->a[150] = fmap_entry(field_stmt, 3, true);
 	v->a[151] = fmap_entry(field_terminator, 3, true);
 	v->a[152] = fmap_entry(field_value, 1, false);
-	v->a[153] = fmap_entry(field_body, 5, true);
-	v->a[154] = fmap_entry(field_cases, 4, true);
-	v->a[155] = fmap_entry(field_cases, 5, false);
-	v->a[156] = fmap_entry(field_value, 1, false);
-	v->a[157] = fmap_entry(field_value, 5, true);
-	v->a[158] = fmap_entry(field_body, 3, false);
-	v->a[159] = fmap_entry(field_stmt, 3, true);
+	v->a[153] = fmap_entry(field_body, 3, false);
+	v->a[154] = fmap_entry(field_stmt, 3, true);
+	v->a[155] = fmap_entry(field_terminator, 3, true);
+	v->a[156] = fmap_entry(field_value, 0, false);
+	v->a[157] = fmap_entry(field_body, 3, false);
+	v->a[158] = fmap_entry(field_stmt, 3, true);
+	v->a[159] = fmap_entry(field_terminator, 3, true);
 	field_map_entries_8(v);
 }
 
 void	field_map_entries_8(t_field_map_entries_array *v)
 {
-	v->a[160] = fmap_entry(field_terminator, 3, true);
-	v->a[161] = fmap_entry(field_value, 0, false);
-	v->a[162] = fmap_entry(field_body, 3, false);
-	v->a[163] = fmap_entry(field_stmt, 3, true);
-	v->a[164] = fmap_entry(field_terminator, 3, true);
-	v->a[165] = fmap_entry(field_value, 0, false);
-	v->a[166] = fmap_entry(field_value, 1, true);
+	v->a[160] = fmap_entry(field_value, 0, false);
+	v->a[161] = fmap_entry(field_value, 1, true);
+	v->a[162] = fmap_entry(field_body, 5, true);
+	v->a[163] = fmap_entry(field_cases, 4, true);
+	v->a[164] = fmap_entry(field_cases, 5, false);
+	v->a[165] = fmap_entry(field_value, 1, false);
+	v->a[166] = fmap_entry(field_value, 5, true);
 	v->a[167] = fmap_entry(field_body, 5, true);
 	v->a[168] = fmap_entry(field_cases, 5, false);
 	v->a[169] = fmap_entry(field_value, 1, false);

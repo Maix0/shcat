@@ -32,7 +32,7 @@ bool	lex_normal_s336(t_lexer *lexer, t_lexer_state *s)
 	if (s->lookahead == '\n')
 		return (lex_advance(336, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(75, lexer, s));
+		return (lex_advance(76, lexer, s));
 	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
 		return (lex_advance(498, lexer, s));
 	return (lex_end_state(lexer, s));

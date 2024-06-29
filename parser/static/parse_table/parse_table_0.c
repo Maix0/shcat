@@ -131,9 +131,9 @@ void	parse_table_4(t_parse_table_array *v)
 	v->a[0][sym__bare_dollar] = actions(1);
 	v->a[0][sym__immediate_double_hash] = actions(1);
 	v->a[0][sym___error_recovery] = actions(1);
-	v->a[1][sym_program] = state(2466);
-	v->a[1][sym__statements] = state(2465);
-	v->a[1][sym__statement_not_pipeline] = state(2257);
+	v->a[1][sym_program] = state(2331);
+	v->a[1][sym__statements] = state(2330);
+	v->a[1][sym__statement_not_pipeline] = state(2125);
 	parse_table_5(v);
 }
 

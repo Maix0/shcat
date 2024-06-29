@@ -15,12 +15,12 @@
 bool	lex_normal_s80(t_lexer *lexer, t_lexer_state *s)
 {
 	if (s->lookahead == '\n')
-		return (lex_advance(461, lexer, s));
+		return (lex_advance(460, lexer, s));
 	if (s->lookahead == '\r')
 		return (lex_advance(79, lexer, s));
 	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
 	s->lookahead == ' '))
-		return (lex_skip(125, lexer, s));
+		return (lex_skip(124, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
