@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/23 18:43:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/29 15:16:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 typedef struct s_non_terminal_alias_map_array
 {
-	uint16_t	a[9];
+	uint16_t	a[10];
 }	t_non_terminal_alias_map_array;
 
 #endif // TYPE_NON_TERMINAL_ALIAS_MAP_H

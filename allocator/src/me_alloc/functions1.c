@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:02:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/24 13:54:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/28 19:44:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,12 @@
 #include "aq/allocator.h"
 #include "aq/internal_vg_funcs.h"
 #include "aq/melloc_interal.h"
-#include "valgrind/valgrind.h"
 
 #include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
-#define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
 void *__libc_malloc(t_usize size);
 void *__libc_calloc(t_usize size, t_usize elem);
@@ -98,21 +95,18 @@ void merge_blocks(t_page *page)
 		did_merge = false;
 		while (cur != NULL && next != NULL)
 		{
-			(vg_mem_defined(cur, sizeof(*cur)),
-			 vg_mem_defined(next, sizeof(*next)));
+			(vg_mem_defined(cur, sizeof(*cur)), vg_mem_defined(next, sizeof(*next)));
 			if (!cur->used && !next->used)
 			{
 				did_merge = true;
 				cur->size += sizeof(*cur);
 				cur->size += next->size;
-				(vg_mem_no_access(cur, sizeof(*cur)),
-				 vg_mem_no_access(next, sizeof(*next)));
+				(vg_mem_no_access(cur, sizeof(*cur)), vg_mem_no_access(next, sizeof(*next)));
 				next = get_next_block(cur, false);
 			}
 			else
 			{
-				(vg_mem_no_access(cur, sizeof(*cur)),
-				 vg_mem_no_access(next, sizeof(*next)));
+				(vg_mem_no_access(cur, sizeof(*cur)), vg_mem_no_access(next, sizeof(*next)));
 				cur = next;
 				next = get_next_block(cur, false);
 			}
@@ -197,7 +191,7 @@ t_error alloc_new_page(struct s_allocator_melloc *alloc, t_usize page_size)
 
 	page_size = round_to_pow2(page_size, PAGE_POW_2);
 	if (alloc->list == NULL && alloc_page_list(&alloc->list))
-		return (eprintf("Oups\n"), ERROR);
+		return (ERROR);
 	list = alloc->list;
 	while (list)
 	{
@@ -243,8 +237,7 @@ void *m_malloc(struct s_allocator_melloc *self, t_usize size)
 	return (m_realloc(self, NULL, size));
 }
 
-void *m_alloc_array(struct s_allocator_melloc *self, t_usize size,
-					t_usize count)
+void *m_alloc_array(struct s_allocator_melloc *self, t_usize size, t_usize count)
 {
 	if (size != 0 && count > SIZE_MAX / size)
 		return (m_alloc_error(self, "Alloc array overflow"));
@@ -292,14 +285,12 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 		next = get_next_block(chunk, false);
 		vg_mem_defined(next, sizeof(*next));
 		vg_mem_defined(chunk, sizeof(*chunk));
-		if (next != NULL && !next->used &&
-			chunk->size + next->size + sizeof(*next) >= size)
+		if (next != NULL && !next->used && chunk->size + next->size + sizeof(*next) >= size)
 		{
 			old_size = chunk->size;
 			chunk->size += next->size + sizeof(*next);
 			vg_mem_undefined(next, next->size + sizeof(*next));
-			vg_block_resize((void *)chunk + sizeof(*chunk), old_size,
-							chunk->size);
+			vg_block_resize((void *)chunk + sizeof(*chunk), old_size, chunk->size);
 			vg_mem_no_access(chunk, sizeof(*chunk));
 			return (ptr);
 		}
@@ -316,8 +307,7 @@ void *m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 	}
 }
 
-void *m_realloc_array(struct s_allocator_melloc *self, void *ptr, t_usize size,
-					  t_usize count)
+void *m_realloc_array(struct s_allocator_melloc *self, void *ptr, t_usize size, t_usize count)
 {
 	if (size != 0 && count > SIZE_MAX / size)
 		return (m_alloc_error(self, "Realloc array overflow"));

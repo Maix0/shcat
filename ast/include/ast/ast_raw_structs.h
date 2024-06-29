@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/23 16:35:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/29 14:44:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ struct s_ast_command
 	t_vec_ast			  cmd_word;
 	t_vec_ast			  suffixes_redirections;
 	t_ast_terminator_kind term;
+	bool				  bang;
 };
 
 ///	If Statement
@@ -270,6 +271,7 @@ struct s_ast_subshell
 	t_vec_ast			  body;
 	t_ast_terminator_kind term;
 	t_vec_ast			  suffixes_redirections;
+	bool				  bang;
 };
 
 /// Brace block
@@ -281,6 +283,7 @@ struct s_ast_compound_statement
 	t_vec_ast			  body;
 	t_ast_terminator_kind term;
 	t_vec_ast			  suffixes_redirections;
+	bool				  bang;
 };
 
 /// Variable Assignment
@@ -291,6 +294,7 @@ struct s_ast_variable_assignment
 {
 	t_str	   name;
 	t_ast_node value;
+	bool	   bang;
 };
 
 /// File Redirection

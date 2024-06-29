@@ -66,7 +66,7 @@ module.exports = grammar({
     $.file_descriptor,
     $._empty_value,
     $._concat,
-    $.variable_name, // Variable name followed by an operator like '=' or '+='
+    $.variable_name,
     $.regex,
     $._expansion_word,
     $.extglob_pattern,
