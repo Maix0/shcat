@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/29 15:04:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/29 16:14:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,62 +386,17 @@ void ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	(void)(void_storage);
 }
 
-t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
-
-/* FUNCTION THAT ARE DONE */
-
-t_error build_sym__bare_dollar(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-
-/* FUNCTION THAT ARE NOT DONE */
-
-t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_case_item(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_case_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_do_group(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion_regex(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_extglob_pattern(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_file_descriptor(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_file_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_function_definition(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_heredoc_content(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_heredoc_end(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_heredoc_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_simple_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-
-#include <stdio.h>
+t_vec_ast *_vec_command(t_ast_command *val, t_usize i)
+{
+	if (i == 0)
+		return (&val->prefixes);
+	if (i == 1)
+		return (&val->cmd_word);
+	if (i == 2)
+		return (&val->suffixes_redirections);
+	me_abort("invalid index for i in _get_vec_command");
+	return (NULL);
+}
 
 void _add_negation(t_ast_node *node)
 {
@@ -457,6 +412,39 @@ void _add_negation(t_ast_node *node)
 		(*node)->data.compound_statement.bang = true;
 	if ((*node)->kind == AST_VARIABLE_ASSIGNMENT)
 		(*node)->data.variable_assignment.bang = true;
+}
+
+void _append_redirection(t_ast_node node, t_ast_node redirection)
+{
+	t_vec_ast *vec;
+
+	vec = NULL;
+	if (!(redirection->kind == AST_FILE_REDIRECTION || redirection->kind == AST_HEREDOC_REDIRECTION))
+		return (ast_free(redirection));
+	if (node->kind == AST_CASE)
+		vec = &node->data.case_.suffixes_redirections;
+	if (node->kind == AST_COMMAND)
+		vec = &node->data.command.suffixes_redirections;
+	if (node->kind == AST_COMPOUND_STATEMENT)
+		vec = &node->data.compound_statement.suffixes_redirections;
+	if (node->kind == AST_FOR)
+		vec = &node->data.for_.suffixes_redirections;
+	if (node->kind == AST_IF)
+		vec = &node->data.if_.suffixes_redirections;
+	if (node->kind == AST_LIST)
+		vec = &node->data.list.suffixes_redirections;
+	if (node->kind == AST_PIPELINE)
+		vec = &node->data.pipeline.suffixes_redirections;
+	if (node->kind == AST_SUBSHELL)
+		vec = &node->data.subshell.suffixes_redirections;
+	if (node->kind == AST_UNTIL)
+		vec = &node->data.until.suffixes_redirections;
+	if (node->kind == AST_WHILE)
+		vec = &node->data.while_.suffixes_redirections;
+	if (vec != NULL)
+		vec_ast_push(vec, redirection);
+	else
+		ast_free(redirection);
 }
 
 t_ast_terminator_kind _select_term(t_const_str input, t_usize term_start_byte, t_usize term_end_byte)
@@ -478,6 +466,235 @@ t_ast_terminator_kind _select_term(t_const_str input, t_usize term_start_byte, t
 	if (term_start == '\n')
 		return (AST_TERM_NEWLINE);
 	return (AST_TERM_NONE);
+}
+
+t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
+
+/* FUNCTION THAT ARE DONE */
+
+t_error build_sym__bare_dollar(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
+
+/* FUNCTION THAT ARE NOT DONE */
+
+t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_case_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_case_item(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_function_definition(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_expansion_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_expansion_regex(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_heredoc_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_file_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_extglob_pattern(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_file_descriptor(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
+
+t_error build_sym_simple_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_heredoc_content(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_heredoc_end(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node *out);
+
+#include <stdio.h>
+
+t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_pipeline)
+		return (ERROR);
+	ret = ast_alloc(AST_PIPELINE);
+	i = 0;
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+			return (ast_free(ret), ERROR);
+		vec_ast_push(&ret->data.pipeline.statements, tmp);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_do_group(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node			  ret;
+	t_ast_node			  tmp;
+	t_usize				  i;
+	t_ast_terminator_kind term;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_do_group)
+		return (ERROR);
+	ret = ast_alloc(AST_COMPOUND_STATEMENT);
+	i = 0;
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.compound_statement.body.len != 0)
+		{
+			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+
+			ast_set_term(&ret->data.compound_statement.body.buffer[ret->data.compound_statement.body.len - 1], term);
+		}
+		else
+		{
+			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.compound_statement.body, tmp);
+		}
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node			  ret;
+	t_ast_node			  tmp;
+	t_usize				  i;
+	t_ast_terminator_kind term;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_subshell)
+		return (ERROR);
+	ret = ast_alloc(AST_SUBSHELL);
+	// ret->data.subshell.body
+	i = 0;
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
+		{
+			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+
+			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
+		}
+		else
+		{
+			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.subshell.body, tmp);
+		}
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node			  ret;
+	t_ast_node			  tmp;
+	t_usize				  i;
+	t_parse_node		  child;
+	t_ast_terminator_kind term;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_while_statement)
+		return (ERROR);
+	if (ts_node_named_child_count(self) != 1)
+		return (ERROR);
+	i = 0;
+	if (ts_node_grammar_symbol(ts_node_child(self, 0)) == anon_sym_until)
+		ret = ast_alloc(AST_UNTIL);
+	else if (ts_node_grammar_symbol(ts_node_child(self, 0)) == anon_sym_while)
+		ret = ast_alloc(AST_WHILE);
+	else
+		return (ERROR);
+	while (i < ts_node_named_child_count(self))
+	{
+		child = ts_node_named_child(self, i);
+		if (ast_from_node(child, input, &tmp))
+			return (ast_free(ret), ERROR);
+		if (ts_node_field_id_for_child(self, i) == field_stmt)
+			vec_ast_push(&ret->data.while_.condition, tmp);
+		if (ts_node_field_id_for_child(self, i) == field_terminator)
+		{
+			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+			ast_set_term(&ret->data.while_.condition.buffer[ret->data.while_.condition.len - 1], term);
+		}
+		if (ts_node_field_id_for_child(self, i) == field_body)
+			vec_ast_push(&ret->data.while_.do_, tmp);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_grammar_symbol(self) != sym_negated_command)
+		return (ERROR);
+	if (ts_node_named_child_count(self) != 1)
+		return (ERROR);
+	i = 0;
+	if (ast_from_node(ts_node_named_child(self, i++), input, &ret))
+		return (ERROR);
+	while (i < ts_node_named_child_count(self))
+	{
+		if (ast_from_node(ts_node_named_child(self, i++), input, &tmp))
+			return (ast_free(ret), ERROR);
+		_append_redirection(ret, tmp);
+	}
+	return (*out = ret, NO_ERROR);
 }
 
 t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out)
@@ -537,41 +754,41 @@ t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast
 	return (*out = ret, NO_ERROR);
 }
 
-t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node			  ret;
-	t_ast_node			  tmp;
-	t_usize				  i;
-	t_ast_terminator_kind term;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_grammar_symbol(self) != sym_subshell)
-		return (ERROR);
-	ret = ast_alloc(AST_SUBSHELL);
-	// ret->data.subshell.body
-	i = 0;
-	while (i < ts_node_named_child_count(self))
-	{
-		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
-		{
-			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
-
-			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
-		}
-		else
-		{
-			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
-				return (ast_free(ret), ERROR);
-			vec_ast_push(&ret->data.subshell.body, tmp);
-		}
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
+// t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out)
+// {
+// 	t_ast_node			  ret;
+// 	t_ast_node			  tmp;
+// 	t_usize				  i;
+// 	t_ast_terminator_kind term;
+//
+// 	(void)(out);
+// 	(void)(input);
+// 	(void)(self);
+// 	if (out == NULL)
+// 		return (ERROR);
+// 	if (ts_node_grammar_symbol(self) != sym_subshell)
+// 		return (ERROR);
+// 	ret = ast_alloc(AST_SUBSHELL);
+// 	// ret->data.subshell.body
+// 	i = 0;
+// 	while (i < ts_node_named_child_count(self))
+// 	{
+// 		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
+// 		{
+// 			term = _select_term(input, ts_node_start_byte(ts_node_named_child(self, i)), ts_node_end_byte(ts_node_named_child(self, i)));
+//
+// 			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
+// 		}
+// 		else
+// 		{
+// 			if (ast_from_node(ts_node_named_child(self, i), input, &tmp))
+// 				return (ast_free(ret), ERROR);
+// 			vec_ast_push(&ret->data.subshell.body, tmp);
+// 		}
+// 		i++;
+// 	}
+// 	return (*out = ret, NO_ERROR);
+// }
 t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(out);
@@ -760,47 +977,6 @@ t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node 
 	if (ts_node_grammar_symbol(self) != sym_command_name)
 		return (ERROR);
 	return (ast_from_node(ts_node_named_child(self, 0), input, out));
-}
-
-t_vec_ast *_vec_command(t_ast_command *val, t_usize i)
-{
-	if (i == 0)
-		return (&val->prefixes);
-	if (i == 1)
-		return (&val->cmd_word);
-	if (i == 2)
-		return (&val->suffixes_redirections);
-	me_abort("invalid index for i in _get_vec_command");
-	return (NULL);
-}
-
-void _append_redirection(t_ast_node node, t_ast_node redirection)
-{
-	t_vec_ast *vec;
-
-	vec = NULL;
-	if (node->kind == AST_CASE)
-		vec = &node->data.case_.suffixes_redirections;
-	if (node->kind == AST_COMMAND)
-		vec = &node->data.command.suffixes_redirections;
-	if (node->kind == AST_COMPOUND_STATEMENT)
-		vec = &node->data.compound_statement.suffixes_redirections;
-	if (node->kind == AST_FOR)
-		vec = &node->data.for_.suffixes_redirections;
-	if (node->kind == AST_IF)
-		vec = &node->data.if_.suffixes_redirections;
-	if (node->kind == AST_LIST)
-		vec = &node->data.list.suffixes_redirections;
-	if (node->kind == AST_PIPELINE)
-		vec = &node->data.pipeline.suffixes_redirections;
-	if (node->kind == AST_SUBSHELL)
-		vec = &node->data.subshell.suffixes_redirections;
-	if (node->kind == AST_UNTIL)
-		vec = &node->data.until.suffixes_redirections;
-	if (node->kind == AST_WHILE)
-		vec = &node->data.while_.suffixes_redirections;
-	if (vec)
-		vec_ast_push(vec, redirection);
 }
 
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out)

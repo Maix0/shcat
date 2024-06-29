@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/19 13:38:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/29 16:08:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_node		 build_node(t_parse_node current, t_const_str input);
+t_node build_node(t_parse_node current, t_const_str input);
 
 t_language *tree_sitter_bash(void);
 
@@ -52,6 +52,7 @@ t_node build_node(t_parse_node curr, t_const_str input)
 	out.input = input;
 	out.single_str = NULL;
 	out.field_str = NULL;
+	out.field = 0;
 	out.childs_count = ts_node_named_child_count(curr);
 	if (out.childs_count == 0)
 		out.childs = NULL;

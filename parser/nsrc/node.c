@@ -710,7 +710,6 @@ recur:
 
 	return ts_node__null();
 }
-
 static inline TSFieldId ts_node__field_id_from_language(TSNode self, uint32_t structural_child_index)
 {
 	const TSFieldMapEntry *field_map, *field_map_end;
