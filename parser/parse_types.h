@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/29 21:11:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/30 18:03:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./nsrc/api.h"
-#include "./nsrc/lexer.h"
-#include "./nsrc/parser.h"
+#include "./nnsrc/api.h"
+#include "./nnsrc/lexer.h"
+#include "./nnsrc/parser.h"
 #include "me/types.h"
 
 #include "parser/types/types_lexer_state.h"

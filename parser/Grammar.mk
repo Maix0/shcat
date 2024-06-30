@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/30 17:56:39 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/30 18:15:08 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/inc
 
 include 		./Filelist.mk
 
-SRC_FILES		+= 
+#SRC_FILES		= parser 
 #scanner
 #parser
 

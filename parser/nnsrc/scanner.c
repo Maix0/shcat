@@ -250,6 +250,7 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
 		skip(lexer);
 
+
 	if (lexer->lookahead == '$')
 	{
 		advance(lexer);
