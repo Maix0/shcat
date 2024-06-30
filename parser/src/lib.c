@@ -12,6 +12,6 @@
 #include "./tree.c"
 #include "./tree_cursor.c"
 #include "./wasm_store.c"
-
+#include "./lex.c"
 #include "./create_language.c"
 #include "./scanner.c"

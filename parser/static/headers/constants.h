@@ -12,7 +12,6 @@
 
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
-
 # define LANGUAGE_VERSION 14
 # define STATE_COUNT 2340
 # define LARGE_STATE_COUNT 2

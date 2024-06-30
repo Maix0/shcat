@@ -14,8 +14,8 @@
 #include "../static/headers/symbols.h"
 #include "./parser.h"
 
-bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);
-bool	 lex_normal_main(TSLexer *lexer, TSStateId state);
+// bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);
+// bool	 lex_normal_main(TSLexer *lexer, TSStateId state);
 bool	 tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, const bool *ret);
 void	*create_external_scanner_states(void);
 void	*create_field_names(void);
@@ -33,6 +33,8 @@ void	*create_symbols_metadata(void);
 void	*create_parse_table(void);
 void	*create_small_parse_table(void);
 void	*create_small_parse_table_map(void);
+bool ts_lex_keywords(TSLexer *lexer, TSStateId state);
+bool ts_lex_keywords(TSLexer *lexer, TSStateId state);
 
 uint32_t tree_sitter_sh_external_scanner_serialize(void *ctx, char *s);
 void	 tree_sitter_sh_external_scanner_deserialize(void *ctx, const char *s, uint32_t val);
@@ -68,8 +70,8 @@ static void init_language(TSLanguage *language)
 	language->alias_sequences = create_alias_sequences();
 	language->lex_modes = create_lex_modes();
 	language->primary_state_ids = create_primary_state_ids();
-	language->lex_fn = lex_normal_main;
-	language->keyword_lex_fn = lex_keywords_main;
+	language->lex_fn = ts_lex;
+	language->keyword_lex_fn = ts_lex_keywords;
 	language->keyword_capture_token = sym_word;
 	language->external_scanner = init_scanner();
 }

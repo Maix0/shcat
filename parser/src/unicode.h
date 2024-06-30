@@ -26,20 +26,18 @@ static inline uint32_t ts_decode_ascii(const uint8_t *string, uint32_t length, i
 
 static inline uint32_t ts_decode_utf8(const uint8_t *string, uint32_t length, int32_t *code_point)
 {
-	return (ts_decode_ascii(string, length, code_point));
-	/*
+	 return (ts_decode_ascii(string, length, code_point));
+	 /*
 	uint32_t i = 0;
 	U8_NEXT(string, i, length, *code_point);
-	printf("[UTF8]read %i bytes\n", i);
 	return i;
-	*/
+	 */
 }
 
 static inline uint32_t ts_decode_utf16(const uint8_t *string, uint32_t length, int32_t *code_point)
 {
 	uint32_t i = 0;
 	U16_NEXT(((uint16_t *)string), i, length, *code_point);
-	printf("[UTF16]read %i bytes\n", i);
 	return i * 2;
 }
 
