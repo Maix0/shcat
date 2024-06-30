@@ -6,24 +6,30 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/06 23:17:06 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/30 17:56:39 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ANAME			= 	gmr
 
 BUILD_DIR		=	../build
-SRC_DIR			=   ./static
+SRC_DIR			=	./static
+#../tree-sitter-sh/src
+#./static
 
 BONUS_FLAGS		=
 NAME			=	lib$(ANAME).a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
-CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include
+CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -I../tree-sitter-sh/src
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
 include 		./Filelist.mk
+
+SRC_FILES		+= 
+#scanner
+#parser
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
 OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES)))

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/21 13:53:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/06/30 16:44:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,14 +139,14 @@ void ft_take_args(t_utils *shcat)
 	}
 }
 
-t_language *tree_sitter_bash(void);
+t_language *tree_sitter_sh(void);
 
 t_parser create_myparser(void)
 {
 	t_language	   *lang;
 	t_first_parser *parser;
 
-	lang = tree_sitter_bash();
+	lang = tree_sitter_sh();
 	parser = ts_parser_new();
 	ts_parser_set_language(parser, lang);
 	return ((t_parser){.parser = parser});

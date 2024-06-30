@@ -6,14 +6,14 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/24 00:37:07 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/06/30 16:23:47 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ANAME			= 	parser
 
 BUILD_DIR		=	../build
-SRC_DIR			=   ./nsrc
+SRC_DIR			=   ./nnsrc
 GEN_DIR 		=   ./generic
 
 BONUS_FLAGS		=
@@ -21,7 +21,7 @@ NAME			=	lib$(ANAME).a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
-CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -g3
+CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -g3 -I$(SRC_DIR)
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
 SRC_FILES		=	lib
