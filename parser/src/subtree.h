@@ -3,7 +3,6 @@
 
 #include "./array.h"
 #include "./error_costs.h"
-#include "./host.h"
 #include "./length.h"
 #include "./parser.h"
 #include "api.h"
@@ -11,6 +10,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define TS_BIG_ENDIAN 0
+#define TS_PTR_SIZE 64
 #define TS_TREE_STATE_NONE USHRT_MAX
 #define NULL_SUBTREE ((Subtree){.ptr = NULL})
 

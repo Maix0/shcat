@@ -1,6 +1,7 @@
 #include "./language.h"
-#include "api.h"
+#include "./api.h"
 #include <string.h>
+#include <assert.h>
 
 const TSLanguage *ts_language_copy(const TSLanguage *self) {
   return self;
@@ -169,47 +170,47 @@ TSFieldId ts_language_field_id_for_name(
   return 0;
 }
 
-TSLookaheadIterator *ts_lookahead_iterator_new(const TSLanguage *self, TSStateId state) {
-  if (state >= self->state_count) return NULL;
-  LookaheadIterator *iterator = ts_malloc(sizeof(LookaheadIterator));
-  *iterator = ts_language_lookaheads(self, state);
-  return (TSLookaheadIterator *)iterator;
-}
+// TSLookaheadIterator *ts_lookahead_iterator_new(const TSLanguage *self, TSStateId state) {
+//   if (state >= self->state_count) return NULL;
+//   LookaheadIterator *iterator = mem_alloc(sizeof(LookaheadIterator));
+//   *iterator = ts_language_lookaheads(self, state);
+//   return (TSLookaheadIterator *)iterator;
+// }
 
-void ts_lookahead_iterator_delete(TSLookaheadIterator *self) {
-  ts_free(self);
-}
+// void ts_lookahead_iterator_delete(TSLookaheadIterator *self) {
+//   mem_free(self);
+// }
 
-bool ts_lookahead_iterator_reset_state(TSLookaheadIterator * self, TSStateId state) {
-  LookaheadIterator *iterator = (LookaheadIterator *)self;
-  if (state >= iterator->language->state_count) return false;
-  *iterator = ts_language_lookaheads(iterator->language, state);
-  return true;
-}
+// bool ts_lookahead_iterator_reset_state(TSLookaheadIterator * self, TSStateId state) {
+//   LookaheadIterator *iterator = (LookaheadIterator *)self;
+//   if (state >= iterator->language->state_count) return false;
+//   *iterator = ts_language_lookaheads(iterator->language, state);
+//   return true;
+// }
 
-const TSLanguage *ts_lookahead_iterator_language(const TSLookaheadIterator *self) {
-  const LookaheadIterator *iterator = (const LookaheadIterator *)self;
-  return iterator->language;
-}
+// const TSLanguage *ts_lookahead_iterator_language(const TSLookaheadIterator *self) {
+//   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+//   return iterator->language;
+// }
 
-bool ts_lookahead_iterator_reset(TSLookaheadIterator *self, const TSLanguage *language, TSStateId state) {
-  if (state >= language->state_count) return false;
-  LookaheadIterator *iterator = (LookaheadIterator *)self;
-  *iterator = ts_language_lookaheads(language, state);
-  return true;
-}
+// bool ts_lookahead_iterator_reset(TSLookaheadIterator *self, const TSLanguage *language, TSStateId state) {
+//   if (state >= language->state_count) return false;
+//   LookaheadIterator *iterator = (LookaheadIterator *)self;
+//   *iterator = ts_language_lookaheads(language, state);
+//   return true;
+// }
 
-bool ts_lookahead_iterator_next(TSLookaheadIterator *self) {
-  LookaheadIterator *iterator = (LookaheadIterator *)self;
-  return ts_lookahead_iterator__next(iterator);
-}
+// bool ts_lookahead_iterator_next(TSLookaheadIterator *self) {
+//   LookaheadIterator *iterator = (LookaheadIterator *)self;
+//   return ts_lookahead_iterator__next(iterator);
+// }
 
-TSSymbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self) {
-  const LookaheadIterator *iterator = (const LookaheadIterator *)self;
-  return iterator->symbol;
-}
+// TSSymbol ts_lookahead_iterator_current_symbol(const TSLookaheadIterator *self) {
+//   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+//   return iterator->symbol;
+// }
 
-const char *ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
-  const LookaheadIterator *iterator = (const LookaheadIterator *)self;
-  return ts_language_symbol_name(iterator->language, iterator->symbol);
-}
+// const char *ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
+//   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
+//   return ts_language_symbol_name(iterator->language, iterator->symbol);
+// }

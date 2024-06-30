@@ -1,4 +1,5 @@
-#include "./alloc.h"
+
+#include "me/mem/mem.h"
 #include "./language.h"
 #include "./subtree.h"
 #include "./array.h"
@@ -112,7 +113,7 @@ recur:
   if (pool->size < MAX_NODE_POOL_SIZE) {
     array_push(pool, self);
   } else {
-    ts_free(self);
+    mem_free(self);
   }
 
   if (first_predecessor) {
@@ -144,7 +145,7 @@ static StackNode *stack_node_new(
 ) {
   StackNode *node = pool->size > 0
     ? array_pop(pool)
-    : ts_malloc(sizeof(StackNode));
+    : mem_alloc(sizeof(StackNode));
   *node = (StackNode) {
     .ref_count = 1,
     .link_count = 0,
@@ -277,7 +278,7 @@ static void stack_head_delete(
     }
     if (self->summary) {
       array_delete(self->summary);
-      ts_free(self->summary);
+      mem_free(self->summary);
     }
     stack_node_release(self->node, pool, subtree_pool);
   }
@@ -419,7 +420,7 @@ static StackSliceArray stack__iter(
 }
 
 Stack *ts_stack_new(SubtreePool *subtree_pool) {
-  Stack *self = ts_calloc(1, sizeof(Stack));
+  Stack *self = mem_alloc_array(1, sizeof(Stack));
 
   array_init(&self->heads);
   array_init(&self->slices);
@@ -449,11 +450,11 @@ void ts_stack_delete(Stack *self) {
   array_clear(&self->heads);
   if (self->node_pool.contents) {
     for (uint32_t i = 0; i < self->node_pool.size; i++)
-      ts_free(self->node_pool.contents[i]);
+      mem_free(self->node_pool.contents[i]);
     array_delete(&self->node_pool);
   }
   array_delete(&self->heads);
-  ts_free(self);
+  mem_free(self);
 }
 
 uint32_t ts_stack_version_count(const Stack *self) {
@@ -611,7 +612,7 @@ forceinline StackAction summarize_stack_callback(void *payload, const StackItera
 
 void ts_stack_record_summary(Stack *self, StackVersion version, unsigned max_depth) {
   SummarizeStackSession session = {
-    .summary = ts_malloc(sizeof(StackSummary)),
+    .summary = mem_alloc(sizeof(StackSummary)),
     .max_depth = max_depth
   };
   array_init(session.summary);
@@ -619,7 +620,7 @@ void ts_stack_record_summary(Stack *self, StackVersion version, unsigned max_dep
   StackHead *head = &self->heads.contents[version];
   if (head->summary) {
     array_delete(head->summary);
-    ts_free(head->summary);
+    mem_free(head->summary);
   }
   head->summary = session.summary;
 }
@@ -764,136 +765,136 @@ void ts_stack_clear(Stack *self) {
   }));
 }
 
-bool ts_stack_print_dot_graph(Stack *self, const TSLanguage *language, FILE *f) {
-  array_reserve(&self->iterators, 32);
-  if (!f) f = stderr;
+// bool ts_stack_print_dot_graph(Stack *self, const TSLanguage *language, FILE *f) {
+//   array_reserve(&self->iterators, 32);
+//   if (!f) f = stderr;
 
-  fprintf(f, "digraph stack {\n");
-  fprintf(f, "rankdir=\"RL\";\n");
-  fprintf(f, "edge [arrowhead=none]\n");
+//   fprintf(f, "digraph stack {\n");
+//   fprintf(f, "rankdir=\"RL\";\n");
+//   fprintf(f, "edge [arrowhead=none]\n");
 
-  Array(StackNode *) visited_nodes = array_new();
+//   Array(StackNode *) visited_nodes = array_new();
 
-  array_clear(&self->iterators);
-  for (uint32_t i = 0; i < self->heads.size; i++) {
-    StackHead *head = &self->heads.contents[i];
-    if (head->status == StackStatusHalted) continue;
+//   array_clear(&self->iterators);
+//   for (uint32_t i = 0; i < self->heads.size; i++) {
+//     StackHead *head = &self->heads.contents[i];
+//     if (head->status == StackStatusHalted) continue;
 
-    fprintf(f, "node_head_%u [shape=none, label=\"\"]\n", i);
-    fprintf(f, "node_head_%u -> node_%p [", i, (void *)head->node);
+//     fprintf(f, "node_head_%u [shape=none, label=\"\"]\n", i);
+//     fprintf(f, "node_head_%u -> node_%p [", i, (void *)head->node);
 
-    if (head->status == StackStatusPaused) {
-      fprintf(f, "color=red ");
-    }
-    fprintf(f,
-      "label=%u, fontcolor=blue, weight=10000, labeltooltip=\"node_count: %u\nerror_cost: %u",
-      i,
-      ts_stack_node_count_since_error(self, i),
-      ts_stack_error_cost(self, i)
-    );
+//     if (head->status == StackStatusPaused) {
+//       fprintf(f, "color=red ");
+//     }
+//     fprintf(f,
+//       "label=%u, fontcolor=blue, weight=10000, labeltooltip=\"node_count: %u\nerror_cost: %u",
+//       i,
+//       ts_stack_node_count_since_error(self, i),
+//       ts_stack_error_cost(self, i)
+//     );
 
-    if (head->summary) {
-      fprintf(f, "\nsummary:");
-      for (uint32_t j = 0; j < head->summary->size; j++) fprintf(f, " %u", head->summary->contents[j].state);
-    }
+//     if (head->summary) {
+//       fprintf(f, "\nsummary:");
+//       for (uint32_t j = 0; j < head->summary->size; j++) fprintf(f, " %u", head->summary->contents[j].state);
+//     }
 
-    if (head->last_external_token.ptr) {
-      const ExternalScannerState *state = &head->last_external_token.ptr->external_scanner_state;
-      const char *data = ts_external_scanner_state_data(state);
-      fprintf(f, "\nexternal_scanner_state:");
-      for (uint32_t j = 0; j < state->length; j++) fprintf(f, " %2X", data[j]);
-    }
+//     if (head->last_external_token.ptr) {
+//       const ExternalScannerState *state = &head->last_external_token.ptr->external_scanner_state;
+//       const char *data = ts_external_scanner_state_data(state);
+//       fprintf(f, "\nexternal_scanner_state:");
+//       for (uint32_t j = 0; j < state->length; j++) fprintf(f, " %2X", data[j]);
+//     }
 
-    fprintf(f, "\"]\n");
-    array_push(&self->iterators, ((StackIterator) {
-      .node = head->node
-    }));
-  }
+//     fprintf(f, "\"]\n");
+//     array_push(&self->iterators, ((StackIterator) {
+//       .node = head->node
+//     }));
+//   }
 
-  bool all_iterators_done = false;
-  while (!all_iterators_done) {
-    all_iterators_done = true;
+//   bool all_iterators_done = false;
+//   while (!all_iterators_done) {
+//     all_iterators_done = true;
 
-    for (uint32_t i = 0; i < self->iterators.size; i++) {
-      StackIterator iterator = self->iterators.contents[i];
-      StackNode *node = iterator.node;
+//     for (uint32_t i = 0; i < self->iterators.size; i++) {
+//       StackIterator iterator = self->iterators.contents[i];
+//       StackNode *node = iterator.node;
 
-      for (uint32_t j = 0; j < visited_nodes.size; j++) {
-        if (visited_nodes.contents[j] == node) {
-          node = NULL;
-          break;
-        }
-      }
+//       for (uint32_t j = 0; j < visited_nodes.size; j++) {
+//         if (visited_nodes.contents[j] == node) {
+//           node = NULL;
+//           break;
+//         }
+//       }
 
-      if (!node) continue;
-      all_iterators_done = false;
+//       if (!node) continue;
+//       all_iterators_done = false;
 
-      fprintf(f, "node_%p [", (void *)node);
-      if (node->state == ERROR_STATE) {
-        fprintf(f, "label=\"?\"");
-      } else if (
-        node->link_count == 1 &&
-        node->links[0].subtree.ptr &&
-        ts_subtree_extra(node->links[0].subtree)
-      ) {
-        fprintf(f, "shape=point margin=0 label=\"\"");
-      } else {
-        fprintf(f, "label=\"%d\"", node->state);
-      }
+//       fprintf(f, "node_%p [", (void *)node);
+//       if (node->state == ERROR_STATE) {
+//         fprintf(f, "label=\"?\"");
+//       } else if (
+//         node->link_count == 1 &&
+//         node->links[0].subtree.ptr &&
+//         ts_subtree_extra(node->links[0].subtree)
+//       ) {
+//         fprintf(f, "shape=point margin=0 label=\"\"");
+//       } else {
+//         fprintf(f, "label=\"%d\"", node->state);
+//       }
 
-      fprintf(
-        f,
-        " tooltip=\"position: %u,%u\nnode_count:%u\nerror_cost: %u\ndynamic_precedence: %d\"];\n",
-        node->position.extent.row + 1,
-        node->position.extent.column,
-        node->node_count,
-        node->error_cost,
-        node->dynamic_precedence
-      );
+//       fprintf(
+//         f,
+//         " tooltip=\"position: %u,%u\nnode_count:%u\nerror_cost: %u\ndynamic_precedence: %d\"];\n",
+//         node->position.extent.row + 1,
+//         node->position.extent.column,
+//         node->node_count,
+//         node->error_cost,
+//         node->dynamic_precedence
+//       );
 
-      for (int j = 0; j < node->link_count; j++) {
-        StackLink link = node->links[j];
-        fprintf(f, "node_%p -> node_%p [", (void *)node, (void *)link.node);
-        if (link.is_pending) fprintf(f, "style=dashed ");
-        if (link.subtree.ptr && ts_subtree_extra(link.subtree)) fprintf(f, "fontcolor=gray ");
+//       for (int j = 0; j < node->link_count; j++) {
+//         StackLink link = node->links[j];
+//         fprintf(f, "node_%p -> node_%p [", (void *)node, (void *)link.node);
+//         if (link.is_pending) fprintf(f, "style=dashed ");
+//         if (link.subtree.ptr && ts_subtree_extra(link.subtree)) fprintf(f, "fontcolor=gray ");
 
-        if (!link.subtree.ptr) {
-          fprintf(f, "color=red");
-        } else {
-          fprintf(f, "label=\"");
-          bool quoted = ts_subtree_visible(link.subtree) && !ts_subtree_named(link.subtree);
-          if (quoted) fprintf(f, "'");
-          ts_language_write_symbol_as_dot_string(language, f, ts_subtree_symbol(link.subtree));
-          if (quoted) fprintf(f, "'");
-          fprintf(f, "\"");
-          fprintf(
-            f,
-            "labeltooltip=\"error_cost: %u\ndynamic_precedence: %" PRId32 "\"",
-            ts_subtree_error_cost(link.subtree),
-            ts_subtree_dynamic_precedence(link.subtree)
-          );
-        }
+//         if (!link.subtree.ptr) {
+//           fprintf(f, "color=red");
+//         } else {
+//           fprintf(f, "label=\"");
+//           bool quoted = ts_subtree_visible(link.subtree) && !ts_subtree_named(link.subtree);
+//           if (quoted) fprintf(f, "'");
+//           ts_language_write_symbol_as_dot_string(language, f, ts_subtree_symbol(link.subtree));
+//           if (quoted) fprintf(f, "'");
+//           fprintf(f, "\"");
+//           fprintf(
+//             f,
+//             "labeltooltip=\"error_cost: %u\ndynamic_precedence: %" PRId32 "\"",
+//             ts_subtree_error_cost(link.subtree),
+//             ts_subtree_dynamic_precedence(link.subtree)
+//           );
+//         }
 
-        fprintf(f, "];\n");
+//         fprintf(f, "];\n");
 
-        StackIterator *next_iterator;
-        if (j == 0) {
-          next_iterator = &self->iterators.contents[i];
-        } else {
-          array_push(&self->iterators, iterator);
-          next_iterator = array_back(&self->iterators);
-        }
-        next_iterator->node = link.node;
-      }
+//         StackIterator *next_iterator;
+//         if (j == 0) {
+//           next_iterator = &self->iterators.contents[i];
+//         } else {
+//           array_push(&self->iterators, iterator);
+//           next_iterator = array_back(&self->iterators);
+//         }
+//         next_iterator->node = link.node;
+//       }
 
-      array_push(&visited_nodes, node);
-    }
-  }
+//       array_push(&visited_nodes, node);
+//     }
+//   }
 
-  fprintf(f, "}\n");
+//   fprintf(f, "}\n");
 
-  array_delete(&visited_nodes);
-  return true;
-}
+//   array_delete(&visited_nodes);
+//   return true;
+// }
 
 #undef forceinline

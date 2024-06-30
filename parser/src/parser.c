@@ -1,9 +1,9 @@
 #define _POSIX_C_SOURCE 200112L
 
-#include "./alloc.h"
 #include "./array.h"
-#include "./atomic.h"
-#include "./clock.h"
+#include "me/mem/mem.h"
+// #include "./atomic.h"
+// #include "./clock.h"
 #include "./error_costs.h"
 #include "./language.h"
 #include "./length.h"
@@ -21,69 +21,10 @@
 #include <stdio.h>
 #include <time.h>
 
-#define LOG(...)                                                                                                                           \
-	if (self->lexer.logger.log || self->dot_graph_file)                                                                                    \
-	{                                                                                                                                      \
-		snprintf(self->lexer.debug_buffer, TREE_SITTER_SERIALIZATION_BUFFER_SIZE, __VA_ARGS__);                                            \
-		ts_parser__log(self);                                                                                                              \
-	}
-
-#define LOG_LOOKAHEAD(symbol_name, size)                                                                                                   \
-	if (self->lexer.logger.log || self->dot_graph_file)                                                                                    \
-	{                                                                                                                                      \
-		char	   *buf = self->lexer.debug_buffer;                                                                                        \
-		const char *symbol = symbol_name;                                                                                                  \
-		int			off = snprintf(buf, TREE_SITTER_SERIALIZATION_BUFFER_SIZE, "lexed_lookahead sym:");                                    \
-		for (int i = 0; symbol[i] != '\0' && off < TREE_SITTER_SERIALIZATION_BUFFER_SIZE; i++)                                             \
-		{                                                                                                                                  \
-			switch (symbol[i])                                                                                                             \
-			{                                                                                                                              \
-			case '\t':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = 't';                                                                                                          \
-				break;                                                                                                                     \
-			case '\n':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = 'n';                                                                                                          \
-				break;                                                                                                                     \
-			case '\v':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = 'v';                                                                                                          \
-				break;                                                                                                                     \
-			case '\f':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = 'f';                                                                                                          \
-				break;                                                                                                                     \
-			case '\r':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = 'r';                                                                                                          \
-				break;                                                                                                                     \
-			case '\\':                                                                                                                     \
-				buf[off++] = '\\';                                                                                                         \
-				buf[off++] = '\\';                                                                                                         \
-				break;                                                                                                                     \
-			default:                                                                                                                       \
-				buf[off++] = symbol[i];                                                                                                    \
-				break;                                                                                                                     \
-			}                                                                                                                              \
-		}                                                                                                                                  \
-		snprintf(buf + off, TREE_SITTER_SERIALIZATION_BUFFER_SIZE - off, ", size:%u", size);                                               \
-		ts_parser__log(self);                                                                                                              \
-	}
-
-#define LOG_STACK()                                                                                                                        \
-	if (self->dot_graph_file)                                                                                                              \
-	{                                                                                                                                      \
-		ts_stack_print_dot_graph(self->stack, self->language, self->dot_graph_file);                                                       \
-		fputs("\n\n", self->dot_graph_file);                                                                                               \
-	}
-
-#define LOG_TREE(tree)                                                                                                                     \
-	if (self->dot_graph_file)                                                                                                              \
-	{                                                                                                                                      \
-		ts_subtree_print_dot_graph(tree, self->language, self->dot_graph_file);                                                            \
-		fputs("\n", self->dot_graph_file);                                                                                                 \
-	}
+#define LOG(...)
+#define LOG_LOOKAHEAD(...)
+#define LOG_STACK(...)
+#define LOG_TREE(...)
 
 #define SYM_NAME(symbol) ts_language_symbol_name(self->language, symbol)
 
@@ -116,9 +57,6 @@ struct TSParser
 	TokenCache			   token_cache;
 	ReusableNode		   reusable_node;
 	void				  *external_scanner_payload;
-	FILE				  *dot_graph_file;
-	TSClock				   end_clock;
-	TSDuration			   timeout_duration;
 	unsigned			   accept_count;
 	unsigned			   operation_count;
 	const volatile size_t *cancellation_flag;
@@ -169,7 +107,7 @@ static const char *ts_string_input_read(void *_self, uint32_t byte, TSPoint poin
 }
 
 // Parser - Private
-
+/*
 static void ts_parser__log(TSParser *self)
 {
 	if (self->lexer.logger.log)
@@ -189,7 +127,7 @@ static void ts_parser__log(TSParser *self)
 		fprintf(self->dot_graph_file, "\"\n}\n\n");
 	}
 }
-
+*/
 static bool ts_parser__breakdown_top_of_stack(TSParser *self, StackVersion version)
 {
 	bool did_break_down = false;
@@ -1488,8 +1426,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 		{
 			self->operation_count = 0;
 		}
-		if (self->operation_count == 0 && ((self->cancellation_flag && atomic_load(self->cancellation_flag)) ||
-										   (!clock_is_null(self->end_clock) && clock_is_gt(clock_now(), self->end_clock))))
+		if (self->operation_count == 0 && ((self->cancellation_flag && *self->cancellation_flag)))
 		{
 			if (lookahead.ptr)
 			{
@@ -1785,7 +1722,7 @@ static bool ts_parser_has_outstanding_parse(TSParser *self)
 
 TSParser *ts_parser_new(void)
 {
-	TSParser *self = ts_calloc(1, sizeof(TSParser));
+	TSParser *self = mem_alloc_array(1, sizeof(TSParser));
 	ts_lexer_init(&self->lexer);
 	array_init(&self->reduce_actions);
 	array_reserve(&self->reduce_actions, 4);
@@ -1793,13 +1730,10 @@ TSParser *ts_parser_new(void)
 	self->stack = ts_stack_new(&self->tree_pool);
 	self->finished_tree = NULL_SUBTREE;
 	self->reusable_node = reusable_node_new();
-	self->dot_graph_file = NULL;
 	self->cancellation_flag = NULL;
-	self->timeout_duration = 0;
 	self->language = NULL;
 	self->has_scanner_error = false;
 	self->external_scanner_payload = NULL;
-	self->end_clock = clock_null();
 	self->operation_count = 0;
 	self->old_tree = NULL_SUBTREE;
 	self->included_range_difference_index = 0;
@@ -1830,7 +1764,7 @@ void ts_parser_delete(TSParser *self)
 	array_delete(&self->trailing_extras);
 	array_delete(&self->trailing_extras2);
 	array_delete(&self->scratch_trees);
-	ts_free(self);
+	mem_free(self);
 }
 
 const TSLanguage *ts_parser_language(const TSParser *self)
@@ -1852,67 +1786,6 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language)
 
 	self->language = ts_language_copy(language);
 	return true;
-}
-
-TSLogger ts_parser_logger(const TSParser *self)
-{
-	return self->lexer.logger;
-}
-
-void ts_parser_set_logger(TSParser *self, TSLogger logger)
-{
-	self->lexer.logger = logger;
-}
-
-void ts_parser_print_dot_graphs(TSParser *self, int fd)
-{
-	if (self->dot_graph_file)
-	{
-		fclose(self->dot_graph_file);
-	}
-
-	if (fd >= 0)
-	{
-#ifdef _WIN32
-		self->dot_graph_file = _fdopen(fd, "a");
-#else
-		self->dot_graph_file = fdopen(fd, "a");
-#endif
-	}
-	else
-	{
-		self->dot_graph_file = NULL;
-	}
-}
-
-const size_t *ts_parser_cancellation_flag(const TSParser *self)
-{
-	return (const size_t *)self->cancellation_flag;
-}
-
-void ts_parser_set_cancellation_flag(TSParser *self, const size_t *flag)
-{
-	self->cancellation_flag = (const volatile size_t *)flag;
-}
-
-uint64_t ts_parser_timeout_micros(const TSParser *self)
-{
-	return duration_to_micros(self->timeout_duration);
-}
-
-void ts_parser_set_timeout_micros(TSParser *self, uint64_t timeout_micros)
-{
-	self->timeout_duration = duration_from_micros(timeout_micros);
-}
-
-bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges, uint32_t count)
-{
-	return ts_lexer_set_included_ranges(&self->lexer, ranges, count);
-}
-
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count)
-{
-	return ts_lexer_included_ranges(&self->lexer, count);
 }
 
 void ts_parser_reset(TSParser *self)
@@ -1957,40 +1830,11 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 		if (self->has_scanner_error)
 			goto exit;
 
-		// if (old_tree)
-		// {
-		// 	ts_subtree_retain(old_tree->root);
-		// 	self->old_tree = old_tree->root;
-		// 	ts_range_array_get_changed_ranges(old_tree->included_ranges, old_tree->included_range_count, self->lexer.included_ranges,
-		// 									  self->lexer.included_range_count, &self->included_range_differences);
-		// 	reusable_node_reset(&self->reusable_node, old_tree->root);
-		// 	LOG("parse_after_edit");
-		// 	LOG_TREE(self->old_tree);
-		// 	for (unsigned i = 0; i < self->included_range_differences.size; i++)
-		// 	{
-		// 		TSRange *range = &self->included_range_differences.contents[i];
-		// 		LOG("different_included_range %u - %u", range->start_byte, range->end_byte);
-		// 	}
-		// }
-		// else
-		if (false)
-		{
-		}
-		{
-			reusable_node_clear(&self->reusable_node);
-			LOG("new_parse");
-		}
+		reusable_node_clear(&self->reusable_node);
+		LOG("new_parse");
 	}
 
 	self->operation_count = 0;
-	if (self->timeout_duration)
-	{
-		self->end_clock = clock_after(clock_now(), self->timeout_duration);
-	}
-	else
-	{
-		self->end_clock = clock_null();
-	}
 
 	uint32_t position = 0, last_position = 0, version_count = 0;
 	do

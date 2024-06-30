@@ -314,7 +314,7 @@ void ts_lexer_init(Lexer *self) {
 }
 
 void ts_lexer_delete(Lexer *self) {
-  ts_free(self->included_ranges);
+  mem_free(self->included_ranges);
 }
 
 void ts_lexer_set_input(Lexer *self, TSInput input) {
@@ -404,7 +404,7 @@ bool ts_lexer_set_included_ranges(
   }
 
   size_t size = count * sizeof(TSRange);
-  self->included_ranges = ts_realloc(self->included_ranges, size);
+  self->included_ranges = mem_realloc(self->included_ranges, size);
   memcpy(self->included_ranges, ranges, size);
   self->included_range_count = count;
   ts_lexer_goto(self, self->current_position);

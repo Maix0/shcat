@@ -1,12 +1,11 @@
 #ifndef TREE_SITTER_LENGTH_H_
 #define TREE_SITTER_LENGTH_H_
 
-#include <stdlib.h>
 #include <stdbool.h>
 #include "./point.h"
-#include "api.h"
+#include "./api.h"
 
-typedef struct {
+typedef struct Length {
   uint32_t bytes;
   TSPoint extent;
 } Length;
