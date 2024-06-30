@@ -2,9 +2,8 @@
 #define TREE_SITTER_PARSE_STACK_H_
 
 #include "./array.h"
-#include "./error_costs.h"
+// #include "./error_costs.h"
 #include "./subtree.h"
-#include <stdio.h>
 
 typedef struct Stack Stack;
 
@@ -122,7 +121,5 @@ StackVersion ts_stack_copy_version(Stack *, StackVersion);
 void ts_stack_remove_version(Stack *, StackVersion);
 
 void ts_stack_clear(Stack *);
-
-bool ts_stack_print_dot_graph(Stack *, const TSLanguage *, FILE *);
 
 #endif // TREE_SITTER_PARSE_STACK_H_

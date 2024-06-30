@@ -29,41 +29,10 @@ enum TokenType
 	ESAC,
 	ERROR_RECOVERY,
 };
-// enum TokenType {
-//     HEREDOC_START,
-//     SIMPLE_HEREDOC_BODY,
-//     HEREDOC_BODY_BEGINNING,
-//     HEREDOC_CONTENT,
-//     HEREDOC_END,
-//     FILE_DESCRIPTOR,
-//     EMPTY_VALUE,
-//     CONCAT,
-//     VARIABLE_NAME,
-//     TEST_OPERATOR,
-//     REGEX,
-//     REGEX_NO_SLASH,
-//     REGEX_NO_SPACE,
-//     EXPANSION_WORD,
-//     EXTGLOB_PATTERN,
-//     BARE_DOLLAR,
-//     BRACE_START,
-//     IMMEDIATE_DOUBLE_HASH,
-//     EXTERNAL_EXPANSION_SYM_HASH,
-//     EXTERNAL_EXPANSION_SYM_BANG,
-//     EXTERNAL_EXPANSION_SYM_EQUAL,
-//     CLOSING_BRACE,
-//     CLOSING_BRACKET,
-//     HEREDOC_ARROW,
-//     HEREDOC_ARROW_DASH,
-//     NEWLINE,
-//     OPENING_PAREN,
-//     ESAC,
-//     ERROR_RECOVERY,
-// };
 
 typedef Array(char) String;
 
-typedef struct
+typedef struct Heredoc
 {
 	bool   is_raw;
 	bool   started;
@@ -81,7 +50,7 @@ typedef struct
 		.current_leading_word = array_new(),                                                                                               \
 	};
 
-typedef struct
+typedef struct Scanner
 {
 	uint8_t last_glob_paren_depth;
 	bool	ext_was_in_double_quote;
@@ -249,7 +218,6 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
 		skip(lexer);
-
 
 	if (lexer->lookahead == '$')
 	{

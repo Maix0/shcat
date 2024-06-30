@@ -3,7 +3,7 @@
 
 
 #include "./array.h"
-#include "api.h"
+#include "./api.h"
 
 typedef struct ReduceAction {
   uint32_t count;
