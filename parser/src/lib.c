@@ -13,5 +13,5 @@
 #include "./tree_cursor.c"
 #include "./wasm_store.c"
 
-//#include "./create_language.c"
+#include "./create_language.c"
 #include "./scanner.c"

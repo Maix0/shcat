@@ -13,7 +13,7 @@
 ANAME			= 	parser
 
 BUILD_DIR		=	../build
-SRC_DIR			=   ./nnsrc
+SRC_DIR			=   ./src
 GEN_DIR 		=   ./generic
 
 BONUS_FLAGS		=

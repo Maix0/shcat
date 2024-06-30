@@ -16,9 +16,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./nnsrc/api.h"
-#include "./nnsrc/lexer.h"
-#include "./nnsrc/parser.h"
+#include "./src/api.h"
+#include "./src/lexer.h"
+#include "./src/parser.h"
 #include "me/types.h"
 
 #include "parser/types/types_lexer_state.h"
