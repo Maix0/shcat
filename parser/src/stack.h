@@ -1,13 +1,9 @@
 #ifndef TREE_SITTER_PARSE_STACK_H_
 #define TREE_SITTER_PARSE_STACK_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "./array.h"
-#include "./subtree.h"
 #include "./error_costs.h"
+#include "./subtree.h"
 #include <stdio.h>
 
 typedef struct Stack Stack;
@@ -15,18 +11,23 @@ typedef struct Stack Stack;
 typedef unsigned StackVersion;
 #define STACK_VERSION_NONE ((StackVersion)-1)
 
-typedef struct {
-  SubtreeArray subtrees;
-  StackVersion version;
+typedef struct StackSlice
+{
+	SubtreeArray subtrees;
+	StackVersion version;
 } StackSlice;
 typedef Array(StackSlice) StackSliceArray;
 
-typedef struct {
-  Length position;
-  unsigned depth;
-  TSStateId state;
+typedef struct StackSummaryEntry
+{
+	Length	  position;
+	unsigned  depth;
+	TSStateId state;
 } StackSummaryEntry;
+
 typedef Array(StackSummaryEntry) StackSummary;
+
+typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
 
 // Create a stack.
 Stack *ts_stack_new(SubtreePool *);
@@ -45,7 +46,7 @@ TSStateId ts_stack_state(const Stack *, StackVersion);
 Subtree ts_stack_last_external_token(const Stack *, StackVersion);
 
 // Set the last external token associated with a given version of the stack.
-void ts_stack_set_last_external_token(Stack *, StackVersion, Subtree );
+void ts_stack_set_last_external_token(Stack *, StackVersion, Subtree);
 
 // Get the position of the given version of the stack within the document.
 Length ts_stack_position(const Stack *, StackVersion);
@@ -55,7 +56,7 @@ Length ts_stack_position(const Stack *, StackVersion);
 // This transfers ownership of the tree to the Stack. Callers that
 // need to retain ownership of the tree for their own purposes should
 // first retain the tree.
-void ts_stack_push(Stack *, StackVersion, Subtree , bool, TSStateId);
+void ts_stack_push(Stack *, StackVersion, Subtree, bool, TSStateId);
 
 // Pop the given number of entries from the given version of the stack. This
 // operation can increase the number of stack versions by revealing multiple
@@ -124,10 +125,4 @@ void ts_stack_clear(Stack *);
 
 bool ts_stack_print_dot_graph(Stack *, const TSLanguage *, FILE *);
 
-typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif  // TREE_SITTER_PARSE_STACK_H_
+#endif // TREE_SITTER_PARSE_STACK_H_

@@ -1,16 +1,13 @@
 #ifndef TREE_SITTER_LEXER_H_
 #define TREE_SITTER_LEXER_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include "./length.h"
 #include "./subtree.h"
 #include "api.h"
 #include "./parser.h"
 
-typedef struct {
+typedef struct Lexer{
   TSLexer data;
   Length current_position;
   Length token_start_position;
@@ -42,8 +39,5 @@ void ts_lexer_mark_end(Lexer *);
 bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges, uint32_t count);
 TSRange *ts_lexer_included_ranges(const Lexer *self, uint32_t *count);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif  // TREE_SITTER_LEXER_H_

@@ -1,14 +1,11 @@
 #ifndef TREE_SITTER_REDUCE_ACTION_H_
 #define TREE_SITTER_REDUCE_ACTION_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include "./array.h"
 #include "api.h"
 
-typedef struct {
+typedef struct ReduceAction {
   uint32_t count;
   TSSymbol symbol;
   int dynamic_precedence;
@@ -27,8 +24,5 @@ static inline void ts_reduce_action_set_add(ReduceActionSet *self,
   array_push(self, new_action);
 }
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif  // TREE_SITTER_REDUCE_ACTION_H_
