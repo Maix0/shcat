@@ -227,26 +227,5 @@ void	parse_actions_entries_203(t_parse_actions_entries_array *v);
 void	parse_actions_entries_204(t_parse_actions_entries_array *v);
 void	parse_actions_entries_205(t_parse_actions_entries_array *v);
 void	parse_actions_entries_206(t_parse_actions_entries_array *v);
-void	parse_actions_entries_207(t_parse_actions_entries_array *v);
-void	parse_actions_entries_208(t_parse_actions_entries_array *v);
-void	parse_actions_entries_209(t_parse_actions_entries_array *v);
-void	parse_actions_entries_210(t_parse_actions_entries_array *v);
-void	parse_actions_entries_211(t_parse_actions_entries_array *v);
-void	parse_actions_entries_212(t_parse_actions_entries_array *v);
-void	parse_actions_entries_213(t_parse_actions_entries_array *v);
-void	parse_actions_entries_214(t_parse_actions_entries_array *v);
-void	parse_actions_entries_215(t_parse_actions_entries_array *v);
-void	parse_actions_entries_216(t_parse_actions_entries_array *v);
-void	parse_actions_entries_217(t_parse_actions_entries_array *v);
-void	parse_actions_entries_218(t_parse_actions_entries_array *v);
-void	parse_actions_entries_219(t_parse_actions_entries_array *v);
-void	parse_actions_entries_220(t_parse_actions_entries_array *v);
-void	parse_actions_entries_221(t_parse_actions_entries_array *v);
-void	parse_actions_entries_222(t_parse_actions_entries_array *v);
-void	parse_actions_entries_223(t_parse_actions_entries_array *v);
-void	parse_actions_entries_224(t_parse_actions_entries_array *v);
-void	parse_actions_entries_225(t_parse_actions_entries_array *v);
-void	parse_actions_entries_226(t_parse_actions_entries_array *v);
-void	parse_actions_entries_227(t_parse_actions_entries_array *v);
 
 #endif // PARSE_ACTIONS_ENTRIES_H

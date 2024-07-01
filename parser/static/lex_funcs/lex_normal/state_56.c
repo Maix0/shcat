@@ -14,34 +14,47 @@
 
 bool	lex_normal_s280(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_AMP, lexer, s);
-	if (s->lookahead == '-')
-		return (lex_advance(283, lexer, s));
+	lex_accept_token(anon_sym_LT_LT, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(314, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s281(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_PIPE, lexer, s);
+	lex_accept_token(anon_sym_LT_LT_DASH, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s282(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LT_AMP_DASH, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(282, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(13, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(444, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s283(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_AMP_DASH, lexer, s);
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(283, lexer, s));
+	if (s->lookahead == '\\')
+		return (lex_advance(50, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s284(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LT_LT, lexer, s);
-	if (s->lookahead == '-')
-		return (lex_advance(287, lexer, s));
+	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
+	s);
+	if (s->lookahead == '\n')
+		return (lex_advance(284, lexer, s));
 	return (lex_end_state(lexer, s));
 }

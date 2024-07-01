@@ -300,16 +300,8 @@ module.exports = grammar({
 
     file_redirect: $ => prec.left(seq(
       field('fd', optional($.file_descriptor)),
-      choice(
-        seq(
-          field('op', alias(choice('<', '>', '>>', '<&', '>&', '>|'), $.operator)),
-          field('dest', repeat1($._literal)),
-        ),
-        seq(
-          field('op', alias(choice('<&-', '>&-'), $.operator)),
-          field('dest', optional($._literal)),
-        ),
-      ),
+      field('op', alias(choice('<', '>', '>>', '<&', '>&', '>|', '<>'), $.operator)),
+      field('dest', repeat1($._literal)),
     )),
 
     heredoc_redirect: $ => seq(
@@ -329,10 +321,7 @@ module.exports = grammar({
       choice($._heredoc_body, $._simple_heredoc_body),
     ),
 
-    _heredoc_pipeline: $ => seq(
-      choice('|', '|&'),
-      $._statement,
-    ),
+    _heredoc_pipeline: $ => seq('|', $._statement,),
 
     _heredoc_expression: $ => seq(
       field('op', alias(choice('||', '&&'), $.operator)),

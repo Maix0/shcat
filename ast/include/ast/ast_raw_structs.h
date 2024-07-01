@@ -60,14 +60,17 @@ enum e_ast_expansion_operator
 
 enum e_ast_redirection_kind
 {
-	AST_REDIR_INPUT, 			// <
-	AST_REDIR_OUTPUT, 			// >
-	AST_REDIR_APPEND, 			// >>
-	AST_REDIR_HEREDOC, 			// <<
-	AST_REDIR_HEREDOC_INDENT, 	// <<-
-	AST_REDIR_DUP_INPUT, 		// <&
-	AST_REDIR_DUP_OUTPUT, 		// >&
-	AST_REDIR_DUP_ERROR, 		// &>
+	AST_REDIR_INPUT,		  // <
+	AST_REDIR_OUTPUT,		  // >
+	AST_REDIR_APPEND,		  // >>
+	AST_REDIR_HEREDOC,		  // <<
+	AST_REDIR_HEREDOC_INDENT, // <<-
+	AST_REDIR_DUP_INPUT,	  // <&
+	AST_REDIR_DUP_OUTPUT,	  // >&
+	AST_REDIR_OUTPUT_CLOBBER, // >|
+	AST_REDIR_INPUT_OUTPUT,	  // <>
+	AST_REDIR_CLOSE_INPUT,	  // <&
+	AST_REDIR_CLOSE_OUTPUT,	  // >&
 };
 
 struct s_ast_empty
@@ -317,9 +320,9 @@ struct s_ast_variable_assignment
 /// ```
 struct s_ast_file_redirection
 {
-	t_ast_node output;
+	t_ast_node			   output;
 	t_ast_redirection_kind op;
-	t_ast_node input;
+	t_str				   input;
 };
 
 /// File Redirection
@@ -330,9 +333,9 @@ struct s_ast_file_redirection
 /// ```
 struct s_ast_heredoc_redirection
 {
-	t_ast_node output;
+	t_ast_node			   output;
 	t_ast_redirection_kind op;
-	t_ast_node delimiter;
+	t_ast_node			   delimiter;
 };
 
 /// Variable Expension

@@ -14,69 +14,69 @@
 
 void	field_map_slices_0(t_field_map_slices_array *v)
 {
-	v->a[1] = fmap_slice(0, 1);
-	v->a[2] = fmap_slice(1, 2);
+	v->a[1] = fmap_slice(0, 2);
+	v->a[2] = fmap_slice(2, 1);
 	v->a[3] = fmap_slice(3, 1);
 	v->a[4] = fmap_slice(4, 1);
-	v->a[5] = fmap_slice(5, 1);
-	v->a[6] = fmap_slice(6, 2);
-	v->a[7] = fmap_slice(8, 2);
-	v->a[9] = fmap_slice(4, 1);
-	v->a[10] = fmap_slice(10, 2);
-	v->a[11] = fmap_slice(12, 2);
-	v->a[12] = fmap_slice(14, 1);
-	v->a[13] = fmap_slice(14, 1);
-	v->a[14] = fmap_slice(15, 2);
-	v->a[15] = fmap_slice(17, 3);
-	v->a[16] = fmap_slice(20, 4);
-	v->a[17] = fmap_slice(24, 2);
-	v->a[18] = fmap_slice(26, 2);
-	v->a[19] = fmap_slice(28, 3);
-	v->a[20] = fmap_slice(31, 2);
-	v->a[21] = fmap_slice(33, 4);
+	v->a[5] = fmap_slice(5, 2);
+	v->a[7] = fmap_slice(3, 1);
+	v->a[8] = fmap_slice(7, 2);
+	v->a[9] = fmap_slice(9, 2);
+	v->a[10] = fmap_slice(11, 1);
+	v->a[11] = fmap_slice(11, 1);
+	v->a[12] = fmap_slice(12, 2);
+	v->a[13] = fmap_slice(14, 3);
+	v->a[14] = fmap_slice(17, 4);
+	v->a[15] = fmap_slice(21, 2);
+	v->a[16] = fmap_slice(23, 2);
+	v->a[17] = fmap_slice(25, 3);
+	v->a[18] = fmap_slice(28, 2);
+	v->a[19] = fmap_slice(30, 4);
+	v->a[20] = fmap_slice(34, 2);
+	v->a[21] = fmap_slice(36, 1);
 	field_map_slices_1(v);
 }
 
 void	field_map_slices_1(t_field_map_slices_array *v)
 {
-	v->a[22] = fmap_slice(37, 2);
-	v->a[23] = fmap_slice(0, 1);
-	v->a[24] = fmap_slice(39, 1);
-	v->a[26] = fmap_slice(40, 2);
+	v->a[22] = fmap_slice(37, 1);
+	v->a[24] = fmap_slice(36, 1);
+	v->a[25] = fmap_slice(38, 2);
+	v->a[26] = fmap_slice(38, 2);
 	v->a[27] = fmap_slice(40, 2);
-	v->a[28] = fmap_slice(42, 2);
-	v->a[29] = fmap_slice(44, 1);
-	v->a[30] = fmap_slice(45, 3);
-	v->a[31] = fmap_slice(48, 2);
-	v->a[32] = fmap_slice(50, 4);
-	v->a[33] = fmap_slice(54, 3);
-	v->a[34] = fmap_slice(57, 2);
-	v->a[35] = fmap_slice(59, 3);
-	v->a[36] = fmap_slice(62, 1);
-	v->a[37] = fmap_slice(63, 1);
-	v->a[38] = fmap_slice(64, 3);
-	v->a[42] = fmap_slice(67, 2);
-	v->a[43] = fmap_slice(69, 3);
-	v->a[44] = fmap_slice(72, 6);
-	v->a[45] = fmap_slice(78, 4);
+	v->a[28] = fmap_slice(42, 1);
+	v->a[29] = fmap_slice(43, 3);
+	v->a[30] = fmap_slice(46, 2);
+	v->a[31] = fmap_slice(48, 4);
+	v->a[32] = fmap_slice(52, 3);
+	v->a[33] = fmap_slice(55, 2);
+	v->a[34] = fmap_slice(57, 3);
+	v->a[35] = fmap_slice(60, 1);
+	v->a[36] = fmap_slice(61, 1);
+	v->a[37] = fmap_slice(62, 3);
+	v->a[41] = fmap_slice(65, 2);
+	v->a[42] = fmap_slice(67, 3);
+	v->a[43] = fmap_slice(70, 6);
+	v->a[44] = fmap_slice(76, 4);
+	v->a[45] = fmap_slice(80, 4);
 	field_map_slices_2(v);
 }
 
 void	field_map_slices_2(t_field_map_slices_array *v)
 {
-	v->a[46] = fmap_slice(82, 4);
-	v->a[47] = fmap_slice(86, 4);
+	v->a[46] = fmap_slice(84, 4);
+	v->a[47] = fmap_slice(88, 2);
 	v->a[48] = fmap_slice(90, 2);
-	v->a[49] = fmap_slice(92, 2);
-	v->a[50] = fmap_slice(94, 3);
-	v->a[51] = fmap_slice(97, 7);
-	v->a[52] = fmap_slice(104, 7);
-	v->a[53] = fmap_slice(111, 5);
-	v->a[54] = fmap_slice(116, 4);
-	v->a[55] = fmap_slice(120, 2);
-	v->a[56] = fmap_slice(122, 4);
-	v->a[57] = fmap_slice(126, 5);
-	v->a[58] = fmap_slice(131, 3);
+	v->a[49] = fmap_slice(92, 3);
+	v->a[50] = fmap_slice(95, 7);
+	v->a[51] = fmap_slice(102, 7);
+	v->a[52] = fmap_slice(109, 5);
+	v->a[53] = fmap_slice(114, 4);
+	v->a[54] = fmap_slice(118, 2);
+	v->a[55] = fmap_slice(120, 4);
+	v->a[56] = fmap_slice(124, 5);
+	v->a[57] = fmap_slice(129, 3);
+	v->a[58] = fmap_slice(132, 2);
 	v->a[59] = fmap_slice(134, 3);
 	v->a[60] = fmap_slice(137, 2);
 	v->a[61] = fmap_slice(139, 2);

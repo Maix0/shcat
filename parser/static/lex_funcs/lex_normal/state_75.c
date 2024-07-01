@@ -14,65 +14,36 @@
 
 bool	lex_normal_s375(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_string_content, lexer, s);
-	if (s->lookahead == '"')
-		return (lex_advance(368, lexer, s));
-	if (s->lookahead == '#')
-		return (lex_advance(378, lexer, s));
-	if (s->lookahead == '$')
-		return (lex_advance(366, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(125, lexer, s));
-	if (s->lookahead == '`')
-		return (lex_advance(403, lexer, s));
-	if ((s->lookahead == '\n' || s->lookahead == '\r'))
-		return (lex_skip(195, lexer, s));
-	if (((s->lookahead >= '\t' && s->lookahead <= '\f') || \
-	s->lookahead == ' '))
-		return (lex_advance(375, lexer, s));
-	if (s->lookahead != 0)
-		return (lex_advance(376, lexer, s));
+	lex_accept_token(anon_sym_POUND, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s376(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_string_content, lexer, s);
+	lex_accept_token(anon_sym_POUND, lexer, s);
 	if (s->lookahead == '\\')
-		return (lex_advance(120, lexer, s));
-	if ((s->lookahead != 0 && s->lookahead != '\n' && \
-	s->lookahead != '\r' && s->lookahead != '"' && \
-	s->lookahead != '$' && s->lookahead != '`'))
-		return (lex_advance(376, lexer, s));
+		return (lex_advance(399, lexer, s));
+	if ((!s->eof && \
+	set_contains(sym__comment_word_character_set_1(), 10, \
+	s->lookahead)))
+		return (lex_advance(489, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s377(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_string_content, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(120, lexer, s));
-	if ((s->lookahead != 0 && s->lookahead != '\r' && \
-	s->lookahead != '"' && s->lookahead != '$' && s->lookahead \
-	!= '`'))
-		return (lex_advance(376, lexer, s));
+	lex_accept_token(anon_sym_DOLLAR_LBRACE, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s378(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_string_content, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(405, lexer, s));
-	if ((s->lookahead != 0 && s->lookahead != '\n' && \
-	s->lookahead != '\r' && s->lookahead != '"' && \
-	s->lookahead != '$' && s->lookahead != '`'))
-		return (lex_advance(378, lexer, s));
+	lex_accept_token(anon_sym_COLON_DASH, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s379(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(sym_raw_string, lexer, s);
+	lex_accept_token(anon_sym_DASH3, lexer, s);
 	return (lex_end_state(lexer, s));
 }

@@ -51,21 +51,19 @@ void	symbols_names_1(t_symbols_names_array *v)
 	v->a[anon_sym_LT_AMP] = "operator";
 	v->a[anon_sym_GT_AMP] = "operator";
 	v->a[anon_sym_GT_PIPE] = "operator";
-	v->a[anon_sym_LT_AMP_DASH] = "operator";
-	v->a[anon_sym_GT_AMP_DASH] = "operator";
+	v->a[anon_sym_LT_GT] = "operator";
 	v->a[anon_sym_LT_LT] = "operator";
 	v->a[anon_sym_LT_LT_DASH] = "operator";
 	v->a[aux_sym_heredoc_redirect_token1] = "heredoc_redirect_token1";
-	v->a[anon_sym_PIPE_AMP] = "|&";
 	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = "$((";
 	v->a[anon_sym_RPAREN_RPAREN] = "))";
+	v->a[anon_sym_PLUS_EQ] = "operator";
+	v->a[anon_sym_DASH_EQ] = "operator";
 	symbols_names_2(v);
 }
 
 void	symbols_names_2(t_symbols_names_array *v)
 {
-	v->a[anon_sym_PLUS_EQ] = "operator";
-	v->a[anon_sym_DASH_EQ] = "operator";
 	v->a[anon_sym_STAR_EQ] = "operator";
 	v->a[anon_sym_SLASH_EQ] = "operator";
 	v->a[anon_sym_PERCENT_EQ] = "operator";
@@ -84,13 +82,13 @@ void	symbols_names_2(t_symbols_names_array *v)
 	v->a[anon_sym_DASH] = "operator";
 	v->a[anon_sym_STAR] = "operator";
 	v->a[anon_sym_SLASH] = "operator";
+	v->a[anon_sym_PERCENT] = "operator";
+	v->a[anon_sym_QMARK] = "\\\?";
 	symbols_names_3(v);
 }
 
 void	symbols_names_3(t_symbols_names_array *v)
 {
-	v->a[anon_sym_PERCENT] = "operator";
-	v->a[anon_sym_QMARK] = "\\\?";
 	v->a[anon_sym_COLON] = ":";
 	v->a[anon_sym_PLUS_PLUS] = "operator";
 	v->a[anon_sym_DASH_DASH] = "operator";
@@ -109,13 +107,13 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[anon_sym_DOLLAR_LBRACE] = "${";
 	v->a[anon_sym_COLON_DASH] = "operator";
 	v->a[anon_sym_DASH3] = "operator";
+	v->a[anon_sym_COLON_EQ] = "operator";
+	v->a[anon_sym_EQ2] = "operator";
 	symbols_names_4(v);
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
 {
-	v->a[anon_sym_COLON_EQ] = "operator";
-	v->a[anon_sym_EQ2] = "operator";
 	v->a[anon_sym_COLON_QMARK] = "operator";
 	v->a[anon_sym_QMARK2] = "operator";
 	v->a[anon_sym_COLON_PLUS] = "operator";
@@ -134,6 +132,8 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_SEMI] = ";";
 	v->a[sym_heredoc_start] = "heredoc_start";
 	v->a[sym_simple_heredoc_body] = "heredoc_body";
+	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
+	v->a[sym_heredoc_content] = "heredoc_content";
 	symbols_names_5(v);
 }
 

@@ -126,16 +126,5 @@ void	small_parse_table_map_102(t_small_parse_table_map_array *v);
 void	small_parse_table_map_103(t_small_parse_table_map_array *v);
 void	small_parse_table_map_104(t_small_parse_table_map_array *v);
 void	small_parse_table_map_105(t_small_parse_table_map_array *v);
-void	small_parse_table_map_106(t_small_parse_table_map_array *v);
-void	small_parse_table_map_107(t_small_parse_table_map_array *v);
-void	small_parse_table_map_108(t_small_parse_table_map_array *v);
-void	small_parse_table_map_109(t_small_parse_table_map_array *v);
-void	small_parse_table_map_110(t_small_parse_table_map_array *v);
-void	small_parse_table_map_111(t_small_parse_table_map_array *v);
-void	small_parse_table_map_112(t_small_parse_table_map_array *v);
-void	small_parse_table_map_113(t_small_parse_table_map_array *v);
-void	small_parse_table_map_114(t_small_parse_table_map_array *v);
-void	small_parse_table_map_115(t_small_parse_table_map_array *v);
-void	small_parse_table_map_116(t_small_parse_table_map_array *v);
 
 #endif // SMALL_PARSE_TABLE_MAP_H

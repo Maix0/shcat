@@ -128,7 +128,7 @@ void ast_free(t_ast_node elem)
 	}
 	if (elem->kind == AST_FILE_REDIRECTION)
 	{
-		ast_free(elem->data.file_redirection.input);
+		mem_free(elem->data.file_redirection.input);
 		ast_free(elem->data.file_redirection.output);
 	}
 	if (elem->kind == AST_FOR)
@@ -467,7 +467,7 @@ t_ast_terminator_kind _select_term(t_parse_node node)
 {
 	t_symbol symbol;
 
-	symbol = ts_node_grammar_symbol(node);
+	symbol = ts_node_grammar_symbol(ts_node_child(node, 0));
 	if (symbol == anon_sym_AMP)
 		return (AST_TERM_FORK);
 	if (symbol == anon_sym_SEMI)
@@ -476,6 +476,44 @@ t_ast_terminator_kind _select_term(t_parse_node node)
 		return (AST_TERM_DOUBLE_SEMI);
 	printf("unknown term symbol %d\n", symbol);
 	return (AST_TERM_NONE);
+}
+
+t_str _extract_str(t_parse_node self, t_const_str input)
+{
+	t_usize start;
+	t_usize end;
+	t_str	result;
+
+	start = ts_node_start_byte(self);
+	end = ts_node_end_byte(self);
+	result = str_substring(input, start, end - start);
+	return (result);
+}
+
+t_ast_redirection_kind _get_redirection_op(t_parse_node self)
+{
+	t_symbol symbol;
+
+	symbol = ts_node_grammar_symbol(self);
+	if (symbol == anon_sym_LT)
+		return (AST_REDIR_INPUT);
+	if (symbol == anon_sym_GT)
+		return (AST_REDIR_OUTPUT);
+	if (symbol == anon_sym_GT_GT)
+		return (AST_REDIR_APPEND);
+	if (symbol == anon_sym_LT_LT)
+		return (AST_REDIR_HEREDOC);
+	if (symbol == anon_sym_LT_LT_DASH)
+		return (AST_REDIR_HEREDOC_INDENT);
+	if (symbol == anon_sym_LT_AMP)
+		return (AST_REDIR_DUP_INPUT);
+	if (symbol == anon_sym_GT_AMP)
+		return (AST_REDIR_DUP_OUTPUT);
+	if (symbol == anon_sym_GT_PIPE)
+		return (AST_REDIR_OUTPUT_CLOBBER);
+	if (symbol == anon_sym_LT_GT)
+		return (AST_REDIR_INPUT_OUTPUT);
+	return (me_abort("invalid redirection symbol"), 0);
 }
 
 t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
@@ -537,6 +575,45 @@ t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node
 
 #include <stdio.h>
 
+t_error build_sym_file_redirect(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_file_redirect)
+		return (ERROR);
+	ret = ast_alloc(AST_FILE_REDIRECTION);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ts_node_field_id_for_child(self, i) == field_fd)
+		{
+
+			ret->data.file_redirection.input = _extract_str(ts_node_child(self, i), input);
+		}
+		if (ts_node_field_id_for_child(self, i) == field_op)
+		{
+			ret->data.file_redirection.op = _get_redirection_op(ts_node_child(self, i));
+		}
+		if (ts_node_field_id_for_child(self, i) == field_dest)
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			ret->data.file_redirection.output = tmp;
+		}
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
 t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node ret;
@@ -549,7 +626,7 @@ t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out)
 	if (ts_node_symbol(self) != sym_regex)
 		return (ERROR);
 	ret = ast_alloc(AST_REGEX);
-	ret->data.regex.pattern = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	ret->data.regex.pattern = _extract_str(self, input);
 	return (*out = ret, NO_ERROR);
 }
 
@@ -565,7 +642,7 @@ t_error build_sym_extglob_pattern(t_parse_node self, t_const_str input, t_ast_no
 	if (ts_node_symbol(self) != sym_extglob_pattern)
 		return (ERROR);
 	ret = ast_alloc(AST_EXTGLOB);
-	ret->data.extglob.pattern = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	ret->data.extglob.pattern = _extract_str(self, input);
 	return (*out = ret, NO_ERROR);
 }
 
@@ -590,9 +667,7 @@ t_error build_sym_function_definition(t_parse_node self, t_const_str input, t_as
 			continue;
 		if (ts_node_field_id_for_child(self, i) == field_name)
 		{
-			ret->data.function_definition.name =
-				str_substring(input, ts_node_start_byte(ts_node_child(self, i)),
-							  ts_node_end_byte(ts_node_child(self, i)) - ts_node_start_byte(ts_node_child(self, i)));
+			ret->data.function_definition.name = _extract_str(ts_node_child(self, i), input);
 		}
 		if (ts_node_field_id_for_child(self, i) == field_body)
 		{
@@ -833,10 +908,9 @@ t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *
 
 t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node	 ret;
-	t_ast_node	 tmp;
-	t_parse_node temp_ast;
-	t_usize		 i;
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
 
 	(void)(out);
 	(void)(input);
@@ -853,9 +927,7 @@ t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node
 			continue;
 		if (ts_node_field_id_for_child(self, i) == field_variable)
 		{
-			temp_ast = ts_node_child(self, i);
-			ret->data.for_.var_name =
-				str_substring(input, ts_node_start_byte(temp_ast), ts_node_end_byte(temp_ast) - ts_node_start_byte(temp_ast));
+			ret->data.for_.var_name = _extract_str(ts_node_child(self, i), input);
 		}
 		if (ts_node_field_id_for_child(self, i) == field_value)
 		{
@@ -1146,14 +1218,12 @@ t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_as
 	if (ts_node_symbol(self) != sym_variable_assignment)
 		return (ERROR);
 	ret = ast_alloc(AST_VARIABLE_ASSIGNMENT);
-	// temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
 	if (ts_node_child_count(self) >= 2)
 	{
 		temp_ast = ts_node_child(self, 0);
 		if (ts_node_symbol(temp_ast) != sym_variable_name)
 			return (ast_free(ret), ERROR);
-		ret->data.variable_assignment.name =
-			str_substring(input, ts_node_start_byte(temp_ast), ts_node_end_byte(temp_ast) - ts_node_start_byte(temp_ast));
+		ret->data.variable_assignment.name = _extract_str(temp_ast, input);
 	}
 	if (ts_node_child_count(self) > 2)
 	{
@@ -1228,7 +1298,7 @@ t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_nod
 	if (ts_node_symbol(self) != sym_string_content)
 		return (ERROR);
 	ret = ast_alloc(AST_RAW_STRING);
-	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	temp_str = _extract_str(self, input);
 	ret->data.raw_string.str = temp_str;
 	ret->data.raw_string.len = str_len(temp_str);
 	return (*out = ret, NO_ERROR);
@@ -1246,7 +1316,7 @@ t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *o
 		return (ERROR);
 	ret = ast_alloc(AST_WORD);
 	temp = ast_alloc(AST_RAW_STRING);
-	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	temp_str = _extract_str(self, input);
 	temp->data.raw_string.str = temp_str;
 	temp->data.raw_string.len = str_len(temp_str);
 	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
@@ -1309,7 +1379,7 @@ t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out)
 	ret = ast_alloc(AST_WORD);
 	ret->data.word.kind = AST_WORD_NO_QUOTE;
 	temp = ast_alloc(AST_RAW_STRING);
-	temp_str = str_substring(input, ts_node_start_byte(self), ts_node_end_byte(self) - ts_node_start_byte(self));
+	temp_str = _extract_str(self, input);
 	temp->data.raw_string.str = temp_str;
 	temp->data.raw_string.len = str_len(temp_str);
 	vec_ast_push(&ret->data.word.inner, temp);

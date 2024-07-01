@@ -50,22 +50,20 @@ void	parse_table_1(t_parse_table_array *v)
 	v->a[0][anon_sym_LT_AMP] = actions(1);
 	v->a[0][anon_sym_GT_AMP] = actions(1);
 	v->a[0][anon_sym_GT_PIPE] = actions(1);
-	v->a[0][anon_sym_LT_AMP_DASH] = actions(1);
-	v->a[0][anon_sym_GT_AMP_DASH] = actions(1);
+	v->a[0][anon_sym_LT_GT] = actions(1);
 	v->a[0][anon_sym_LT_LT] = actions(1);
 	v->a[0][anon_sym_LT_LT_DASH] = actions(1);
-	v->a[0][anon_sym_PIPE_AMP] = actions(1);
 	v->a[0][anon_sym_DOLLAR_LPAREN_LPAREN] = actions(1);
 	v->a[0][anon_sym_STAR_EQ] = actions(1);
 	v->a[0][anon_sym_SLASH_EQ] = actions(1);
 	v->a[0][anon_sym_PERCENT_EQ] = actions(1);
+	v->a[0][anon_sym_LT_LT_EQ] = actions(1);
+	v->a[0][anon_sym_GT_GT_EQ] = actions(1);
 	parse_table_2(v);
 }
 
 void	parse_table_2(t_parse_table_array *v)
 {
-	v->a[0][anon_sym_LT_LT_EQ] = actions(1);
-	v->a[0][anon_sym_GT_GT_EQ] = actions(1);
 	v->a[0][anon_sym_AMP_EQ] = actions(1);
 	v->a[0][anon_sym_CARET_EQ] = actions(1);
 	v->a[0][anon_sym_PIPE_EQ] = actions(1);
@@ -84,13 +82,13 @@ void	parse_table_2(t_parse_table_array *v)
 	v->a[0][anon_sym_PLUS2] = actions(1);
 	v->a[0][anon_sym_TILDE] = actions(1);
 	v->a[0][aux_sym_concatenation_token1] = actions(1);
+	v->a[0][anon_sym_DOLLAR] = actions(1);
+	v->a[0][anon_sym_DQUOTE] = actions(1);
 	parse_table_3(v);
 }
 
 void	parse_table_3(t_parse_table_array *v)
 {
-	v->a[0][anon_sym_DOLLAR] = actions(1);
-	v->a[0][anon_sym_DQUOTE] = actions(1);
 	v->a[0][sym_raw_string] = actions(1);
 	v->a[0][sym_number] = actions(1);
 	v->a[0][anon_sym_POUND] = actions(1);
@@ -109,13 +107,13 @@ void	parse_table_3(t_parse_table_array *v)
 	v->a[0][anon_sym_0] = actions(1);
 	v->a[0][anon_sym__] = actions(1);
 	v->a[0][anon_sym_SEMI] = actions(1);
+	v->a[0][sym_heredoc_start] = actions(1);
+	v->a[0][sym_simple_heredoc_body] = actions(1);
 	parse_table_4(v);
 }
 
 void	parse_table_4(t_parse_table_array *v)
 {
-	v->a[0][sym_heredoc_start] = actions(1);
-	v->a[0][sym_simple_heredoc_body] = actions(1);
 	v->a[0][sym__heredoc_body_beginning] = actions(1);
 	v->a[0][sym_heredoc_content] = actions(1);
 	v->a[0][sym_heredoc_end] = actions(1);
@@ -129,11 +127,13 @@ void	parse_table_4(t_parse_table_array *v)
 	v->a[0][sym__bare_dollar] = actions(1);
 	v->a[0][sym__immediate_double_hash] = actions(1);
 	v->a[0][sym___error_recovery] = actions(1);
-	v->a[1][sym_program] = state(2334);
-	v->a[1][sym__statements] = state(2332);
-	v->a[1][sym__statement_not_pipeline] = state(2123);
-	v->a[1][sym_redirected_statement] = state(1011);
-	v->a[1][sym_for_statement] = state(1011);
+	v->a[1][sym_program] = state(2116);
+	v->a[1][sym__statements] = state(2115);
+	v->a[1][sym__statement_not_pipeline] = state(1915);
+	v->a[1][sym_redirected_statement] = state(957);
+	v->a[1][sym_for_statement] = state(957);
+	v->a[1][sym_while_statement] = state(957);
+	v->a[1][sym_if_statement] = state(957);
 	parse_table_5(v);
 }
 

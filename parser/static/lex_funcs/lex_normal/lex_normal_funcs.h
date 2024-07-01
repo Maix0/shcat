@@ -513,15 +513,6 @@ bool	lex_normal_s487(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s488(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s489(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_s490(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s491(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s492(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s493(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s494(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s495(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s496(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s497(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s498(t_lexer *lexer, t_lexer_state *s);
-bool	lex_normal_s499(t_lexer *lexer, t_lexer_state *s);
 bool	lex_normal_default(t_lexer *lexer, t_lexer_state *s);
 
 #endif // LEX_NORMAL_FUNCS_H

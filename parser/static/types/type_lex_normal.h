@@ -21,7 +21,7 @@
 
 typedef struct s_lex_normal_array
 {
-	void	*a[500];
+	void	*a[491];
 }	t_lex_normal_array;
 
 #endif // TYPE_LEX_NORMAL_H

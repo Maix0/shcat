@@ -14,44 +14,60 @@
 
 bool	lex_normal_s265(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_BANG, lexer, s);
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(274, lexer, s));
+	if (s->lookahead == '<')
+		return (lex_advance(279, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(327, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(277, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s266(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_BANG, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(218, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 10, \
-	s->lookahead)))
-		return (lex_advance(497, lexer, s));
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(274, lexer, s));
+	if (s->lookahead == '<')
+		return (lex_advance(278, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(277, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s267(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ, lexer, s);
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(274, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(277, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s268(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ, lexer, s);
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '<')
+		return (lex_advance(280, lexer, s));
 	if (s->lookahead == '=')
-		return (lex_advance(333, lexer, s));
+		return (lex_advance(327, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s269(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(218, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 10, \
-	s->lookahead)))
-		return (lex_advance(497, lexer, s));
+	lex_accept_token(anon_sym_GT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(275, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(328, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(273, lexer, s));
+	if (s->lookahead == '|')
+		return (lex_advance(276, lexer, s));
 	return (lex_end_state(lexer, s));
 }

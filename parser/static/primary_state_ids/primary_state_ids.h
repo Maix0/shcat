@@ -126,16 +126,5 @@ void	primary_state_ids_102(t_primary_state_ids_array *v);
 void	primary_state_ids_103(t_primary_state_ids_array *v);
 void	primary_state_ids_104(t_primary_state_ids_array *v);
 void	primary_state_ids_105(t_primary_state_ids_array *v);
-void	primary_state_ids_106(t_primary_state_ids_array *v);
-void	primary_state_ids_107(t_primary_state_ids_array *v);
-void	primary_state_ids_108(t_primary_state_ids_array *v);
-void	primary_state_ids_109(t_primary_state_ids_array *v);
-void	primary_state_ids_110(t_primary_state_ids_array *v);
-void	primary_state_ids_111(t_primary_state_ids_array *v);
-void	primary_state_ids_112(t_primary_state_ids_array *v);
-void	primary_state_ids_113(t_primary_state_ids_array *v);
-void	primary_state_ids_114(t_primary_state_ids_array *v);
-void	primary_state_ids_115(t_primary_state_ids_array *v);
-void	primary_state_ids_116(t_primary_state_ids_array *v);
 
 #endif // PRIMARY_STATE_IDS_H
