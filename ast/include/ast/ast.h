@@ -41,6 +41,8 @@ enum e_ast_node_kind
 	AST_STRING = S_AST_NONE | 0x000B,
 	AST_WORD = S_AST_NONE | 0x000C,
 	AST_VARIABLE_ASSIGNMENT = S_AST_NONE | 0x000E,
+	AST_EXTGLOB = S_AST_NONE | 0x001A,
+	AST_REGEX = S_AST_NONE | 0x001B,
 
 	AST_FILE_REDIRECTION = S_AST_REDIRECT | 0x000F,
 	AST_HEREDOC_REDIRECTION = S_AST_REDIRECT | 0x0010,
@@ -84,6 +86,8 @@ union u_ast_node_data {
 	t_ast_variable_assignment  variable_assignment;
 	t_ast_while				   while_;
 	t_ast_word				   word;
+	t_ast_extglob			   extglob;
+	t_ast_regex				   regex;
 };
 
 struct s_ast_node

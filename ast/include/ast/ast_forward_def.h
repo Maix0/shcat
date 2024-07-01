@@ -18,6 +18,7 @@ typedef enum e_ast_word_kind		  t_ast_word_kind;
 typedef enum e_ast_list_kind		  t_ast_list_kind;
 typedef enum e_ast_expansion_operator t_ast_expansion_operator;
 typedef enum e_ast_terminator_kind	  t_ast_terminator_kind;
+typedef enum e_ast_redirection_kind	  t_ast_redirection_kind;
 
 typedef union u_ast_node_data t_ast_node_data;
 
@@ -33,6 +34,7 @@ typedef struct s_ast_elif				  t_ast_elif;
 typedef struct s_ast_else				  t_ast_else;
 typedef struct s_ast_empty				  t_ast_empty;
 typedef struct s_ast_expansion			  t_ast_expansion;
+typedef struct s_ast_extglob			  t_ast_extglob;
 typedef struct s_ast_file_redirection	  t_ast_file_redirection;
 typedef struct s_ast_for				  t_ast_for;
 typedef struct s_ast_function_definition  t_ast_function_definition;
@@ -48,6 +50,7 @@ typedef struct s_ast_until				  t_ast_until;
 typedef struct s_ast_variable_assignment  t_ast_variable_assignment;
 typedef struct s_ast_while				  t_ast_while;
 typedef struct s_ast_word				  t_ast_word;
+typedef struct s_ast_regex				  t_ast_regex;
 
 /*
 t_ast_arithmetic_expansion                      arithmetic_expansion;

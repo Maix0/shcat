@@ -48,8 +48,6 @@ void	unique_symbols_map_1(t_unique_symbols_map_array *v)
 	v->a[anon_sym_LT] = sym__immediate_double_hash;
 	v->a[anon_sym_GT] = sym__immediate_double_hash;
 	v->a[anon_sym_GT_GT] = sym__immediate_double_hash;
-	v->a[anon_sym_AMP_GT] = sym__immediate_double_hash;
-	v->a[anon_sym_AMP_GT_GT] = sym__immediate_double_hash;
 	v->a[anon_sym_LT_AMP] = sym__immediate_double_hash;
 	v->a[anon_sym_GT_AMP] = sym__immediate_double_hash;
 	v->a[anon_sym_GT_PIPE] = sym__immediate_double_hash;
@@ -59,13 +57,13 @@ void	unique_symbols_map_1(t_unique_symbols_map_array *v)
 	v->a[anon_sym_LT_LT_DASH] = sym__immediate_double_hash;
 	v->a[aux_sym_heredoc_redirect_token1] = aux_sym_heredoc_redirect_token1;
 	v->a[anon_sym_PIPE_AMP] = anon_sym_PIPE_AMP;
+	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = anon_sym_DOLLAR_LPAREN_LPAREN;
+	v->a[anon_sym_RPAREN_RPAREN] = anon_sym_RPAREN_RPAREN;
 	unique_symbols_map_2(v);
 }
 
 void	unique_symbols_map_2(t_unique_symbols_map_array *v)
 {
-	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = anon_sym_DOLLAR_LPAREN_LPAREN;
-	v->a[anon_sym_RPAREN_RPAREN] = anon_sym_RPAREN_RPAREN;
 	v->a[anon_sym_PLUS_EQ] = sym__immediate_double_hash;
 	v->a[anon_sym_DASH_EQ] = sym__immediate_double_hash;
 	v->a[anon_sym_STAR_EQ] = sym__immediate_double_hash;
@@ -84,13 +82,13 @@ void	unique_symbols_map_2(t_unique_symbols_map_array *v)
 	v->a[anon_sym_GT_EQ] = sym__immediate_double_hash;
 	v->a[anon_sym_PLUS] = sym__immediate_double_hash;
 	v->a[anon_sym_DASH] = sym__immediate_double_hash;
+	v->a[anon_sym_STAR] = sym__immediate_double_hash;
+	v->a[anon_sym_SLASH] = sym__immediate_double_hash;
 	unique_symbols_map_3(v);
 }
 
 void	unique_symbols_map_3(t_unique_symbols_map_array *v)
 {
-	v->a[anon_sym_STAR] = sym__immediate_double_hash;
-	v->a[anon_sym_SLASH] = sym__immediate_double_hash;
 	v->a[anon_sym_PERCENT] = sym__immediate_double_hash;
 	v->a[anon_sym_QMARK] = anon_sym_QMARK;
 	v->a[anon_sym_COLON] = anon_sym_COLON;
@@ -109,13 +107,13 @@ void	unique_symbols_map_3(t_unique_symbols_map_array *v)
 	v->a[sym_number] = sym_number;
 	v->a[anon_sym_POUND] = anon_sym_POUND;
 	v->a[anon_sym_DOLLAR_LBRACE] = anon_sym_DOLLAR_LBRACE;
+	v->a[anon_sym_COLON_DASH] = sym__immediate_double_hash;
+	v->a[anon_sym_DASH3] = sym__immediate_double_hash;
 	unique_symbols_map_4(v);
 }
 
 void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 {
-	v->a[anon_sym_COLON_DASH] = sym__immediate_double_hash;
-	v->a[anon_sym_DASH3] = sym__immediate_double_hash;
 	v->a[anon_sym_COLON_EQ] = sym__immediate_double_hash;
 	v->a[anon_sym_EQ2] = sym__immediate_double_hash;
 	v->a[anon_sym_COLON_QMARK] = sym__immediate_double_hash;
@@ -134,6 +132,8 @@ void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 	v->a[anon_sym_0] = anon_sym_POUND;
 	v->a[anon_sym__] = anon_sym_POUND;
 	v->a[anon_sym_SEMI] = anon_sym_SEMI;
+	v->a[sym_heredoc_start] = sym_heredoc_start;
+	v->a[sym_simple_heredoc_body] = sym_heredoc_body;
 	unique_symbols_map_5(v);
 }
 

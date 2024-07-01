@@ -14,8 +14,6 @@
 
 void	symbols_names_5(t_symbols_names_array *v)
 {
-	v->a[sym_heredoc_start] = "heredoc_start";
-	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
 	v->a[sym_heredoc_content] = "heredoc_content";
 	v->a[sym_heredoc_end] = "heredoc_end";
@@ -34,13 +32,13 @@ void	symbols_names_5(t_symbols_names_array *v)
 	v->a[aux_sym__terminated_statement] = "_terminated_statement";
 	v->a[sym__statement_not_pipeline] = "_statement_not_pipeline";
 	v->a[sym_redirected_statement] = "redirected_statement";
+	v->a[sym_for_statement] = "for_statement";
+	v->a[sym_while_statement] = "while_statement";
 	symbols_names_6(v);
 }
 
 void	symbols_names_6(t_symbols_names_array *v)
 {
-	v->a[sym_for_statement] = "for_statement";
-	v->a[sym_while_statement] = "while_statement";
 	v->a[sym_do_group] = "do_group";
 	v->a[sym_if_statement] = "if_statement";
 	v->a[sym_elif_clause] = "elif_clause";
@@ -59,13 +57,13 @@ void	symbols_names_6(t_symbols_names_array *v)
 	v->a[sym_variable_assignment] = "variable_assignment";
 	v->a[sym__variable_assignments] = "_variable_assignments";
 	v->a[sym_file_redirect] = "file_redirect";
+	v->a[sym_heredoc_redirect] = "heredoc_redirect";
+	v->a[sym__heredoc_pipeline] = "pipeline";
 	symbols_names_7(v);
 }
 
 void	symbols_names_7(t_symbols_names_array *v)
 {
-	v->a[sym_heredoc_redirect] = "heredoc_redirect";
-	v->a[sym__heredoc_pipeline] = "pipeline";
 	v->a[sym__heredoc_expression] = "_heredoc_expression";
 	v->a[aux_sym__heredoc_command] = "_heredoc_command";
 	v->a[sym__heredoc_body] = "_heredoc_body";
@@ -85,13 +83,13 @@ void	symbols_names_7(t_symbols_names_array *v)
 	v->a[sym_simple_expansion] = "simple_expansion";
 	v->a[sym_expansion] = "expansion";
 	v->a[sym__expansion_body] = "_expansion_body";
+	v->a[sym_expansion_expression] = "expansion_expression";
+	v->a[sym_expansion_regex] = "expansion_regex";
 	symbols_names_8(v);
 }
 
 void	symbols_names_8(t_symbols_names_array *v)
 {
-	v->a[sym_expansion_expression] = "expansion_expression";
-	v->a[sym_expansion_regex] = "expansion_regex";
 	v->a[sym__concatenation_in_expansion] = "concatenation";
 	v->a[sym_command_substitution] = "command_substitution";
 	v->a[sym__extglob_blob] = "_extglob_blob";
@@ -113,13 +111,13 @@ void	symbols_names_8(t_symbols_names_array *v)
 	= "_variable_assignments_repeat1";
 	v->a[aux_sym_heredoc_body_repeat1] = "heredoc_body_repeat1";
 	v->a[aux_sym_concatenation_repeat1] = "concatenation_repeat1";
+	v->a[aux_sym_string_repeat1] = "string_repeat1";
+	v->a[aux_sym_expansion_regex_repeat1] = "expansion_regex_repeat1";
 	symbols_names_9(v);
 }
 
 void	symbols_names_9(t_symbols_names_array *v)
 {
-	v->a[aux_sym_string_repeat1] = "string_repeat1";
-	v->a[aux_sym_expansion_regex_repeat1] = "expansion_regex_repeat1";
 	v->a[aux_sym__concatenation_in_expansion_repeat1] \
 	= "_concatenation_in_expansion_repeat1";
 	v->a[alias_sym_statements] = "statements";

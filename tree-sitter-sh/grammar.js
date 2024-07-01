@@ -302,7 +302,7 @@ module.exports = grammar({
       field('fd', optional($.file_descriptor)),
       choice(
         seq(
-          field('op', alias(choice('<', '>', '>>', '&>', '&>>', '<&', '>&', '>|'), $.operator)),
+          field('op', alias(choice('<', '>', '>>', '<&', '>&', '>|'), $.operator)),
           field('dest', repeat1($._literal)),
         ),
         seq(

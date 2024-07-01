@@ -58,6 +58,18 @@ enum e_ast_expansion_operator
 	E_OP_LARGEST_SUFFIX,	   // ${var%%pattern}
 };
 
+enum e_ast_redirection_kind
+{
+	AST_REDIR_INPUT, 			// <
+	AST_REDIR_OUTPUT, 			// >
+	AST_REDIR_APPEND, 			// >>
+	AST_REDIR_HEREDOC, 			// <<
+	AST_REDIR_HEREDOC_INDENT, 	// <<-
+	AST_REDIR_DUP_INPUT, 		// <&
+	AST_REDIR_DUP_OUTPUT, 		// >&
+	AST_REDIR_DUP_ERROR, 		// &>
+};
+
 struct s_ast_empty
 {
 };
@@ -306,6 +318,7 @@ struct s_ast_variable_assignment
 struct s_ast_file_redirection
 {
 	t_ast_node output;
+	t_ast_redirection_kind op;
 	t_ast_node input;
 };
 
@@ -318,6 +331,7 @@ struct s_ast_file_redirection
 struct s_ast_heredoc_redirection
 {
 	t_ast_node output;
+	t_ast_redirection_kind op;
 	t_ast_node delimiter;
 };
 
@@ -355,6 +369,28 @@ struct s_ast_arithmetic_expansion
 struct s_ast_command_substitution
 {
 	t_ast_node cmd;
+};
+
+/// Extended Globbing
+/// ```shell
+/// 	!(pattern)
+/// 	?(pattern)
+/// 	*(pattern)
+/// 	+(pattern)
+/// 	@(pattern)
+/// ```
+struct s_ast_extglob
+{
+	t_str pattern;
+};
+
+/// Regex
+/// ```shell
+/// 	~pattern
+/// ```
+struct s_ast_regex
+{
+	t_str pattern;
 };
 
 #endif /* AST_RAW_STRUCTS_H */

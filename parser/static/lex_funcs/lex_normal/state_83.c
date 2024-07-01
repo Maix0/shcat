@@ -14,42 +14,75 @@
 
 bool	lex_normal_s415(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_COLON_EQ, lexer, s);
+	lex_accept_token(aux_sym__simple_variable_name_token1, \
+	lexer, s);
+	if (s->lookahead == 'c')
+		return (lex_advance(250, lexer, s));
+	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
+	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
+	s->lookahead == '_' || (s->lookahead >= 'a' && \
+	s->lookahead <= 'z')))
+		return (lex_advance(418, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s416(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_COLON_EQ, lexer, s);
-	if (s->lookahead == '\\')
+	lex_accept_token(aux_sym__simple_variable_name_token1, \
+	lexer, s);
+	if (s->lookahead == 'n')
 		return (lex_advance(238, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 10, \
-	s->lookahead)))
-		return (lex_advance(528, lexer, s));
+	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
+	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
+	s->lookahead == '_' || (s->lookahead >= 'a' && \
+	s->lookahead <= 'z')))
+		return (lex_advance(418, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s417(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ2, lexer, s);
+	lex_accept_token(aux_sym__simple_variable_name_token1, \
+	lexer, s);
+	if (s->lookahead == 's')
+		return (lex_advance(414, lexer, s));
+	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
+	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
+	s->lookahead == '_' || (s->lookahead >= 'a' && \
+	s->lookahead <= 'z')))
+		return (lex_advance(418, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s418(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ2, lexer, s);
-	if (s->lookahead == '\\')
-		return (lex_advance(238, lexer, s));
-	if ((!s->eof && \
-	set_contains(sym__comment_word_character_set_1(), 10, \
-	s->lookahead)))
-		return (lex_advance(528, lexer, s));
+	lex_accept_token(aux_sym__simple_variable_name_token1, \
+	lexer, s);
+	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
+	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
+	s->lookahead == '_' || (s->lookahead >= 'a' && \
+	s->lookahead <= 'z')))
+		return (lex_advance(418, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s419(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_COLON_QMARK, lexer, s);
+	lex_accept_token(aux_sym__multiline_variable_name_token1, \
+	lexer, s);
+	if (lex_normal_map419(lexer, s))
+		return (true);
+	if ((s->lookahead == '\t' || s->lookahead == ' '))
+		return (lex_skip(10, lexer, s));
+	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
+		return (lex_advance(453, lexer, s));
+	if ((s->lookahead >= '1' && s->lookahead <= '9'))
+		return (lex_advance(381, lexer, s));
+	if (((s->lookahead >= 'A' && s->lookahead <= 'Z') || \
+	(s->lookahead >= 'a' && s->lookahead <= 'z')))
+		return (lex_advance(413, lexer, s));
+	if ((s->lookahead != 0 && (s->lookahead > '&' && \
+	s->lookahead < '*')))
+		return (lex_advance(497, lexer, s));
 	return (lex_end_state(lexer, s));
 }

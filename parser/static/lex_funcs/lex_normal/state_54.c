@@ -14,45 +14,54 @@
 
 bool	lex_normal_s270(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_esac, lexer, s);
-	if (((s->lookahead >= '0' && s->lookahead <= '9') || \
-	(s->lookahead >= 'A' && s->lookahead <= 'Z') || \
-	s->lookahead == '_' || (s->lookahead >= 'a' && \
-	s->lookahead <= 'z')))
-		return (lex_advance(445, lexer, s));
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(279, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s271(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LPAREN, lexer, s);
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(279, lexer, s));
+	if (s->lookahead == '<')
+		return (lex_advance(285, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(335, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s272(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PIPE, lexer, s);
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(279, lexer, s));
+	if (s->lookahead == '<')
+		return (lex_advance(284, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s273(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PIPE, lexer, s);
-	if (s->lookahead == '&')
-		return (lex_advance(337, lexer, s));
+	lex_accept_token(anon_sym_LT, lexer, s);
+	if (s->lookahead == '<')
+		return (lex_advance(286, lexer, s));
 	if (s->lookahead == '=')
-		return (lex_advance(353, lexer, s));
-	if (s->lookahead == '|')
-		return (lex_advance(284, lexer, s));
+		return (lex_advance(335, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s274(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PIPE, lexer, s);
+	lex_accept_token(anon_sym_GT, lexer, s);
 	if (s->lookahead == '&')
-		return (lex_advance(337, lexer, s));
+		return (lex_advance(280, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(336, lexer, s));
+	if (s->lookahead == '>')
+		return (lex_advance(278, lexer, s));
 	if (s->lookahead == '|')
-		return (lex_advance(284, lexer, s));
+		return (lex_advance(281, lexer, s));
 	return (lex_end_state(lexer, s));
 }

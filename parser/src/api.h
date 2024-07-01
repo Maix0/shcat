@@ -555,6 +555,12 @@ TSNode ts_node_child(TSNode self, uint32_t child_index);
 const char *ts_node_field_name_for_child(TSNode self, uint32_t child_index);
 
 /**
+ * Get the field name for node's child at the given index, where zero represents
+ * the first child. Returns NULL, if no field is found.
+ */
+TSFieldId ts_node_field_id_for_child(TSNode self, uint32_t child_index);
+
+/**
  * Get the node's number of children.
  */
 uint32_t ts_node_child_count(TSNode self);
@@ -643,9 +649,6 @@ void ts_node_edit(TSNode *self, const TSInputEdit *edit);
  */
 bool ts_node_eq(TSNode self, TSNode other);
 
-
-
-
 /**********************/
 /* Section - Language */
 /**********************/
@@ -719,8 +722,5 @@ uint32_t ts_language_version(const TSLanguage *self);
  * [`ts_node_grammar_symbol`] for valid symbols.
  */
 TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state, TSSymbol symbol);
-
-
-
 
 #endif // TREE_SITTER_API_H_

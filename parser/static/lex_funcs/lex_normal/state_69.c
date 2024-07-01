@@ -14,42 +14,54 @@
 
 bool	lex_normal_s345(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_SLASH_EQ, lexer, s);
+	lex_accept_token(anon_sym_SLASH, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(319, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(238, lexer, s));
+		return (lex_advance(218, lexer, s));
 	if ((!s->eof && \
 	set_contains(sym__comment_word_character_set_1(), 10, \
 	s->lookahead)))
-		return (lex_advance(528, lexer, s));
+		return (lex_advance(497, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s346(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PERCENT_EQ, lexer, s);
+	lex_accept_token(anon_sym_SLASH, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(318, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s347(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PERCENT_EQ, lexer, s);
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '%')
+		return (lex_advance(399, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(321, lexer, s));
 	if (s->lookahead == '\\')
-		return (lex_advance(238, lexer, s));
+		return (lex_advance(218, lexer, s));
 	if ((!s->eof && \
 	set_contains(sym__comment_word_character_set_1(), 10, \
 	s->lookahead)))
-		return (lex_advance(528, lexer, s));
+		return (lex_advance(497, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s348(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LT_LT_EQ, lexer, s);
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '%')
+		return (lex_advance(398, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s349(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_GT_EQ, lexer, s);
+	lex_accept_token(anon_sym_PERCENT, lexer, s);
+	if (s->lookahead == '=')
+		return (lex_advance(320, lexer, s));
 	return (lex_end_state(lexer, s));
 }

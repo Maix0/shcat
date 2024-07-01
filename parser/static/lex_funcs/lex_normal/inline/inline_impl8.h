@@ -19,55 +19,55 @@
 # include "../../../headers/constants.h"
 # include "../../../../parse_types.h"
 
-static inline bool	lex_normal_map198(t_lexer *lexer, \
+static inline bool	lex_normal_map183(t_lexer *lexer, \
 	t_lexer_state *s)
 {
-	static uint32_t	map[] = {'!', 285, '"', 395, '#', 435, \
-	'$', 394, '&', 218, '(', 271, ')', 221, '+', 387, '-', \
-	385, '<', 292, '=', 287, '>', 295};
+	static uint32_t	map[] = {'!', 265, '#', 383, '$', 365, \
+	'*', 341, '-', 338, '0', 448, '?', 350, '@', 444};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));
 }
 
-static inline bool	lex_normal_map199(t_lexer *lexer, \
+static inline bool	lex_normal_map184(t_lexer *lexer, \
 	t_lexer_state *s)
 {
-	static uint32_t	map[] = {'!', 285, '#', 410, '$', 392, \
-	'&', 218, '*', 368, '-', 365, '0', 475, '<', 292, '>', \
-	295, '?', 377, '@', 471, '\\', 65, '_', 478, '|', 276};
+	static uint32_t	map[] = {'!', 265, '#', 383, '$', 365, \
+	'*', 341, '-', 338, '0', 448, '?', 350, '@', 444, '\\', \
+	86, '_', 451};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));
 }
 
-static inline bool	lex_normal_map200(t_lexer *lexer, \
+static inline bool	lex_normal_map185(t_lexer *lexer, \
 	t_lexer_state *s)
 {
-	static uint32_t	map[] = {'!', 285, '#', 410, '$', 392, \
-	')', 277, '*', 368, '-', 365, '0', 475, '?', 377, '@', \
-	471, '\\', 85, '_', 478, '|', 272};
+	static uint32_t	map[] = {'"', 368, '#', 408, '$', 366, \
+	'&', 199, '\'', 200, '(', 251, '<', 272, '>', 275, '\\', \
+	144, '`', 403, '|', 256};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));
 }
 
-static inline bool	lex_normal_map201(t_lexer *lexer, \
+static inline bool	lex_normal_map186(t_lexer *lexer, \
 	t_lexer_state *s)
 {
-	static uint32_t	map[] = {'!', 285, '#', 410, '$', 392, \
-	'*', 368, '-', 365, '0', 475, '?', 377, '@', 471, '\\', \
-	88, '_', 478};
+	static uint32_t	map[] = {'"', 368, '#', 408, '$', 366, \
+	'&', 199, '\'', 200, '(', 251, '<', 272, '>', 275, '\\', \
+	150, '`', 404, '|', 256};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));
 }
 
-static inline bool	lex_normal_map202(t_lexer *lexer, \
+static inline bool	lex_normal_map187(t_lexer *lexer, \
 	t_lexer_state *s)
 {
-	static uint32_t	map[] = {'!', 285, '#', 410, '$', 392, \
-	'*', 368, '-', 365, '0', 475, '?', 377, '@', 471};
+	static uint32_t	map[] = {'"', 368, '#', 408, '$', 366, \
+	'\'', 200, '(', 251, '<', 270, '>', 275, '\\', 135, '`', \
+	403, '{', 260};
 
 	return (advance_map_inner(map, sizeof(map) / sizeof(*map), \
 	lexer, s));

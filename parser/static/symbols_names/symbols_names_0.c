@@ -48,8 +48,6 @@ void	symbols_names_1(t_symbols_names_array *v)
 	v->a[anon_sym_LT] = "operator";
 	v->a[anon_sym_GT] = "operator";
 	v->a[anon_sym_GT_GT] = "operator";
-	v->a[anon_sym_AMP_GT] = "operator";
-	v->a[anon_sym_AMP_GT_GT] = "operator";
 	v->a[anon_sym_LT_AMP] = "operator";
 	v->a[anon_sym_GT_AMP] = "operator";
 	v->a[anon_sym_GT_PIPE] = "operator";
@@ -59,13 +57,13 @@ void	symbols_names_1(t_symbols_names_array *v)
 	v->a[anon_sym_LT_LT_DASH] = "operator";
 	v->a[aux_sym_heredoc_redirect_token1] = "heredoc_redirect_token1";
 	v->a[anon_sym_PIPE_AMP] = "|&";
+	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = "$((";
+	v->a[anon_sym_RPAREN_RPAREN] = "))";
 	symbols_names_2(v);
 }
 
 void	symbols_names_2(t_symbols_names_array *v)
 {
-	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = "$((";
-	v->a[anon_sym_RPAREN_RPAREN] = "))";
 	v->a[anon_sym_PLUS_EQ] = "operator";
 	v->a[anon_sym_DASH_EQ] = "operator";
 	v->a[anon_sym_STAR_EQ] = "operator";
@@ -84,13 +82,13 @@ void	symbols_names_2(t_symbols_names_array *v)
 	v->a[anon_sym_GT_EQ] = "operator";
 	v->a[anon_sym_PLUS] = "operator";
 	v->a[anon_sym_DASH] = "operator";
+	v->a[anon_sym_STAR] = "operator";
+	v->a[anon_sym_SLASH] = "operator";
 	symbols_names_3(v);
 }
 
 void	symbols_names_3(t_symbols_names_array *v)
 {
-	v->a[anon_sym_STAR] = "operator";
-	v->a[anon_sym_SLASH] = "operator";
 	v->a[anon_sym_PERCENT] = "operator";
 	v->a[anon_sym_QMARK] = "\\\?";
 	v->a[anon_sym_COLON] = ":";
@@ -109,13 +107,13 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[sym_number] = "number";
 	v->a[anon_sym_POUND] = "special_variable_name";
 	v->a[anon_sym_DOLLAR_LBRACE] = "${";
+	v->a[anon_sym_COLON_DASH] = "operator";
+	v->a[anon_sym_DASH3] = "operator";
 	symbols_names_4(v);
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
 {
-	v->a[anon_sym_COLON_DASH] = "operator";
-	v->a[anon_sym_DASH3] = "operator";
 	v->a[anon_sym_COLON_EQ] = "operator";
 	v->a[anon_sym_EQ2] = "operator";
 	v->a[anon_sym_COLON_QMARK] = "operator";
@@ -134,6 +132,8 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_0] = "special_variable_name";
 	v->a[anon_sym__] = "special_variable_name";
 	v->a[anon_sym_SEMI] = ";";
+	v->a[sym_heredoc_start] = "heredoc_start";
+	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	symbols_names_5(v);
 }
 

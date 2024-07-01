@@ -14,36 +14,34 @@
 
 void	parse_table_5(t_parse_table_array *v)
 {
-	v->a[1][sym_redirected_statement] = state(1006);
-	v->a[1][sym_for_statement] = state(1006);
-	v->a[1][sym_while_statement] = state(1006);
-	v->a[1][sym_if_statement] = state(1006);
-	v->a[1][sym_case_statement] = state(1006);
-	v->a[1][sym_function_definition] = state(1006);
-	v->a[1][sym_compound_statement] = state(1006);
-	v->a[1][sym_subshell] = state(1006);
-	v->a[1][sym_pipeline] = state(1175);
-	v->a[1][sym_list] = state(1006);
-	v->a[1][sym_negated_command] = state(1006);
-	v->a[1][sym_command] = state(1006);
-	v->a[1][sym_command_name] = state(183);
-	v->a[1][sym_variable_assignment] = state(236);
-	v->a[1][sym__variable_assignments] = state(1006);
-	v->a[1][sym_file_redirect] = state(685);
-	v->a[1][sym_arithmetic_expansion] = state(291);
-	v->a[1][sym_concatenation] = state(636);
-	v->a[1][sym_string] = state(291);
-	v->a[1][sym_simple_expansion] = state(291);
+	v->a[1][sym_while_statement] = state(1011);
+	v->a[1][sym_if_statement] = state(1011);
+	v->a[1][sym_case_statement] = state(1011);
+	v->a[1][sym_function_definition] = state(1011);
+	v->a[1][sym_compound_statement] = state(1011);
+	v->a[1][sym_subshell] = state(1011);
+	v->a[1][sym_pipeline] = state(1172);
+	v->a[1][sym_list] = state(1011);
+	v->a[1][sym_negated_command] = state(1011);
+	v->a[1][sym_command] = state(1011);
+	v->a[1][sym_command_name] = state(181);
+	v->a[1][sym_variable_assignment] = state(239);
+	v->a[1][sym__variable_assignments] = state(1011);
+	v->a[1][sym_file_redirect] = state(684);
+	v->a[1][sym_arithmetic_expansion] = state(323);
+	v->a[1][sym_concatenation] = state(618);
+	v->a[1][sym_string] = state(323);
+	v->a[1][sym_simple_expansion] = state(323);
+	v->a[1][sym_expansion] = state(323);
+	v->a[1][sym_command_substitution] = state(323);
 	parse_table_6(v);
 }
 
 void	parse_table_6(t_parse_table_array *v)
 {
-	v->a[1][sym_expansion] = state(291);
-	v->a[1][sym_command_substitution] = state(291);
-	v->a[1][aux_sym__statements_repeat1] = state(133);
-	v->a[1][aux_sym_redirected_statement_repeat2] = state(1219);
-	v->a[1][aux_sym_command_repeat1] = state(743);
+	v->a[1][aux_sym__statements_repeat1] = state(139);
+	v->a[1][aux_sym_redirected_statement_repeat2] = state(1206);
+	v->a[1][aux_sym_command_repeat1] = state(688);
 	v->a[1][ts_builtin_sym_end] = actions(5);
 	v->a[1][sym_word] = actions(7);
 	v->a[1][anon_sym_for] = actions(9);
@@ -57,17 +55,15 @@ void	parse_table_6(t_parse_table_array *v)
 	v->a[1][anon_sym_LT] = actions(23);
 	v->a[1][anon_sym_GT] = actions(23);
 	v->a[1][anon_sym_GT_GT] = actions(23);
-	v->a[1][anon_sym_AMP_GT] = actions(23);
-	v->a[1][anon_sym_AMP_GT_GT] = actions(23);
+	v->a[1][anon_sym_LT_AMP] = actions(23);
+	v->a[1][anon_sym_GT_AMP] = actions(23);
+	v->a[1][anon_sym_GT_PIPE] = actions(23);
+	v->a[1][anon_sym_LT_AMP_DASH] = actions(25);
 	parse_table_7(v);
 }
 
 void	parse_table_7(t_parse_table_array *v)
 {
-	v->a[1][anon_sym_LT_AMP] = actions(23);
-	v->a[1][anon_sym_GT_AMP] = actions(23);
-	v->a[1][anon_sym_GT_PIPE] = actions(23);
-	v->a[1][anon_sym_LT_AMP_DASH] = actions(25);
 	v->a[1][anon_sym_GT_AMP_DASH] = actions(25);
 	v->a[1][anon_sym_DOLLAR_LPAREN_LPAREN] = actions(27);
 	v->a[1][anon_sym_DOLLAR] = actions(29);

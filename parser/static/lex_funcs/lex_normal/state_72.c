@@ -14,34 +14,32 @@
 
 bool	lex_normal_s360(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_EQ_EQ, lexer, s);
+	lex_accept_token(anon_sym_PLUS2, lexer, s);
+	if (s->lookahead == '+')
+		return (lex_advance(355, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s361(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_BANG_EQ, lexer, s);
+	lex_accept_token(anon_sym_TILDE, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s362(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_LT_EQ, lexer, s);
+	lex_accept_token(anon_sym_PLUS_PLUS2, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s363(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_GT_EQ, lexer, s);
+	lex_accept_token(anon_sym_DASH_DASH2, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s364(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(anon_sym_PLUS, lexer, s);
-	if (s->lookahead == '+')
-		return (lex_advance(389, lexer, s));
-	if (s->lookahead == '=')
-		return (lex_advance(340, lexer, s));
+	lex_accept_token(aux_sym_concatenation_token1, lexer, s);
 	return (lex_end_state(lexer, s));
 }

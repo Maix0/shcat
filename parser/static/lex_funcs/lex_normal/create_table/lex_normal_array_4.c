@@ -139,7 +139,5 @@ void	lex_normal_array_24(t_lex_normal_array *v)
 	v->a[497] = lex_normal_s497;
 	v->a[498] = lex_normal_s498;
 	v->a[499] = lex_normal_s499;
-	lex_normal_array_25(v);
 }
-
 /* EOF lex_normal_array_4.c */

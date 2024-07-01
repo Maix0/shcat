@@ -14,61 +14,36 @@
 
 bool	lex_normal_s330(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(330, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(176, lexer, s));
-	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(494, lexer, s));
+	lex_accept_token(anon_sym_AMP, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s331(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(331, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(102, lexer, s));
+	lex_accept_token(anon_sym_AMP, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(263, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s332(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(332, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(39, lexer, s));
-	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(495, lexer, s));
+	lex_accept_token(anon_sym_AMP, lexer, s);
+	if (s->lookahead == '&')
+		return (lex_advance(263, lexer, s));
+	if (s->lookahead == '=')
+		return (lex_advance(324, lexer, s));
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s333(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(333, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(80, lexer, s));
+	lex_accept_token(anon_sym_EQ_EQ, lexer, s);
 	return (lex_end_state(lexer, s));
 }
 
 bool	lex_normal_s334(t_lexer *lexer, t_lexer_state *s)
 {
-	lex_accept_token(aux_sym_heredoc_redirect_token1, lexer, \
-	s);
-	if (s->lookahead == '\n')
-		return (lex_advance(334, lexer, s));
-	if (s->lookahead == '\\')
-		return (lex_advance(99, lexer, s));
-	if ((s->lookahead >= 0x0b && s->lookahead <= '\r'))
-		return (lex_advance(496, lexer, s));
+	lex_accept_token(anon_sym_BANG_EQ, lexer, s);
 	return (lex_end_state(lexer, s));
 }
