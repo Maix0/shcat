@@ -1052,8 +1052,7 @@ t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_a
 		{
 			if (ast_from_node(ts_node_child(self, i++), input, &ret))
 				return (ast_free(ret_tmp), ERROR);
-			else
-				ret_tmp = NULL;
+			continue;
 		}
 		if (ast_from_node(ts_node_child(self, i++), input, &tmp))
 			return ((void)!((ret != ret_tmp) && (ast_free(ret_tmp), true)), ast_free(ret), ERROR);
