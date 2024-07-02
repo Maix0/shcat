@@ -401,7 +401,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 	{
 		if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' ||
 			  lexer->lookahead == ')' || lexer->lookahead == '(' || lexer->lookahead == ';' || lexer->lookahead == '&' ||
-			  lexer->lookahead == '|'))
+			  lexer->lookahead == '|' || lexer->lookahead == '{' || lexer->lookahead == '}'))
 		{
 			lexer->result_symbol = CONCAT;
 			// So for a`b`, we want to return a concat. We check if the
@@ -584,10 +584,10 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 					array_push(&scanner->heredocs, heredoc);
 					lexer->result_symbol = HEREDOC_ARROW_DASH;
 				}
-				else if (lexer->lookahead == '<' || lexer->lookahead == '=')
-				{
-					return false;
-				}
+				// else if (lexer->lookahead == '<' || lexer->lookahead == '=')
+				// {
+				// 	return false;
+				// }
 				else
 				{
 					Heredoc heredoc = heredoc_new();
@@ -1085,9 +1085,7 @@ expansion_word:
 		for (;;)
 		{
 			if (lexer->lookahead == '\"')
-			{
 				return false;
-			}
 			if (lexer->lookahead == '$')
 			{
 				lexer->mark_end(lexer);
@@ -1142,25 +1140,16 @@ expansion_word:
 					advance(lexer);
 					lexer->mark_end(lexer);
 					if (lexer->lookahead == '}')
-					{
 						return false;
-					}
 				}
 				else
-				{
 					return false;
-				}
 			}
 
 			if (lexer->lookahead == '\'')
-			{
 				return false;
-			}
-
 			if (lexer->eof(lexer))
-			{
 				return false;
-			}
 			advanced_once = advanced_once || !iswspace(lexer->lookahead);
 			advance_once_space = advance_once_space || iswspace(lexer->lookahead);
 			advance(lexer);

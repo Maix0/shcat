@@ -227,5 +227,6 @@ void	parse_actions_entries_203(t_parse_actions_entries_array *v);
 void	parse_actions_entries_204(t_parse_actions_entries_array *v);
 void	parse_actions_entries_205(t_parse_actions_entries_array *v);
 void	parse_actions_entries_206(t_parse_actions_entries_array *v);
+void	parse_actions_entries_207(t_parse_actions_entries_array *v);
 
 #endif // PARSE_ACTIONS_ENTRIES_H

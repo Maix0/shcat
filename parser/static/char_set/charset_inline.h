@@ -33,4 +33,13 @@ static inline t_char_range	*sym_word_character_set_1(void)
 	return (val);
 }
 
+static inline t_char_range	*aux_sym__word_no_brace_token1_character_set_2(void)
+{
+	static t_char_range	val[10] = {{0, 0x08}, {0x0b, 0x1f}, \
+		{'!', '!'}, {'#', '#'}, {'%', '%'}, {'*', ':'}, {'=', \
+		'='}, {'?', '_'}, {'a', 'z'}, {'~', 0x10ffff}};
+
+	return (val);
+}
+
 #endif // CHARSET_INLINE_H

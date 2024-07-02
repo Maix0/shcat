@@ -15,25 +15,25 @@
 void	small_parse_table_360(t_small_parse_table_array *v)
 {
 	v->a[7200] = 1;
-	v->a[7201] = sym_variable_assignment;
-	v->a[7202] = state(603);
+	v->a[7201] = sym_concatenation;
+	v->a[7202] = state(639);
 	v->a[7203] = 1;
-	v->a[7204] = sym_concatenation;
-	v->a[7205] = state(639);
+	v->a[7204] = aux_sym_command_repeat1;
+	v->a[7205] = state(700);
 	v->a[7206] = 1;
-	v->a[7207] = aux_sym_command_repeat1;
-	v->a[7208] = state(644);
+	v->a[7207] = sym_file_redirect;
+	v->a[7208] = state(1073);
 	v->a[7209] = 1;
-	v->a[7210] = sym_file_redirect;
-	v->a[7211] = state(1122);
+	v->a[7210] = sym_pipeline;
+	v->a[7211] = state(1158);
 	v->a[7212] = 1;
-	v->a[7213] = sym_pipeline;
-	v->a[7214] = state(1196);
+	v->a[7213] = aux_sym_redirected_statement_repeat2;
+	v->a[7214] = state(1906);
 	v->a[7215] = 1;
-	v->a[7216] = aux_sym_redirected_statement_repeat2;
-	v->a[7217] = state(1910);
+	v->a[7216] = sym__statement_not_pipeline;
+	v->a[7217] = state(2131);
 	v->a[7218] = 1;
-	v->a[7219] = sym__statement_not_pipeline;
+	v->a[7219] = sym__statements;
 	small_parse_table_361(v);
 }
 
@@ -43,18 +43,18 @@ void	small_parse_table_361(t_small_parse_table_array *v)
 	v->a[7221] = 2;
 	v->a[7222] = anon_sym_while;
 	v->a[7223] = anon_sym_until;
-	v->a[7224] = actions(61);
+	v->a[7224] = actions(217);
 	v->a[7225] = 2;
 	v->a[7226] = sym_raw_string;
 	v->a[7227] = sym_number;
-	v->a[7228] = state(436);
+	v->a[7228] = state(347);
 	v->a[7229] = 5;
 	v->a[7230] = sym_arithmetic_expansion;
 	v->a[7231] = sym_string;
 	v->a[7232] = sym_simple_expansion;
 	v->a[7233] = sym_expansion;
 	v->a[7234] = sym_command_substitution;
-	v->a[7235] = actions(53);
+	v->a[7235] = actions(215);
 	v->a[7236] = 7;
 	v->a[7237] = anon_sym_LT;
 	v->a[7238] = anon_sym_GT;
@@ -68,7 +68,7 @@ void	small_parse_table_362(t_small_parse_table_array *v)
 	v->a[7241] = anon_sym_GT_AMP;
 	v->a[7242] = anon_sym_GT_PIPE;
 	v->a[7243] = anon_sym_LT_GT;
-	v->a[7244] = state(1021);
+	v->a[7244] = state(958);
 	v->a[7245] = 12;
 	v->a[7246] = sym_redirected_statement;
 	v->a[7247] = sym_for_statement;

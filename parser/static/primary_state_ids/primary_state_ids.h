@@ -126,5 +126,6 @@ void	primary_state_ids_102(t_primary_state_ids_array *v);
 void	primary_state_ids_103(t_primary_state_ids_array *v);
 void	primary_state_ids_104(t_primary_state_ids_array *v);
 void	primary_state_ids_105(t_primary_state_ids_array *v);
+void	primary_state_ids_106(t_primary_state_ids_array *v);
 
 #endif // PRIMARY_STATE_IDS_H

@@ -126,5 +126,6 @@ void	lex_modes_102(t_lex_modes_array *v);
 void	lex_modes_103(t_lex_modes_array *v);
 void	lex_modes_104(t_lex_modes_array *v);
 void	lex_modes_105(t_lex_modes_array *v);
+void	lex_modes_106(t_lex_modes_array *v);
 
 #endif // LEX_MODES_H

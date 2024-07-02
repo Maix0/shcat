@@ -16,23 +16,23 @@ void	small_parse_table_255(t_small_parse_table_array *v)
 {
 	v->a[5100] = 1;
 	v->a[5101] = aux_sym_command_repeat1;
-	v->a[5102] = state(644);
+	v->a[5102] = state(1073);
 	v->a[5103] = 1;
-	v->a[5104] = sym_file_redirect;
-	v->a[5105] = state(1122);
+	v->a[5104] = sym_pipeline;
+	v->a[5105] = state(1158);
 	v->a[5106] = 1;
-	v->a[5107] = sym_pipeline;
-	v->a[5108] = state(1196);
+	v->a[5107] = aux_sym_redirected_statement_repeat2;
+	v->a[5108] = state(1906);
 	v->a[5109] = 1;
-	v->a[5110] = aux_sym_redirected_statement_repeat2;
-	v->a[5111] = state(1910);
+	v->a[5110] = sym__statement_not_pipeline;
+	v->a[5111] = state(2058);
 	v->a[5112] = 1;
-	v->a[5113] = sym__statement_not_pipeline;
+	v->a[5113] = sym__statements;
 	v->a[5114] = actions(11);
 	v->a[5115] = 2;
 	v->a[5116] = anon_sym_while;
 	v->a[5117] = anon_sym_until;
-	v->a[5118] = actions(61);
+	v->a[5118] = actions(217);
 	v->a[5119] = 2;
 	small_parse_table_256(v);
 }
@@ -41,14 +41,14 @@ void	small_parse_table_256(t_small_parse_table_array *v)
 {
 	v->a[5120] = sym_raw_string;
 	v->a[5121] = sym_number;
-	v->a[5122] = state(436);
+	v->a[5122] = state(347);
 	v->a[5123] = 5;
 	v->a[5124] = sym_arithmetic_expansion;
 	v->a[5125] = sym_string;
 	v->a[5126] = sym_simple_expansion;
 	v->a[5127] = sym_expansion;
 	v->a[5128] = sym_command_substitution;
-	v->a[5129] = actions(53);
+	v->a[5129] = actions(215);
 	v->a[5130] = 7;
 	v->a[5131] = anon_sym_LT;
 	v->a[5132] = anon_sym_GT;
@@ -57,7 +57,7 @@ void	small_parse_table_256(t_small_parse_table_array *v)
 	v->a[5135] = anon_sym_GT_AMP;
 	v->a[5136] = anon_sym_GT_PIPE;
 	v->a[5137] = anon_sym_LT_GT;
-	v->a[5138] = state(1021);
+	v->a[5138] = state(958);
 	v->a[5139] = 12;
 	small_parse_table_257(v);
 }
@@ -129,10 +129,10 @@ void	small_parse_table_259(t_small_parse_table_array *v)
 	v->a[5192] = actions(71);
 	v->a[5193] = 1;
 	v->a[5194] = sym_variable_name;
-	v->a[5195] = actions(229);
+	v->a[5195] = actions(223);
 	v->a[5196] = 1;
 	v->a[5197] = sym_word;
-	v->a[5198] = actions(231);
+	v->a[5198] = actions(225);
 	v->a[5199] = 1;
 	small_parse_table_260(v);
 }

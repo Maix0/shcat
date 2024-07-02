@@ -21,7 +21,7 @@
 
 typedef struct s_symbols_metadata_array
 {
-	t_symbol_metadata	a[180];
+	t_symbol_metadata	a[182];
 }	t_symbols_metadata_array;
 
 #endif // TYPE_SYMBOLS_METADATA_H

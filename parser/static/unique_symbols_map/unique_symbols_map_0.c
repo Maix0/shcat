@@ -103,7 +103,7 @@ void	unique_symbols_map_3(t_unique_symbols_map_array *v)
 	v->a[sym_string_content] = sym_string_content;
 	v->a[sym_raw_string] = sym_raw_string;
 	v->a[sym_number] = sym_number;
-	v->a[anon_sym_POUND] = anon_sym_POUND;
+	v->a[anon_sym_POUND] = sym__immediate_double_hash;
 	v->a[anon_sym_DOLLAR_LBRACE] = anon_sym_DOLLAR_LBRACE;
 	v->a[anon_sym_COLON_DASH] = sym__immediate_double_hash;
 	v->a[anon_sym_DASH3] = sym__immediate_double_hash;
@@ -119,21 +119,21 @@ void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 	v->a[anon_sym_COLON_PLUS] = sym__immediate_double_hash;
 	v->a[anon_sym_PLUS3] = sym__immediate_double_hash;
 	v->a[anon_sym_PERCENT_PERCENT] = sym__immediate_double_hash;
-	v->a[aux_sym_expansion_regex_token1] = sym_regex;
+	v->a[aux_sym__expansion_regex_token1] = sym_regex;
 	v->a[anon_sym_DOLLAR_LPAREN] = anon_sym_DOLLAR_LPAREN;
 	v->a[anon_sym_BQUOTE] = anon_sym_BQUOTE;
 	v->a[sym_comment] = sym_comment;
 	v->a[sym__comment_word] = sym_word;
 	v->a[aux_sym__simple_variable_name_token1] = sym_variable_name;
 	v->a[aux_sym__multiline_variable_name_token1] = sym_variable_name;
-	v->a[anon_sym_AT] = anon_sym_POUND;
-	v->a[anon_sym_0] = anon_sym_POUND;
-	v->a[anon_sym__] = anon_sym_POUND;
+	v->a[anon_sym_AT] = anon_sym_AT;
+	v->a[anon_sym_0] = anon_sym_AT;
+	v->a[anon_sym__] = anon_sym_AT;
+	v->a[aux_sym__word_no_brace_token1] = aux_sym__word_no_brace_token1;
 	v->a[anon_sym_SEMI] = anon_sym_SEMI;
 	v->a[sym_heredoc_start] = sym_heredoc_start;
 	v->a[sym_simple_heredoc_body] = sym_heredoc_body;
 	v->a[sym__heredoc_body_beginning] = sym__heredoc_body_beginning;
-	v->a[sym_heredoc_content] = sym_heredoc_content;
 	unique_symbols_map_5(v);
 }
 

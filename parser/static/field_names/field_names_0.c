@@ -12,28 +12,34 @@
 
 #include "./field_names.h"
 
-void field_names_0(t_field_names_array *v)
+void	field_names_0(t_field_names_array *v)
 {
-	v->a[field_alternative] = "alt";
 	v->a[field_arg] = "arg";
+	v->a[field_args] = "args";
 	v->a[field_body] = "body";
-	v->a[field_cases] = "case";
+	v->a[field_cases] = "cases";
 	v->a[field_cmd] = "cmd";
-	v->a[field_condition] = "cond";
-	v->a[field_consequence] = "cnsq";
+	v->a[field_cond] = "cond";
 	v->a[field_dest] = "dest";
 	v->a[field_elif] = "elif";
 	v->a[field_else] = "else";
 	v->a[field_fd] = "fd";
-	v->a[field_left] = "left";
+	v->a[field_len] = "len";
+	v->a[field_lhs] = "lhs";
 	v->a[field_name] = "name";
 	v->a[field_op] = "op";
-	v->a[field_redirect] = "redir";
-	v->a[field_right] = "right";
+	v->a[field_redr] = "redr";
+	v->a[field_rhs] = "rhs";
 	v->a[field_stmt] = "stmt";
-	v->a[field_terminator] = "term";
+	v->a[field_term] = "term";
+	v->a[field_then] = "then";
 	v->a[field_value] = "value";
-	v->a[field_variable] = "var";
+	field_names_1(v);
+}
+
+void	field_names_1(t_field_names_array *v)
+{
+	v->a[field_var] = "var";
 }
 
 /* EOF field_names_0.c */

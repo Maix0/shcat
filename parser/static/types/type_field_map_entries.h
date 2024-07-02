@@ -21,7 +21,7 @@
 
 typedef struct s_field_map_entries_array
 {
-	t_field_map_entry	a[214];
+	t_field_map_entry	a[225];
 }	t_field_map_entries_array;
 
 #endif // TYPE_FIELD_MAP_ENTRIES_H

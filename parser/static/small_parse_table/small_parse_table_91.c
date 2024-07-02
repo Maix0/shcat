@@ -14,7 +14,7 @@
 
 void	small_parse_table_455(t_small_parse_table_array *v)
 {
-	v->a[9100] = state(436);
+	v->a[9100] = state(433);
 	v->a[9101] = 5;
 	v->a[9102] = sym_arithmetic_expansion;
 	v->a[9103] = sym_string;
@@ -30,7 +30,7 @@ void	small_parse_table_455(t_small_parse_table_array *v)
 	v->a[9113] = anon_sym_GT_AMP;
 	v->a[9114] = anon_sym_GT_PIPE;
 	v->a[9115] = anon_sym_LT_GT;
-	v->a[9116] = state(967);
+	v->a[9116] = state(935);
 	v->a[9117] = 12;
 	v->a[9118] = sym_redirected_statement;
 	v->a[9119] = sym_for_statement;
@@ -96,19 +96,19 @@ void	small_parse_table_458(t_small_parse_table_array *v)
 	v->a[9164] = actions(67);
 	v->a[9165] = 1;
 	v->a[9166] = anon_sym_BQUOTE;
-	v->a[9167] = actions(69);
+	v->a[9167] = actions(211);
 	v->a[9168] = 1;
-	v->a[9169] = sym_file_descriptor;
-	v->a[9170] = actions(71);
+	v->a[9169] = sym_word;
+	v->a[9170] = actions(213);
 	v->a[9171] = 1;
-	v->a[9172] = sym_variable_name;
-	v->a[9173] = actions(229);
+	v->a[9172] = anon_sym_BANG;
+	v->a[9173] = actions(219);
 	v->a[9174] = 1;
-	v->a[9175] = sym_word;
-	v->a[9176] = actions(231);
+	v->a[9175] = sym_file_descriptor;
+	v->a[9176] = actions(221);
 	v->a[9177] = 1;
-	v->a[9178] = anon_sym_BANG;
-	v->a[9179] = state(122);
+	v->a[9178] = sym_variable_name;
+	v->a[9179] = state(120);
 	small_parse_table_459(v);
 }
 
@@ -116,22 +116,22 @@ void	small_parse_table_459(t_small_parse_table_array *v)
 {
 	v->a[9180] = 1;
 	v->a[9181] = aux_sym__statements_repeat1;
-	v->a[9182] = state(179);
+	v->a[9182] = state(177);
 	v->a[9183] = 1;
 	v->a[9184] = sym_command_name;
-	v->a[9185] = state(302);
+	v->a[9185] = state(208);
 	v->a[9186] = 1;
 	v->a[9187] = sym_variable_assignment;
-	v->a[9188] = state(603);
+	v->a[9188] = state(584);
 	v->a[9189] = 1;
 	v->a[9190] = sym_concatenation;
-	v->a[9191] = state(658);
+	v->a[9191] = state(639);
 	v->a[9192] = 1;
 	v->a[9193] = aux_sym_command_repeat1;
-	v->a[9194] = state(764);
+	v->a[9194] = state(671);
 	v->a[9195] = 1;
 	v->a[9196] = sym_file_redirect;
-	v->a[9197] = state(1052);
+	v->a[9197] = state(1073);
 	v->a[9198] = 1;
 	v->a[9199] = sym_pipeline;
 	small_parse_table_460(v);

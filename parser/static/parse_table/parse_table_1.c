@@ -14,32 +14,32 @@
 
 void	parse_table_5(t_parse_table_array *v)
 {
-	v->a[1][sym_case_statement] = state(957);
-	v->a[1][sym_function_definition] = state(957);
-	v->a[1][sym_compound_statement] = state(957);
-	v->a[1][sym_subshell] = state(957);
-	v->a[1][sym_pipeline] = state(1060);
-	v->a[1][sym_list] = state(957);
-	v->a[1][sym_negated_command] = state(957);
-	v->a[1][sym_command] = state(957);
-	v->a[1][sym_command_name] = state(171);
-	v->a[1][sym_variable_assignment] = state(258);
-	v->a[1][sym__variable_assignments] = state(957);
-	v->a[1][sym_file_redirect] = state(671);
-	v->a[1][sym_arithmetic_expansion] = state(365);
-	v->a[1][sym_concatenation] = state(588);
-	v->a[1][sym_string] = state(365);
-	v->a[1][sym_simple_expansion] = state(365);
-	v->a[1][sym_expansion] = state(365);
-	v->a[1][sym_command_substitution] = state(365);
-	v->a[1][aux_sym__statements_repeat1] = state(131);
-	v->a[1][aux_sym_redirected_statement_repeat2] = state(1195);
+	v->a[1][sym_case_statement] = state(960);
+	v->a[1][sym_function_definition] = state(960);
+	v->a[1][sym_compound_statement] = state(960);
+	v->a[1][sym_subshell] = state(960);
+	v->a[1][sym_pipeline] = state(1069);
+	v->a[1][sym_list] = state(960);
+	v->a[1][sym_negated_command] = state(960);
+	v->a[1][sym_command] = state(960);
+	v->a[1][sym_command_name] = state(175);
+	v->a[1][sym_variable_assignment] = state(213);
+	v->a[1][sym__variable_assignments] = state(960);
+	v->a[1][sym_file_redirect] = state(621);
+	v->a[1][sym_arithmetic_expansion] = state(345);
+	v->a[1][sym_concatenation] = state(583);
+	v->a[1][sym_string] = state(345);
+	v->a[1][sym_simple_expansion] = state(345);
+	v->a[1][sym_expansion] = state(345);
+	v->a[1][sym_command_substitution] = state(345);
+	v->a[1][aux_sym__statements_repeat1] = state(125);
+	v->a[1][aux_sym_redirected_statement_repeat2] = state(1104);
 	parse_table_6(v);
 }
 
 void	parse_table_6(t_parse_table_array *v)
 {
-	v->a[1][aux_sym_command_repeat1] = state(661);
+	v->a[1][aux_sym_command_repeat1] = state(624);
 	v->a[1][ts_builtin_sym_end] = actions(5);
 	v->a[1][sym_word] = actions(7);
 	v->a[1][anon_sym_for] = actions(9);

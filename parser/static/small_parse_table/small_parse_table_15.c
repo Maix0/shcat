@@ -18,7 +18,7 @@ void	small_parse_table_75(t_small_parse_table_array *v)
 	v->a[1501] = anon_sym_GT_AMP;
 	v->a[1502] = anon_sym_GT_PIPE;
 	v->a[1503] = anon_sym_LT_GT;
-	v->a[1504] = state(1046);
+	v->a[1504] = state(1001);
 	v->a[1505] = 12;
 	v->a[1506] = sym_redirected_statement;
 	v->a[1507] = sym_for_statement;
@@ -96,42 +96,42 @@ void	small_parse_table_78(t_small_parse_table_array *v)
 	v->a[1564] = actions(71);
 	v->a[1565] = 1;
 	v->a[1566] = sym_variable_name;
-	v->a[1567] = actions(129);
+	v->a[1567] = actions(95);
 	v->a[1568] = 1;
 	v->a[1569] = anon_sym_LF;
-	v->a[1570] = state(23);
+	v->a[1570] = state(129);
 	v->a[1571] = 1;
-	v->a[1572] = aux_sym__case_item_last_repeat2;
-	v->a[1573] = state(128);
+	v->a[1572] = aux_sym__statements_repeat1;
+	v->a[1573] = state(182);
 	v->a[1574] = 1;
-	v->a[1575] = aux_sym__statements_repeat1;
-	v->a[1576] = state(183);
+	v->a[1575] = sym_command_name;
+	v->a[1576] = state(261);
 	v->a[1577] = 1;
-	v->a[1578] = sym_command_name;
-	v->a[1579] = state(271);
+	v->a[1578] = sym_variable_assignment;
+	v->a[1579] = state(584);
 	small_parse_table_79(v);
 }
 
 void	small_parse_table_79(t_small_parse_table_array *v)
 {
 	v->a[1580] = 1;
-	v->a[1581] = sym_variable_assignment;
-	v->a[1582] = state(603);
+	v->a[1581] = sym_concatenation;
+	v->a[1582] = state(620);
 	v->a[1583] = 1;
-	v->a[1584] = sym_concatenation;
-	v->a[1585] = state(639);
+	v->a[1584] = sym_file_redirect;
+	v->a[1585] = state(623);
 	v->a[1586] = 1;
 	v->a[1587] = aux_sym_command_repeat1;
-	v->a[1588] = state(644);
+	v->a[1588] = state(672);
 	v->a[1589] = 1;
-	v->a[1590] = sym_file_redirect;
-	v->a[1591] = state(1171);
+	v->a[1590] = aux_sym__case_item_last_repeat2;
+	v->a[1591] = state(1114);
 	v->a[1592] = 1;
 	v->a[1593] = sym_pipeline;
-	v->a[1594] = state(1196);
+	v->a[1594] = state(1201);
 	v->a[1595] = 1;
 	v->a[1596] = aux_sym_redirected_statement_repeat2;
-	v->a[1597] = state(1910);
+	v->a[1597] = state(1911);
 	v->a[1598] = 1;
 	v->a[1599] = sym__statement_not_pipeline;
 	small_parse_table_80(v);

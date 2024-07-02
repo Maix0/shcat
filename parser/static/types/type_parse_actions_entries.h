@@ -21,7 +21,7 @@
 
 typedef struct s_parse_actions_entries_array
 {
-	t_parse_action_entry	a[4127];
+	t_parse_action_entry	a[4160];
 }	t_parse_actions_entries_array;
 
 #endif // TYPE_PARSE_ACTIONS_ENTRIES_H

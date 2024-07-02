@@ -25,33 +25,33 @@ void	small_parse_table_910(t_small_parse_table_array *v)
 	v->a[18208] = actions(375);
 	v->a[18209] = 1;
 	v->a[18210] = sym_variable_name;
-	v->a[18211] = actions(373);
+	v->a[18211] = actions(361);
 	v->a[18212] = 2;
-	v->a[18213] = aux_sym__simple_variable_name_token1;
-	v->a[18214] = aux_sym__multiline_variable_name_token1;
-	v->a[18215] = actions(367);
-	v->a[18216] = 3;
-	v->a[18217] = sym_file_descriptor;
-	v->a[18218] = sym__bare_dollar;
-	v->a[18219] = ts_builtin_sym_end;
+	v->a[18213] = sym_file_descriptor;
+	v->a[18214] = sym__bare_dollar;
+	v->a[18215] = actions(373);
+	v->a[18216] = 2;
+	v->a[18217] = aux_sym__simple_variable_name_token1;
+	v->a[18218] = aux_sym__multiline_variable_name_token1;
+	v->a[18219] = actions(371);
 	small_parse_table_911(v);
 }
 
 void	small_parse_table_911(t_small_parse_table_array *v)
 {
-	v->a[18220] = actions(371);
-	v->a[18221] = 9;
-	v->a[18222] = anon_sym_BANG;
-	v->a[18223] = anon_sym_DASH;
-	v->a[18224] = anon_sym_STAR;
-	v->a[18225] = anon_sym_QMARK;
-	v->a[18226] = anon_sym_DOLLAR;
-	v->a[18227] = anon_sym_POUND;
-	v->a[18228] = anon_sym_AT;
-	v->a[18229] = anon_sym_0;
-	v->a[18230] = anon_sym__;
-	v->a[18231] = actions(361);
-	v->a[18232] = 25;
+	v->a[18220] = 9;
+	v->a[18221] = anon_sym_BANG;
+	v->a[18222] = anon_sym_DASH;
+	v->a[18223] = anon_sym_STAR;
+	v->a[18224] = anon_sym_QMARK;
+	v->a[18225] = anon_sym_DOLLAR;
+	v->a[18226] = anon_sym_POUND;
+	v->a[18227] = anon_sym_AT;
+	v->a[18228] = anon_sym_0;
+	v->a[18229] = anon_sym__;
+	v->a[18230] = actions(363);
+	v->a[18231] = 26;
+	v->a[18232] = anon_sym_esac;
 	v->a[18233] = anon_sym_LPAREN;
 	v->a[18234] = anon_sym_PIPE;
 	v->a[18235] = anon_sym_SEMI_SEMI;
@@ -94,7 +94,7 @@ void	small_parse_table_913(t_small_parse_table_array *v)
 	v->a[18262] = actions(381);
 	v->a[18263] = 1;
 	v->a[18264] = sym_variable_name;
-	v->a[18265] = actions(367);
+	v->a[18265] = actions(361);
 	v->a[18266] = 2;
 	v->a[18267] = sym_file_descriptor;
 	v->a[18268] = sym__bare_dollar;
@@ -118,7 +118,7 @@ void	small_parse_table_914(t_small_parse_table_array *v)
 	v->a[18281] = anon_sym_AT;
 	v->a[18282] = anon_sym_0;
 	v->a[18283] = anon_sym__;
-	v->a[18284] = actions(361);
+	v->a[18284] = actions(363);
 	v->a[18285] = 26;
 	v->a[18286] = anon_sym_LPAREN;
 	v->a[18287] = anon_sym_PIPE;

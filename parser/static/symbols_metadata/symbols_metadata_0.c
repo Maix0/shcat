@@ -119,7 +119,7 @@ void	symbols_metadata_4(t_symbols_metadata_array *v)
 	v->a[anon_sym_COLON_PLUS] = sym_metadata(true, true, false);
 	v->a[anon_sym_PLUS3] = sym_metadata(true, true, false);
 	v->a[anon_sym_PERCENT_PERCENT] = sym_metadata(true, true, false);
-	v->a[aux_sym_expansion_regex_token1] = sym_metadata(true, true, false);
+	v->a[aux_sym__expansion_regex_token1] = sym_metadata(true, true, false);
 	v->a[anon_sym_DOLLAR_LPAREN] = sym_metadata(true, false, false);
 	v->a[anon_sym_BQUOTE] = sym_metadata(true, false, false);
 	v->a[sym_comment] = sym_metadata(true, true, false);
@@ -131,11 +131,11 @@ void	symbols_metadata_4(t_symbols_metadata_array *v)
 	v->a[anon_sym_AT] = sym_metadata(true, true, false);
 	v->a[anon_sym_0] = sym_metadata(true, true, false);
 	v->a[anon_sym__] = sym_metadata(true, true, false);
+	v->a[aux_sym__word_no_brace_token1] = sym_metadata(false, false, false);
 	v->a[anon_sym_SEMI] = sym_metadata(true, false, false);
 	v->a[sym_heredoc_start] = sym_metadata(true, true, false);
 	v->a[sym_simple_heredoc_body] = sym_metadata(true, true, false);
 	v->a[sym__heredoc_body_beginning] = sym_metadata(false, true, false);
-	v->a[sym_heredoc_content] = sym_metadata(true, true, false);
 	symbols_metadata_5(v);
 }
 

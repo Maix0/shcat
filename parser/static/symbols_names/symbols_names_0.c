@@ -103,7 +103,7 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[sym_string_content] = "string_content";
 	v->a[sym_raw_string] = "raw_string";
 	v->a[sym_number] = "number";
-	v->a[anon_sym_POUND] = "special_variable_name";
+	v->a[anon_sym_POUND] = "operator";
 	v->a[anon_sym_DOLLAR_LBRACE] = "${";
 	v->a[anon_sym_COLON_DASH] = "operator";
 	v->a[anon_sym_DASH3] = "operator";
@@ -119,7 +119,7 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_COLON_PLUS] = "operator";
 	v->a[anon_sym_PLUS3] = "operator";
 	v->a[anon_sym_PERCENT_PERCENT] = "operator";
-	v->a[aux_sym_expansion_regex_token1] = "regex";
+	v->a[aux_sym__expansion_regex_token1] = "regex";
 	v->a[anon_sym_DOLLAR_LPAREN] = "$(";
 	v->a[anon_sym_BQUOTE] = "`";
 	v->a[sym_comment] = "comment";
@@ -129,11 +129,11 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_AT] = "special_variable_name";
 	v->a[anon_sym_0] = "special_variable_name";
 	v->a[anon_sym__] = "special_variable_name";
+	v->a[aux_sym__word_no_brace_token1] = "_word_no_brace_token1";
 	v->a[anon_sym_SEMI] = ";";
 	v->a[sym_heredoc_start] = "heredoc_start";
 	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
-	v->a[sym_heredoc_content] = "heredoc_content";
 	symbols_names_5(v);
 }
 
