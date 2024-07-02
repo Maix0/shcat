@@ -41,7 +41,6 @@ typedef struct s_ast_function_definition  t_ast_function_definition;
 typedef struct s_ast_heredoc_redirection  t_ast_heredoc_redirection;
 typedef struct s_ast_if					  t_ast_if;
 typedef struct s_ast_list				  t_ast_list;
-typedef struct s_ast_number				  t_ast_number;
 typedef struct s_ast_pipeline			  t_ast_pipeline;
 typedef struct s_ast_program			  t_ast_program;
 typedef struct s_ast_raw_string			  t_ast_raw_string;

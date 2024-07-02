@@ -396,13 +396,4 @@ struct s_ast_regex
 	t_str pattern;
 };
 
-/// Regex
-/// ```shell
-/// 	~pattern
-/// ```
-struct s_ast_number
-{
-	t_i64 number;
-};
-
 #endif /* AST_RAW_STRUCTS_H */
