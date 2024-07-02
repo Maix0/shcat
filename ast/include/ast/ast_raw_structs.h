@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/01 21:34:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/02 21:45:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ enum e_ast_expansion_operator
 	E_OP_ASSIGN_DEFAULT_COLON, // ${var:=word}
 	E_OP_ERROR_COLON,		   // ${var:?word}
 	E_OP_ALTERNATE_COLON,	   // ${var:+word}
-	E_OP_LENGTH,			   // ${#var}
 	E_OP_SMALLEST_PREFIX,	   // ${var#pattern}
 	E_OP_LARGEST_PREFIX,	   // ${var##pattern}
 	E_OP_SMALLEST_SUFFIX,	   // ${var%pattern}
@@ -349,6 +348,7 @@ struct s_ast_heredoc_redirection
 struct s_ast_expansion
 {
 	t_str					 var_name;
+	bool					 len_operator;
 	t_ast_expansion_operator kind;
 	t_vec_ast				 args;
 };
@@ -371,7 +371,7 @@ struct s_ast_arithmetic_expansion
 /// ```
 struct s_ast_command_substitution
 {
-	t_ast_node cmd;
+	t_vec_ast body;
 };
 
 /// Extended Globbing

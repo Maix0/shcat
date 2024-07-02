@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/02 21:03:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/02 21:55:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void ast_free(t_ast_node elem)
 	}
 	if (elem->kind == AST_COMMAND_SUBSTITUTION)
 	{
-		ast_free(elem->data.command_substitution.cmd);
+		vec_ast_free(elem->data.command_substitution.body);
 	}
 	if (elem->kind == AST_COMPOUND_STATEMENT)
 	{
@@ -251,7 +251,7 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	}
 	if (kind == AST_COMMAND_SUBSTITUTION)
 	{
-		ret->data.command_substitution.cmd = NULL;
+		ret->data.command_substitution.body = vec_ast_new(16, ast_free);
 	}
 	if (kind == AST_COMPOUND_STATEMENT)
 	{
@@ -272,6 +272,7 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	{
 		ret->data.expansion.args = vec_ast_new(16, ast_free);
 		ret->data.expansion.kind = E_OP_NONE;
+		ret->data.expansion.len_operator = false;
 		ret->data.expansion.var_name = NULL;
 	}
 	if (kind == AST_FILE_REDIRECTION)
@@ -507,7 +508,7 @@ t_str _extract_str(t_parse_node self, t_const_str input)
 	E_OP_LARGEST_SUFFIX,	   // ${var%%pattern}
 */
 
-t_ast_expansion_operator _extract_exp_op(t_parse_node self, t_usize child_index)
+t_ast_expansion_operator _extract_exp_op(t_parse_node self)
 {
 	t_ast_expansion_operator kind;
 	t_symbol				 symbol;
@@ -537,8 +538,6 @@ t_ast_expansion_operator _extract_exp_op(t_parse_node self, t_usize child_index)
 		kind = E_OP_SMALLEST_SUFFIX;
 	if (symbol == anon_sym_PERCENT_PERCENT)
 		kind = E_OP_LARGEST_SUFFIX;
-	if (symbol == anon_sym_POUND && child_index == 1)
-		kind = E_OP_LENGTH;
 	return (kind);
 }
 
@@ -599,11 +598,12 @@ t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out
 t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
-
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 
+// TODO: This is your homework raph
 t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -612,8 +612,7 @@ t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str i
 t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
-t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
-
+// TODO: This is my homework, it'll need to be handled in a special way I feel...
 t_error build_sym_heredoc_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_simple_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -623,8 +622,39 @@ t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node
 
 #include <stdio.h>
 
-// TODO: add len operator in struct
-// 	parse operator and args&
+t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_command_substitution)
+		return (ERROR);
+	ret = ast_alloc(AST_COMMAND_SUBSTITUTION);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue;
+		if (ts_node_symbol(ts_node_child(self, i)) == field_term)
+		{
+			if (ret->data.command_substitution.body.len != 0)
+				ast_set_term(&ret->data.command_substitution.body.buffer[ret->data.command_substitution.body.len - 1],
+							 _select_term(ts_node_child(self, i)));
+		}
+		else
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.command_substitution.body, tmp);
+		}
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node ret;
@@ -645,11 +675,14 @@ t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *ou
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue;
+		if (ts_node_field_id_for_child(self, i) == field_len)
+			ret->data.expansion.len_operator = true;
 		if (ts_node_field_id_for_child(self, i) == field_var)
 			ret->data.expansion.var_name = _extract_str(ts_node_child(self, i), input);
-		else if (ts_node_field_id_for_child(self, i) == field_op)
-			ret->data.expansion.kind = _extract_exp_op(ts_node_child(self, i), i);
-		else
+		if (ts_node_field_id_for_child(self, i) == field_op)
+
+			ret->data.expansion.kind = _extract_exp_op(ts_node_child(self, i));
+		if (ts_node_field_id_for_child(self, i) == field_args)
 		{
 			if (ast_from_node(ts_node_child(self, i), input, &tmp))
 				return (ast_free(ret), ERROR);
