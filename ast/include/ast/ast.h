@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/20 18:22:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:36:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ enum e_ast_node_kind
 	AST_VARIABLE_ASSIGNMENT = S_AST_NONE | 0x000E,
 	AST_EXTGLOB = S_AST_NONE | 0x001A,
 	AST_REGEX = S_AST_NONE | 0x001B,
+	AST_NUMBER = S_AST_NONE | 0x001C,
 
 	AST_FILE_REDIRECTION = S_AST_REDIRECT | 0x000F,
 	AST_HEREDOC_REDIRECTION = S_AST_REDIRECT | 0x0010,
@@ -62,32 +63,33 @@ enum e_ast_node_kind
 
 union u_ast_node_data {
 	t_ast_arithmetic_expansion arithmetic_expansion;
-	t_ast_case_item			   case_item;
 	t_ast_case				   case_;
-	t_ast_command_substitution command_substitution;
+	t_ast_case_item			   case_item;
 	t_ast_command			   command;
+	t_ast_command_substitution command_substitution;
 	t_ast_compound_statement   compound_statement;
 	t_ast_elif				   elif;
 	t_ast_else				   else_;
 	t_ast_empty				   empty;
 	t_ast_expansion			   expansion;
+	t_ast_extglob			   extglob;
 	t_ast_file_redirection	   file_redirection;
 	t_ast_for				   for_;
 	t_ast_function_definition  function_definition;
 	t_ast_heredoc_redirection  heredoc_redirection;
 	t_ast_if				   if_;
 	t_ast_list				   list;
+	t_ast_number			   number;
 	t_ast_pipeline			   pipeline;
 	t_ast_program			   program;
 	t_ast_raw_string		   raw_string;
+	t_ast_regex				   regex;
 	t_ast_string			   string;
 	t_ast_subshell			   subshell;
 	t_ast_until				   until;
 	t_ast_variable_assignment  variable_assignment;
 	t_ast_while				   while_;
 	t_ast_word				   word;
-	t_ast_extglob			   extglob;
-	t_ast_regex				   regex;
 };
 
 struct s_ast_node

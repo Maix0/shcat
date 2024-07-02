@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/29 14:44:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:34:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,7 +322,7 @@ struct s_ast_file_redirection
 {
 	t_ast_node			   output;
 	t_ast_redirection_kind op;
-	t_str				   input;
+	t_ast_node			   input;
 };
 
 /// File Redirection
@@ -394,6 +394,15 @@ struct s_ast_extglob
 struct s_ast_regex
 {
 	t_str pattern;
+};
+
+/// Regex
+/// ```shell
+/// 	~pattern
+/// ```
+struct s_ast_number
+{
+	t_i64 number;
 };
 
 #endif /* AST_RAW_STRUCTS_H */
