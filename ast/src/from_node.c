@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/01 21:44:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:49:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -593,13 +593,15 @@ t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
 
-t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+
 
 /* FUNCTION THAT ARE NOT DONE */
 
@@ -612,7 +614,6 @@ t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str inp
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_expansion_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_expansion_regex(t_parse_node self, t_const_str input, t_ast_node *out);
 
