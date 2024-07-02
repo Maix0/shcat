@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/02 15:49:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/02 21:03:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -602,7 +602,6 @@ t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
 
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
-
 /* FUNCTION THAT ARE NOT DONE */
 
 t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -614,8 +613,6 @@ t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str inp
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion_regex(t_parse_node self, t_const_str input, t_ast_node *out);
 
 t_error build_sym_heredoc_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_simple_heredoc_body(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -626,6 +623,8 @@ t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node
 
 #include <stdio.h>
 
+// TODO: add len operator in struct
+// 	parse operator and args&
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node ret;
@@ -646,7 +645,7 @@ t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *ou
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue;
-		if (ts_node_field_id_for_child(self, i) == field_variable)
+		if (ts_node_field_id_for_child(self, i) == field_var)
 			ret->data.expansion.var_name = _extract_str(ts_node_child(self, i), input);
 		else if (ts_node_field_id_for_child(self, i) == field_op)
 			ret->data.expansion.kind = _extract_exp_op(ts_node_child(self, i), i);
@@ -956,7 +955,7 @@ t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node 
 		child = ts_node_child(self, i);
 		if (!ts_node_is_named(child) && (i++, true))
 			continue;
-		if (ts_node_field_id_for_child(self, i) == field_condition)
+		if (ts_node_field_id_for_child(self, i) == field_cond)
 		{
 			if (ast_from_node(child, input, &tmp))
 				return (ast_free(ret), ERROR);
@@ -1005,7 +1004,7 @@ t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *
 		child = ts_node_child(self, i);
 		if (!ts_node_is_named(child) && (i++, true))
 			continue;
-		if (ts_node_field_id_for_child(self, i) == field_condition)
+		if (ts_node_field_id_for_child(self, i) == field_cond)
 		{
 			if (ast_from_node(child, input, &tmp))
 				return (ast_free(ret), ERROR);
@@ -1071,7 +1070,7 @@ t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue;
-		if (ts_node_field_id_for_child(self, i) == field_variable)
+		if (ts_node_field_id_for_child(self, i) == field_var)
 		{
 			ret->data.for_.var_name = _extract_str(ts_node_child(self, i), input);
 		}
@@ -1144,7 +1143,7 @@ t_error build_sym_do_group(t_parse_node self, t_const_str input, t_ast_node *out
 			i++;
 			continue;
 		}
-		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.compound_statement.body.len != 0)
+		if (ts_node_field_id_for_child(self, i) == field_term && ret->data.compound_statement.body.len != 0)
 		{
 			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.compound_statement.body.buffer[ret->data.compound_statement.body.len - 1], term);
@@ -1178,7 +1177,7 @@ t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out
 	i = 0;
 	while (i < ts_node_child_count(self))
 	{
-		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.subshell.body.len != 0)
+		if (ts_node_field_id_for_child(self, i) == field_term && ret->data.subshell.body.len != 0)
 		{
 			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.subshell.body.buffer[ret->data.subshell.body.len - 1], term);
@@ -1224,7 +1223,7 @@ t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_no
 		child = ts_node_child(self, i);
 		if (!ts_node_is_named(child) && (i++, true))
 			continue;
-		if (ts_node_field_id_for_child(self, i) == field_terminator)
+		if (ts_node_field_id_for_child(self, i) == field_term)
 		{
 			term = _select_term(ts_node_child(self, i));
 			ast_set_term(&ret->data.while_.condition.buffer[ret->data.while_.condition.len - 1], term);
@@ -1319,7 +1318,7 @@ t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast
 	i = 0;
 	while (i < ts_node_child_count(self))
 	{
-		if (ts_node_field_id_for_child(self, i) == field_terminator && ret->data.compound_statement.body.len != 0)
+		if (ts_node_field_id_for_child(self, i) == field_term && ret->data.compound_statement.body.len != 0)
 		{
 			term = _select_term(ts_node_child(self, i));
 
@@ -1491,7 +1490,7 @@ t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 				return (ast_free(ret), ERROR);
 			i++;
 		}
-		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_terminator)
+		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_term)
 		{
 			printf("%s\n", (ts_node_grammar_type(ts_node_child(self, i))));
 			i++;
@@ -1709,10 +1708,10 @@ t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out)
 		return (build_sym_else_clause(node, input, out));
 	if (ts_node_symbol(node) == sym_expansion)
 		return (build_sym_expansion(node, input, out));
-	if (ts_node_symbol(node) == sym_expansion_expression)
-		return (build_sym_expansion_expression(node, input, out));
-	if (ts_node_symbol(node) == sym_expansion_regex)
-		return (build_sym_expansion_regex(node, input, out));
+	// if (ts_node_symbol(node) == sym_expansion_expression)
+	// 	return (build_sym_expansion_expression(node, input, out));
+	// if (ts_node_symbol(node) == sym_expansion_regex)
+	// 	return (build_sym_expansion_regex(node, input, out));
 	if (ts_node_symbol(node) == sym_extglob_pattern)
 		return (build_sym_extglob_pattern(node, input, out));
 	if (ts_node_symbol(node) == sym_file_descriptor)
