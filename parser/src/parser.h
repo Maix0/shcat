@@ -1,5 +1,5 @@
-#ifndef TREE_SITTER_PARSER_H_
-#define TREE_SITTER_PARSER_H_
+#ifndef PARSER_H
+#define PARSER_H
 
 #include "me/types.h"
 
@@ -267,4 +267,4 @@ start:                                                                          
 		}                                                                                                                                  \
 	}
 
-#endif // TREE_SITTER_PARSER_H_
+#endif // PARSER_H

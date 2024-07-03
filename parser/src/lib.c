@@ -1,13 +1,16 @@
 #define _POSIX_C_SOURCE 200112L
 
-
+#include "./create_language.c"
+#include "./input.c"
 #include "./language.c"
+#include "./length.c"
+#include "./lex.c"
 #include "./lexer.c"
 #include "./node.c"
 #include "./parser.c"
+#include "./point.c"
+#include "./reduce_action.c"
+#include "./scanner.c"
 #include "./stack.c"
 #include "./subtree.c"
 #include "./tree.c"
-#include "./lex.c"
-#include "./create_language.c"
-#include "./scanner.c"

@@ -1,14 +1,13 @@
-#ifndef TREE_SITTER_PARSE_STACK_H_
-#define TREE_SITTER_PARSE_STACK_H_
+#ifndef PARSE_STACK_H
+#define PARSE_STACK_H
 
-
-#include "me/types.h"
 #include "./array.h"
 #include "./subtree.h"
+#include "me/types.h"
 
 typedef struct Stack Stack;
+typedef t_u32		 StackVersion;
 
-typedef t_u32 StackVersion;
 #define STACK_VERSION_NONE ((StackVersion)-1)
 
 typedef struct StackSlice
@@ -21,7 +20,7 @@ typedef Array(StackSlice) StackSliceArray;
 typedef struct StackSummaryEntry
 {
 	Length	  position;
-	t_u32  depth;
+	t_u32	  depth;
 	TSStateId state;
 } StackSummaryEntry;
 
@@ -123,4 +122,4 @@ void ts_stack_remove_version(Stack *, StackVersion);
 
 void ts_stack_clear(Stack *);
 
-#endif // TREE_SITTER_PARSE_STACK_H_
+#endif // PARSE_STACK_H

@@ -4147,7 +4147,7 @@ bool ts_lex(TSLexer *lexer, TSStateId state)
 	}
 }
 
-static bool ts_lex_keywords(TSLexer *lexer, TSStateId state)
+bool ts_lex_keywords(TSLexer *lexer, TSStateId state)
 {
 	START_LEXER();
 	eof = lexer->eof(lexer);

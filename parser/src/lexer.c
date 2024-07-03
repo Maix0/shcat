@@ -1,6 +1,6 @@
 #include "./lexer.h"
 #include "./length.h"
-#include "./unicode.h"
+#include "./input.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include <string.h>
@@ -69,7 +69,7 @@ static void ts_lexer__get_lookahead(Lexer *self)
 	}
 
 	const t_u8			 *chunk = (const t_u8 *)self->chunk + position_in_chunk;
-	UnicodeDecodeFunction decode = self->input.encoding == TSInputEncodingUTF8 ? ts_decode_utf8 : ts_decode_utf16;
+	UnicodeDecodeFunction decode = ts_decode_ascii;
 
 	self->lookahead_size = decode(chunk, size, &self->data.lookahead);
 
