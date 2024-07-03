@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/03 22:34:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 22:44:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void ast_print_node_regex(t_ast_node self);
 void ast_print_node_subshell(t_ast_node self);
 void ast_print_node_variable_assignment(t_ast_node self);
 void ast_print_node_word(t_ast_node self);
+void ast_print_node_function_definition(t_ast_node self);
 
 /*^^^   DONE   ^^^*/
 /*vvv NOT DONE vvv*/
@@ -75,7 +76,6 @@ void ast_print_node_case_item(t_ast_node self) NOT_DONE;
 void ast_print_node_elif(t_ast_node self) NOT_DONE;
 void ast_print_node_else(t_ast_node self) NOT_DONE;
 void ast_print_node_for(t_ast_node self) NOT_DONE;
-void ast_print_node_function_definition(t_ast_node self) NOT_DONE;
 void ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
 void ast_print_node_if(t_ast_node self) NOT_DONE;
 void ast_print_node_until(t_ast_node self) NOT_DONE;
@@ -98,6 +98,22 @@ void _print_term(t_ast_terminator_kind term)
 }
 
 /// IMPL
+
+void ast_print_node_function_definition(t_ast_node self)
+{
+	t_usize i;
+	if (self == NULL)
+		return;
+	if (self->kind != AST_FUNCTION_DEFINITION)
+		return;
+	printf("%s()", self->data.function_definition.name);
+	i = 0;
+	while (i < self->data.function_definition.body.len)
+	{
+		ast_print_node(self->data.function_definition.body.buffer[i++]);
+		printf(" ");
+	}
+}
 
 void ast_print_node_variable_assignment(t_ast_node self)
 {
