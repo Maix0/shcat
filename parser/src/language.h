@@ -58,11 +58,11 @@ static inline t_u16 ts_language_lookup(const TSLanguage *self, TSStateId state, 
 		t_u32		 index = self->small_parse_table_map[state - self->large_state_count];
 		const t_u16 *data = &self->small_parse_table[index];
 		t_u16		 group_count = *(data++);
-		for (unsigned i = 0; i < group_count; i++)
+		for (t_u32 i = 0; i < group_count; i++)
 		{
 			t_u16 section_value = *(data++);
 			t_u16 symbol_count = *(data++);
-			for (unsigned j = 0; j < symbol_count; j++)
+			for (t_u32 j = 0; j < symbol_count; j++)
 			{
 				if (*(data++) == symbol)
 					return section_value;
@@ -81,7 +81,7 @@ static inline bool ts_language_has_actions(const TSLanguage *self, TSStateId sta
 	return ts_language_lookup(self, state, symbol) != 0;
 }
 
-static inline const bool *ts_language_enabled_external_tokens(const TSLanguage *self, unsigned external_scanner_state)
+static inline const bool *ts_language_enabled_external_tokens(const TSLanguage *self, t_u32 external_scanner_state)
 {
 	if (external_scanner_state == 0)
 	{
@@ -124,7 +124,7 @@ static inline void ts_language_aliases_for_symbol(const TSLanguage *self, TSSymb
 	*start = &self->public_symbol_map[original_symbol];
 	*end = *start + 1;
 
-	unsigned idx = 0;
+	t_u32 idx = 0;
 	for (;;)
 	{
 		TSSymbol symbol = self->alias_map[idx++];

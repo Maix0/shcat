@@ -14,7 +14,7 @@ typedef struct Lexer
 	Length	token_end_position;
 
 	TSRange	   *included_ranges;
-	const char *chunk;
+	const t_u8 *chunk;
 	TSInput		input;
 	TSLogger	logger;
 
@@ -25,7 +25,7 @@ typedef struct Lexer
 	t_u32 lookahead_size;
 	bool  did_get_column;
 
-	char debug_buffer[TREE_SITTER_SERIALIZATION_BUFFER_SIZE];
+	t_u8 debug_buffer[TREE_SITTER_SERIALIZATION_BUFFER_SIZE];
 } Lexer;
 
 void	 ts_lexer_init(Lexer *);

@@ -10,7 +10,7 @@ typedef struct ReduceAction
 	t_u32		   count;
 	TSSymbol	   symbol;
 	int			   dynamic_precedence;
-	unsigned short production_id;
+	t_u16 production_id;
 } ReduceAction;
 
 typedef Array(ReduceAction) ReduceActionSet;

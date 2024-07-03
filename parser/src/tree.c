@@ -8,7 +8,7 @@
 #include "./subtree.h"
 #include "api.h"
 
-TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *included_ranges, unsigned included_range_count)
+TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *included_ranges, t_u32 included_range_count)
 {
 	TSTree *result = mem_alloc(sizeof(TSTree));
 	result->root = root;
@@ -56,7 +56,7 @@ const TSLanguage *ts_tree_language(const TSTree *self)
 
 void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
 {
-	for (unsigned i = 0; i < self->included_range_count; i++)
+	for (t_u32 i = 0; i < self->included_range_count; i++)
 	{
 		TSRange *range = &self->included_ranges[i];
 		if (range->end_byte >= edit->old_end_byte)

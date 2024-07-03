@@ -102,7 +102,7 @@ TSStateId ts_language_next_state(const TSLanguage *self, TSStateId state, TSSymb
 	}
 }
 
-const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
+t_const_str ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 	{
@@ -122,7 +122,7 @@ const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
 	}
 }
 
-TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string, t_u32 length, bool is_named)
+TSSymbol ts_language_symbol_for_name(const TSLanguage *self, t_const_str string, t_u32 length, bool is_named)
 {
 	if (!strncmp(string, "ERROR", length))
 		return ts_builtin_sym_error;
@@ -132,7 +132,7 @@ TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string,
 		TSSymbolMetadata metadata = ts_language_symbol_metadata(self, i);
 		if ((!metadata.visible && !metadata.supertype) || metadata.named != is_named)
 			continue;
-		const char *symbol_name = self->symbol_names[i];
+		t_const_str symbol_name = self->symbol_names[i];
 		if (!strncmp(symbol_name, string, length) && !symbol_name[length])
 		{
 			return self->public_symbol_map[i];
@@ -158,7 +158,7 @@ TSSymbolType ts_language_symbol_type(const TSLanguage *self, TSSymbol symbol)
 	}
 }
 
-const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
+t_const_str ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
 {
 	t_u32 count = ts_language_field_count(self);
 	if (count && id <= count)
@@ -171,7 +171,7 @@ const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
 	}
 }
 
-TSFieldId ts_language_field_id_for_name(const TSLanguage *self, const char *name, t_u32 name_length)
+TSFieldId ts_language_field_id_for_name(const TSLanguage *self, t_const_str name, t_u32 name_length)
 {
 	t_u16 count = (t_u16)ts_language_field_count(self);
 	for (TSSymbol i = 1; i < count + 1; i++)
@@ -231,7 +231,7 @@ TSFieldId ts_language_field_id_for_name(const TSLanguage *self, const char *name
 //   return iterator->symbol;
 // }
 
-// const char *ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
+// t_const_str ts_lookahead_iterator_current_symbol_name(const TSLookaheadIterator *self) {
 //   const LookaheadIterator *iterator = (const LookaheadIterator *)self;
 //   return ts_language_symbol_name(iterator->language, iterator->symbol);
 // }

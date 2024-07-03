@@ -23,11 +23,11 @@
 
 #define TREE_NAME(tree) SYM_NAME(ts_subtree_symbol(tree))
 
-static const unsigned MAX_VERSION_COUNT = 6;
-static const unsigned MAX_VERSION_COUNT_OVERFLOW = 4;
-static const unsigned MAX_SUMMARY_DEPTH = 16;
-static const unsigned MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
-static const unsigned OP_COUNT_PER_TIMEOUT_CHECK = 100;
+static const t_u32 MAX_VERSION_COUNT = 6;
+static const t_u32 MAX_VERSION_COUNT_OVERFLOW = 4;
+static const t_u32 MAX_SUMMARY_DEPTH = 16;
+static const t_u32 MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
+static const t_u32 OP_COUNT_PER_TIMEOUT_CHECK = 100;
 
 typedef struct TokenCache
 {
@@ -49,20 +49,20 @@ struct TSParser
 	SubtreeArray		   scratch_trees;
 	TokenCache			   token_cache;
 	void				  *external_scanner_payload;
-	unsigned			   accept_count;
-	unsigned			   operation_count;
+	t_u32				   accept_count;
+	t_u32				   operation_count;
 	const volatile size_t *cancellation_flag;
 	Subtree				   old_tree;
-	unsigned			   included_range_difference_index;
+	t_u32				   included_range_difference_index;
 	bool				   has_scanner_error;
 };
 
 typedef struct ErrorStatus
 {
-	unsigned cost;
-	unsigned node_count;
-	int		 dynamic_precedence;
-	bool	 is_in_error;
+	t_u32 cost;
+	t_u32 node_count;
+	int	  dynamic_precedence;
+	bool  is_in_error;
 } ErrorStatus;
 
 typedef enum ErrorComparison
@@ -76,20 +76,20 @@ typedef enum ErrorComparison
 
 typedef struct TSStringInput
 {
-	const char *string;
+	const t_u8 *string;
 	t_u32		length;
 } TSStringInput;
 
 // StringInput
 
-static const char *ts_string_input_read(void *_self, t_u32 byte, TSPoint point, t_u32 *length)
+static const t_u8 *ts_string_input_read(void *_self, t_u32 byte, TSPoint point, t_u32 *length)
 {
 	(void)point;
 	TSStringInput *self = (TSStringInput *)_self;
 	if (byte >= self->length)
 	{
 		*length = 0;
-		return "";
+		return (const t_u8 *)"";
 	}
 	else
 	{
@@ -234,8 +234,8 @@ static ErrorComparison ts_parser__compare_versions(TSParser *self, ErrorStatus a
 
 static ErrorStatus ts_parser__version_status(TSParser *self, StackVersion version)
 {
-	unsigned cost = ts_stack_error_cost(self->stack, version);
-	bool	 is_paused = ts_stack_is_paused(self->stack, version);
+	t_u32 cost = ts_stack_error_cost(self->stack, version);
+	bool  is_paused = ts_stack_is_paused(self->stack, version);
 	if (is_paused)
 		cost += ERROR_COST_PER_SKIPPED_TREE;
 	return (ErrorStatus){.cost = cost,
@@ -244,7 +244,7 @@ static ErrorStatus ts_parser__version_status(TSParser *self, StackVersion versio
 						 .is_in_error = is_paused || ts_stack_state(self->stack, version) == ERROR_STATE};
 }
 
-static bool ts_parser__better_version_exists(TSParser *self, StackVersion version, bool is_in_error, unsigned cost)
+static bool ts_parser__better_version_exists(TSParser *self, StackVersion version, bool is_in_error, t_u32 cost)
 {
 	if (self->finished_tree.ptr && ts_subtree_error_cost(self->finished_tree) <= cost)
 	{
@@ -313,7 +313,7 @@ static void ts_parser__external_scanner_destroy(TSParser *self)
 	self->external_scanner_payload = NULL;
 }
 
-static unsigned ts_parser__external_scanner_serialize(TSParser *self)
+static t_u32 ts_parser__external_scanner_serialize(TSParser *self)
 {
 
 	t_u32 length = self->language->external_scanner.serialize(self->external_scanner_payload, self->lexer.debug_buffer);
@@ -323,7 +323,7 @@ static unsigned ts_parser__external_scanner_serialize(TSParser *self)
 
 static void ts_parser__external_scanner_deserialize(TSParser *self, Subtree external_token)
 {
-	const char *data = NULL;
+	const t_u8 *data = NULL;
 	t_u32		length = 0;
 	if (external_token.ptr)
 	{
@@ -829,7 +829,7 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, StackVersion 
 
 	bool		 can_shift_lookahead_symbol = false;
 	StackVersion version = starting_version;
-	for (unsigned i = 0; true; i++)
+	for (t_u32 i = 0; true; i++)
 	{
 		t_u32 version_count = ts_stack_version_count(self->stack);
 		if (version >= version_count)
@@ -928,12 +928,12 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, StackVersion 
 	return can_shift_lookahead_symbol;
 }
 
-static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, unsigned depth, TSStateId goal_state)
+static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, t_u32 depth, TSStateId goal_state)
 {
 	StackSliceArray pop = ts_stack_pop_count(self->stack, version, depth);
 	StackVersion	previous_version = STACK_VERSION_NONE;
 
-	for (unsigned i = 0; i < pop.size; i++)
+	for (t_u32 i = 0; i < pop.size; i++)
 	{
 		StackSlice slice = pop.contents[i];
 
@@ -961,7 +961,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, un
 			if (error_child_count > 0)
 			{
 				array_splice(&slice.subtrees, 0, 0, error_child_count, ts_subtree_children(error_tree));
-				for (unsigned j = 0; j < error_child_count; j++)
+				for (t_u32 j = 0; j < error_child_count; j++)
 				{
 					ts_subtree_retain(slice.subtrees.contents[j]);
 				}
@@ -981,7 +981,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, un
 			array_delete(&slice.subtrees);
 		}
 
-		for (unsigned j = 0; j < self->trailing_extras.size; j++)
+		for (t_u32 j = 0; j < self->trailing_extras.size; j++)
 		{
 			Subtree tree = self->trailing_extras.contents[j];
 			ts_stack_push(self->stack, slice.version, tree, false, goal_state);
@@ -996,11 +996,11 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, un
 static void ts_parser__recover(TSParser *self, StackVersion version, Subtree lookahead)
 {
 	bool		  did_recover = false;
-	unsigned	  previous_version_count = ts_stack_version_count(self->stack);
+	t_u32		  previous_version_count = ts_stack_version_count(self->stack);
 	Length		  position = ts_stack_position(self->stack, version);
 	StackSummary *summary = ts_stack_get_summary(self->stack, version);
-	unsigned	  node_count_since_error = ts_stack_node_count_since_error(self->stack, version);
-	unsigned	  current_error_cost = ts_stack_error_cost(self->stack, version);
+	t_u32		  node_count_since_error = ts_stack_node_count_since_error(self->stack, version);
+	t_u32		  current_error_cost = ts_stack_error_cost(self->stack, version);
 
 	// When the parser is in the error state, there are two strategies for recovering with a
 	// given lookahead token:
@@ -1016,7 +1016,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 	// if the current lookahead token would be valid in that state.
 	if (summary && !ts_subtree_is_error(lookahead))
 	{
-		for (unsigned i = 0; i < summary->size; i++)
+		for (t_u32 i = 0; i < summary->size; i++)
 		{
 			StackSummaryEntry entry = summary->contents[i];
 
@@ -1024,13 +1024,13 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 				continue;
 			if (entry.position.bytes == position.bytes)
 				continue;
-			unsigned depth = entry.depth;
+			t_u32 depth = entry.depth;
 			if (node_count_since_error > 0)
 				depth++;
 
 			// Do not recover in ways that create redundant stack versions.
 			bool would_merge = false;
-			for (unsigned j = 0; j < previous_version_count; j++)
+			for (t_u32 j = 0; j < previous_version_count; j++)
 			{
 				if (ts_stack_state(self->stack, j) == entry.state && ts_stack_position(self->stack, j).bytes == position.bytes)
 				{
@@ -1042,9 +1042,9 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 				continue;
 
 			// Do not recover if the result would clearly be worse than some existing stack version.
-			unsigned new_cost = current_error_cost + entry.depth * ERROR_COST_PER_SKIPPED_TREE +
-								(position.bytes - entry.position.bytes) * ERROR_COST_PER_SKIPPED_CHAR +
-								(position.extent.row - entry.position.extent.row) * ERROR_COST_PER_SKIPPED_LINE;
+			t_u32 new_cost = current_error_cost + entry.depth * ERROR_COST_PER_SKIPPED_TREE +
+							 (position.bytes - entry.position.bytes) * ERROR_COST_PER_SKIPPED_CHAR +
+							 (position.extent.row - entry.position.extent.row) * ERROR_COST_PER_SKIPPED_LINE;
 			if (ts_parser__better_version_exists(self, version, false, new_cost))
 				break;
 
@@ -1065,7 +1065,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 
 	// In the process of attempting to recover, some stack versions may have been created
 	// and subsequently halted. Remove those versions.
-	for (unsigned i = previous_version_count; i < ts_stack_version_count(self->stack); i++)
+	for (t_u32 i = previous_version_count; i < ts_stack_version_count(self->stack); i++)
 	{
 		if (!ts_stack_is_active(self->stack, i))
 		{
@@ -1105,8 +1105,8 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 	}
 
 	// Do not recover if the result would clearly be worse than some existing stack version.
-	unsigned new_cost = current_error_cost + ERROR_COST_PER_SKIPPED_TREE + ts_subtree_total_bytes(lookahead) * ERROR_COST_PER_SKIPPED_CHAR +
-						ts_subtree_total_size(lookahead).extent.row * ERROR_COST_PER_SKIPPED_LINE;
+	t_u32 new_cost = current_error_cost + ERROR_COST_PER_SKIPPED_TREE + ts_subtree_total_bytes(lookahead) * ERROR_COST_PER_SKIPPED_CHAR +
+					 ts_subtree_total_size(lookahead).extent.row * ERROR_COST_PER_SKIPPED_LINE;
 	if (ts_parser__better_version_exists(self, version, false, new_cost))
 	{
 		ts_stack_halt(self->stack, version);
@@ -1116,7 +1116,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 
 	// If the current lookahead token is an extra token, mark it as extra. This means it won't
 	// be counted in error cost calculations.
-	unsigned			 n;
+	t_u32				 n;
 	const TSParseAction *actions = ts_language_actions(self->language, 1, ts_subtree_symbol(lookahead), &n);
 	if (n > 0 && actions[n - 1].type == TSParseActionTypeShift && actions[n - 1].shift.extra)
 	{
@@ -1145,7 +1145,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 		// arbitrarily and discard the rest.
 		if (pop.size > 1)
 		{
-			for (unsigned i = 1; i < pop.size; i++)
+			for (t_u32 i = 1; i < pop.size; i++)
 			{
 				ts_subtree_array_delete(&self->tree_pool, &pop.contents[i].subtrees);
 			}
@@ -1225,7 +1225,7 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version, Subtre
 		v = (v == version) ? previous_version_count : v + 1;
 	}
 
-	for (unsigned i = previous_version_count; i < version_count; i++)
+	for (t_u32 i = previous_version_count; i < version_count; i++)
 	{
 		bool did_merge = ts_stack_merge(self->stack, version, previous_version_count);
 		assert(did_merge);
@@ -1453,10 +1453,10 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 	}
 }
 
-static unsigned ts_parser__condense_stack(TSParser *self)
+static t_u32 ts_parser__condense_stack(TSParser *self)
 {
-	bool	 made_changes = false;
-	unsigned min_error_cost = UINT_MAX;
+	bool  made_changes = false;
+	t_u32 min_error_cost = UINT_MAX;
 	for (StackVersion i = 0; i < ts_stack_version_count(self->stack); i++)
 	{
 		// Prune any versions that have been marked for removal.
@@ -1724,7 +1724,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 
 		// After advancing each version of the stack, re-sort the versions by their cost,
 		// removing any versions that are no longer worth pursuing.
-		unsigned min_error_cost = ts_parser__condense_stack(self);
+		t_u32 min_error_cost = ts_parser__condense_stack(self);
 
 		// If there's already a finished parse tree that's better than any in-progress version,
 		// then terminate parsing. Clear the parse stack to remove any extra references to subtrees
@@ -1751,14 +1751,14 @@ exit:
 	return result;
 }
 
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length)
+TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length)
 {
 	return ts_parser_parse_string_encoding(self, old_tree, string, length, TSInputEncodingUTF8);
 }
 
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length, TSInputEncoding encoding)
+TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length, TSInputEncoding encoding)
 {
-	TSStringInput input = {string, length};
+	TSStringInput input = {(const t_u8 *)string, length};
 	return ts_parser_parse(self, old_tree,
 						   (TSInput){
 							   &input,

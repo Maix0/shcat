@@ -187,7 +187,7 @@ static inline TSNode ts_node__child(TSNode self, t_u32 child_index, bool include
 
 static bool ts_subtree_has_trailing_empty_descendant(Subtree self, Subtree other)
 {
-	for (unsigned i = ts_subtree_child_count(self) - 1; i + 1 > 0; i--)
+	for (t_u32 i = ts_subtree_child_count(self) - 1; i + 1 > 0; i--)
 	{
 		Subtree child = ts_subtree_children(self)[i];
 		if (ts_subtree_total_bytes(child) > 0)
@@ -484,7 +484,7 @@ TSSymbol ts_node_symbol(TSNode self)
 	return ts_language_public_symbol(self.tree->language, symbol);
 }
 
-const char *ts_node_type(TSNode self)
+t_const_str ts_node_type(TSNode self)
 {
 	TSSymbol symbol = ts_node__alias(&self);
 	if (!symbol)
@@ -502,7 +502,7 @@ TSSymbol ts_node_grammar_symbol(TSNode self)
 	return ts_subtree_symbol(ts_node__subtree(self));
 }
 
-const char *ts_node_grammar_type(TSNode self)
+t_const_str ts_node_grammar_type(TSNode self)
 {
 	TSSymbol symbol = ts_subtree_symbol(ts_node__subtree(self));
 	return ts_language_symbol_name(self.tree->language, symbol);
@@ -712,7 +712,7 @@ recur:
 	return ts_node__null();
 }
 
-static inline const char *ts_node__field_name_from_language(TSNode self, t_u32 structural_child_index)
+static inline t_const_str ts_node__field_name_from_language(TSNode self, t_u32 structural_child_index)
 {
 	const TSFieldMapEntry *field_map, *field_map_end;
 	ts_language_field_map(self.tree->language, ts_node__subtree(self).ptr->production_id, &field_map, &field_map_end);
@@ -726,11 +726,11 @@ static inline const char *ts_node__field_name_from_language(TSNode self, t_u32 s
 	return NULL;
 }
 
-const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index)
+t_const_str ts_node_field_name_for_child(TSNode self, t_u32 child_index)
 {
 	TSNode		result = self;
 	bool		did_descend = true;
-	const char *inherited_field_name = NULL;
+	t_const_str inherited_field_name = NULL;
 
 	while (did_descend)
 	{
@@ -749,7 +749,7 @@ const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index)
 					{
 						return NULL;
 					}
-					const char *field_name = ts_node__field_name_from_language(result, iterator.structural_child_index - 1);
+					t_const_str field_name = ts_node__field_name_from_language(result, iterator.structural_child_index - 1);
 					if (field_name)
 						return field_name;
 					return inherited_field_name;
@@ -762,7 +762,7 @@ const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index)
 				t_u32 grandchild_count = ts_node__relevant_child_count(child, true);
 				if (grandchild_index < grandchild_count)
 				{
-					const char *field_name = ts_node__field_name_from_language(result, iterator.structural_child_index - 1);
+					t_const_str field_name = ts_node__field_name_from_language(result, iterator.structural_child_index - 1);
 					if (field_name)
 						inherited_field_name = field_name;
 
@@ -779,7 +779,7 @@ const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index)
 	return NULL;
 }
 
-TSNode ts_node_child_by_field_name(TSNode self, const char *name, t_u32 name_length)
+TSNode ts_node_child_by_field_name(TSNode self, t_const_str name, t_u32 name_length)
 {
 	TSFieldId field_id = ts_language_field_id_for_name(self.tree->language, name, name_length);
 	return ts_node_child_by_field_id(self, field_id);
@@ -884,7 +884,7 @@ void ts_node_edit(TSNode *self, const TSInputEdit *edit)
 
 TSSymbol ts_node_field_id_for_child(TSNode self, t_u32 child_index)
 {
-	const char *name = ts_node_field_name_for_child(self, child_index);
+	t_const_str name = ts_node_field_name_for_child(self, child_index);
 	if (name == NULL)
 		return (0);
 	return (ts_language_field_id_for_name(ts_node_language(self), name, strlen(name)));

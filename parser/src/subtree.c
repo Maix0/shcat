@@ -23,7 +23,7 @@ typedef struct
 
 // ExternalScannerState
 
-void ts_external_scanner_state_init(ExternalScannerState *self, const char *data, unsigned length)
+void ts_external_scanner_state_init(ExternalScannerState *self, const t_u8 *data, t_u32 length)
 {
 	self->length = length;
 	if (length > sizeof(self->short_data))
@@ -56,19 +56,19 @@ void ts_external_scanner_state_delete(ExternalScannerState *self)
 	}
 }
 
-const char *ts_external_scanner_state_data(const ExternalScannerState *self)
+const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *self)
 {
 	if (self->length > sizeof(self->short_data))
 	{
-		return self->long_data;
+		return (const t_u8 *)self->long_data;
 	}
 	else
 	{
-		return self->short_data;
+		return (const t_u8 *)self->short_data;
 	}
 }
 
-bool ts_external_scanner_state_eq(const ExternalScannerState *self, const char *buffer, unsigned length)
+bool ts_external_scanner_state_eq(const ExternalScannerState *self, const t_u8 *buffer, t_u32 length)
 {
 	return self->length == length && memcmp(ts_external_scanner_state_data(self), buffer, length) == 0;
 }
@@ -149,7 +149,7 @@ void ts_subtree_pool_delete(SubtreePool *self)
 {
 	if (self->free_trees.contents)
 	{
-		for (unsigned i = 0; i < self->free_trees.size; i++)
+		for (t_u32 i = 0; i < self->free_trees.size; i++)
 		{
 			mem_free(self->free_trees.contents[i].ptr);
 		}
@@ -315,13 +315,13 @@ MutableSubtree ts_subtree_make_mut(SubtreePool *pool, Subtree self)
 	return result;
 }
 
-static void ts_subtree__compress(MutableSubtree self, unsigned count, const TSLanguage *language, MutableSubtreeArray *stack)
+static void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLanguage *language, MutableSubtreeArray *stack)
 {
-	unsigned initial_stack_size = stack->size;
+	t_u32 initial_stack_size = stack->size;
 
 	MutableSubtree tree = self;
 	TSSymbol	   symbol = tree.ptr->symbol;
-	for (unsigned i = 0; i < count; i++)
+	for (t_u32 i = 0; i < count; i++)
 	{
 		if (tree.ptr->ref_count > 1 || tree.ptr->child_count < 2)
 			break;
@@ -373,8 +373,8 @@ void ts_subtree_balance(Subtree self, SubtreePool *pool, const TSLanguage *langu
 			long	repeat_delta = (long)ts_subtree_repeat_depth(child1) - (long)ts_subtree_repeat_depth(child2);
 			if (repeat_delta > 0)
 			{
-				unsigned n = (unsigned)repeat_delta;
-				for (unsigned i = n / 2; i > 0; i /= 2)
+				t_u32 n = (t_u32)repeat_delta;
+				for (t_u32 i = n / 2; i > 0; i /= 2)
 				{
 					ts_subtree__compress(tree, i, language, &pool->tree_stack);
 					n -= i;
@@ -540,7 +540,7 @@ void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *langua
 // Create a new parent node with the given children.
 //
 // This takes ownership of the children array.
-MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, unsigned production_id, const TSLanguage *language)
+MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, t_u32 production_id, const TSLanguage *language)
 {
 	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
 	bool			 fragile = symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat;
@@ -903,10 +903,10 @@ static size_t ts_subtree__write_char_to_string(char *str, size_t n, t_i32 chr)
 		return snprintf(str, n, "%d", chr);
 }
 
-static const char *const ROOT_FIELD = "__ROOT__";
+static t_const_str const ROOT_FIELD = "__ROOT__";
 
 static size_t ts_subtree__write_to_string(Subtree self, char *string, size_t limit, const TSLanguage *language, bool include_all,
-										  TSSymbol alias_symbol, bool alias_is_named, const char *field_name)
+										  TSSymbol alias_symbol, bool alias_is_named, t_const_str field_name)
 {
 	if (!self.ptr)
 		return snprintf(string, limit, "(NULL)");
@@ -936,7 +936,7 @@ static size_t ts_subtree__write_to_string(Subtree self, char *string, size_t lim
 		else
 		{
 			TSSymbol	symbol = alias_symbol ? alias_symbol : ts_subtree_symbol(self);
-			const char *symbol_name = ts_language_symbol_name(language, symbol);
+			t_const_str symbol_name = ts_language_symbol_name(language, symbol);
 			if (ts_subtree_missing(self))
 			{
 				cursor += snprintf(*writer, limit, "(MISSING ");
@@ -958,7 +958,7 @@ static size_t ts_subtree__write_to_string(Subtree self, char *string, size_t lim
 	else if (is_root)
 	{
 		TSSymbol	symbol = alias_symbol ? alias_symbol : ts_subtree_symbol(self);
-		const char *symbol_name = ts_language_symbol_name(language, symbol);
+		t_const_str symbol_name = ts_language_symbol_name(language, symbol);
 		if (ts_subtree_child_count(self) > 0)
 		{
 			cursor += snprintf(*writer, limit, "(%s", symbol_name);
@@ -993,7 +993,7 @@ static size_t ts_subtree__write_to_string(Subtree self, char *string, size_t lim
 				bool	 subtree_alias_is_named =
 					subtree_alias_symbol ? ts_language_symbol_metadata(language, subtree_alias_symbol).named : false;
 
-				const char *child_field_name = is_visible ? NULL : field_name;
+				t_const_str child_field_name = is_visible ? NULL : field_name;
 				for (const TSFieldMapEntry *map = field_map; map < field_map_end; map++)
 				{
 					if (!map->inherited && map->child_index == structural_child_index)

@@ -97,7 +97,7 @@ static inline void reset(Scanner *scanner)
 	}
 }
 
-static unsigned serialize(Scanner *scanner, char *buffer)
+static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
 {
 	t_u32 size = 0;
 
@@ -129,7 +129,7 @@ static unsigned serialize(Scanner *scanner, char *buffer)
 	return size;
 }
 
-static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
+static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
 {
 	if (length == 0)
 	{
@@ -141,7 +141,7 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
 		scanner->last_glob_paren_depth = buffer[size++];
 		scanner->ext_was_in_double_quote = buffer[size++];
 		scanner->ext_saw_outside_quote = buffer[size++];
-		t_u32 heredoc_count = (unsigned char)buffer[size++];
+		t_u32 heredoc_count = (t_u8)buffer[size++];
 		for (t_u32 i = 0; i < heredoc_count; i++)
 		{
 			Heredoc *heredoc = NULL;
@@ -1172,13 +1172,13 @@ bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const b
 	return scan(scanner, lexer, valid_symbols);
 }
 
-unsigned tree_sitter_sh_external_scanner_serialize(void *payload, char *state)
+t_u32 tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
 {
 	Scanner *scanner = (Scanner *)payload;
 	return serialize(scanner, state);
 }
 
-void tree_sitter_sh_external_scanner_deserialize(void *payload, const char *state, unsigned length)
+void tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
 {
 	Scanner *scanner = (Scanner *)payload;
 	deserialize(scanner, state, length);

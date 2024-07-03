@@ -73,7 +73,7 @@ typedef struct TSRange
 typedef struct TSInput
 {
 	void *payload;
-	const char *(*read)(void *payload, t_u32 byte_index, TSPoint position, t_u32 *bytes_read);
+	const t_u8 *(*read)(void *payload, t_u32 byte_index, TSPoint position, t_u32 *bytes_read);
 	TSInputEncoding encoding;
 } TSInput;
 
@@ -86,7 +86,7 @@ typedef enum TSLogType
 typedef struct TSLogger
 {
 	void *payload;
-	void (*log)(void *payload, TSLogType log_type, const char *buffer);
+	void (*log)(void *payload, TSLogType log_type, const t_u8 *buffer);
 } TSLogger;
 
 typedef struct TSInputEdit
@@ -275,7 +275,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input);
  * above. The second two parameters indicate the location of the buffer and its
  * length in bytes.
  */
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length);
+TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length);
 
 /**
  * Use the parser to parse some source code stored in one contiguous buffer with
@@ -283,7 +283,7 @@ TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const cha
  * [`ts_parser_parse_string`] method above. The final parameter indicates whether
  * the text is encoded as UTF8 or UTF16.
  */
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length, TSInputEncoding encoding);
+TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length, TSInputEncoding encoding);
 
 /**
  * Instruct the parser to start the next parse from the beginning.
@@ -423,7 +423,7 @@ void ts_tree_print_dot_graph(const TSTree *self, int file_descriptor);
 /**
  * Get the node's type as a null-terminated string.
  */
-const char *ts_node_type(TSNode self);
+t_const_str ts_node_type(TSNode self);
 
 /**
  * Get the node's type as a numerical id.
@@ -439,7 +439,7 @@ const TSLanguage *ts_node_language(TSNode self);
  * Get the node's type as it appears in the grammar ignoring aliases as a
  * null-terminated string.
  */
-const char *ts_node_grammar_type(TSNode self);
+t_const_str ts_node_grammar_type(TSNode self);
 
 /**
  * Get the node's type as a numerical id as it appears in the grammar ignoring
@@ -549,7 +549,7 @@ TSNode ts_node_child(TSNode self, t_u32 child_index);
  * Get the field name for node's child at the given index, where zero represents
  * the first child. Returns NULL, if no field is found.
  */
-const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index);
+t_const_str ts_node_field_name_for_child(TSNode self, t_u32 child_index);
 
 /**
  * Get the field name for node's child at the given index, where zero represents
@@ -579,7 +579,7 @@ t_u32 ts_node_named_child_count(TSNode self);
 /**
  * Get the node's child with the given field name.
  */
-TSNode ts_node_child_by_field_name(TSNode self, const char *name, t_u32 name_length);
+TSNode ts_node_child_by_field_name(TSNode self, t_const_str name, t_u32 name_length);
 
 /**
  * Get the node's child with the given numerical field id.
@@ -674,12 +674,12 @@ t_u32 ts_language_state_count(const TSLanguage *self);
 /**
  * Get a node type string for the given numerical id.
  */
-const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol);
+t_const_str ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol);
 
 /**
  * Get the numerical id for the given node type string.
  */
-TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string, t_u32 length, bool is_named);
+TSSymbol ts_language_symbol_for_name(const TSLanguage *self, t_const_str string, t_u32 length, bool is_named);
 
 /**
  * Get the number of distinct field names in the language.
@@ -689,12 +689,12 @@ t_u32 ts_language_field_count(const TSLanguage *self);
 /**
  * Get the field name string for the given numerical id.
  */
-const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id);
+t_const_str ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id);
 
 /**
  * Get the numerical id for the given field name string.
  */
-TSFieldId ts_language_field_id_for_name(const TSLanguage *self, const char *name, t_u32 name_length);
+TSFieldId ts_language_field_id_for_name(const TSLanguage *self, t_const_str name, t_u32 name_length);
 
 /**
  * Check whether the given node type id belongs to named nodes, anonymous nodes,

@@ -111,8 +111,8 @@ struct TSLanguage
 	const t_u16				 *small_parse_table;
 	const t_u32				 *small_parse_table_map;
 	const TSParseActionEntry *parse_actions;
-	const char *const		 *symbol_names;
-	const char *const		 *field_names;
+	t_const_str const		 *symbol_names;
+	t_const_str const		 *field_names;
 	const TSFieldMapSlice	 *field_map_slices;
 	const TSFieldMapEntry	 *field_map_entries;
 	const TSSymbolMetadata	 *symbol_metadata;
@@ -130,8 +130,8 @@ struct TSLanguage
 		void *(*create)(void);
 		void (*destroy)(void *);
 		bool (*scan)(void *, TSLexer *, const bool *symbol_whitelist);
-		unsigned (*serialize)(void *, char *);
-		void (*deserialize)(void *, const char *, unsigned);
+		t_u32 (*serialize)(void *, t_u8 *);
+		void (*deserialize)(void *, const t_u8 *, t_u32);
 	} external_scanner;
 	const TSStateId *primary_state_ids;
 };

@@ -36,8 +36,8 @@ void *create_small_parse_table(void);
 void *create_small_parse_table_map(void);
 bool  ts_lex_keywords(TSLexer *lexer, TSStateId state);
 bool  ts_lex(TSLexer *lexer, TSStateId state);
-t_u32 tree_sitter_sh_external_scanner_serialize(void *ctx, char *s);
-void  tree_sitter_sh_external_scanner_deserialize(void *ctx, const char *s, t_u32 val);
+t_u32 tree_sitter_sh_external_scanner_serialize(void *ctx, t_u8 *state);
+void  tree_sitter_sh_external_scanner_deserialize(void *ctx, const t_u8 *state, t_u32 val);
 void  tree_sitter_sh_external_scanner_destroy(void *ctx);
 void *tree_sitter_sh_external_scanner_create(void);
 

@@ -18,10 +18,10 @@ struct TSTree
 	Subtree			  root;
 	const TSLanguage *language;
 	TSRange			 *included_ranges;
-	unsigned		  included_range_count;
+	t_u32		  included_range_count;
 };
 
-TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *, unsigned);
+TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *, t_u32);
 TSNode	ts_node_new(const TSTree *, const Subtree *, Length, TSSymbol);
 
 #endif // TREE_SITTER_TREE_H_

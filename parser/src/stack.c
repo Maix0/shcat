@@ -27,10 +27,10 @@ struct StackNode
 	TSStateId		   state;
 	Length			   position;
 	StackLink		   links[MAX_LINK_COUNT];
-	short unsigned int link_count;
+	t_u16 link_count;
 	t_u32			   ref_count;
-	unsigned		   error_cost;
-	unsigned		   node_count;
+	t_u32		   error_cost;
+	t_u32		   node_count;
 	int				   dynamic_precedence;
 };
 
@@ -55,7 +55,7 @@ typedef struct StackHead
 {
 	StackNode	 *node;
 	StackSummary *summary;
-	unsigned	  node_count_at_last_error;
+	t_u32	  node_count_at_last_error;
 	Subtree		  last_external_token;
 	Subtree		  lookahead_when_paused;
 	StackStatus	  status;
@@ -71,7 +71,7 @@ struct Stack
 	SubtreePool	  *subtree_pool;
 };
 
-typedef unsigned StackAction;
+typedef t_u32 StackAction;
 enum StackAction
 {
 	StackActionNone,
@@ -101,7 +101,7 @@ recur:
 	StackNode *first_predecessor = NULL;
 	if (self->link_count > 0)
 	{
-		for (unsigned i = self->link_count - 1; i > 0; i--)
+		for (t_u32 i = self->link_count - 1; i > 0; i--)
 		{
 			StackLink link = self->links[i];
 			if (link.subtree.ptr)
@@ -255,7 +255,7 @@ static void stack_node_add_link(StackNode *self, StackLink link, SubtreePool *su
 		return;
 
 	stack_node_retain(link.node);
-	unsigned node_count = link.node->node_count;
+	t_u32 node_count = link.node->node_count;
 	int		 dynamic_precedence = link.node->dynamic_precedence;
 	self->links[self->link_count++] = link;
 
@@ -504,10 +504,10 @@ void ts_stack_set_last_external_token(Stack *self, StackVersion version, Subtree
 	head->last_external_token = token;
 }
 
-unsigned ts_stack_error_cost(const Stack *self, StackVersion version)
+t_u32 ts_stack_error_cost(const Stack *self, StackVersion version)
 {
 	StackHead *head = array_get(&self->heads, version);
-	unsigned   result = head->node->error_cost;
+	t_u32   result = head->node->error_cost;
 	if (head->status == StackStatusPaused || (head->node->state == ERROR_STATE && !head->node->links[0].subtree.ptr))
 	{
 		result += ERROR_COST_PER_RECOVERY;
@@ -515,7 +515,7 @@ unsigned ts_stack_error_cost(const Stack *self, StackVersion version)
 	return result;
 }
 
-unsigned ts_stack_node_count_since_error(const Stack *self, StackVersion version)
+t_u32 ts_stack_node_count_since_error(const Stack *self, StackVersion version)
 {
 	StackHead *head = array_get(&self->heads, version);
 	if (head->node->node_count < head->node_count_at_last_error)
@@ -536,7 +536,7 @@ void ts_stack_push(Stack *self, StackVersion version, Subtree subtree, bool pend
 
 StackAction pop_count_callback(void *payload, const StackIterator *iterator)
 {
-	unsigned *goal_subtree_count = payload;
+	t_u32 *goal_subtree_count = payload;
 	if (iterator->subtree_count == *goal_subtree_count)
 	{
 		return StackActionPop | StackActionStop;
@@ -607,7 +607,7 @@ StackAction pop_error_callback(void *payload, const StackIterator *iterator)
 SubtreeArray ts_stack_pop_error(Stack *self, StackVersion version)
 {
 	StackNode *node = array_get(&self->heads, version)->node;
-	for (unsigned i = 0; i < node->link_count; i++)
+	for (t_u32 i = 0; i < node->link_count; i++)
 	{
 		if (node->links[i].subtree.ptr && ts_subtree_is_error(node->links[i].subtree))
 		{
@@ -639,17 +639,17 @@ StackSliceArray ts_stack_pop_all(Stack *self, StackVersion version)
 typedef struct SummarizeStackSession
 {
 	StackSummary *summary;
-	unsigned	  max_depth;
+	t_u32	  max_depth;
 } SummarizeStackSession;
 
 StackAction summarize_stack_callback(void *payload, const StackIterator *iterator)
 {
 	SummarizeStackSession *session = payload;
 	TSStateId			   state = iterator->node->state;
-	unsigned			   depth = iterator->subtree_count;
+	t_u32			   depth = iterator->subtree_count;
 	if (depth > session->max_depth)
 		return StackActionStop;
-	for (unsigned i = session->summary->size - 1; i + 1 > 0; i--)
+	for (t_u32 i = session->summary->size - 1; i + 1 > 0; i--)
 	{
 		StackSummaryEntry entry = session->summary->contents[i];
 		if (entry.depth < depth)
@@ -665,7 +665,7 @@ StackAction summarize_stack_callback(void *payload, const StackIterator *iterato
 	return StackActionNone;
 }
 
-void ts_stack_record_summary(Stack *self, StackVersion version, unsigned max_depth)
+void ts_stack_record_summary(Stack *self, StackVersion version, t_u32 max_depth)
 {
 	SummarizeStackSession session = {.summary = mem_alloc(sizeof(StackSummary)), .max_depth = max_depth};
 	array_init(session.summary);

@@ -8,7 +8,7 @@
 
 typedef struct Stack Stack;
 
-typedef unsigned StackVersion;
+typedef t_u32 StackVersion;
 #define STACK_VERSION_NONE ((StackVersion)-1)
 
 typedef struct StackSlice
@@ -21,7 +21,7 @@ typedef Array(StackSlice) StackSliceArray;
 typedef struct StackSummaryEntry
 {
 	Length	  position;
-	unsigned  depth;
+	t_u32  depth;
 	TSStateId state;
 } StackSummaryEntry;
 
@@ -76,7 +76,7 @@ StackSliceArray ts_stack_pop_all(Stack *, StackVersion);
 
 // Get the maximum number of tree nodes reachable from this version of the stack
 // since the last error was detected.
-unsigned ts_stack_node_count_since_error(const Stack *, StackVersion);
+t_u32 ts_stack_node_count_since_error(const Stack *, StackVersion);
 
 int ts_stack_dynamic_precedence(Stack *, StackVersion);
 
@@ -84,14 +84,14 @@ bool ts_stack_has_advanced_since_error(const Stack *, StackVersion);
 
 // Compute a summary of all the parse states near the top of the given
 // version of the stack and store the summary for later retrieval.
-void ts_stack_record_summary(Stack *, StackVersion, unsigned max_depth);
+void ts_stack_record_summary(Stack *, StackVersion, t_u32 max_depth);
 
 // Retrieve a summary of all the parse states near the top of the
 // given version of the stack.
 StackSummary *ts_stack_get_summary(Stack *, StackVersion);
 
 // Get the total cost of all errors on the given version of the stack.
-unsigned ts_stack_error_cost(const Stack *, StackVersion version);
+t_u32 ts_stack_error_cost(const Stack *, StackVersion version);
 
 // Merge the given two stack versions if possible, returning true
 // if they were successfully merged and false otherwise.

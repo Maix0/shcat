@@ -115,7 +115,7 @@
 #define array_insert_sorted_with(self, compare, value)                                                                                     \
 	do                                                                                                                                     \
 	{                                                                                                                                      \
-		unsigned _index, _exists;                                                                                                          \
+		t_u32 _index, _exists;                                                                                                          \
 		array_search_sorted_with(self, compare, &(value), &_index, &_exists);                                                              \
 		if (!_exists)                                                                                                                      \
 			array_insert(self, _index, value);                                                                                             \
@@ -128,7 +128,7 @@
 #define array_insert_sorted_by(self, field, value)                                                                                         \
 	do                                                                                                                                     \
 	{                                                                                                                                      \
-		unsigned _index, _exists;                                                                                                          \
+		t_u32 _index, _exists;                                                                                                          \
 		array_search_sorted_by(self, field, (value)field, &_index, &_exists);                                                              \
 		if (!_exists)                                                                                                                      \
 			array_insert(self, _index, value);                                                                                             \

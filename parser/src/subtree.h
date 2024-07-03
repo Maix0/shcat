@@ -179,9 +179,9 @@ typedef struct SubtreePool
 	MutableSubtreeArray tree_stack;
 } SubtreePool;
 
-void		ts_external_scanner_state_init(ExternalScannerState *, const char *, unsigned);
-const char *ts_external_scanner_state_data(const ExternalScannerState *);
-bool		ts_external_scanner_state_eq(const ExternalScannerState *self, const char *, unsigned);
+void		ts_external_scanner_state_init(ExternalScannerState *, const t_u8 *, t_u32);
+const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *);
+bool		ts_external_scanner_state_eq(const ExternalScannerState *self, const t_u8 *, t_u32);
 void		ts_external_scanner_state_delete(ExternalScannerState *self);
 
 void ts_subtree_array_copy(SubtreeArray, SubtreeArray *);
@@ -195,7 +195,7 @@ void		ts_subtree_pool_delete(SubtreePool *);
 
 Subtree		   ts_subtree_new_leaf(SubtreePool *, TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
 Subtree		   ts_subtree_new_error(SubtreePool *, t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
-MutableSubtree ts_subtree_new_node(TSSymbol, SubtreeArray *, unsigned, const TSLanguage *);
+MutableSubtree ts_subtree_new_node(TSSymbol, SubtreeArray *, t_u32, const TSLanguage *);
 Subtree		   ts_subtree_new_error_node(SubtreeArray *, bool, const TSLanguage *);
 Subtree		   ts_subtree_new_missing_leaf(SubtreePool *, TSSymbol, Length, t_u32, const TSLanguage *);
 MutableSubtree ts_subtree_make_mut(SubtreePool *, Subtree);
