@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/03 18:47:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 21:57:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,7 +386,7 @@ void ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	t_ast_node			   val;
 
 	if (node == NULL)
-		return;
+		return ((void)printf("node == NULL\n"));
 	val = *node;
 	ptr = &void_storage;
 	if (val->kind == AST_CASE)
@@ -399,8 +399,12 @@ void ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 		ptr = &val->data.compound_statement.term;
 	if (val->kind == AST_IF)
 		ptr = &val->data.if_.term;
+	if (val->kind == AST_SUBSHELL)
+		ptr = &val->data.subshell.term;
 
 	*ptr = term;
+	if (ptr == &void_storage)
+		printf("node wasn't a term capable node\n");
 	(void)(void_storage);
 }
 
@@ -677,10 +681,9 @@ t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *ou
 			continue;
 		if (ts_node_field_id_for_child(self, i) == field_len)
 			ret->data.expansion.len_operator = true;
-		if (ts_node_field_id_for_child(self, i) == field_var)
+		if (ts_node_field_id_for_child(self, i) == field_name)
 			ret->data.expansion.var_name = _extract_str(ts_node_child(self, i), input);
 		if (ts_node_field_id_for_child(self, i) == field_op)
-
 			ret->data.expansion.kind = _extract_exp_op(ts_node_child(self, i));
 		if (ts_node_field_id_for_child(self, i) == field_args)
 		{
@@ -1517,20 +1520,19 @@ t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 	while (i < ts_node_child_count(self))
 	{
 		temp = NULL;
-		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_stmt)
+		if (ts_node_field_id_for_child(self, i) == field_stmt)
 		{
 			if (ast_from_node(ts_node_child(self, i), input, &temp))
 				return (ast_free(ret), ERROR);
-			i++;
+			vec_ast_push(&ret->data.program.body, temp);
 		}
-		if (i < ts_node_child_count(self) && ts_node_field_id_for_child(self, i) == field_term)
+		if (ts_node_field_id_for_child(self, i) == field_term)
 		{
-			printf("%s\n", (ts_node_grammar_type(ts_node_child(self, i))));
-			i++;
+			if (ret->data.program.body.len == 0 && (i++, true))
+				continue;
+			ast_set_term(&ret->data.program.body.buffer[ret->data.program.body.len - 1], _select_term(ts_node_child(self, i)));
 		}
-		if (temp == NULL)
-			break;
-		vec_ast_push(&ret->data.program.body, temp);
+		i++;
 	}
 	return (*out = ret, NO_ERROR);
 }
