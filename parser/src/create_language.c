@@ -13,33 +13,33 @@
 #include "../static/headers/constants.h"
 #include "../static/headers/symbols.h"
 #include "./parser.h"
+#include "me/types.h"
 
 // bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);
 // bool	 lex_normal_main(TSLexer *lexer, TSStateId state);
-bool	 tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, const bool *ret);
-void	*create_external_scanner_states(void);
-void	*create_field_names(void);
-void	*create_symbols_names(void);
-void	*create_field_map_entries(void);
-void	*create_field_map_slices(void);
-void	*create_lex_modes(void);
-void	*create_parse_actions_entries(void);
-void	*create_primary_state_ids(void);
-void	*create_alias_sequences(void);
-void	*create_external_scanner_symbol_map(void);
-void	*create_non_terminal_alias_map(void);
-void	*create_unique_symbols_map(void);
-void	*create_symbols_metadata(void);
-void	*create_parse_table(void);
-void	*create_small_parse_table(void);
-void	*create_small_parse_table_map(void);
-bool ts_lex_keywords(TSLexer *lexer, TSStateId state);
-bool ts_lex_keywords(TSLexer *lexer, TSStateId state);
-
-uint32_t tree_sitter_sh_external_scanner_serialize(void *ctx, char *s);
-void	 tree_sitter_sh_external_scanner_deserialize(void *ctx, const char *s, uint32_t val);
-void	 tree_sitter_sh_external_scanner_destroy(void *ctx);
-void	*tree_sitter_sh_external_scanner_create(void);
+bool  tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, const bool *ret);
+void *create_external_scanner_states(void);
+void *create_field_names(void);
+void *create_symbols_names(void);
+void *create_field_map_entries(void);
+void *create_field_map_slices(void);
+void *create_lex_modes(void);
+void *create_parse_actions_entries(void);
+void *create_primary_state_ids(void);
+void *create_alias_sequences(void);
+void *create_external_scanner_symbol_map(void);
+void *create_non_terminal_alias_map(void);
+void *create_unique_symbols_map(void);
+void *create_symbols_metadata(void);
+void *create_parse_table(void);
+void *create_small_parse_table(void);
+void *create_small_parse_table_map(void);
+bool  ts_lex_keywords(TSLexer *lexer, TSStateId state);
+bool  ts_lex(TSLexer *lexer, TSStateId state);
+t_u32 tree_sitter_sh_external_scanner_serialize(void *ctx, char *s);
+void  tree_sitter_sh_external_scanner_deserialize(void *ctx, const char *s, t_u32 val);
+void  tree_sitter_sh_external_scanner_destroy(void *ctx);
+void *tree_sitter_sh_external_scanner_create(void);
 
 static struct ExternalScannerDefinition init_scanner(void)
 {

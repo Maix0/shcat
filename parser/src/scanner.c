@@ -1,8 +1,7 @@
 #include "array.h"
+#include "me/types.h"
 #include "parser.h"
-
 #include <assert.h>
-#include <ctype.h>
 #include <string.h>
 #include <wctype.h>
 
@@ -52,9 +51,9 @@ typedef struct Heredoc
 
 typedef struct Scanner
 {
-	uint8_t last_glob_paren_depth;
-	bool	ext_was_in_double_quote;
-	bool	ext_saw_outside_quote;
+	t_u8 last_glob_paren_depth;
+	bool ext_was_in_double_quote;
+	bool ext_saw_outside_quote;
 	Array(Heredoc) heredocs;
 } Scanner;
 
@@ -92,7 +91,7 @@ static inline void reset_heredoc(Heredoc *heredoc)
 
 static inline void reset(Scanner *scanner)
 {
-	for (uint32_t i = 0; i < scanner->heredocs.size; i++)
+	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
 	{
 		reset_heredoc(array_get(&scanner->heredocs, i));
 	}
@@ -100,14 +99,14 @@ static inline void reset(Scanner *scanner)
 
 static unsigned serialize(Scanner *scanner, char *buffer)
 {
-	uint32_t size = 0;
+	t_u32 size = 0;
 
 	buffer[size++] = (char)scanner->last_glob_paren_depth;
 	buffer[size++] = (char)scanner->ext_was_in_double_quote;
 	buffer[size++] = (char)scanner->ext_saw_outside_quote;
 	buffer[size++] = (char)scanner->heredocs.size;
 
-	for (uint32_t i = 0; i < scanner->heredocs.size; i++)
+	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
 	{
 		Heredoc *heredoc = array_get(&scanner->heredocs, i);
 		if (heredoc->delimiter.size + 3 + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
@@ -119,8 +118,8 @@ static unsigned serialize(Scanner *scanner, char *buffer)
 		buffer[size++] = (char)heredoc->started;
 		buffer[size++] = (char)heredoc->allows_indent;
 
-		memcpy(&buffer[size], &heredoc->delimiter.size, sizeof(uint32_t));
-		size += sizeof(uint32_t);
+		memcpy(&buffer[size], &heredoc->delimiter.size, sizeof(t_u32));
+		size += sizeof(t_u32);
 		if (heredoc->delimiter.size > 0)
 		{
 			memcpy(&buffer[size], heredoc->delimiter.contents, heredoc->delimiter.size);
@@ -138,12 +137,12 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
 	}
 	else
 	{
-		uint32_t size = 0;
+		t_u32 size = 0;
 		scanner->last_glob_paren_depth = buffer[size++];
 		scanner->ext_was_in_double_quote = buffer[size++];
 		scanner->ext_saw_outside_quote = buffer[size++];
-		uint32_t heredoc_count = (unsigned char)buffer[size++];
-		for (uint32_t i = 0; i < heredoc_count; i++)
+		t_u32 heredoc_count = (unsigned char)buffer[size++];
+		for (t_u32 i = 0; i < heredoc_count; i++)
 		{
 			Heredoc *heredoc = NULL;
 			if (i < scanner->heredocs.size)
@@ -161,8 +160,8 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
 			heredoc->started = buffer[size++];
 			heredoc->allows_indent = buffer[size++];
 
-			memcpy(&heredoc->delimiter.size, &buffer[size], sizeof(uint32_t));
-			size += sizeof(uint32_t);
+			memcpy(&heredoc->delimiter.size, &buffer[size], sizeof(t_u32));
+			size += sizeof(t_u32);
 			array_reserve(&heredoc->delimiter, heredoc->delimiter.size);
 
 			if (heredoc->delimiter.size > 0)
@@ -184,8 +183,8 @@ static void deserialize(Scanner *scanner, const char *buffer, unsigned length)
  */
 static bool advance_word(TSLexer *lexer, String *unquoted_word)
 {
-	bool	empty = true;
-	int32_t quote = 0;
+	bool  empty = true;
+	t_i32 quote = 0;
 
 	if (lexer->lookahead == '\'' || lexer->lookahead == '"')
 	{
@@ -254,10 +253,10 @@ static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
 	reset_string(&heredoc->current_leading_word);
 	// Scan the first 'n' characters on this line, to see if they match the
 	// heredoc delimiter
-	int32_t size = 0;
+	t_i32 size = 0;
 	if (heredoc->delimiter.size > 0)
 	{
-		while (lexer->lookahead != '\0' && lexer->lookahead != '\n' && (int32_t)*array_get(&heredoc->delimiter, size) == lexer->lookahead &&
+		while (lexer->lookahead != '\0' && lexer->lookahead != '\n' && (t_i32)*array_get(&heredoc->delimiter, size) == lexer->lookahead &&
 			   heredoc->current_leading_word.size < heredoc->delimiter.size)
 		{
 			array_push(&heredoc->current_leading_word, lexer->lookahead);
@@ -710,14 +709,14 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		{
 			typedef struct
 			{
-				bool	 done;
-				bool	 advanced_once;
-				bool	 found_non_alnumdollarunderdash;
-				bool	 last_was_escape;
-				bool	 in_single_quote;
-				uint32_t paren_depth;
-				uint32_t bracket_depth;
-				uint32_t brace_depth;
+				bool  done;
+				bool  advanced_once;
+				bool  found_non_alnumdollarunderdash;
+				bool  last_was_escape;
+				bool  in_single_quote;
+				t_u32 paren_depth;
+				t_u32 bracket_depth;
+				t_u32 brace_depth;
 			} State;
 
 			if (lexer->lookahead == '$')
@@ -952,11 +951,11 @@ extglob_pattern:
 
 			typedef struct
 			{
-				bool	 done;
-				bool	 saw_non_alphadot;
-				uint32_t paren_depth;
-				uint32_t bracket_depth;
-				uint32_t brace_depth;
+				bool  done;
+				bool  saw_non_alphadot;
+				t_u32 paren_depth;
+				t_u32 bracket_depth;
+				t_u32 brace_depth;
 			} State;
 
 			State state = {false, was_non_alpha, scanner->last_glob_paren_depth, 0, 0};

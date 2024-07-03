@@ -1,9 +1,7 @@
 #ifndef TREE_SITTER_API_H_
 #define TREE_SITTER_API_H_
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include "me/types.h"
 
 #define ERROR_STATE 0
 #define ERROR_COST_PER_RECOVERY 500
@@ -35,9 +33,9 @@
 /* Section - Types */
 /*******************/
 
-typedef uint16_t				   TSStateId;
-typedef uint16_t				   TSSymbol;
-typedef uint16_t				   TSFieldId;
+typedef t_u16					   TSStateId;
+typedef t_u16					   TSSymbol;
+typedef t_u16					   TSFieldId;
 typedef struct TSLanguage		   TSLanguage;
 typedef struct TSParser			   TSParser;
 typedef struct TSTree			   TSTree;
@@ -60,22 +58,22 @@ typedef enum TSSymbolType
 
 typedef struct TSPoint
 {
-	uint32_t row;
-	uint32_t column;
+	t_u32 row;
+	t_u32 column;
 } TSPoint;
 
 typedef struct TSRange
 {
-	TSPoint	 start_point;
-	TSPoint	 end_point;
-	uint32_t start_byte;
-	uint32_t end_byte;
+	TSPoint start_point;
+	TSPoint end_point;
+	t_u32	start_byte;
+	t_u32	end_byte;
 } TSRange;
 
 typedef struct TSInput
 {
 	void *payload;
-	const char *(*read)(void *payload, uint32_t byte_index, TSPoint position, uint32_t *bytes_read);
+	const char *(*read)(void *payload, t_u32 byte_index, TSPoint position, t_u32 *bytes_read);
 	TSInputEncoding encoding;
 } TSInput;
 
@@ -93,17 +91,17 @@ typedef struct TSLogger
 
 typedef struct TSInputEdit
 {
-	uint32_t start_byte;
-	uint32_t old_end_byte;
-	uint32_t new_end_byte;
-	TSPoint	 start_point;
-	TSPoint	 old_end_point;
-	TSPoint	 new_end_point;
+	t_u32	start_byte;
+	t_u32	old_end_byte;
+	t_u32	new_end_byte;
+	TSPoint start_point;
+	TSPoint old_end_point;
+	TSPoint new_end_point;
 } TSInputEdit;
 
 typedef struct TSNode
 {
-	uint32_t	  context[4];
+	t_u32		  context[4];
 	const void	 *id;
 	const TSTree *tree;
 } TSNode;
@@ -112,13 +110,13 @@ typedef struct TSTreeCursor
 {
 	const void *tree;
 	const void *id;
-	uint32_t	context[3];
+	t_u32		context[3];
 } TSTreeCursor;
 
 typedef struct TSQueryCapture
 {
-	TSNode	 node;
-	uint32_t index;
+	TSNode node;
+	t_u32  index;
 } TSQueryCapture;
 
 typedef enum TSQuantifier
@@ -132,9 +130,9 @@ typedef enum TSQuantifier
 
 typedef struct TSQueryMatch
 {
-	uint32_t			  id;
-	uint16_t			  pattern_index;
-	uint16_t			  capture_count;
+	t_u32				  id;
+	t_u16				  pattern_index;
+	t_u16				  capture_count;
 	const TSQueryCapture *captures;
 } TSQueryMatch;
 
@@ -148,7 +146,7 @@ typedef enum TSQueryPredicateStepType
 typedef struct TSQueryPredicateStep
 {
 	TSQueryPredicateStepType type;
-	uint32_t				 value_id;
+	t_u32					 value_id;
 } TSQueryPredicateStep;
 
 typedef enum TSQueryError
@@ -215,7 +213,7 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language);
  * will not be assigned, and this function will return `false`. On success,
  * this function returns `true`
  */
-bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges, uint32_t count);
+bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges, t_u32 count);
 
 /**
  * Get the ranges of text that the parser will include when parsing.
@@ -224,7 +222,7 @@ bool ts_parser_set_included_ranges(TSParser *self, const TSRange *ranges, uint32
  * or write to it. The length of the array will be written to the given
  * `count` pointer.
  */
-const TSRange *ts_parser_included_ranges(const TSParser *self, uint32_t *count);
+const TSRange *ts_parser_included_ranges(const TSParser *self, t_u32 *count);
 
 /**
  * Use the parser to parse some source code and create a syntax tree.
@@ -277,7 +275,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input);
  * above. The second two parameters indicate the location of the buffer and its
  * length in bytes.
  */
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const char *string, uint32_t length);
+TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length);
 
 /**
  * Use the parser to parse some source code stored in one contiguous buffer with
@@ -285,8 +283,7 @@ TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, const cha
  * [`ts_parser_parse_string`] method above. The final parameter indicates whether
  * the text is encoded as UTF8 or UTF16.
  */
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, const char *string, uint32_t length,
-										TSInputEncoding encoding);
+TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, const char *string, t_u32 length, TSInputEncoding encoding);
 
 /**
  * Instruct the parser to start the next parse from the beginning.
@@ -306,12 +303,12 @@ void ts_parser_reset(TSParser *self);
  * If parsing takes longer than this, it will halt early, returning NULL.
  * See [`ts_parser_parse`] for more information.
  */
-void ts_parser_set_timeout_micros(TSParser *self, uint64_t timeout_micros);
+void ts_parser_set_timeout_micros(TSParser *self, t_u64 timeout_micros);
 
 /**
  * Get the duration in microseconds that parsing is allowed to take.
  */
-uint64_t ts_parser_timeout_micros(const TSParser *self);
+t_u64 ts_parser_timeout_micros(const TSParser *self);
 
 /**
  * Set the parser's current cancellation flag pointer.
@@ -375,7 +372,7 @@ TSNode ts_tree_root_node(const TSTree *self);
  * Get the root node of the syntax tree, but with its position
  * shifted forward by the given offset.
  */
-TSNode ts_tree_root_node_with_offset(const TSTree *self, uint32_t offset_bytes, TSPoint offset_extent);
+TSNode ts_tree_root_node_with_offset(const TSTree *self, t_u32 offset_bytes, TSPoint offset_extent);
 
 /**
  * Get the language that was used to parse the syntax tree.
@@ -387,7 +384,7 @@ const TSLanguage *ts_tree_language(const TSTree *self);
  *
  * The returned pointer must be freed by the caller.
  */
-TSRange *ts_tree_included_ranges(const TSTree *self, uint32_t *length);
+TSRange *ts_tree_included_ranges(const TSTree *self, t_u32 *length);
 
 /**
  * Edit the syntax tree to keep it in sync with source code that has been
@@ -412,7 +409,7 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit);
  * for freeing it using `free`. The length of the array will be written to the
  * given `length` pointer.
  */
-TSRange *ts_tree_get_changed_ranges(const TSTree *old_tree, const TSTree *new_tree, uint32_t *length);
+TSRange *ts_tree_get_changed_ranges(const TSTree *old_tree, const TSTree *new_tree, t_u32 *length);
 
 /**
  * Write a DOT graph describing the syntax tree to the given file.
@@ -454,7 +451,7 @@ TSSymbol ts_node_grammar_symbol(TSNode self);
 /**
  * Get the node's start byte.
  */
-uint32_t ts_node_start_byte(TSNode self);
+t_u32 ts_node_start_byte(TSNode self);
 
 /**
  * Get the node's start position in terms of rows and columns.
@@ -464,7 +461,7 @@ TSPoint ts_node_start_point(TSNode self);
 /**
  * Get the node's end byte.
  */
-uint32_t ts_node_end_byte(TSNode self);
+t_u32 ts_node_end_byte(TSNode self);
 
 /**
  * Get the node's end position in terms of rows and columns.
@@ -546,43 +543,43 @@ TSNode ts_node_child_containing_descendant(TSNode self, TSNode descendant);
  * Get the node's child at the given index, where zero represents the first
  * child.
  */
-TSNode ts_node_child(TSNode self, uint32_t child_index);
+TSNode ts_node_child(TSNode self, t_u32 child_index);
 
 /**
  * Get the field name for node's child at the given index, where zero represents
  * the first child. Returns NULL, if no field is found.
  */
-const char *ts_node_field_name_for_child(TSNode self, uint32_t child_index);
+const char *ts_node_field_name_for_child(TSNode self, t_u32 child_index);
 
 /**
  * Get the field name for node's child at the given index, where zero represents
  * the first child. Returns NULL, if no field is found.
  */
-TSFieldId ts_node_field_id_for_child(TSNode self, uint32_t child_index);
+TSFieldId ts_node_field_id_for_child(TSNode self, t_u32 child_index);
 
 /**
  * Get the node's number of children.
  */
-uint32_t ts_node_child_count(TSNode self);
+t_u32 ts_node_child_count(TSNode self);
 
 /**
  * Get the node's *named* child at the given index.
  *
  * See also [`ts_node_is_named`].
  */
-TSNode ts_node_named_child(TSNode self, uint32_t child_index);
+TSNode ts_node_named_child(TSNode self, t_u32 child_index);
 
 /**
  * Get the node's number of *named* children.
  *
  * See also [`ts_node_is_named`].
  */
-uint32_t ts_node_named_child_count(TSNode self);
+t_u32 ts_node_named_child_count(TSNode self);
 
 /**
  * Get the node's child with the given field name.
  */
-TSNode ts_node_child_by_field_name(TSNode self, const char *name, uint32_t name_length);
+TSNode ts_node_child_by_field_name(TSNode self, const char *name, t_u32 name_length);
 
 /**
  * Get the node's child with the given numerical field id.
@@ -607,30 +604,30 @@ TSNode ts_node_prev_named_sibling(TSNode self);
 /**
  * Get the node's first child that extends beyond the given byte offset.
  */
-TSNode ts_node_first_child_for_byte(TSNode self, uint32_t byte);
+TSNode ts_node_first_child_for_byte(TSNode self, t_u32 byte);
 
 /**
  * Get the node's first named child that extends beyond the given byte offset.
  */
-TSNode ts_node_first_named_child_for_byte(TSNode self, uint32_t byte);
+TSNode ts_node_first_named_child_for_byte(TSNode self, t_u32 byte);
 
 /**
  * Get the node's number of descendants, including one for the node itself.
  */
-uint32_t ts_node_descendant_count(TSNode self);
+t_u32 ts_node_descendant_count(TSNode self);
 
 /**
  * Get the smallest node within this node that spans the given range of bytes
  * or (row, column) positions.
  */
-TSNode ts_node_descendant_for_byte_range(TSNode self, uint32_t start, uint32_t end);
+TSNode ts_node_descendant_for_byte_range(TSNode self, t_u32 start, t_u32 end);
 TSNode ts_node_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end);
 
 /**
  * Get the smallest named node within this node that spans the given range of
  * bytes or (row, column) positions.
  */
-TSNode ts_node_named_descendant_for_byte_range(TSNode self, uint32_t start, uint32_t end);
+TSNode ts_node_named_descendant_for_byte_range(TSNode self, t_u32 start, t_u32 end);
 TSNode ts_node_named_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end);
 
 /**
@@ -667,12 +664,12 @@ void ts_language_delete(const TSLanguage *self);
 /**
  * Get the number of distinct node types in the language.
  */
-uint32_t ts_language_symbol_count(const TSLanguage *self);
+t_u32 ts_language_symbol_count(const TSLanguage *self);
 
 /**
  * Get the number of valid states in this language.
  */
-uint32_t ts_language_state_count(const TSLanguage *self);
+t_u32 ts_language_state_count(const TSLanguage *self);
 
 /**
  * Get a node type string for the given numerical id.
@@ -682,12 +679,12 @@ const char *ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol);
 /**
  * Get the numerical id for the given node type string.
  */
-TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string, uint32_t length, bool is_named);
+TSSymbol ts_language_symbol_for_name(const TSLanguage *self, const char *string, t_u32 length, bool is_named);
 
 /**
  * Get the number of distinct field names in the language.
  */
-uint32_t ts_language_field_count(const TSLanguage *self);
+t_u32 ts_language_field_count(const TSLanguage *self);
 
 /**
  * Get the field name string for the given numerical id.
@@ -697,7 +694,7 @@ const char *ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id);
 /**
  * Get the numerical id for the given field name string.
  */
-TSFieldId ts_language_field_id_for_name(const TSLanguage *self, const char *name, uint32_t name_length);
+TSFieldId ts_language_field_id_for_name(const TSLanguage *self, const char *name, t_u32 name_length);
 
 /**
  * Check whether the given node type id belongs to named nodes, anonymous nodes,
@@ -714,7 +711,7 @@ TSSymbolType ts_language_symbol_type(const TSLanguage *self, TSSymbol symbol);
  *
  * See also [`ts_parser_set_language`].
  */
-uint32_t ts_language_version(const TSLanguage *self);
+t_u32 ts_language_version(const TSLanguage *self);
 
 /**
  * Get the next parse state. Combine this with lookahead iterators to generate

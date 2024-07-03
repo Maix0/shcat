@@ -1,6 +1,0 @@
-#ifndef TREE_SITTER_ERROR_COSTS_H_
-#define TREE_SITTER_ERROR_COSTS_H_
-
-
-
-#endif

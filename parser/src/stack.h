@@ -1,8 +1,9 @@
 #ifndef TREE_SITTER_PARSE_STACK_H_
 #define TREE_SITTER_PARSE_STACK_H_
 
+
+#include "me/types.h"
 #include "./array.h"
-// #include "./error_costs.h"
 #include "./subtree.h"
 
 typedef struct Stack Stack;
@@ -26,7 +27,7 @@ typedef struct StackSummaryEntry
 
 typedef Array(StackSummaryEntry) StackSummary;
 
-typedef void (*StackIterateCallback)(void *, TSStateId, uint32_t);
+typedef void (*StackIterateCallback)(void *, TSStateId, t_u32);
 
 // Create a stack.
 Stack *ts_stack_new(SubtreePool *);
@@ -35,7 +36,7 @@ Stack *ts_stack_new(SubtreePool *);
 void ts_stack_delete(Stack *);
 
 // Get the stack's current number of versions.
-uint32_t ts_stack_version_count(const Stack *);
+t_u32 ts_stack_version_count(const Stack *);
 
 // Get the state at the top of the given version of the stack. If the stack is
 // empty, this returns the initial state, 0.
@@ -62,7 +63,7 @@ void ts_stack_push(Stack *, StackVersion, Subtree, bool, TSStateId);
 // versions which had previously been merged. It returns an array that
 // specifies the index of each revealed version and the trees that were
 // removed from that version.
-StackSliceArray ts_stack_pop_count(Stack *, StackVersion, uint32_t count);
+StackSliceArray ts_stack_pop_count(Stack *, StackVersion, t_u32 count);
 
 // Remove an error at the top of the given version of the stack.
 SubtreeArray ts_stack_pop_error(Stack *, StackVersion);

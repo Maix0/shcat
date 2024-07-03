@@ -1,35 +1,35 @@
 #ifndef TREE_SITTER_UNICODE_H_
 #define TREE_SITTER_UNICODE_H_
 
-#include <stdint.h>
+#include "me/types.h"
 
-static const int32_t TS_DECODE_ERROR = -1;
+static const t_i32 TS_DECODE_ERROR = -1;
 
 // These functions read one unicode code point from the given string,
 // returning the number of bytes consumed.
-typedef uint32_t (*UnicodeDecodeFunction)(const uint8_t *string, uint32_t length, int32_t *code_point);
+typedef t_u32 (*UnicodeDecodeFunction)(const t_u8 *string, t_u32 length, t_i32 *code_point);
 
-static inline uint32_t ts_decode_ascii(const uint8_t *string, uint32_t length, int32_t *code_point)
+static inline t_u32 ts_decode_ascii(const t_u8 *string, t_u32 length, t_i32 *code_point)
 {
 	(void)(length);
 	*code_point = 0;
-	*(uint8_t *)code_point = *string;
+	*(t_u8 *)code_point = *string;
 	return (1);
 }
 
-static inline uint32_t ts_decode_utf8(const uint8_t *string, uint32_t length, int32_t *code_point)
+static inline t_u32 ts_decode_utf8(const t_u8 *string, t_u32 length, t_i32 *code_point)
 {
 	return (ts_decode_ascii(string, length, code_point));
-	// uint32_t i = 0;
+	// t_u32 i = 0;
 	// U8_NEXT(string, i, length, *code_point);
 	// return i;
 }
 
-static inline uint32_t ts_decode_utf16(const uint8_t *string, uint32_t length, int32_t *code_point)
+static inline t_u32 ts_decode_utf16(const t_u8 *string, t_u32 length, t_i32 *code_point)
 {
 	return (ts_decode_ascii(string, length, code_point));
-	// uint32_t i = 0;
-	// U16_NEXT(((uint16_t *)string), i, length, *code_point);
+	// t_u32 i = 0;
+	// U16_NEXT(((t_u16 *)string), i, length, *code_point);
 	// return i * 2;
 }
 

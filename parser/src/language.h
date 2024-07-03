@@ -2,6 +2,7 @@
 #define TREE_SITTER_LANGUAGE_H_
 
 #include "./parser.h"
+#include "me/types.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)
 
@@ -11,7 +12,7 @@
 typedef struct TableEntry
 {
 	const TSParseAction *actions;
-	uint32_t			 action_count;
+	t_u32				 action_count;
 	bool				 is_reusable;
 } TableEntry;
 
@@ -28,7 +29,7 @@ static inline bool ts_language_is_symbol_external(const TSLanguage *self, TSSymb
 	return 0 < symbol && symbol < self->external_token_count + 1;
 }
 
-static inline const TSParseAction *ts_language_actions(const TSLanguage *self, TSStateId state, TSSymbol symbol, uint32_t *count)
+static inline const TSParseAction *ts_language_actions(const TSLanguage *self, TSStateId state, TSSymbol symbol, t_u32 *count)
 {
 	TableEntry entry;
 	ts_language_table_entry(self, state, symbol, &entry);
@@ -50,17 +51,17 @@ static inline bool ts_language_has_reduce_action(const TSLanguage *self, TSState
 // For 'large' parse states, this is a direct lookup. For 'small' parse
 // states, this requires searching through the symbol groups to find
 // the given symbol.
-static inline uint16_t ts_language_lookup(const TSLanguage *self, TSStateId state, TSSymbol symbol)
+static inline t_u16 ts_language_lookup(const TSLanguage *self, TSStateId state, TSSymbol symbol)
 {
 	if (state >= self->large_state_count)
 	{
-		uint32_t		index = self->small_parse_table_map[state - self->large_state_count];
-		const uint16_t *data = &self->small_parse_table[index];
-		uint16_t		group_count = *(data++);
+		t_u32		 index = self->small_parse_table_map[state - self->large_state_count];
+		const t_u16 *data = &self->small_parse_table[index];
+		t_u16		 group_count = *(data++);
 		for (unsigned i = 0; i < group_count; i++)
 		{
-			uint16_t section_value = *(data++);
-			uint16_t symbol_count = *(data++);
+			t_u16 section_value = *(data++);
+			t_u16 symbol_count = *(data++);
 			for (unsigned j = 0; j < symbol_count; j++)
 			{
 				if (*(data++) == symbol)
@@ -92,17 +93,17 @@ static inline const bool *ts_language_enabled_external_tokens(const TSLanguage *
 	}
 }
 
-static inline const TSSymbol *ts_language_alias_sequence(const TSLanguage *self, uint32_t production_id)
+static inline const TSSymbol *ts_language_alias_sequence(const TSLanguage *self, t_u32 production_id)
 {
 	return production_id ? &self->alias_sequences[production_id * self->max_alias_sequence_length] : NULL;
 }
 
-static inline TSSymbol ts_language_alias_at(const TSLanguage *self, uint32_t production_id, uint32_t child_index)
+static inline TSSymbol ts_language_alias_at(const TSLanguage *self, t_u32 production_id, t_u32 child_index)
 {
 	return production_id ? self->alias_sequences[production_id * self->max_alias_sequence_length + child_index] : 0;
 }
 
-static inline void ts_language_field_map(const TSLanguage *self, uint32_t production_id, const TSFieldMapEntry **start,
+static inline void ts_language_field_map(const TSLanguage *self, t_u32 production_id, const TSFieldMapEntry **start,
 										 const TSFieldMapEntry **end)
 {
 	if (self->field_count == 0)
@@ -129,7 +130,7 @@ static inline void ts_language_aliases_for_symbol(const TSLanguage *self, TSSymb
 		TSSymbol symbol = self->alias_map[idx++];
 		if (symbol == 0 || symbol > original_symbol)
 			break;
-		uint16_t count = self->alias_map[idx++];
+		t_u16 count = self->alias_map[idx++];
 		if (symbol == original_symbol)
 		{
 			*start = &self->alias_map[idx];
@@ -139,6 +140,5 @@ static inline void ts_language_aliases_for_symbol(const TSLanguage *self, TSSymb
 		idx += count;
 	}
 }
-
 
 #endif // TREE_SITTER_LANGUAGE_H_

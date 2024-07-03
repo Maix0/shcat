@@ -1,9 +1,9 @@
 #ifndef TREE_SITTER_ARRAY_H_
 #define TREE_SITTER_ARRAY_H_
 
+#include "me/types.h"
 #include <assert.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,9 +12,9 @@
 #define Array(T)                                                                                                                           \
 	struct                                                                                                                                 \
 	{                                                                                                                                      \
-		T		*contents;                                                                                                                 \
-		uint32_t size;                                                                                                                     \
-		uint32_t capacity;                                                                                                                 \
+		T	 *contents;                                                                                                                    \
+		t_u32 size;                                                                                                                        \
+		t_u32 capacity;                                                                                                                    \
 	}
 
 /// Initialize an array.
@@ -27,7 +27,7 @@
 	}
 
 /// Get a pointer to the element at a given `index` in the array.
-#define array_get(self, _index) (assert((uint32_t)(_index) < (self)->size), &(self)->contents[_index])
+#define array_get(self, _index) (assert((t_u32)(_index) < (self)->size), &(self)->contents[_index])
 
 /// Get a pointer to the first element in the array.
 #define array_front(self) array_get(self, 0)
@@ -151,7 +151,7 @@ static inline void _array__delete(Array *self)
 }
 
 /// This is not what you're looking for, see `array_erase`.
-static inline void _array__erase(Array *self, size_t element_size, uint32_t index)
+static inline void _array__erase(Array *self, size_t element_size, t_u32 index)
 {
 	assert(index < self->size);
 	char *contents = (char *)self->contents;
@@ -160,7 +160,7 @@ static inline void _array__erase(Array *self, size_t element_size, uint32_t inde
 }
 
 /// This is not what you're looking for, see `array_reserve`.
-static inline void _array__reserve(Array *self, size_t element_size, uint32_t new_capacity)
+static inline void _array__reserve(Array *self, size_t element_size, t_u32 new_capacity)
 {
 	if (new_capacity > self->capacity)
 	{
@@ -193,12 +193,12 @@ static inline void _array__swap(Array *self, Array *other)
 }
 
 /// This is not what you're looking for, see `array_push` or `array_grow_by`.
-static inline void _array__grow(Array *self, uint32_t count, size_t element_size)
+static inline void _array__grow(Array *self, t_u32 count, size_t element_size)
 {
-	uint32_t new_size = self->size + count;
+	t_u32 new_size = self->size + count;
 	if (new_size > self->capacity)
 	{
-		uint32_t new_capacity = self->capacity * 2;
+		t_u32 new_capacity = self->capacity * 2;
 		if (new_capacity < 8)
 			new_capacity = 8;
 		if (new_capacity < new_size)
@@ -208,12 +208,11 @@ static inline void _array__grow(Array *self, uint32_t count, size_t element_size
 }
 
 /// This is not what you're looking for, see `array_splice`.
-static inline void _array__splice(Array *self, size_t element_size, uint32_t index, uint32_t old_count, uint32_t new_count,
-								  const void *elements)
+static inline void _array__splice(Array *self, size_t element_size, t_u32 index, t_u32 old_count, t_u32 new_count, const void *elements)
 {
-	uint32_t new_size = self->size + new_count - old_count;
-	uint32_t old_end = index + old_count;
-	uint32_t new_end = index + new_count;
+	t_u32 new_size = self->size + new_count - old_count;
+	t_u32 old_end = index + old_count;
+	t_u32 new_end = index + new_count;
 	assert(old_end <= self->size);
 
 	_array__reserve(self, element_size, new_size);
@@ -244,14 +243,14 @@ static inline void _array__splice(Array *self, size_t element_size, uint32_t ind
 	{                                                                                                                                      \
 		*(_index) = start;                                                                                                                 \
 		*(_exists) = false;                                                                                                                \
-		uint32_t size = (self)->size - *(_index);                                                                                          \
+		t_u32 size = (self)->size - *(_index);                                                                                             \
 		if (size == 0)                                                                                                                     \
 			break;                                                                                                                         \
 		int comparison;                                                                                                                    \
 		while (size > 1)                                                                                                                   \
 		{                                                                                                                                  \
-			uint32_t half_size = size / 2;                                                                                                 \
-			uint32_t mid_index = *(_index) + half_size;                                                                                    \
+			t_u32 half_size = size / 2;                                                                                                    \
+			t_u32 mid_index = *(_index) + half_size;                                                                                       \
 			comparison = compare(&((self)->contents[mid_index] suffix), (needle));                                                         \
 			if (comparison <= 0)                                                                                                           \
 				*(_index) = mid_index;                                                                                                     \

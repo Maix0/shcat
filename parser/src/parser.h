@@ -1,32 +1,30 @@
 #ifndef TREE_SITTER_PARSER_H_
 #define TREE_SITTER_PARSER_H_
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include "me/types.h"
 
 #define ts_builtin_sym_error ((TSSymbol)-1)
 #define ts_builtin_sym_end 0
 #define TREE_SITTER_SERIALIZATION_BUFFER_SIZE 1024
 
 #ifndef TREE_SITTER_API_H_
-typedef uint16_t		  TSStateId;
-typedef uint16_t		  TSSymbol;
-typedef uint16_t		  TSFieldId;
+typedef t_u16			  TSStateId;
+typedef t_u16			  TSSymbol;
+typedef t_u16			  TSFieldId;
 typedef struct TSLanguage TSLanguage;
 #endif
 
 typedef struct TSFieldMapEntry
 {
 	TSFieldId field_id;
-	uint8_t	  child_index;
+	t_u8	  child_index;
 	bool	  inherited;
 } TSFieldMapEntry;
 
 typedef struct TSFieldMapSlice
 {
-	uint16_t index;
-	uint16_t length;
+	t_u16 index;
+	t_u16 length;
 } TSFieldMapSlice;
 
 typedef struct TSSymbolMetadata
@@ -40,11 +38,11 @@ typedef struct TSLexer TSLexer;
 
 struct TSLexer
 {
-	int32_t	 lookahead;
+	t_i32	 lookahead;
 	TSSymbol result_symbol;
 	void (*advance)(TSLexer *, bool);
 	void (*mark_end)(TSLexer *);
-	uint32_t (*get_column)(TSLexer *);
+	t_u32 (*get_column)(TSLexer *);
 	bool (*is_at_included_range_start)(const TSLexer *);
 	bool (*eof)(const TSLexer *);
 };
@@ -60,58 +58,58 @@ typedef enum TSParseActionType
 typedef union TSParseAction {
 	struct TSParseActionShift
 	{
-		uint8_t	  type;
+		t_u8	  type;
 		TSStateId state;
 		bool	  extra;
 		bool	  repetition;
 	} shift;
 	struct TSParseActionReduce
 	{
-		uint8_t	 type;
-		uint8_t	 child_count;
+		t_u8	 type;
+		t_u8	 child_count;
 		TSSymbol symbol;
-		int16_t	 dynamic_precedence;
-		uint16_t production_id;
+		t_i16	 dynamic_precedence;
+		t_u16	 production_id;
 	} reduce;
-	uint8_t type;
+	t_u8 type;
 } TSParseAction;
 
 typedef struct TSLexMode
 {
-	uint16_t lex_state;
-	uint16_t external_lex_state;
+	t_u16 lex_state;
+	t_u16 external_lex_state;
 } TSLexMode;
 
 typedef union TSParseActionEntry {
 	TSParseAction action;
 	struct TSParseActionEntryInner
 	{
-		uint8_t count;
-		bool	reusable;
+		t_u8 count;
+		bool reusable;
 	} entry;
 } TSParseActionEntry;
 
 typedef struct TSCharacterRange
 {
-	int32_t start;
-	int32_t end;
+	t_i32 start;
+	t_i32 end;
 } TSCharacterRange;
 
 struct TSLanguage
 {
-	uint32_t				  version;
-	uint32_t				  symbol_count;
-	uint32_t				  alias_count;
-	uint32_t				  token_count;
-	uint32_t				  external_token_count;
-	uint32_t				  state_count;
-	uint32_t				  large_state_count;
-	uint32_t				  production_id_count;
-	uint32_t				  field_count;
-	uint16_t				  max_alias_sequence_length;
-	const uint16_t			 *parse_table;
-	const uint16_t			 *small_parse_table;
-	const uint32_t			 *small_parse_table_map;
+	t_u32					  version;
+	t_u32					  symbol_count;
+	t_u32					  alias_count;
+	t_u32					  token_count;
+	t_u32					  external_token_count;
+	t_u32					  state_count;
+	t_u32					  large_state_count;
+	t_u32					  production_id_count;
+	t_u32					  field_count;
+	t_u16					  max_alias_sequence_length;
+	const t_u16				 *parse_table;
+	const t_u16				 *small_parse_table;
+	const t_u32				 *small_parse_table_map;
 	const TSParseActionEntry *parse_actions;
 	const char *const		 *symbol_names;
 	const char *const		 *field_names;
@@ -119,7 +117,7 @@ struct TSLanguage
 	const TSFieldMapEntry	 *field_map_entries;
 	const TSSymbolMetadata	 *symbol_metadata;
 	const TSSymbol			 *public_symbol_map;
-	const uint16_t			 *alias_map;
+	const t_u16				 *alias_map;
 	const TSSymbol			 *alias_sequences;
 	const TSLexMode			 *lex_modes;
 	bool (*lex_fn)(TSLexer *, TSStateId);
@@ -138,14 +136,14 @@ struct TSLanguage
 	const TSStateId *primary_state_ids;
 };
 
-static inline bool set_contains(TSCharacterRange *ranges, uint32_t len, int32_t lookahead)
+static inline bool set_contains(TSCharacterRange *ranges, t_u32 len, t_i32 lookahead)
 {
-	uint32_t index = 0;
-	uint32_t size = len - index;
+	t_u32 index = 0;
+	t_u32 size = len - index;
 	while (size > 1)
 	{
-		uint32_t		  half_size = size / 2;
-		uint32_t		  mid_index = index + half_size;
+		t_u32			  half_size = size / 2;
+		t_u32			  mid_index = index + half_size;
 		TSCharacterRange *range = &ranges[mid_index];
 		if (lookahead >= range->start && lookahead <= range->end)
 		{
@@ -171,8 +169,8 @@ static inline bool set_contains(TSCharacterRange *ranges, uint32_t len, int32_t 
 	bool result = false;                                                                                                                   \
 	bool skip = false;                                                                                                                     \
 	UNUSED                                                                                                                                 \
-	bool	eof = false;                                                                                                                   \
-	int32_t lookahead;                                                                                                                     \
+	bool  eof = false;                                                                                                                     \
+	t_i32 lookahead;                                                                                                                       \
 	goto start;                                                                                                                            \
 next_state:                                                                                                                                \
 	lexer->advance(lexer, skip);                                                                                                           \
@@ -188,8 +186,8 @@ start:                                                                          
 
 #define ADVANCE_MAP(...)                                                                                                                   \
 	{                                                                                                                                      \
-		static const uint16_t map[] = {__VA_ARGS__};                                                                                       \
-		for (uint32_t i = 0; i < sizeof(map) / sizeof(map[0]); i += 2)                                                                     \
+		static const t_u16 map[] = {__VA_ARGS__};                                                                                          \
+		for (t_u32 i = 0; i < sizeof(map) / sizeof(map[0]); i += 2)                                                                        \
 		{                                                                                                                                  \
 			if (map[i] == lookahead)                                                                                                       \
 			{                                                                                                                              \

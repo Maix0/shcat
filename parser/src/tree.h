@@ -1,6 +1,8 @@
 #ifndef TREE_SITTER_TREE_H_
 #define TREE_SITTER_TREE_H_
 
+
+#include "me/types.h"
 #include "./subtree.h"
 
 typedef struct ParentCacheEntry

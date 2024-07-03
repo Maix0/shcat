@@ -1,5 +1,7 @@
 #define _POSIX_C_SOURCE 200112L
 
+
+#include "me/types.h"
 #include "./tree.h"
 #include "./array.h"
 #include "./length.h"
@@ -41,7 +43,7 @@ TSNode ts_tree_root_node(const TSTree *self)
 	return ts_node_new(self, &self->root, ts_subtree_padding(self->root), 0);
 }
 
-TSNode ts_tree_root_node_with_offset(const TSTree *self, uint32_t offset_bytes, TSPoint offset_extent)
+TSNode ts_tree_root_node_with_offset(const TSTree *self, t_u32 offset_bytes, TSPoint offset_extent)
 {
 	Length offset = {offset_bytes, offset_extent};
 	return ts_node_new(self, &self->root, length_add(offset, ts_subtree_padding(self->root)), 0);
@@ -97,7 +99,7 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
 	ts_subtree_pool_delete(&pool);
 }
 
-TSRange *ts_tree_included_ranges(const TSTree *self, uint32_t *length)
+TSRange *ts_tree_included_ranges(const TSTree *self, t_u32 *length)
 {
 	*length = self->included_range_count;
 	TSRange *ranges = mem_alloc_array(self->included_range_count, sizeof(TSRange));
