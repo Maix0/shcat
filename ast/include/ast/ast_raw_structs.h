@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/02 21:45:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 22:30:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,6 @@ struct s_ast_raw_string
 {
 	t_str	str;
 	t_usize len;
-};
-
-struct s_ast_string
-{
-	t_vec_ast parts;
 };
 
 struct s_ast_word

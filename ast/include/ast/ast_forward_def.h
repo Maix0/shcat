@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:24:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/01 21:35:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 22:30:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ typedef struct s_ast_pipeline			  t_ast_pipeline;
 typedef struct s_ast_program			  t_ast_program;
 typedef struct s_ast_raw_string			  t_ast_raw_string;
 typedef struct s_ast_regex				  t_ast_regex;
-typedef struct s_ast_string				  t_ast_string;
 typedef struct s_ast_subshell			  t_ast_subshell;
 typedef struct s_ast_until				  t_ast_until;
 typedef struct s_ast_variable_assignment  t_ast_variable_assignment;

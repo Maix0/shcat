@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/01 21:36:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 22:33:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ enum e_ast_node_kind
 	AST_ELSE = S_AST_NONE | 0x0007,
 	AST_EMPTY = S_AST_NONE | 0x0008,
 	AST_RAW_STRING = S_AST_NONE | 0x000A,
-	AST_STRING = S_AST_NONE | 0x000B,
 	AST_WORD = S_AST_NONE | 0x000C,
 	AST_VARIABLE_ASSIGNMENT = S_AST_NONE | 0x000E,
 	AST_EXTGLOB = S_AST_NONE | 0x001A,
@@ -82,7 +81,6 @@ union u_ast_node_data {
 	t_ast_program			   program;
 	t_ast_raw_string		   raw_string;
 	t_ast_regex				   regex;
-	t_ast_string			   string;
 	t_ast_subshell			   subshell;
 	t_ast_until				   until;
 	t_ast_variable_assignment  variable_assignment;

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/03 21:57:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 22:30:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,10 +175,6 @@ void ast_free(t_ast_node elem)
 	{
 		mem_free(elem->data.raw_string.str);
 	}
-	if (elem->kind == AST_STRING)
-	{
-		vec_ast_free(elem->data.string.parts);
-	}
 	if (elem->kind == AST_SUBSHELL)
 	{
 		vec_ast_free(elem->data.subshell.body);
@@ -330,10 +326,6 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	{
 		ret->data.raw_string.len = 0;
 		ret->data.raw_string.str = NULL;
-	}
-	if (kind == AST_STRING)
-	{
-		ret->data.string.parts = vec_ast_new(16, ast_free);
 	}
 	if (kind == AST_SUBSHELL)
 	{
