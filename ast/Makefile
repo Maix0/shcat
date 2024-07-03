@@ -38,7 +38,7 @@ DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
 
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
-COL_GOLD		=	\033[33m
+COL_GOLD		=	\033[93m
 COL_GRAY		=	\033[90m
 COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
