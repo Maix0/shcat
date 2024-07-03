@@ -4,7 +4,7 @@
 #include "api.h"
 #include <stdbool.h>
 
-typedef struct
+typedef struct NodeChildIterator
 {
 	Subtree			parent;
 	const TSTree   *tree;

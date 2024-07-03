@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/06/30 16:44:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 18:46:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void print_node_data(t_node *t, t_usize depth)
 	idx = 0;
 	if (t->kind == 7)
 		return;
-	printf("\x1b[%im[%s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
+	printf("\x1b[%im[%-6s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
 	while (idx++ < depth + 1)
 		printf("\t");
 	idx = 0;

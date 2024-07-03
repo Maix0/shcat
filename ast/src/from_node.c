@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/02 21:55:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/03 18:47:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -666,7 +666,7 @@ t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *ou
 	(void)(self);
 	if (out == NULL)
 		return (ERROR);
-	if (ts_node_symbol(self) != sym_simple_expansion)
+	if (ts_node_symbol(self) != sym_expansion)
 		return (ERROR);
 	ret = ast_alloc(AST_EXPANSION);
 	ret->data.expansion.kind = E_OP_NONE;
