@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/06/09 19:17:04 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/03 20:37:35 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -103,6 +103,9 @@ fclean: clean
 re: header 
 	@$(MAKE) --no-print-directory fclean
 	@$(MAKE) --no-print-directory all
+
+tokei:
+	/bin/sh -c 'tokei -tC,C\ Header -e tree-sitter-sh'
 
 generate_filelist:
 	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./src.list
