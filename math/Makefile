@@ -90,7 +90,7 @@ $(NAME): $(OBJ) $(LIB_OBJ)
 # Creating the objects
 $(OBJDIRNAME)/%.o: %.c
 	@mkdir -p $(dir $@)
-	@printf '$(GREY) Compiling $(END)$(GREEN)$<$(END)\n'
+	@printf '$(GREY) Building $(END)$(GREEN)$<$(END)\n'
 	@cc $(CFLAGS) -o $@ -c $<
 
 #	Header

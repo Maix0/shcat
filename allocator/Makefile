@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/30 16:02:45 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/03 22:39:16 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,11 +37,12 @@ DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/aq/,$(SRC_FILES)))
 
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
-COL_GRAY		=	\033[90m
-COL_WHITE		=	\033[37m
-COL_GREEN		=	\033[32m
 COL_BOLD		=	\033[1m
+COL_GOLD		=	\033[33m
+COL_GRAY		=	\033[90m
+COL_GREEN		=	\033[32m
 COL_RESET		=	\033[0m
+COL_WHITE		=	\033[37m
 
 # TODO: REMOVE FOR RENDU !!!!!
 CFLAGS += -DPRINT_BACKTRACE
@@ -54,7 +55,7 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo -e '$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)'
+	@echo -e '$(COL_GRAY) Linking \t$(COL_GOLD)$(TARGET)$(COL_RESET)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
 $(BUILD_DIR)/aq/%.o: $(SRC_DIR)/%.c

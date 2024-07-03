@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/17 13:12:53 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/03 22:39:28 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
 
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
+COL_GOLD		=	\033[33m
 COL_GRAY		=	\033[90m
 COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
@@ -55,7 +56,7 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo -e '$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)'
+	@echo -e '$(COL_GRAY) Linking \t$(COL_GOLD)$(TARGET)$(COL_RESET)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
 $(BUILD_DIR)/ast/%.o: $(SRC_DIR)/%.c

@@ -50,12 +50,12 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
+	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
 $(BUILD_DIR)/$(ANAME)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
+	@echo -e '$(GREY) Building\t$(END)$(GREEN)$<$(END)'
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:

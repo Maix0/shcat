@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/05/25 16:28:21 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/03 22:39:36 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,7 @@ COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
 COL_BOLD		=	\033[1m
 COL_RESET		=	\033[0m
+COL_GOLD		=	\033[33m
 
 # TODO: REMOVE FOR RENDU !!!!!
 CFLAGS += -DPRINT_BACKTRACE
@@ -61,7 +62,7 @@ all: $(NAME)
 $(NAME): $(TARGET)
 
 $(TARGET): $(OBJ)
-	@echo -e '$(COL_GRAY) Linking\t$(COL_GREEN)$(TARGET)$(COL_RESET)'
+	@echo -e '$(COL_GRAY) Linking \t$(COL_GOLD)$(TARGET)$(COL_RESET)'
 	@#$(CC) $(INCLUDES) $(OBJ) $(CFLAGS) -o $(NAME)
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 

@@ -72,18 +72,18 @@ bonus: $(OBJ) $(LIBS_FILES)
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BUILD_DIR)/$(SRCDIRNAME)
 	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
-	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
+	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -DDEBUG=1 -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Dependences for all
 $(NAME): $(OBJ) $(LIBS_FILES)
-	@echo -e '$(GREY) Linking\t$(END)$(GREEN)$(NAME)$(END)'
+	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Creating the objects
 $(BUILD_DIR)/sh/%.o: %.c
 	@mkdir -p $(dir $@)
-	@echo -e '$(GREY) Compiling\t$(END)$(GREEN)$<$(END)'
+	@echo -e '$(GREY) Building\t$(END)$(GREEN)$<$(END)'
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 -include	${OBJ:.o=.d}
