@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:10:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/09 15:06:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/05 19:54:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 # define PRINTF_H
 # include "me/types.h"
 # include <stdarg.h>
+
+# ifndef FS_H
+typedef struct s_fd t_fd;
+# endif
 
 typedef struct s_fprintf_arg
 {
@@ -84,5 +88,18 @@ t_usize					me_vprintf(t_const_str fmt, va_list *args);
 /// @param args the arguments to format as a va_list
 /// @return the number of characters printed
 t_usize					me_veprintf(t_const_str fmt, va_list *args);
+
+
+/// @brief Print a formatted string to the given fd
+/// @param fmt the format string
+/// @param ... the arguments to format
+/// @return the number of characters printed
+t_usize					me_printf_fd(t_fd *, t_const_str fmt, ...);
+
+/// @brief Print a formatted string to the given fd
+/// @param fmt the format string
+/// @param args the arguments to format as a va_list
+/// @return the number of characters printed
+t_usize					me_vprintf_fd(t_fd *, t_const_str fmt, va_list *args);
 
 #endif
