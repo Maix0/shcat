@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:43:08 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/06 18:39:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:25:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ enum						e_redirection
 
 union						u_redirection
 {
-	struct					s_fd
+	struct					s_fd_redirection
 	{
 		int				value;
 	} fd;
-	struct					s_piped
+	struct					s_piped_redirection
 	{
 	} piped;
-	struct					s_inherited
+	struct					s_inherited_redirection
 	{
 	} inherited;
 };

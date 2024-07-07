@@ -6,13 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/03 21:23:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:25:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/env.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
+#include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
 #include "me/types.h"
@@ -128,7 +129,7 @@ void ft_take_args(t_utils *shcat)
 	while (1)
 	{
 		shcat->str_input = NULL;
-		cmd = readline((t_const_str)shcat->name_shell);
+		cmd = linenoise((t_const_str)shcat->name_shell);
 		if (cmd == NULL)
 			ft_exit(shcat, 0);
 		shcat->str_input = str_clone(cmd);

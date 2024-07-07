@@ -6,85 +6,37 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/11 17:50:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/09 14:58:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:01:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/string/string.h"
-#include "me/fs/write.h"
-#include "me/printf/formatter/formatter.h"
-#include "me/printf/formatter/utils.h"
-#include "me/printf/matchers/matchers.h"
 #include "me/printf/printf.h"
-#include "me/str/str.h"
+#include "me/fs/fs.h"
+#include "me/fs/write.h"
+#include "me/printf/_internal_printf.h"
 #include "me/types.h"
-#include <limits.h>
 #include <stdarg.h>
-#include <stddef.h>
-#include <stdlib.h>
 
-// p_args is an t_string;
-static void	me_printf_add_to_string(t_const_str to_write, t_usize to_write_len,
-		void *p_args)
+t_usize me_printf(t_const_str fmt, ...)
 {
-	t_string	*out_buf;
+	va_list args;
+	t_usize res;
 
-	out_buf = (t_string *)p_args;
-	(void)(to_write_len);
-	string_push(out_buf, to_write);
-}
-
-t_str	me_printf_str(t_const_str fmt, va_list *arguments)
-{
-	t_string	out;
-
-	out = string_new(str_len(fmt));
-	if (out.buf == NULL)
-	{
-		return (NULL);
-	}
-	me_printf_str_inner(fmt, &me_printf_add_to_string, arguments, (void *)&out);
-	return (out.buf);
-}
-
-void	me_printf_write(t_const_str to_write, t_usize to_write_len,
-		void *p_args)
-{
-	t_fprintf_arg	*arg;
-
-	arg = (t_fprintf_arg *)p_args;
-	me_write(arg->fd, (t_u8 *)to_write, to_write_len);
-	arg->total_print += to_write_len;
-}
-
-t_usize	me_printf(t_const_str fmt, ...)
-{
-	va_list			args;
-	t_fprintf_arg	passthru;
-
-	passthru = (t_fprintf_arg){
-		.fd = 1,
-		.total_print = 0,
-	};
 	va_start(args, fmt);
-	me_printf_str_inner(fmt, &me_printf_write, &args, (void *)&passthru);
+	res = me_vprintf(fmt, &args);
 	va_end(args);
-	return (passthru.total_print);
+	return (res);
 }
 
-t_usize	me_eprintf(t_const_str fmt, ...)
+t_usize me_eprintf(t_const_str fmt, ...)
 {
-	va_list			args;
-	t_fprintf_arg	passthru;
+	va_list args;
+	t_usize res;
 
-	passthru = (t_fprintf_arg){
-		.fd = 2,
-		.total_print = 0,
-	};
 	va_start(args, fmt);
-	me_printf_str_inner(fmt, &me_printf_write, &args, (void *)&passthru);
+	res = me_veprintf(fmt, &args);
 	va_end(args);
-	return (passthru.total_print);
+	return (res);
 }
 
 /*

@@ -6,13 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 18:12:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:43:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:39:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
-#include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/str/str.h"
 #include <stdlib.h>

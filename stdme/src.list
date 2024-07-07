@@ -73,6 +73,7 @@ os/pipe
 os/process
 os/process_inner
 os/process_inner2
+printf/callbacks
 printf/formatter/char
 printf/formatter/decimal
 printf/formatter/hex
@@ -85,6 +86,8 @@ printf/formatter/utils3
 printf/formatter/utils_numbers
 printf/matchers
 printf/printf
+printf/printf_fd
+printf/printf_str
 printf/vprintf
 str/str_clone
 str/str_compare

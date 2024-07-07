@@ -6,13 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:16:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 19:19:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:40:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
-#include "me/printf/printf.h"
 #include "me/str/str.h"
 #define HEX_INLINE_BUF 17
 

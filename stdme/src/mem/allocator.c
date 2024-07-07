@@ -6,17 +6,16 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:26:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/22 15:21:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:10:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "aq/internal_vg_funcs.h"
-#include "me/types.h"
 #include "aq/allocator.h"
+#include "aq/internal_vg_funcs.h"
 #include "aq/libc_wrapper.h"
 #include "aq/melloc.h"
-
-
+#include "me/types.h"
+#include <stdio.h>
 
 t_allocator *global_allocator(void)
 {
@@ -31,6 +30,7 @@ t_allocator *global_allocator(void)
 	return (&global_alloc);
 }
 
+__attribute__((destructor(200)))
 void uninit_global_allocator(void)
 {
 	t_allocator *allocator;

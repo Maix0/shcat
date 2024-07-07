@@ -1,43 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vprintf.c                                          :+:      :+:    :+:   */
+/*   printf_str.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/09 14:57:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 18:00:14 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/07/07 17:27:50 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/07/07 18:03:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/fs/fs.h"
+#include "me/printf/_internal_printf.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/printf.h"
+#include "me/string/string.h"
 #include "me/types.h"
 #include <stdarg.h>
 
-void me_printf_write(t_const_str to_write, t_usize to_write_len, void *p_args);
-
-t_usize me_vprintf(t_const_str fmt, va_list *args)
+t_usize me_vprintf_str(t_string *buf, t_const_str fmt, va_list *args)
 {
-	t_fprintf_arg passthru;
+	t_sprintf_arg passthru;
 
-	if (fmt == NULL || args == NULL)
+	if (buf == NULL || fmt == NULL || args == NULL)
 		return (0);
-	passthru.fd = get_stdout();
+	passthru.buffer = buf;
 	passthru.total_print = 0;
-	me_printf_str_inner(fmt, &me_printf_write, args, (void *)&passthru);
+	me_printf_str_inner(fmt, &me_printf_append_string, args, &passthru);
 	return (passthru.total_print);
 }
 
-t_usize me_veprintf(t_const_str fmt, va_list *args)
+t_usize me_printf_str(t_string *buf, t_const_str fmt, ...)
 {
-	t_fprintf_arg passthru;
+	t_usize res;
+	va_list args;
 
-	if (fmt == NULL || args == NULL)
-		return (0);
-	passthru.fd = get_stderr();
-	passthru.total_print = 0;
-	me_printf_str_inner(fmt, &me_printf_write, args, (void *)&passthru);
-	return (passthru.total_print);
+	va_start(args, fmt);
+	res = me_vprintf_str(buf, fmt, &args);
+	va_end(args);
+	return (res);
 }

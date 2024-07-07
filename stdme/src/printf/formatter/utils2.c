@@ -6,14 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:00:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/01 21:48:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:40:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/string/string.h"
 #include "me/char/char.h"
 #include "me/printf/formatter/utils.h"
-#include "me/printf/printf.h"
 #include "me/types.h"
 
 void	set_var_for_pad_and_stuff(t_pad_and_stuff_args *a, t_printf_arg *d)
