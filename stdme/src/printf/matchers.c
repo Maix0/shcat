@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:07:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 17:39:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 19:37:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@ t_matcher_list	*get_matchers(void)
 {
 	static t_matcher_list	printf_matchers = (t_matcher_list){
 		.data = {
-	{.matcher = "o", .matcher_len = 1, .arg_type = U64, .f = &printf_o},
-	{.matcher = "c", .matcher_len = 1, .arg_type = CHAR, .f = &printf_c},
-	{.matcher = "s", .matcher_len = 1, .arg_type = STR, .f = &printf_s},
-	{.matcher = "p", .matcher_len = 1, .arg_type = VOID_PTR, .f = &printf_p},
-	{.matcher = "d", .matcher_len = 1, .arg_type = I32, .f = &printf_d},
-	{.matcher = "i", .matcher_len = 1, .arg_type = I32, .f = &printf_d},
-	{.matcher = "u", .matcher_len = 1, .arg_type = U32, .f = &printf_u},
-	{.matcher = "x", .matcher_len = 1, .arg_type = U32, .f = &printf_x_low},
-	{.matcher = "X", .matcher_len = 1, .arg_type = U32, .f = &printf_x_up},
+	{.matcher = "o", .matcher_len = 1, .arg_type = U64, .f = printf_o},
+	{.matcher = "c", .matcher_len = 1, .arg_type = CHAR, .f = printf_c},
+	{.matcher = "s", .matcher_len = 1, .arg_type = STR, .f = printf_s},
+	{.matcher = "p", .matcher_len = 1, .arg_type = VOID_PTR, .f = printf_p},
+	{.matcher = "d", .matcher_len = 1, .arg_type = I32, .f = printf_d},
+	{.matcher = "i", .matcher_len = 1, .arg_type = I32, .f = printf_d},
+	{.matcher = "u", .matcher_len = 1, .arg_type = U32, .f = printf_u},
+	{.matcher = "x", .matcher_len = 1, .arg_type = U32, .f = printf_x_low},
+	{.matcher = "X", .matcher_len = 1, .arg_type = U32, .f = printf_x_up},
 	},
 		.next = NULL,
 	};
@@ -54,7 +54,7 @@ bool	insert_matcher(t_matcher matcher)
 				return (true);
 			}
 		}
-		matchers->next = malloc(sizeof(t_matcher_list) * 1);
+		matchers->next = mem_alloc(sizeof(t_matcher_list));
 	}
 	return (false);
 }
@@ -73,7 +73,7 @@ t_matcher	*find_matcher(t_const_str fmt, t_matcher_list *matchers,
 			matcher = &matchers->data[matcher_index];
 			if (matcher->f)
 			{
-				if (!mem_compare(&fmt[*c_idx], matcher->matcher,
+				if (mem_compare(&fmt[*c_idx], matcher->matcher,
 						matcher->matcher_len))
 				{
 					*c_idx += matcher->matcher_len;
