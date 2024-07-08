@@ -65,6 +65,7 @@ enum e_key_action
 	K_CTRL_F = 6,	  /* Ctrl-f */
 	K_CTRL_H = 8,	  /* Ctrl-h */
 	K_TAB = 9,		  /* Tab */
+	K_NEWLINE = 10,   /* Newline */
 	K_CTRL_K = 11,	  /* Ctrl+k */
 	K_CTRL_L = 12,	  /* Ctrl+l */
 	K_ENTER = 13,	  /* Enter */
@@ -126,13 +127,13 @@ t_error linenoise_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_o
 	unsigned int i = 0;
 
 	/* Report cursor location */
-	if (write(output->fd, "\x1b[6n", 4) != 4)
+	if (write_fd(output, (t_u8*)"\x1b[6n", 4, NULL))
 		return (ERROR);
 
 	/* Read the response: ESC [ rows ; cols R */
 	while (i < sizeof(buf) - 1)
 	{
-		if (read(input->fd, buf + i, 1) != 1)
+		if (read_fd(input, (t_u8 *)(buf + i), 1, NULL))
 			break;
 		if (buf[i] == 'R')
 			break;
@@ -239,6 +240,50 @@ void linenoise_disable_raw_mode(t_fd *fd)
  * write all the escape sequences in a buffer and flush them to the standard
  * output in a single call, to avoid flickering effects. */
 
+t_usize linenoise_get_prompt_len(t_const_str s)
+{
+	t_usize i;
+	t_usize ret;
+	t_isize color;
+
+	if (s == NULL)
+		return (0);
+	i = 0;
+	ret = 0;
+	while (s[i])
+	{
+		if (s[i] == '\x1b')
+		{
+			i++;
+			if (s[i] == '[')
+			{
+				i++;
+				color = 0;
+				while (color >= 0)
+				{
+					color--;
+					while (s[i] >= '0' && s[i] <= '9')
+					{
+						i++;
+						color += 2;
+					}
+					if (s[i] == ';')
+						i++;
+					else if (s[i] == 'm')
+					{
+						i++;
+						break;
+					}
+				}
+			}
+		}
+		i++;
+		ret++;
+	}
+	//printf("ret = %zu\n", ret);
+	return (ret);
+}
+
 /* Single line low level line refresh.
  *
  * Rewrite the currently edited line accordingly to the buffer content,
@@ -248,20 +293,11 @@ void linenoise_disable_raw_mode(t_fd *fd)
  * prompt, just write it, or both. */
 void linenoise_refresh_single_line(t_line_state *l, t_line_flags flags)
 {
-	size_t	 prompt_len = strlen(l->prompt);
+	size_t	 prompt_len = linenoise_get_prompt_len(l->prompt);
 	t_str	 input_buf = l->buf;
-	size_t	 input_len = l->len;
 	size_t	 cursor_pos = l->pos;
 	t_string str;
 
-	while ((prompt_len + cursor_pos) >= l->columns)
-	{
-		input_buf++;
-		input_len--;
-		cursor_pos--;
-	}
-	while (prompt_len + input_len > l->columns)
-		input_len--;
 
 	str = string_new(16);
 	string_push_char(&str, '\r');
@@ -273,17 +309,17 @@ void linenoise_refresh_single_line(t_line_state *l, t_line_flags flags)
 		string_push(&str, input_buf); // , len);
 	}
 	string_push(&str, "\x1b[0K");
-
 	/* Erase to right */
 	if (flags & REFRESH_WRITE)
 	{
 		/* Move cursor to original position. */
-		// TODO: finish this line with me_printf_str
-		me_printf_str(&str, "\r\x1b[%dC", (int)(cursor_pos + prompt_len));
+		me_printf_str(&str, "\r\x1b[%iC", (int)(cursor_pos + prompt_len));
 	}
 
-	me_eprintf("refresh single line;\n");
-	me_printf_fd(l->output_fd, "%s", str.buf);
+	//me_eprintf("refresh single line;\n");
+	write_fd(l->output_fd, (t_u8 *)str.buf, str.len, NULL);
+
+	//printf("cursor_pos = %zu\n", cursor_pos);
 	string_free(str);
 }
 
@@ -322,7 +358,7 @@ t_error linenoise_edit_insert(t_line_state *l, char c)
 		if (l->len == l->pos)
 		{
 			l->buf[l->pos] = c;
-			l->pos++;
+			//l->pos++;
 			l->len++;
 			l->buf[l->len] = '\0';
 			linenoise_refresh_line(l);
@@ -491,7 +527,7 @@ t_error linenoise_edit_start(t_line_state *l, t_fd *stdin_fd, t_fd *stdout_fd, c
 	l->buf = buf;
 	l->buflen = buflen;
 	l->prompt = prompt;
-	l->prompt_len = strlen(prompt);
+	l->prompt_len = str_len(l->prompt);
 	l->old_pos = l->pos = 0;
 	l->len = 0;
 
@@ -516,6 +552,7 @@ t_error linenoise_edit_start(t_line_state *l, t_fd *stdin_fd, t_fd *stdout_fd, c
 	/* The latest history entry is always our current buffer, that
 	 * initially is just an empty string. */
 	linenoise_history_add("");
+	linenoise_enable_raw_mode(l->output_fd);
 
 	if (write_fd(l->output_fd, (t_u8 *)prompt, l->prompt_len, NULL))
 		return (ERROR);
@@ -559,6 +596,7 @@ t_str linenoise_edit_feed(t_line_state *l)
 
 	switch (c)
 	{
+	case K_NEWLINE: /* enter */
 	case K_ENTER: /* enter */
 		history->len--;
 		mem_free(history->buffer[history->len]);
@@ -567,7 +605,7 @@ t_str linenoise_edit_feed(t_line_state *l)
 		errno = EAGAIN;
 		return NULL;
 	case K_BACKSPACE: /* backspace */
-	case 8:			  /* ctrl-h */
+	case K_CTRL_H:    /* ctrl-h */
 		linenoise_edit_backspace(l);
 		break;
 	case K_CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
@@ -599,9 +637,15 @@ t_str linenoise_edit_feed(t_line_state *l)
 		 * Use two calls to handle slow terminals returning the two
 		 * chars at different times. */
 		if (read_fd(l->input_fd, (t_u8 *)seq, 1, NULL))
+		{
+			printf("Failed read\n");
 			break;
+		}
 		if (read_fd(l->input_fd, (t_u8 *)(seq + 1), 1, NULL))
+		{
+			printf("Failed read2\n");
 			break;
+		}
 
 		/* ESC [ sequences. */
 		if (seq[0] == '[')
@@ -654,10 +698,6 @@ t_str linenoise_edit_feed(t_line_state *l)
 			}
 		}
 		break;
-	default:
-		if (linenoise_edit_insert(l, c))
-			return NULL;
-		break;
 	case K_CTRL_U: /* Ctrl+u, delete the whole line. */
 		l->buf[0] = '\0';
 		l->pos = l->len = 0;
@@ -680,6 +720,10 @@ t_str linenoise_edit_feed(t_line_state *l)
 		break;
 	case K_CTRL_W: /* ctrl+w, delete previous word */
 		linenoise_edit_delete_prev_word(l);
+		break;
+	default:
+		if (linenoise_edit_insert(l, c))
+			return NULL;
 		break;
 	}
 	return linenoiseEditMore;
@@ -847,8 +891,8 @@ t_error linenoise_history_save(t_str name)
 	j = 0;
 	while (j < history->len)
 	{
-		write(fd->fd, history->buffer[j], str_len(history->buffer[j]));
-		write(fd->fd, "\n", 1);
+		write_fd(fd, (t_u8 *)history->buffer[j], str_len(history->buffer[j]), NULL);
+		write_fd(fd, (t_u8 *)"\n", 1, NULL);
 		j++;
 	}
 	close_fd(fd);

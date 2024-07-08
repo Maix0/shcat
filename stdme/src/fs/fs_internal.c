@@ -113,8 +113,11 @@ t_fd *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
 t_error read_fd(t_fd *fd, t_u8 *buffer, t_usize size, t_isize *read_count)
 {
 	t_isize ret;
+	t_isize false_ret;
 
-	if (fd == NULL || buffer == NULL || read_count == NULL || fd->fd == -1 ||
+	if (read_count == NULL)
+		read_count = &false_ret;
+	if (fd == NULL || buffer == NULL || fd->fd == -1 ||
 		!(fd->perms & FD_READ))
 		return (ERROR);
 	ret = read(fd->fd, buffer, size);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/23 17:07:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 15:54:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ void sigint_handle(int sig, siginfo_t *info, void *ucontext)
 	(void)(info);
 	(void)(ucontext);
 	printf("\n");
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	// TODO: change this to the linenoise verison
+	// rl_replace_line("", 0);
+	// rl_on_new_line();
+	// rl_redisplay();
 }
 
 void sigquit_handle(int sig, siginfo_t *info, void *ucontext)
@@ -34,9 +35,10 @@ void sigquit_handle(int sig, siginfo_t *info, void *ucontext)
 	(void)(info);
 	(void)(ucontext);
 	printf("\n");
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
+	//
+	// rl_replace_line("", 0);
+	// rl_on_new_line();
+	// rl_redisplay();
 }
 
 void sigsegv_handle(int sig, siginfo_t *info, void *ucontext)
