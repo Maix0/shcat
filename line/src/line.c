@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 16:53:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 19:22:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 19:42:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ enum e_key_action
 	K_CTRL_F = 6,	  /* Ctrl-f */
 	K_CTRL_H = 8,	  /* Ctrl-h */
 	K_TAB = 9,		  /* Tab */
-	K_NEWLINE = 10,   /* Newline */
+	K_NEWLINE = 10,	  /* Newline */
 	K_CTRL_K = 11,	  /* Ctrl+k */
 	K_CTRL_L = 12,	  /* Ctrl+l */
 	K_ENTER = 13,	  /* Enter */
@@ -127,7 +127,7 @@ t_error linenoise_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_o
 	unsigned int i = 0;
 
 	/* Report cursor location */
-	if (write_fd(output, (t_u8*)"\x1b[6n", 4, NULL))
+	if (write_fd(output, (t_u8 *)"\x1b[6n", 4, NULL))
 		return (ERROR);
 
 	/* Read the response: ESC [ rows ; cols R */
@@ -280,7 +280,7 @@ t_usize linenoise_get_prompt_len(t_const_str s)
 		i++;
 		ret++;
 	}
-	//printf("ret = %zu\n", ret);
+	// printf("ret = %zu\n", ret);
 	return (ret);
 }
 
@@ -298,28 +298,18 @@ void linenoise_refresh_single_line(t_line_state *l, t_line_flags flags)
 	size_t	 cursor_pos = l->pos;
 	t_string str;
 
-
 	str = string_new(16);
-	string_push_char(&str, '\r');
+	string_push(&str, "\r\x1b[2K");
 
 	if (flags & REFRESH_WRITE)
 	{
 		/* Write the prompt and the current buffer content */
 		string_push(&str, l->prompt);
 		string_push(&str, input_buf); // , len);
+		me_printf_str(&str, "\x1b[0G\x1b[%uC", cursor_pos + prompt_len);
 	}
-	string_push(&str, "\x1b[0K");
-	/* Erase to right */
-	if (flags & REFRESH_WRITE)
-	{
-		/* Move cursor to original position. */
-		me_printf_str(&str, "\r\x1b[%iC", (int)(cursor_pos + prompt_len));
-	}
+	me_printf_fd(l->output_fd, "%s", str.buf);
 
-	//me_eprintf("refresh single line;\n");
-	write_fd(l->output_fd, (t_u8 *)str.buf, str.len, NULL);
-
-	//printf("cursor_pos = %zu\n", cursor_pos);
 	string_free(str);
 }
 
@@ -358,7 +348,7 @@ t_error linenoise_edit_insert(t_line_state *l, char c)
 		if (l->len == l->pos)
 		{
 			l->buf[l->pos] = c;
-			//l->pos++;
+			l->pos++;
 			l->len++;
 			l->buf[l->len] = '\0';
 			linenoise_refresh_line(l);
@@ -597,7 +587,7 @@ t_str linenoise_edit_feed(t_line_state *l)
 	switch (c)
 	{
 	case K_NEWLINE: /* enter */
-	case K_ENTER: /* enter */
+	case K_ENTER:	/* enter */
 		history->len--;
 		mem_free(history->buffer[history->len]);
 		return strdup(l->buf);
@@ -605,7 +595,7 @@ t_str linenoise_edit_feed(t_line_state *l)
 		errno = EAGAIN;
 		return NULL;
 	case K_BACKSPACE: /* backspace */
-	case K_CTRL_H:    /* ctrl-h */
+	case K_CTRL_H:	  /* ctrl-h */
 		linenoise_edit_backspace(l);
 		break;
 	case K_CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
