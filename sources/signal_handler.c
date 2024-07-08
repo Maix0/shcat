@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 15:54:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 21:19:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/signal_handler.h"
+#include "me/fs/fs.h"
 #include "me/printf/printf.h"
 #include "me/types.h"
-#include "readline/readline.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,7 +22,7 @@ void sigint_handle(int sig, siginfo_t *info, void *ucontext)
 	(void)(sig);
 	(void)(info);
 	(void)(ucontext);
-	printf("\n");
+	write_fd(get_stdout(), (void *)"\n", 1, NULL);
 	// TODO: change this to the linenoise verison
 	// rl_replace_line("", 0);
 	// rl_on_new_line();
@@ -34,8 +34,7 @@ void sigquit_handle(int sig, siginfo_t *info, void *ucontext)
 	(void)(sig);
 	(void)(info);
 	(void)(ucontext);
-	printf("\n");
-	//
+	write_fd(get_stdout(), (void *)"\n", 1, NULL);
 	// rl_replace_line("", 0);
 	// rl_on_new_line();
 	// rl_redisplay();

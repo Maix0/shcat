@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 18:07:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/05 19:59:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 22:21:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #define LINE_H
 
 #include "me/fs/fs.h"
+#include "me/string/string.h"
 #include "me/types.h"
 #include <termios.h>
 
@@ -31,13 +32,11 @@ struct s_line_state
 {
 	t_fd	   *input_fd;	   /* Terminal stdin file descriptor. */
 	t_fd	   *output_fd;	   /* Terminal stdout file descriptor. */
-	t_str		buf;		   /* Edited line buffer. */
-	t_usize		buflen;		   /* Edited line buffer size. */
+	t_string	buf;		   /* Edited line buffer. */
 	t_const_str prompt;		   /* Prompt to display. */
 	t_usize		prompt_len;	   /* Prompt length. */
 	t_usize		pos;		   /* Current cursor position. */
 	t_usize		old_pos;	   /* Previous refresh cursor position. */
-	t_usize		len;		   /* Current edited line length. */
 	t_usize		columns;	   /* Number of columns in terminal. */
 	t_usize		old_rows;	   /* Rows used by last refrehsed line (multiline mode) */
 	t_i32		history_index; /* The history index we are currently editing. */

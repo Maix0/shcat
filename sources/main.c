@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/08 17:02:15 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 21:11:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,8 @@ void ft_take_args(t_utils *shcat)
 		cmd = linenoise((t_const_str)shcat->name_shell);
 		if (cmd == NULL)
 			ft_exit(shcat, 0);
-		shcat->str_input = str_clone(cmd);
-		free(cmd);
+		shcat->str_input = cmd;
+		linenoise_history_add(shcat->str_input);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
 		mem_free(shcat->str_input);

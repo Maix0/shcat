@@ -106,3 +106,6 @@ str/str_split
 str/str_substring
 str/str_trim
 string/mod
+string/string_insert
+string/string_remove
+string/string_reserve
