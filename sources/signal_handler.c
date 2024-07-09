@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 21:19:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/09 14:43:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ t_error install_signal(void)
 	data = (struct sigaction){};
 	data.sa_sigaction = sigint_handle;
 	data.sa_flags = SA_SIGINFO | SA_NOCLDWAIT;
-	if (sigaction(SIGINT, &data, NULL))
-		return (ERROR);
+	// if (sigaction(SIGINT, &data, NULL))
+	// 	return (ERROR);
 
 	data.sa_sigaction = sigquit_handle;
 	if (sigaction(SIGQUIT, &data, NULL))

@@ -51,11 +51,11 @@ struct s_raw_mode_state
 typedef struct s_raw_mode_state t_raw_mode_state;
 
 /* Non blocking API. */
-int	  linenoiseEditStart(t_line_state *l, int stdin_fd, int stdout_fd, char *buf, t_usize buflen, const char *prompt);
-char *linenoiseEditFeed(t_line_state *l);
-void  linenoiseEditStop(t_line_state *l);
-void  linenoiseHide(t_line_state *l);
-void  linenoiseShow(t_line_state *l);
+int	  linenoiseEditStart(t_line_state *state, int stdin_fd, int stdout_fd, char *buf, t_usize buflen, const char *prompt);
+char *linenoiseEditFeed(t_line_state *state);
+void  linenoiseEditStop(t_line_state *state);
+void  linenoiseHide(t_line_state *state);
+void  linenoiseShow(t_line_state *state);
 
 /* Blocking API. */
 char *linenoise(const char *prompt);
