@@ -14,9 +14,9 @@
 /// 		https://github.com/antirez/linenoise
 
 #ifndef LINE_H
-#define LINE_H
+# define LINE_H
 
-#include "line/_line_functions.h"
-#include "line/_line_structs.h"
+# include "line/_line_functions.h"
+# include "line/_line_structs.h"
 
 #endif /* LINE_H */
