@@ -6,19 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 22:33:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/17 15:29:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:24:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "aq/internal_vg_funcs.h"
 
 #ifndef VGFUNCS
-
-void	vg_mempool_create_ext(void *pool, t_usize flags)
-{
-	(void)(pool);
-	(void)(flags);
-}
 
 void	vg_mempool_resize(void *pool, void *ptr, t_usize size)
 {

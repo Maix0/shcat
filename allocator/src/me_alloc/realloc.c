@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 16:48:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 17:12:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:25:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,6 @@ static void	*_realloc_alloc(struct s_allocator_melloc *self, t_usize size)
 
 void	*m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 {
-	t_chunk	*chunk;
-	t_chunk	*next;
-
 	if (size > INT32_MAX - sizeof(t_chunk) * 10)
 		return (errno = ENOMEM, NULL);
 	size = round_to_pow2(size, PAGE_ALIGN);
@@ -94,4 +91,12 @@ void	*m_realloc(struct s_allocator_melloc *self, void *ptr, t_usize size)
 		return (_realloc_alloc(self, size));
 	else
 		return (_realloc_inner(self, ptr, size));
+}
+
+void	*m_realloc_array(struct s_allocator_melloc *self, void *ptr,
+		t_usize size, t_usize count)
+{
+	if (size != 0 && count > SIZE_MAX / size)
+		return (m_alloc_error(self, "Realloc array overflow"));
+	return (m_realloc(self, ptr, size * count));
 }
