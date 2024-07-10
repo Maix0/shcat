@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 16:49:31 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 17:39:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 20:54:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ t_chunk	*get_next_block(t_chunk *chunk, bool find_zero)
 t_chunk	*split_block(t_chunk *chunk, t_usize size)
 {
 	t_usize	remaining;
-	t_chunk	*next;
 	t_chunk	*ac_next;
 
 	if (chunk == NULL)
@@ -57,7 +56,6 @@ t_chunk	*split_block(t_chunk *chunk, t_usize size)
 	if (chunk->size > size + sizeof(*chunk) + (2 << PAGE_ALIGN))
 	{
 		remaining = chunk->size - size - sizeof(*chunk);
-		next = get_next_block(chunk, true);
 		vg_mem_defined(chunk, sizeof(*chunk));
 		chunk->size = size;
 		ac_next = get_next_block(chunk, true);
