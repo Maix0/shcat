@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 21:32:17 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 22:25:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:01:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-t_error string_insert(t_string *self, t_usize pos, t_str str)
+t_error	string_insert(t_string *self, t_usize pos, t_str str)
 {
-	t_usize len;
+	t_usize	len;
+
 	if (self == NULL || str == NULL || pos > self->len)
 		return (ERROR);
 	if (pos == self->len)
@@ -32,9 +33,9 @@ t_error string_insert(t_string *self, t_usize pos, t_str str)
 	return (NO_ERROR);
 }
 
-t_error string_insert_char(t_string *self, t_usize pos, char chr)
+t_error	string_insert_char(t_string *self, t_usize pos, char chr)
 {
-	char tmp[2];
+	char	tmp[2];
 
 	if (chr == '\0')
 		return (ERROR);

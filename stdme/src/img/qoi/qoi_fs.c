@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 19:06:05 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:40:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:46:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 t_i32	qoi_write(t_const_str filename, const void *data,
 		const t_qoi_desc *desc)
 {
-	int	f;
+	int		f;
 	void	*encoded;
 	t_i32	size;
 

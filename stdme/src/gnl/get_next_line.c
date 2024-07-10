@@ -6,7 +6,7 @@
 /*   By: maix <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 17:38:21 by maix              #+#    #+#             */
-/*   Updated: 2024/05/14 18:39:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:45:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static bool	handle_leftovers(int fd, char *temp_buffer, t_string *buf)
 
 t_string	get_next_line(int fd, bool *error)
 {
-	t_string	buf;
+	t_string		buf;
 	char			*temp_buffer;
 	t_copy_flags	flags;
 

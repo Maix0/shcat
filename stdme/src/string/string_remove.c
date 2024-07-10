@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 21:50:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 21:54:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:01:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-t_error string_remove(t_string *self, t_usize pos, char *out)
+t_error	string_remove(t_string *self, t_usize pos, char *out)
 {
-	char fake_out;
+	char	fake_out;
 
 	if (out == NULL)
 		out = &fake_out;
@@ -30,7 +30,7 @@ t_error string_remove(t_string *self, t_usize pos, char *out)
 	return (NO_ERROR);
 }
 
-t_error string_clear_after(t_string *self, t_usize pos)
+t_error	string_clear_after(t_string *self, t_usize pos)
 {
 	if (self == NULL || pos >= self->len)
 		return (ERROR);

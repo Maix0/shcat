@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:27:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 18:03:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:57:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include "me/types.h"
 #include <stdarg.h>
 
-t_usize me_vprintf_str(t_string *buf, t_const_str fmt, va_list *args)
+t_usize	me_vprintf_str(t_string *buf, t_const_str fmt, va_list *args)
 {
-	t_sprintf_arg passthru;
+	t_sprintf_arg	passthru;
 
 	if (buf == NULL || fmt == NULL || args == NULL)
 		return (0);
@@ -29,10 +29,10 @@ t_usize me_vprintf_str(t_string *buf, t_const_str fmt, va_list *args)
 	return (passthru.total_print);
 }
 
-t_usize me_printf_str(t_string *buf, t_const_str fmt, ...)
+t_usize	me_printf_str(t_string *buf, t_const_str fmt, ...)
 {
-	t_usize res;
-	va_list args;
+	t_usize	res;
+	va_list	args;
 
 	va_start(args, fmt);
 	res = me_vprintf_str(buf, fmt, &args);

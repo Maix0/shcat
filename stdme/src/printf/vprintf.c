@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/09 14:57:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 18:00:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:56:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include "me/types.h"
 #include <stdarg.h>
 
-void me_printf_write(t_const_str to_write, t_usize to_write_len, void *p_args);
+void	me_printf_write(t_const_str to_write, \
+				t_usize to_write_len, void *p_args);
 
-t_usize me_vprintf(t_const_str fmt, va_list *args)
+t_usize	me_vprintf(t_const_str fmt, va_list *args)
 {
-	t_fprintf_arg passthru;
+	t_fprintf_arg	passthru;
 
 	if (fmt == NULL || args == NULL)
 		return (0);
@@ -30,9 +31,9 @@ t_usize me_vprintf(t_const_str fmt, va_list *args)
 	return (passthru.total_print);
 }
 
-t_usize me_veprintf(t_const_str fmt, va_list *args)
+t_usize	me_veprintf(t_const_str fmt, va_list *args)
 {
-	t_fprintf_arg passthru;
+	t_fprintf_arg	passthru;
 
 	if (fmt == NULL || args == NULL)
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 22:02:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 22:04:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:01:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-t_error string_reserve(t_string *self, t_usize capacity)
+t_error	string_reserve(t_string *self, t_usize capacity)
 {
 	if (self == NULL)
 		return (ERROR);

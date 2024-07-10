@@ -6,16 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/04 18:53:47 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/04 18:37:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:00:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/str/str.h"
 
-// PLEASE FIX THIS FUNCTION IF NEEDED !
-bool str_compare(t_const_str lhs, t_const_str rhs)
+bool	str_compare(t_const_str lhs, t_const_str rhs)
 {
-	t_usize index;
+	t_usize	index;
 
 	if (lhs == NULL || rhs == NULL)
 		return (lhs == rhs);
