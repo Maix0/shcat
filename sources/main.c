@@ -133,7 +133,7 @@ void ft_take_args(t_utils *shcat)
 		if (cmd == NULL)
 			ft_exit(shcat, 0);
 		shcat->str_input = cmd;
-		linenoise_history_add(shcat->str_input);
+		line_history_add(shcat->str_input);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
 		mem_free(shcat->str_input);

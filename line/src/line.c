@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 16:53:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/09 14:46:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 15:41:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "line/_line_internal.h"
 #include "line/line.h"
 #include "me/fs/fs.h"
 #include "me/gnl/gnl.h"
@@ -31,8 +32,11 @@
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 
-t_raw_mode_state *get_raw_mode_state(void);
-t_vec_str		 *get_history(void);
+t_const_str get_unfinished_str(void)
+{
+	return ("If you see this, you are misusing the API: when linenoiseEditFeed() is called, if it returns get_unfinished_str() "
+			"the user is yet editing the line. See the README file for more information.");
+}
 
 t_vec_str *get_history(void)
 {
@@ -54,50 +58,6 @@ t_raw_mode_state *get_raw_mode_state(void)
 	return (&state);
 }
 
-enum e_key_action
-{
-	K_KEY_NULL = 0,	  /* NULL */
-	K_CTRL_A = 1,	  /* Ctrl+a */
-	K_CTRL_B = 2,	  /* Ctrl-b */
-	K_CTRL_C = 3,	  /* Ctrl-c */
-	K_CTRL_D = 4,	  /* Ctrl-d */
-	K_CTRL_E = 5,	  /* Ctrl-e */
-	K_CTRL_F = 6,	  /* Ctrl-f */
-	K_CTRL_H = 8,	  /* Ctrl-h */
-	K_TAB = 9,		  /* Tab */
-	K_NEWLINE = 10,	  /* Newline */
-	K_CTRL_K = 11,	  /* Ctrl+k */
-	K_CTRL_L = 12,	  /* Ctrl+l */
-	K_ENTER = 13,	  /* Enter */
-	K_CTRL_N = 14,	  /* Ctrl-n */
-	K_CTRL_P = 16,	  /* Ctrl-p */
-	K_CTRL_T = 20,	  /* Ctrl-t */
-	K_CTRL_U = 21,	  /* Ctrl+u */
-	K_CTRL_W = 23,	  /* Ctrl+w */
-	K_ESC = 27,		  /* Escape */
-	K_BACKSPACE = 127 /* Backspace */
-};
-
-enum e_line_flags
-{
-	REFRESH_CLEAN = 1 << 0,						 // Clean the old prompt from the screen
-	REFRESH_WRITE = 1 << 1,						 // Rewrite the prompt on the screen.
-	REFRESH_ALL = REFRESH_CLEAN | REFRESH_WRITE, // Do both.
-};
-
-typedef enum e_line_flags t_line_flags;
-
-void	linenoise_clear_screen(t_fd *output);
-void	linenoise_disable_raw_mode(t_fd *fd);
-t_error linenoise_enable_raw_mode(t_fd *fd);
-t_u32	linenoise_get_columns(t_fd *input, t_fd *output);
-t_error linenoise_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out);
-t_error linenoise_history_add(t_const_str line);
-t_str	linenoise_no_tty_impl(void);
-void	linenoise_refresh_line(t_line_state *state);
-void	linenoise_refresh_line_with_flags(t_line_state *state, t_line_flags flags);
-void	linenoise_uninit_lib(void);
-
 /* Free the history, but does not reset it. Only used when we have to
  * exit() to avoid memory leaks are reported by valgrind & co. */
 void free_history(void)
@@ -107,9 +67,9 @@ void free_history(void)
 }
 
 /* At exit we'll try to fix the terminal to the initial conditions. */
-__attribute__((destructor)) void linenoise_uninit_lib(void)
+__attribute__((destructor)) void line_uninit_lib(void)
 {
-	linenoise_disable_raw_mode(get_stdin());
+	line_disable_raw_mode(get_stdin());
 	free_history();
 }
 
@@ -120,7 +80,7 @@ __attribute__((destructor)) void linenoise_uninit_lib(void)
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
  * and return it. On error -1 is returned, on success the position of the
  * cursor. */
-t_error linenoise_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
+t_error line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
 {
 	char		 buf[32];
 	int			 cols, rows;
@@ -151,7 +111,7 @@ t_error linenoise_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_o
 
 /* Try to get the number of columns in the current terminal, or assume 80
  * if it fails. */
-t_u32 linenoise_get_columns(t_fd *input, t_fd *output)
+t_u32 line_get_columns(t_fd *input, t_fd *output)
 {
 	struct winsize ws;
 	t_u32		   cols;
@@ -161,12 +121,12 @@ t_u32 linenoise_get_columns(t_fd *input, t_fd *output)
 	{
 		/* ioctl() failed. Try to query the terminal itself. */
 		/* Get the initial position so we can restore it later. */
-		if (linenoise_get_cursor_position(input, output, &start))
+		if (line_get_cursor_position(input, output, &start))
 			return (80);
 
 		/* Go to right margin and get position. */
 		me_printf_fd(output, "\x1b[999C");
-		if (linenoise_get_cursor_position(input, output, &cols))
+		if (line_get_cursor_position(input, output, &cols))
 			return (80);
 
 		if (cols > start)
@@ -180,13 +140,13 @@ t_u32 linenoise_get_columns(t_fd *input, t_fd *output)
 }
 
 /* Clear the screen. Used to handle ctrl+l */
-void linenoise_clear_screen(t_fd *output)
+void line_clear_screen(t_fd *output)
 {
 	me_printf_fd(output, "\x1b[H\x1b[2J");
 }
 
 /* Raw mode: 1960 magic shit. */
-t_error linenoise_enable_raw_mode(t_fd *fd)
+t_error line_enable_raw_mode(t_fd *fd)
 {
 	struct termios	  raw;
 	t_raw_mode_state *raw_state;
@@ -221,7 +181,7 @@ t_error linenoise_enable_raw_mode(t_fd *fd)
 	return (NO_ERROR);
 }
 
-void linenoise_disable_raw_mode(t_fd *fd)
+void line_disable_raw_mode(t_fd *fd)
 {
 	t_raw_mode_state *state;
 
@@ -237,7 +197,7 @@ void linenoise_disable_raw_mode(t_fd *fd)
  * write all the escape sequences in a buffer and flush them to the standard
  * output in a single call, to avoid flickering effects. */
 
-t_usize linenoise_get_prompt_len(t_const_str s)
+t_usize line_get_prompt_len(t_const_str s)
 {
 	t_usize i;
 	t_usize ret;
@@ -288,47 +248,40 @@ t_usize linenoise_get_prompt_len(t_const_str s)
  *
  * Flags is REFRESH_* macros. The function can just remove the old
  * prompt, just write it, or both. */
-void linenoise_refresh_single_line(t_line_state *state, t_line_flags flags)
+void line_refresh(t_line_state *state, t_line_flags flags)
 {
 	t_string str;
 
 	str = string_new(64);
 	string_push(&str, "\r\x1b[2K");
 	if (flags & REFRESH_WRITE)
-		me_printf_str(&str, "%s%s\x1b[0G\x1b[%uC", state->prompt, state->buf.buf, state->pos + linenoise_get_prompt_len(state->prompt));
+		me_printf_str(&str, "%s%s\x1b[0G\x1b[%uC", state->prompt, state->buf.buf, state->pos + line_get_prompt_len(state->prompt));
 	me_printf_fd(state->output_fd, "%s", str.buf);
 	string_free(str);
 }
 
-/* Calls the two low level functions refreshSingleLine() or
- * refreshMultiLine() according to the selected mode. */
-void linenoise_refresh_line_with_flags(t_line_state *state, t_line_flags flags)
-{
-	linenoise_refresh_single_line(state, flags);
-}
-
 /* Utility function to avoid specifying REFRESH_ALL all the times. */
-void linenoise_refresh_line(t_line_state *state)
+void line_refresh_line(t_line_state *state)
 {
-	linenoise_refresh_line_with_flags(state, REFRESH_ALL);
+	line_refresh(state, REFRESH_ALL);
 }
 
 /* Hide the current line, when using the multiplexing API. */
-void linenoise_hide(t_line_state *state)
+void line_hide(t_line_state *state)
 {
-	linenoise_refresh_single_line(state, REFRESH_CLEAN);
+	line_refresh(state, REFRESH_CLEAN);
 }
 
 /* Show the current line, when using the multiplexing API. */
-void linenoise_show(t_line_state *state)
+void line_show(t_line_state *state)
 {
-	linenoise_refresh_line_with_flags(state, REFRESH_WRITE);
+	line_refresh(state, REFRESH_WRITE);
 }
 
 /* Insert the character 'c' at cursor current position.
  *
  * On error writing to the terminal -1 is returned, otherwise 0. */
-t_error linenoise_edit_insert(t_line_state *state, char c)
+t_error line_edit_insert(t_line_state *state, char c)
 {
 	if (state->pos == state->buf.len)
 	{
@@ -338,55 +291,53 @@ t_error linenoise_edit_insert(t_line_state *state, char c)
 	else if (string_insert_char(&state->buf, state->pos, c))
 		return (ERROR);
 	state->pos++;
-	linenoise_refresh_line(state);
+	line_refresh_line(state);
 	return (NO_ERROR);
 }
 
 /* Move cursor on the left. */
-void linenoise_edit_move_left(t_line_state *state)
+void line_edit_move_left(t_line_state *state)
 {
 	if (state->pos > 0)
 	{
 		state->pos--;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
 /* Move cursor on the right. */
-void linenoise_edit_move_right(t_line_state *state)
+void line_edit_move_right(t_line_state *state)
 {
 	if (state->pos != state->buf.len)
 	{
 		state->pos++;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
 /* Move cursor to the start of the line. */
-void linenoise_edit_move_home(t_line_state *state)
+void line_edit_move_home(t_line_state *state)
 {
 	if (state->pos != 0)
 	{
 		state->pos = 0;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
 /* Move cursor to the end of the line. */
-void linenoise_edit_move_end(t_line_state *state)
+void line_edit_move_end(t_line_state *state)
 {
 	if (state->pos != state->buf.len)
 	{
 		state->pos = state->buf.len;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
 /* Substitute the currently edited line with the next or previous history
  * entry as specified by 'dir'. */
-#define LINENOISE_HISTORY_NEXT 0
-#define LINENOISE_HISTORY_PREV 1
-void linenoise_edit_history_next(t_line_state *state, int dir)
+void line_edit_history_next(t_line_state *state, t_history_direction direction)
 {
 	t_vec_str *history;
 
@@ -399,7 +350,7 @@ void linenoise_edit_history_next(t_line_state *state, int dir)
 		mem_free(history->buffer[history->len - 1 - state->history_index]);
 		history->buffer[history->len - 1 - state->history_index] = str_clone(state->buf.buf);
 		/* Show the new entry */
-		state->history_index += (dir == LINENOISE_HISTORY_PREV) ? 1 : -1;
+		state->history_index += (direction == HIST_PREV) ? 1 : -1;
 		if (state->history_index < 0)
 		{
 			state->history_index = 0;
@@ -413,26 +364,26 @@ void linenoise_edit_history_next(t_line_state *state, int dir)
 		string_clear(&state->buf);
 		string_push(&state->buf, history->buffer[history->len - 1 - state->history_index]);
 		state->pos = state->buf.len;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
 /* Delete the character at the right of the cursor without altering the cursor
  * position. Basically this is what happens with the "Delete" keyboard key. */
-void linenoise_edit_delete(t_line_state *state)
+void line_edit_delete(t_line_state *state)
 {
 	string_remove(&state->buf, state->pos, NULL);
-	linenoise_refresh_line(state);
+	line_refresh_line(state);
 }
 
 /* Backspace implementation. */
-void linenoise_edit_backspace(t_line_state *state)
+void line_edit_backspace(t_line_state *state)
 {
 	if (state->pos > 0)
 	{
 		string_remove(&state->buf, state->pos - 1, NULL);
 		state->pos--;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 	}
 }
 
@@ -460,7 +411,7 @@ void linenoise_edit_backspace(t_line_state *state)
  * fails. If stdin_fd or stdout_fd are set to -1, the default is to use
  * STDIN_FILENO and STDOUT_FILENO.
  */
-t_error linenoise_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
+t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 {
 	if (stdin_fd == NULL)
 		stdin_fd = get_stdin();
@@ -474,15 +425,13 @@ t_error linenoise_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_f
 	state->buf = string_new(4096);
 	state->prompt = prompt;
 	state->prompt_len = str_len(state->prompt);
-	state->old_pos = 0;
 	state->pos = 0;
 
-	// /* Enter raw mode. */
-	// if (enableRawMode(state->ifd) == -1)
-	//	return -1;
+	/* Enter raw mode. */
+	if (line_enable_raw_mode(state->input_fd))
+		return (ERROR);
 
-	state->columns = linenoise_get_columns(stdin_fd, stdout_fd);
-	state->old_rows = 0;
+	state->columns = line_get_columns(stdin_fd, stdout_fd);
 	state->history_index = 0;
 
 	/* If stdin is not a tty, stop here with the initialization. We
@@ -493,16 +442,12 @@ t_error linenoise_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_f
 
 	/* The latest history entry is always our current buffer, that
 	 * initially is just an empty string. */
-	linenoise_history_add("");
-	linenoise_enable_raw_mode(state->output_fd);
+	line_history_add("");
 
 	if (write_fd(state->output_fd, (t_u8 *)prompt, state->prompt_len, NULL))
 		return (ERROR);
 	return (NO_ERROR);
 }
-
-char *linenoiseEditMore = "If you see this, you are misusing the API: when linenoiseEditFeed() is called, if it returns linenoiseEditMore "
-						  "the user is yet editing the line. See the README file for more information.";
 
 /* This function is part of the multiplexed API of linenoise, see the top
  * comment on linenoiseEditStart() for more information. Call this function
@@ -510,7 +455,7 @@ char *linenoiseEditMore = "If you see this, you are misusing the API: when linen
  * descriptor. In the case of blocking operations, this function can just be
  * called in a loop, and block.
  *
- * The function returns linenoiseEditMore to signal that line editing is still
+ * The function returns get_unfinished_str() to signal that line editing is still
  * in progress, that is, the user didn't yet pressed enter / CTRL-D. Otherwise
  * the function returns the pointer to the heap-allocated buffer with the
  * edited line, that the user should mem_free with linenoiseFree().
@@ -522,12 +467,12 @@ char *linenoiseEditMore = "If you see this, you are misusing the API: when linen
  *
  * Some other errno: I/O error.
  */
-t_str linenoise_edit_feed(t_line_state *state)
+t_str line_edit_feed(t_line_state *state)
 {
 	/* Not a TTY, pass control to line reading without character
 	 * count limits. */
 	if (!isatty(state->input_fd->fd))
-		return linenoise_no_tty_impl();
+		return line_no_tty_impl();
 
 	char	   c;
 	t_isize	   nread;
@@ -548,12 +493,12 @@ t_str linenoise_edit_feed(t_line_state *state)
 		return (errno = EAGAIN, NULL);
 	case K_BACKSPACE: /* backspace */
 	case K_CTRL_H:	  /* ctrl-h */
-		linenoise_edit_backspace(state);
+		line_edit_backspace(state);
 		break;
 	case K_CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
 					line is empty, act as end-of-file. */
 		if (state->buf.len > 0)
-			linenoise_edit_delete(state);
+			line_edit_delete(state);
 		else
 		{
 			history->len--;
@@ -562,16 +507,16 @@ t_str linenoise_edit_feed(t_line_state *state)
 		}
 		break;
 	case K_CTRL_B: /* ctrl-b */
-		linenoise_edit_move_left(state);
+		line_edit_move_left(state);
 		break;
 	case K_CTRL_F: /* ctrl-f */
-		linenoise_edit_move_right(state);
+		line_edit_move_right(state);
 		break;
 	case K_CTRL_P: /* ctrl-p */
-		linenoise_edit_history_next(state, LINENOISE_HISTORY_PREV);
+		line_edit_history_next(state, HIST_PREV);
 		break;
 	case K_CTRL_N: /* ctrl-n */
-		linenoise_edit_history_next(state, LINENOISE_HISTORY_NEXT);
+		line_edit_history_next(state, HIST_NEXT);
 		break;
 	case K_ESC: /* escape sequence */
 		/* Read the next two bytes representing the escape sequence.
@@ -591,29 +536,29 @@ t_str linenoise_edit_feed(t_line_state *state)
 				if (read_fd(state->input_fd, (t_u8 *)(seq + 2), 1, NULL))
 					break;
 				if (seq[1] == '3' && seq[2] == '~')
-					linenoise_edit_delete(state);
+					line_edit_delete(state);
 			}
 			else
 			{
 				switch (seq[1])
 				{
 				case 'A': /* Up */
-					linenoise_edit_history_next(state, LINENOISE_HISTORY_PREV);
+					line_edit_history_next(state, HIST_PREV);
 					break;
 				case 'B': /* Down */
-					linenoise_edit_history_next(state, LINENOISE_HISTORY_NEXT);
+					line_edit_history_next(state, HIST_NEXT);
 					break;
 				case 'C': /* Right */
-					linenoise_edit_move_right(state);
+					line_edit_move_right(state);
 					break;
 				case 'D': /* Left */
-					linenoise_edit_move_left(state);
+					line_edit_move_left(state);
 					break;
 				case 'H': /* Home */
-					linenoise_edit_move_home(state);
+					line_edit_move_home(state);
 					break;
 				case 'F': /* End*/
-					linenoise_edit_move_end(state);
+					line_edit_move_end(state);
 					break;
 				}
 			}
@@ -625,10 +570,10 @@ t_str linenoise_edit_feed(t_line_state *state)
 			switch (seq[1])
 			{
 			case 'H': /* Home */
-				linenoise_edit_move_home(state);
+				line_edit_move_home(state);
 				break;
 			case 'F': /* End*/
-				linenoise_edit_move_end(state);
+				line_edit_move_end(state);
 				break;
 			}
 		}
@@ -636,39 +581,39 @@ t_str linenoise_edit_feed(t_line_state *state)
 	case K_CTRL_U: /* Ctrl+u, delete the whole line. */
 		string_clear(&state->buf);
 		state->pos = 0;
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 		break;
 	case K_CTRL_K: /* Ctrl+k, delete from current to end of line. */
 		string_clear_after(&state->buf, state->pos);
-		linenoise_refresh_line(state);
+		line_refresh_line(state);
 		break;
 	case K_CTRL_A: /* Ctrl+a, go to the start of the line */
-		linenoise_edit_move_home(state);
+		line_edit_move_home(state);
 		break;
 	case K_CTRL_E: /* ctrl+e, go to the end of the line */
-		linenoise_edit_move_end(state);
+		line_edit_move_end(state);
 		break;
 	case K_CTRL_L: /* ctrl+l, clear screen */
-		linenoise_clear_screen(state->output_fd);
-		linenoise_refresh_line(state);
+		line_clear_screen(state->output_fd);
+		line_refresh_line(state);
 		break;
 	default:
-		if (linenoise_edit_insert(state, c))
+		if (line_edit_insert(state, c))
 			return (NULL);
 		break;
 	}
-	return linenoiseEditMore;
+	return ((t_str)get_unfinished_str());
 }
 
 /* This is part of the multiplexed linenoise API. See linenoiseEditStart()
  * for more information. This function is called when linenoiseEditFeed()
  * returns something different than NULL. At this point the user input
  * is in the buffer, and we can restore the terminal in normal mode. */
-void linenoise_edit_stop(t_line_state *state)
+void line_edit_stop(t_line_state *state)
 {
 	if (!isatty(state->input_fd->fd))
 		return;
-	linenoise_disable_raw_mode(state->input_fd);
+	line_disable_raw_mode(state->input_fd);
 	me_printf_fd(state->output_fd, "\n");
 	string_free(state->buf);
 }
@@ -677,22 +622,22 @@ void linenoise_edit_stop(t_line_state *state)
  * In many applications that are not event-drivern, we can just call
  * the blocking linenoise API, wait for the user to complete the editing
  * and return the buffer. */
-t_str linenoise_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
+t_str line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 {
 	t_line_state l;
 
-	linenoise_edit_start(&l, stdin_fd, stdout_fd, prompt);
+	line_edit_start(&l, stdin_fd, stdout_fd, prompt);
 	t_str res;
-	while ((res = linenoise_edit_feed(&l)) == linenoiseEditMore)
+	while ((res = line_edit_feed(&l)) == get_unfinished_str())
 		;
-	linenoise_edit_stop(&l);
+	line_edit_stop(&l);
 	return res;
 }
 
 /* This special mode is used by linenoise in order to print scan codes
  * on screen for debugging / development purposes. It is implemented
- * by the linenoise_example program using the --keycodes option. */
-void linenoise_print_key_codes(void)
+ * by the line_example program using the --keycodes option. */
+void line_print_key_codes(void)
 {
 	char quit[4];
 
@@ -727,7 +672,7 @@ void linenoise_print_key_codes(void)
  * program using linenoise is called in pipe or with a file redirected
  * to its standard input. In this case, we want to be able to return the
  * line regardless of its length (by default we are limited to 4k). */
-t_str linenoise_no_tty_impl(void)
+t_str line_no_tty_impl(void)
 {
 	t_string line;
 	t_isize	 ret;
@@ -763,21 +708,10 @@ t_str linenoise(t_const_str prompt)
 	{
 		/* Not a tty: read from file / pipe. In this mode we don't want any
 		 * limit to the line size, so we call a function to handle that. */
-		return linenoise_no_tty_impl();
+		return line_no_tty_impl();
 	}
-	retval = linenoise_blocking_edit(get_stdin(), get_stdout(), prompt);
+	retval = line_blocking_edit(get_stdin(), get_stdout(), prompt);
 	return (retval);
-}
-
-/* This is just a wrapper the user may want to call in order to make sure
- * the linenoise returned buffer is mem_freed with the same allocator it was
- * created with. Useful when the main program is using an alternative
- * allocator. */
-void linenoise_free(void *ptr)
-{
-	if (ptr == linenoiseEditMore)
-		return; // Protect from API misuse.
-	mem_free(ptr);
 }
 
 /* ================================ History ================================= */
@@ -789,7 +723,7 @@ void linenoise_free(void *ptr)
  * histories, but will work well for a few hundred of entries.
  *
  * Using a circular buffer is smarter, but a bit more complex to handle. */
-bool linenoise_history_add(t_const_str line)
+bool line_history_add(t_const_str line)
 {
 	t_str	   linecopy;
 	t_vec_str *history;
@@ -807,7 +741,7 @@ bool linenoise_history_add(t_const_str line)
 
 /* Save the history in the specified file. On success 0 is returned
  * otherwise -1 is returned. */
-t_error linenoise_history_save(t_str name)
+t_error line_history_save(t_str name)
 {
 	t_fd	  *fd;
 	t_usize	   j;
@@ -847,7 +781,7 @@ t_error gnl_wrapper(t_fd *fd, t_string *out)
  *
  * If the file exists and the operation succeeded 0 is returned, otherwise
  * on error -1 is returned. */
-t_error linenoise_history_load(t_str name)
+t_error line_history_load(t_str name)
 {
 	t_fd	  *fd;
 	t_string   tmp;
