@@ -14,37 +14,37 @@
 
 #ifndef VGFUNCS
 
-void vg_mempool_create_ext(void *pool, t_usize flags)
+void	vg_mempool_create_ext(void *pool, t_usize flags)
 {
 	(void)(pool);
 	(void)(flags);
 }
 
-void vg_mempool_resize(void *pool, void *ptr, t_usize size)
+void	vg_mempool_resize(void *pool, void *ptr, t_usize size)
 {
 	(void)(pool);
 	(void)(ptr);
 	(void)(size);
 }
 
-void vg_mempool_create(void *pool)
+void	vg_mempool_create(void *pool)
 {
 	(void)(pool);
 }
 
-void vg_mempool_destroy(void *pool)
+void	vg_mempool_destroy(void *pool)
 {
 	(void)(pool);
 }
 
-void vg_mempool_alloc(void *pool, void *addr, t_usize size)
+void	vg_mempool_alloc(void *pool, void *addr, t_usize size)
 {
 	(void)(pool);
 	(void)(addr);
 	(void)(size);
 }
 
-void vg_mempool_free(void *pool, void *addr)
+void	vg_mempool_free(void *pool, void *addr)
 {
 	(void)(pool);
 	(void)(addr);

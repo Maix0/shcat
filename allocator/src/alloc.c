@@ -15,21 +15,21 @@
 
 typedef struct s_allocator_page
 {
-	void   *data;
-	t_usize size;
-} t_allocator_page;
+	void				*data;
+	t_usize				size;
+}						t_allocator_page;
 
 typedef struct s_page_list
 {
 	t_usize				allocated;
 	t_allocator_page	a[10];
-	struct s_page_list *next;
-} t_page_list;
+	struct s_page_list	*next;
+}						t_page_list;
 
 /*
-void *me_malloc(t_usize size)
+void	*me_malloc(t_usize size)
 {
-	t_mblock *block;
+	t_mblock	*block;
 
 	size = usize_round_up_to(size, 16);
 	block = get_block_for_size(size);
@@ -42,18 +42,18 @@ block->size); vg_mem_no_access(block, sizeof(*block)); return ((void
 *)(((t_usize)block) + sizeof(*block)));
 }
 
-void *me_calloc(t_usize elem_size, t_usize elem_count)
+void	*me_calloc(t_usize elem_size, t_usize elem_count)
 {
 	if (elem_size != 0 && elem_count > SIZE_MAX / elem_size)
 		me_abort("calloc overflow !");
 	return (me_malloc(elem_size * elem_count));
 }
 
-void *me_realloc(void *ptr, t_usize new_size)
+void	*me_realloc(void *ptr, t_usize new_size)
 {
-	t_mblock *block;
-	void	 *ret;
-	t_usize	  old_size;
+	t_mblock	*block;
+	void		*ret;
+	t_usize		old_size;
 
 	if (ptr == NULL)
 		return (me_malloc(new_size));
@@ -83,19 +83,19 @@ void *me_realloc(void *ptr, t_usize new_size)
 	}
 }
 
-void *me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count)
+void	*me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count)
 {
 	if (elem_size != 0 && elem_count > SIZE_MAX / elem_size)
 		me_abort("realloc_array overflow !");
 	return (me_realloc(ptr, elem_size * elem_count));
 }
 
-void mem_free(void *ptr)
+void	mem_free(void *ptr)
 {
-	t_mblock *cur;
+	t_mblock	*cur;
 
 	if (ptr == NULL)
-		return;
+		return ;
 	cur = (void *)(((t_usize)ptr) - sizeof(t_mblock));
 	vg_mempool_free(POOL_ADDR, ptr);
 	vg_mem_defined(cur, sizeof(*cur));
@@ -108,8 +108,8 @@ void mem_free(void *ptr)
 // {
 // 	t_ptr_table *table;
 // 	t_ptr_table *table_next;
-// 	t_usize		 i;
-// 	t_usize		 unfree_count;
+// 	t_usize			i;
+// 	t_usize			unfree_count;
 //
 // 	unfree_count = 0;
 // 	table = get_table();
@@ -140,7 +140,7 @@ void mem_free(void *ptr)
 // void *me_malloc(t_usize size)
 // {
 // 	t_mblock *block;
-// 	void	 *ret;
+// 	void		*ret;
 //
 // 	size = usize_round_up_to(size, 16);
 // 	printf("Allocating %zu.\n", size);
@@ -164,7 +164,7 @@ void mem_free(void *ptr)
 // void *me_realloc(void *ptr, t_usize new_size)
 // {
 // 	t_mblock *block;
-// 	void	 *ret;
+// 	void		*ret;
 //
 // 	if (ptr == NULL)
 // 		return (me_malloc(new_size));
@@ -187,7 +187,7 @@ void mem_free(void *ptr)
 // 	t_mblock *cur;
 //
 // 	if (ptr == NULL)
-// 		return;
+// 		return ;
 // 	cur = get_block_from_ptr(ptr);
 // 	if (cur == NULL)
 // 		return (me_abort("Invalid free (not allocated with me_*alloc)!"));

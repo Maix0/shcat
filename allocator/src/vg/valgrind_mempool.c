@@ -15,41 +15,39 @@
 
 #ifdef VGFUNCS
 
-void vg_mempool_create_ext(void *pool, t_usize flags)
+void	vg_mempool_create_ext(void *pool, t_usize flags)
 {
-	t_usize actual_flags;
+	t_usize	actual_flags;
 
 	actual_flags = 0;
 	if (flags & MEMPOOL_FLAG_MALLOCLIKE)
 		actual_flags |= VALGRIND_MEMPOOL_METAPOOL;
 	if (flags & MEMPOOL_FLAG_AUTOFREE)
 		actual_flags |= VALGRIND_MEMPOOL_AUTO_FREE;
-
 	VALGRIND_CREATE_MEMPOOL_EXT(pool, 0, ZEROED_POOL, actual_flags);
 }
 
-void vg_mempool_resize(void *pool, void *ptr, t_usize size)
+void	vg_mempool_resize(void *pool, void *ptr, t_usize size)
 {
 	VALGRIND_MEMPOOL_CHANGE(pool, ptr, ptr, size);
 }
 
-void vg_mempool_create(void *pool)
+void	vg_mempool_create(void *pool)
 {
 	VALGRIND_CREATE_MEMPOOL(pool, 0, ZEROED_POOL);
-
 }
 
-void vg_mempool_destroy(void *pool)
+void	vg_mempool_destroy(void *pool)
 {
 	VALGRIND_DESTROY_MEMPOOL(pool);
 }
 
-void vg_mempool_alloc(void *pool, void *addr, t_usize size)
+void	vg_mempool_alloc(void *pool, void *addr, t_usize size)
 {
 	VALGRIND_MEMPOOL_ALLOC(pool, addr, size);
 }
 
-void vg_mempool_free(void *pool, void *addr)
+void	vg_mempool_free(void *pool, void *addr)
 {
 	VALGRIND_MEMPOOL_FREE(pool, addr);
 }

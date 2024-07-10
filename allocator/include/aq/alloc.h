@@ -11,14 +11,14 @@
 /* ************************************************************************** */
 
 #ifndef ALLOC_H
-#define ALLOC_H
+# define ALLOC_H
 
-#include "me/types.h"
+# include "me/types.h"
 
-void *me_malloc(t_usize size);
-void *me_calloc(t_usize elem_count, t_usize elem_size);
-void *me_realloc(void *ptr, t_usize size);
-void *me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count);
-void uninit_allocator(void);
+void	*me_malloc(t_usize size);
+void	*me_calloc(t_usize elem_count, t_usize elem_size);
+void	*me_realloc(void *ptr, t_usize size);
+void	*me_realloc_array(void *ptr, t_usize elem_size, t_usize elem_count);
+void	uninit_allocator(void);
 
 #endif /* ALLOC_H */

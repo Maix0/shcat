@@ -14,17 +14,17 @@
 
 #ifdef VGFUNCS
 
-void vg_mem_no_access(void *ptr, t_usize size)
+void	vg_mem_no_access(void *ptr, t_usize size)
 {
 	VALGRIND_MAKE_MEM_NOACCESS(ptr, size);
 }
 
-void vg_mem_undefined(void *ptr, t_usize size)
+void	vg_mem_undefined(void *ptr, t_usize size)
 {
 	VALGRIND_MAKE_MEM_UNDEFINED(ptr, size);
 }
 
-void vg_mem_defined(void *ptr, t_usize size)
+void	vg_mem_defined(void *ptr, t_usize size)
 {
 	VALGRIND_MAKE_MEM_DEFINED(ptr, size);
 }
