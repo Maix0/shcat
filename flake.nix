@@ -36,14 +36,12 @@
             valgrind.dev
             valgrind
             gnumake
-            readline.out
-            readline.dev
             generic_c.packages.${system}.default
             c_formatter_42.packages.${system}.default
             llvmPackages.bintools
             norminette
             rust-bin.stable.latest.default
-            (tree-sitter.override {webUISupport = true;})
+            #(tree-sitter.override {webUISupport = true;})
             nodejs
           ];
           VALGRIND_INC_OPT = "${pkgs.valgrind.dev}/include";

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:20:25 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/08 21:52:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 21:03:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include "me/types.h"
 #include <signal.h>
 #include <stdio.h>
-
-#include <readline/readline.h>
 
 typedef t_i32 t_signal;
 
