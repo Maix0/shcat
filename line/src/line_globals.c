@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:47:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:48:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 15:56:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 t_const_str	get_unfinished_str(void)
 {
 	return ("If you see this,"
-			" you are misusing the API"
-			" if it returns get_unfinished_str() "
-			" the user is yet editing the line. "
-			"See the README file for more information.");
+		" you are misusing the API"
+		" if it returns get_unfinished_str()"
+		" the user is yet editing the line."
+		" See the README file for more information.");
 }
 
 t_vec_str	*get_history(void)
@@ -55,9 +55,8 @@ void	free_history(void)
 }
 
 /* At exit we'll try to fix the terminal to the initial conditions. */
-__attribute__((destructor)) void line_uninit_lib(void)
+__attribute__((destructor)) void	line_uninit_lib(void)
 {
 	line_disable_raw_mode(get_stdin());
 	free_history();
 }
-

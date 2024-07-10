@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 16:53:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:47:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 16:37:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,26 @@
 #include "me/string/string.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
-#include <ctype.h>
 #include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <termios.h>
-#include <unistd.h>
-
-#define lndebug(fmt, ...)
 
 /* ======================= Low level terminal handling ====================== */
 
+// FIXME: remove the sscanf here !
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
  * and return it. On error -1 is returned, on success the position of the
  * cursor. */
 t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
 {
-	char			buf[32];
-	unsigned int	i;
+	char	buf[32];
+	t_u32	i;
+	t_i32	cols;
+	t_i32	rows;
 
-	int cols, rows;
 	i = 0;
-	/* Report cursor location */
 	if (write_fd(output, (t_u8 *)"\x1b[6n", 4, NULL))
 		return (ERROR);
-	/* Read the response: ESC [ rows ; cols R */
 	while (i < sizeof(buf) - 1)
 	{
 		if (read_fd(input, (t_u8 *)(buf + i), 1, NULL))
@@ -58,7 +49,6 @@ t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
 		i++;
 	}
 	buf[i] = '\0';
-	/* Parse it. */
 	if (buf[0] != K_ESC && buf[1] != '[')
 		return (ERROR);
 	if (sscanf(buf + 2, "%d;%d", &rows, &cols) != 2)
@@ -76,18 +66,13 @@ t_u32	line_get_columns(t_fd *input, t_fd *output)
 
 	if (ioctl(1, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
 	{
-		/* ioctl() failed. Try to query the terminal itself. */
-		/* Get the initial position so we can restore it later. */
 		if (line_get_cursor_position(input, output, &start))
 			return (80);
-		/* Go to right margin and get position. */
 		me_printf_fd(output, "\x1b[999C");
 		if (line_get_cursor_position(input, output, &cols))
 			return (80);
 		if (cols > start)
-		{
 			me_printf_fd(output, "\x1b[%dD", cols - start);
-		}
 		return (cols);
 	}
 	else
@@ -111,22 +96,13 @@ t_error	line_enable_raw_mode(t_fd *fd)
 		return (errno = ENOTTY, ERROR);
 	if (tcgetattr(fd->fd, &raw_state->state) == -1)
 		return (errno = ENOTTY, ERROR);
-	raw = raw_state->state; /* modify the original mode */
-	/* input modes: no break, no CR to NL, no parity check, no strip char,
-		* no start/stop output control. */
+	raw = raw_state->state;
 	raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
-	/* output modes - disable post processing */
 	raw.c_oflag &= ~(OPOST);
-	/* control modes - set 8 bit chars */
 	raw.c_cflag |= (CS8);
-	/* local modes - choing off, canonical off, no extended functions,
-		* no signal chars (^Z,^C) */
 	raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
-	/* control chars - set return condition: min number of bytes and timer.
-		* We want read to return every single byte, without timeout. */
 	raw.c_cc[VMIN] = 1;
-	raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
-	/* put terminal in raw mode after flushing */
+	raw.c_cc[VTIME] = 0;
 	if (tcsetattr(fd->fd, TCSAFLUSH, &raw) < 0)
 		return (errno = ENOTTY, ERROR);
 	raw_state->enabled = true;
@@ -149,47 +125,45 @@ void	line_disable_raw_mode(t_fd *fd)
  * write all the escape sequences in a buffer and flush them to the standard
  * output in a single call, to avoid flickering effects. */
 
+void	_modify_vars(t_usize *a, t_usize *b, bool operation)
+{
+	if (!operation)
+	{
+		*a = 0;
+		*b = 0;
+	}
+	else
+	{
+		*a += 1;
+		*b += 1;
+	}
+}
+
 t_usize	line_get_prompt_len(t_const_str s)
 {
 	t_usize	i;
 	t_usize	ret;
 	t_isize	color;
 
-	if (s == NULL)
+	if ((_modify_vars(&i, &ret, false), true) && s == NULL)
 		return (0);
-	i = 0;
-	ret = 0;
 	while (s[i])
 	{
-		if (s[i] == '\x1b')
+		if (s[i] == '\x1b' && s[i++] == '[')
 		{
-			i++;
-			if (s[i] == '[')
+			color = ((void)(i++), 0);
+			while (color >= 0)
 			{
-				i++;
-				color = 0;
-				while (color >= 0)
-				{
-					color--;
-					while (s[i] >= '0' && s[i] <= '9')
-					{
-						i++;
-						color += 2;
-					}
-					if (s[i] == ';')
-						i++;
-					else if (s[i] == 'm')
-					{
-						i++;
-						break ;
-					}
-				}
+				while (((void)color--, true) && s[i] >= '0' && s[i] <= '9')
+					color += ((void)(i++), 2);
+				if (s[i] == ';')
+					i++;
+				else if (s[i] == 'm' && ((void)i++, true))
+					break ;
 			}
 		}
-		i++;
-		ret++;
+		_modify_vars(&i, &ret, true);
 	}
-	// printf("ret = %zu\n", ret);
 	return (ret);
 }
 
@@ -294,27 +268,22 @@ void	line_edit_history_next(t_line_state *state,
 		t_history_direction direction)
 {
 	t_vec_str	*history;
+	t_isize		dir;
 
 	history = get_history();
 	if (history->len > 1)
 	{
-		/* Update the current history entry before to
-			* overwrite it with the next one. */
 		mem_free(history->buffer[history->len - 1 - state->history_index]);
 		history->buffer[history->len - 1
 			- state->history_index] = str_clone(state->buf.buf);
-		/* Show the new entry */
-		state->history_index += (direction == HIST_PREV) ? 1 : -1;
+		dir = -1;
+		if (direction == HIST_PREV)
+			dir = 1;
+		state->history_index += dir;
 		if (state->history_index < 0)
-		{
-			state->history_index = 0;
-			return ;
-		}
+			return ((void)(state->history_index = 0));
 		else if ((t_usize)state->history_index >= history->len)
-		{
-			state->history_index = history->len - 1;
-			return ;
-		}
+			return ((void)(state->history_index = history->len - 1));
 		string_clear(&state->buf);
 		string_push(&state->buf, history->buffer[history->len - 1
 			- state->history_index]);
@@ -373,26 +342,18 @@ t_error	line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd,
 		stdin_fd = get_stdin();
 	if (stdout_fd == NULL)
 		stdout_fd = get_stdout();
-	/* Populate the linenoise state that we pass to functions implementing
-		* specific editing functionalities. */
 	state->input_fd = stdin_fd;
 	state->output_fd = stdout_fd;
 	state->buf = string_new(4096);
 	state->prompt = prompt;
 	state->prompt_len = str_len(state->prompt);
 	state->pos = 0;
-	/* Enter raw mode. */
 	if (line_enable_raw_mode(state->input_fd))
 		return (ERROR);
 	state->columns = line_get_columns(stdin_fd, stdout_fd);
 	state->history_index = 0;
-	/* If stdin is not a tty, stop here with the initialization. We
-		* will actually just read a line from standard input in blocking
-		* mode later, in linenoiseEditFeed(). */
 	if (!isatty(state->input_fd->fd))
 		return (NO_ERROR);
-	/* The latest history entry is always our current buffer, that
-		* initially is just an empty string. */
 	line_history_add("");
 	if (write_fd(state->output_fd, (t_u8 *)prompt, state->prompt_len, NULL))
 		return (ERROR);
@@ -426,28 +387,23 @@ t_str	line_edit_feed(t_line_state *state)
 	t_vec_str	*history;
 	t_str		tmp;
 
-	/* Not a TTY, pass control to line reading without character
-		* count limits. */
 	if (!isatty(state->input_fd->fd))
 		return (line_no_tty_impl());
 	history = get_history();
 	if (read_fd(state->input_fd, (t_u8 *)&c, 1, &nread))
 		return (NULL);
-	switch (c)
+	if (c == K_NEWLINE || c == K_ENTER)
 	{
-	case K_NEWLINE: /* enter */
-	case K_ENTER:   /* enter */
 		if (!vec_str_pop(history, &tmp))
 			mem_free(tmp);
 		return (str_clone(state->buf.buf));
-	case K_CTRL_C: /* ctrl-c */
+	}
+	else if (c == K_CTRL_C)
 		return (errno = EAGAIN, NULL);
-	case K_BACKSPACE: /* backspace */
-	case K_CTRL_H:    /* ctrl-h */
+	else if (c == K_BACKSPACE || c == K_CTRL_H)
 		line_edit_backspace(state);
-		break ;
-	case K_CTRL_D: /* ctrl-d, remove char at right of cursor, or if the
-					line is empty, act as end-of-file. */
+	else if (c == K_CTRL_D)
+	{
 		if (state->buf.len > 0)
 			line_edit_delete(state);
 		else
@@ -456,101 +412,76 @@ t_str	line_edit_feed(t_line_state *state)
 			mem_free(history->buffer[history->len]);
 			return (errno = ENOENT, NULL);
 		}
-		break ;
-	case K_CTRL_B: /* ctrl-b */
+	}
+	else if (c == K_CTRL_B)
 		line_edit_move_left(state);
-		break ;
-	case K_CTRL_F: /* ctrl-f */
+	else if (c == K_CTRL_F)
 		line_edit_move_right(state);
-		break ;
-	case K_CTRL_P: /* ctrl-p */
+	else if (c == K_CTRL_P)
 		line_edit_history_next(state, HIST_PREV);
-		break ;
-	case K_CTRL_N: /* ctrl-n */
-		line_edit_history_next(state, HIST_NEXT);
-		break ;
-	case K_ESC: /* escape sequence */
-		/* Read the next two bytes representing the escape sequence.
-			* Use two calls to handle slow terminals returning the two
-			* chars at different times. */
+	else if (c == K_CTRL_N)
+		line_edit_history_next(state, HIST_PREV);
+	else if (c == K_ESC)
+	{
 		if (read_fd(state->input_fd, (t_u8 *)seq, 1, NULL))
-			break ;
+			return ((t_str)get_unfinished_str());
 		if (read_fd(state->input_fd, (t_u8 *)(seq + 1), 1, NULL))
-			break ;
-		/* ESC [ sequences. */
+			return ((t_str)get_unfinished_str());
 		if (seq[0] == '[')
 		{
 			if (seq[1] >= '0' && seq[1] <= '9')
 			{
-				/* Extended escape, read additional byte. */
 				if (read_fd(state->input_fd, (t_u8 *)(seq + 2), 1, NULL))
-					break ;
+					return ((t_str)get_unfinished_str());
 				if (seq[1] == '3' && seq[2] == '~')
 					line_edit_delete(state);
 			}
 			else
 			{
-				switch (seq[1])
-				{
-				case 'A': /* Up */
+				if (seq[1] == 'A')
 					line_edit_history_next(state, HIST_PREV);
-					break ;
-				case 'B': /* Down */
+				if (seq[1] == 'B')
 					line_edit_history_next(state, HIST_NEXT);
-					break ;
-				case 'C': /* Right */
+				if (seq[1] == 'C')
 					line_edit_move_right(state);
-					break ;
-				case 'D': /* Left */
+				if (seq[1] == 'D')
 					line_edit_move_left(state);
-					break ;
-				case 'H': /* Home */
+				if (seq[1] == 'H')
 					line_edit_move_home(state);
-					break ;
-				case 'F': /* End*/
+				if (seq[1] == 'F')
 					line_edit_move_end(state);
-					break ;
-				}
 			}
 		}
-		/* ESC O sequences. */
 		else if (seq[0] == 'O')
 		{
-			switch (seq[1])
-			{
-			case 'H': /* Home */
+			if (seq[1] == 'H')
 				line_edit_move_home(state);
-				break ;
-			case 'F': /* End*/
+			if (seq[1] == 'F')
 				line_edit_move_end(state);
-				break ;
-			}
 		}
-		break ;
-	case K_CTRL_U: /* Ctrl+u, delete the whole line. */
+	}
+	else if (c == K_CTRL_U)
+	{
 		string_clear(&state->buf);
 		state->pos = 0;
 		line_refresh_line(state);
-		break ;
-	case K_CTRL_K: /* Ctrl+k, delete from current to end of line. */
+	}
+	else if (c == K_CTRL_K)
+	{
 		string_clear_after(&state->buf, state->pos);
 		line_refresh_line(state);
-		break ;
-	case K_CTRL_A: /* Ctrl+a, go to the start of the line */
+	}
+	else if (c == K_CTRL_A)
 		line_edit_move_home(state);
-		break ;
-	case K_CTRL_E: /* ctrl+e, go to the end of the line */
+	else if (c == K_CTRL_E)
 		line_edit_move_end(state);
-		break ;
-	case K_CTRL_L: /* ctrl+l, clear screen */
+	else if (c == K_CTRL_L)
+	{
 		line_clear_screen(state->output_fd);
 		line_refresh_line(state);
-		break ;
-	default:
-		if (line_edit_insert(state, c))
-			return (NULL);
-		break ;
 	}
+	else if (line_edit_insert(state, c))
+		return (NULL);
 	return ((t_str)get_unfinished_str());
 }
 
@@ -581,39 +512,6 @@ t_str	line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 		;
 	line_edit_stop(&l);
 	return (res);
-}
-
-/* This special mode is used by linenoise in order to print scan codes
- * on screen for debugging / development purposes. It is implemented
- * by the line_example program using the --keycodes option. */
-void	line_print_key_codes(void)
-{
-	char	quit[4];
-	char	c;
-	t_isize	nread;
-
-	printf("Linenoise key codes debugging mode.\n"
-			"Press keys to see scan codes. Type 'quit' at any time to exit.\n");
-	// if (enableRawMode(STDIN_FILENO) == -1)
-	//	return ;
-	mem_set(quit, ' ', 4);
-	while (1)
-	{
-		if (read_fd(get_stdin(), (void *)&c, 1, &nread))
-			continue ;
-		if (nread <= 0)
-			continue ;
-		mem_move(quit, quit + 1, sizeof(quit) - 1); /* shift string to left. */
-		quit[sizeof(quit) - 1] = c;
-		/* Insert current char on the right. */
-		if (mem_compare(quit, "quit", sizeof(quit)))
-			break ;
-		printf("'%c' %02x (%d) (type quit to exit)\n", isprint(c) ? c : '?',
-			(int)c, (int)c);
-		printf("\r"); /* Go left edge manually, we are in raw mode. */
-		fflush(stdout);
-	}
-	// disableRawMode(STDIN_FILENO);
 }
 
 /* This function is called when linenoise() is called with the standard
@@ -654,11 +552,7 @@ t_str	linenoise(t_const_str prompt)
 	t_str	retval;
 
 	if (!isatty(get_stdin()->fd))
-	{
-		/* Not a tty: read from file / pipe. In this mode we don't want any
-			* limit to the line size, so we call a function to handle that. */
 		return (line_no_tty_impl());
-	}
 	retval = line_blocking_edit(get_stdin(), get_stdout(), prompt);
 	return (retval);
 }
@@ -678,7 +572,7 @@ bool	line_history_add(t_const_str line)
 	t_vec_str	*history;
 
 	history = get_history();
-	if (history->len != 0 && !strcmp(history->buffer[history->len - 1], line))
+	if (history->len != 0 && str_compare(history->buffer[history->len - 1], line))
 		return (false);
 	linecopy = str_clone(line);
 	if (linecopy == NULL)
@@ -696,7 +590,7 @@ t_error	line_history_save(t_str name)
 	t_vec_str	*history;
 
 	history = get_history();
-	fd = open_fd(name, FD_READ, FD_CLOSE_ON_EXEC | FD_TRUNCATE | FD_CREATE,
+	fd = open_fd(name, FD_READ, FD_CLOSE_ON_EXEC | FD_TRUNCATE | FD_CREATE, \
 		FP_OWRITE);
 	if (fd == NULL)
 		return (ERROR);
@@ -742,8 +636,8 @@ t_error	line_history_load(t_str name)
 	history = get_history();
 	while (!gnl_wrapper(fd, &tmp))
 	{
-		while (tmp.len != 0 && (tmp.buf[tmp.len - 1] == '\n' || tmp.buf[tmp.len
-				- 1] == '\r'))
+		while (tmp.len != 0 && (tmp.buf[tmp.len - 1] == '\n' || \
+			tmp.buf[tmp.len - 1] == '\r'))
 			string_pop(&tmp);
 		vec_str_push(history, tmp.buf);
 	}
