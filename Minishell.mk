@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/10 21:02:49 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/11 17:14:34 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ END = \033[0m
 
 .PHONY: all Bonus
 
-LIBS_NAMES = me gmr aq ast parser line
+LIBS_NAMES = me gmr aq ast parser line exec
 LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
@@ -62,6 +62,7 @@ all:
 	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		"BUILD_DIR=$(BUILD_DIR)" libme.a
 	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	"BUILD_DIR=$(BUILD_DIR)" libaq.a
 	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			"BUILD_DIR=$(BUILD_DIR)" libast.a
+	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		"BUILD_DIR=$(BUILD_DIR)" libexec.a
 	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		"BUILD_DIR=$(BUILD_DIR)" libline.a
 	@$(MAKE) -C ./parser/ -f./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libgmr.a
 	@$(MAKE) -C ./parser/ -f./Parser.mk		"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libparser.a
