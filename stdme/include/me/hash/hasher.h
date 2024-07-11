@@ -61,7 +61,6 @@ void							hasher_write_u64(t_hasher *hasher, t_u64 n);
 /// @param n the value to write
 void							hasher_write_usize(t_hasher *hasher, t_usize n);
 
-
 /// @brief Write an i8 to the hasher
 /// @param hasher the hasher to write to
 /// @param n the value to write
@@ -86,7 +85,6 @@ void							hasher_write_i64(t_hasher *hasher, t_i64 n);
 /// @param hasher the hasher to write to
 /// @param n the value to write
 void							hasher_write_isize(t_hasher *hasher, t_isize n);
-
 
 /// @brief Write an string to the hasher
 /// @param hasher the hasher to write to

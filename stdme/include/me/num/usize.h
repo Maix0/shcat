@@ -17,6 +17,6 @@
 
 t_usize	usize_rotate_left(t_usize n, t_usize by);
 t_usize	usize_rotate_right(t_usize n, t_usize by);
-t_usize usize_round_up_to(t_usize self, t_usize mul);
+t_usize	usize_round_up_to(t_usize self, t_usize mul);
 
 #endif

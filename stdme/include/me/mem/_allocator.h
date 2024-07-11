@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #ifndef _ALLOCATOR_H
-#define _ALLOCATOR_H
+# define _ALLOCATOR_H
 
-#include "aq/allocator.h"
+# include "aq/allocator.h"
 
-t_allocator *global_allocator(void);
-void		 uninit_global_allocator(void);
+t_allocator	*global_allocator(void);
+void		uninit_global_allocator(void);
 
 #endif /* _ALLOCATOR_H */

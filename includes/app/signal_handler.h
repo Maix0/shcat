@@ -11,14 +11,14 @@
 /* ************************************************************************** */
 
 #ifndef SIGNAL_HANDLER_H
-#define SIGNAL_HANDLER_H
+# define SIGNAL_HANDLER_H
 
-#include "me/types.h"
-#include <signal.h>
-#include <stdio.h>
+# include "me/types.h"
+# include <signal.h>
+# include <stdio.h>
 
-typedef t_i32 t_signal;
+typedef t_i32	t_signal;
 
-t_error install_signal(void);
+t_error			install_signal(void);
 
 #endif /* SIGNAL_HANDLER_H */

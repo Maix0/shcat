@@ -27,16 +27,16 @@
 typedef struct s_static_buffer
 {
 	int		fd;
-	bool		used;
-	char		buf[BUFFER_SIZE + 1];
-	bool		init;
-}				t_static_buffer;
+	bool	used;
+	char	buf[BUFFER_SIZE + 1];
+	bool	init;
+}			t_static_buffer;
 
 typedef struct s_copy_flags
 {
-	bool		error;
-	bool		empty_read;
-}				t_copy_flags;
+	bool	error;
+	bool	empty_read;
+}			t_copy_flags;
 
 t_string	get_next_line(int fd, bool *error);
 

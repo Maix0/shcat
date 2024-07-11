@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 17:05:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/31 18:48:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:56:47 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 # include "me/blx/blx_key.h"
 # include "me/blx/colors.h"
-# include "me/vec2/vec2.h"
-# include "me/blx/sprite.h"
 # include "me/blx/inputs.h"
+# include "me/blx/sprite.h"
 # include "me/types.h"
+# include "me/vec2/vec2.h"
 
 typedef struct s_blx		t_blx;
 
@@ -65,20 +65,20 @@ typedef struct s_blx
 /// @note this is the function that will be called every frame
 /// @note this is an internal function, you should not call it yourself
 int							blx_loop_func(t_blx *ctx);
+
 /// @brief Initialize the BLX context
 /// @param func the main loop function
 /// @param free_fn the free function
 /// @param data the application data
 /// @return 
-t_blx						blx_initialize(t_run_function func,
-								t_free_function free_fn, t_blx_app data);
+t_blx						blx_initialize(t_run_function func, \
+		t_free_function free_fn, t_blx_app data);
 
 /// @brief Draw a sprite onto the screen
 /// @param app The blx context
 /// @param pos The position to draw the sprite at
 /// @param spr The sprite to draw
-void						draw_sprite(t_blx *app, t_vi2d pos,
-								t_sprite *spr);
+void						draw_sprite(t_blx *app, t_vi2d pos, t_sprite *spr);
 
 /// @brief is the key pressed
 /// @param ctx the BLX context
@@ -86,13 +86,11 @@ void						draw_sprite(t_blx *app, t_vi2d pos,
 /// @return true if the key is pressed, false otherwise
 bool						is_key_pressed(t_blx *ctx, t_keysym input);
 
-
 /// @brief is the key held
 /// @param ctx the BLX context
 /// @param input the key to check
 /// @return true if the key is held, false otherwise
 bool						is_key_held(t_blx *ctx, t_keysym input);
-
 
 /// @brief is the key released
 /// @param ctx the BLX context

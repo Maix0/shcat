@@ -42,7 +42,6 @@ static inline t_vf2d	vf2d(t_f32 x, t_f32 y)
 	return ((t_vf2d){.x = x, .y = y});
 }
 
-
 /// @brief Create a 2D int vector
 /// @param x The x component
 /// @param y The y component
@@ -51,7 +50,6 @@ static inline t_vi2d	vi2d(t_i32 x, t_i32 y)
 {
 	return ((t_vi2d){.x = x, .y = y});
 }
-
 
 /// @brief Create a 2D unsigned int vector
 /// @param x The x component
@@ -62,7 +60,6 @@ static inline t_vu2d	vu2d(t_u32 x, t_u32 y)
 	return ((t_vu2d){.x = x, .y = y});
 }
 
-
 /// @brief Add two 2D int vectors
 /// @param lhs  The left hand side vector
 /// @param rhs  The right hand side vector
@@ -71,7 +68,6 @@ static inline t_vi2d	vi2d_add(t_vi2d lhs, t_vi2d rhs)
 {
 	return ((t_vi2d){.x = lhs.x + rhs.x, .y = lhs.y + rhs.y});
 }
-
 
 /// @brief Substract two 2D int vectors
 /// @param lhs  The left hand side vector

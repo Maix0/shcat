@@ -6,39 +6,39 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 17:36:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 18:01:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:00:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef _INTERNAL_PRINTF_H
-#define _INTERNAL_PRINTF_H
+# define _INTERNAL_PRINTF_H
 
-#include "me/fs/fs.h"
-#include "me/string/string.h"
-#include "me/types.h"
+# include "me/fs/fs.h"
+# include "me/string/string.h"
+# include "me/types.h"
 
-typedef enum e_printf_flags		   t_printf_flags;
-typedef enum e_printf_type		   t_printf_type;
-typedef struct s_fprintf_arg	   t_fprintf_arg;
-typedef struct s_printf_args	   t_printf_arg;
-typedef struct s_printf_extra_args t_printf_extra_args;
-typedef struct s_sprintf_arg	   t_sprintf_arg;
+typedef enum e_printf_flags			t_printf_flags;
+typedef enum e_printf_type			t_printf_type;
+typedef struct s_fprintf_arg		t_fprintf_arg;
+typedef struct s_printf_args		t_printf_arg;
+typedef struct s_printf_extra_args	t_printf_extra_args;
+typedef struct s_sprintf_arg		t_sprintf_arg;
 
-typedef void (*t_printf_func)(t_const_str to_write, t_usize to_write_len,
-							  void *p_args);
+typedef void						(*t_printf_func)(t_const_str to_write,
+							t_usize to_write_len, void *p_args);
 
-struct s_fprintf_arg
+struct								s_fprintf_arg
 {
-	t_usize total_print;
-	t_fd   *fd;
+	t_usize							total_print;
+	t_fd							*fd;
 };
 
-struct s_sprintf_arg
+struct								s_sprintf_arg
 {
-	t_usize	  total_print;
-	t_string *buffer;
+	t_usize							total_print;
+	t_string						*buffer;
 };
-enum e_printf_flags
+enum								e_printf_flags
 {
 	PRECISION = 1 << 1,
 	ALIGN = 1 << 2,
@@ -46,7 +46,7 @@ enum e_printf_flags
 	SIGN = 1 << 4,
 };
 
-enum e_printf_type
+enum								e_printf_type
 {
 	CHAR = 1 << 0,
 	STR = 1 << 1,
@@ -57,25 +57,26 @@ enum e_printf_type
 	U32 = 1 << 6,
 };
 
-struct s_printf_extra_args
+struct								s_printf_extra_args
 {
-	t_u64 precision;
-	t_u64 align;
-	bool  left_align;
-	bool  space_align;
-	bool  pretty;
+	t_u64							precision;
+	t_u64							align;
+	bool							left_align;
+	bool							space_align;
+	bool							pretty;
 };
 
-struct s_printf_args
+struct								s_printf_args
 {
-	void			   *argument;
-	void			   *p_args;
-	t_printf_extra_args extra;
-	t_printf_flags		flags;
+	void							*argument;
+	void							*p_args;
+	t_printf_extra_args				extra;
+	t_printf_flags					flags;
 };
 
-void me_printf_write(t_const_str to_write, t_usize to_write_len, void *p_args);
-void me_printf_append_string(t_const_str to_write, t_usize to_write_len,
-							 void *p_args);
+void				me_printf_write(t_const_str to_write,
+						t_usize to_write_len, void *p_args);
+void				me_printf_append_string(t_const_str to_write,
+						t_usize to_write_len, void *p_args);
 
 #endif /* _INTERNAL_PRINTF_H */

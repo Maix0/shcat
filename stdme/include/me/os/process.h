@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:43:08 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/07 18:25:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:59:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ union						u_redirection
 {
 	struct					s_fd_redirection
 	{
-		int				value;
+		int					value;
 	} fd;
 	struct					s_piped_redirection
 	{
@@ -74,7 +74,9 @@ static inline t_redirection	inherited(void)
 static inline t_redirection	fd(int fd)
 {
 	return ((t_redirection){.tag = R_FD, \
-		.vals = (union u_redirection){.fd = {.value = fd},}});
+							.vals = (union u_redirection){\
+								.fd = {.value = fd}, \
+							}});
 }
 
 /// @brief Wrapped file descriptor tag
@@ -91,15 +93,15 @@ union						u_wrapped_fd
 {
 	struct					s_read_only
 	{
-		int				fd;
+		int					fd;
 	} ro;
 	struct					s_write_only
 	{
-		int				fd;
+		int					fd;
 	} wo;
 	struct					s_read_write
 	{
-		int				fd;
+		int					fd;
 	} rw;
 };
 
@@ -115,10 +117,10 @@ typedef struct s_wrapped_fd
 /// @return the wrapped file descriptor
 static inline t_wrapped_fd	ro(int fd)
 {
-	return ((t_wrapped_fd){.tag = READ_ONLY,
-		.vals = (union u_wrapped_fd){
-		.ro = {.fd = fd},
-	}});
+	return ((t_wrapped_fd){.tag = READ_ONLY, \
+							.vals = (union u_wrapped_fd){\
+								.ro = {.fd = fd}, \
+							}});
 }
 
 /// @brief Create a Write only wrapped file descriptor
@@ -161,11 +163,10 @@ typedef struct s_process_output
 	t_exit_code				exit_code;
 }							t_process_output;
 
-
 /// @brief Spawn a new process with the given information
 /// @param info the information to spawn the process
 /// @param process data returned by the function
-/// @return true if an error occured, false otherwise 
+/// @return true if an error occured, false otherwise
 t_error						spawn_process(t_spawn_info info,
 								t_process *process);
 

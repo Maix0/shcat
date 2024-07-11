@@ -11,13 +11,13 @@
 /* ************************************************************************** */
 
 #ifndef CHAR_H
-#define CHAR_H
+# define CHAR_H
 
-#include "me/types.h"
+# include "me/types.h"
 
 /// @brief Check if a character is alphanumeric
 /// @param chr char to check
-/// @return chr is a alphanumeric 
+/// @return chr is a alphanumeric
 bool	me_isalnum(char chr);
 
 /// @brief Check if a character is alphabetic
@@ -26,7 +26,7 @@ bool	me_isalnum(char chr);
 bool	me_isalpha(char chr);
 
 /// @brief Check if a character is a digit
-/// @param chr 
+/// @param chr
 /// @return chr is a digit
 bool	me_isdigit(char chr);
 

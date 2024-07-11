@@ -11,17 +11,17 @@
 /* ************************************************************************** */
 
 #ifndef STATE_H
-#define STATE_H
+# define STATE_H
 
-#include "app/node.h"
-#include "me/hashmap/hashmap_env.h"
-#include "me/types.h"
-#include "me/os/process.h"
+# include "app/node.h"
+# include "me/hashmap/hashmap_env.h"
+# include "me/os/process.h"
+# include "me/types.h"
 
 typedef struct s_parser
 {
-	t_first_parser *parser;
-} t_parser;
+	t_first_parser	*parser;
+}					t_parser;
 
 typedef struct s_utils
 {
@@ -33,6 +33,6 @@ typedef struct s_utils
 	t_hashmap_env	*env;
 	t_node			current_node;
 	t_process		ret;
-} t_utils;
+}					t_utils;
 
 #endif /* STATE_H */

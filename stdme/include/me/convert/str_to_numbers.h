@@ -50,7 +50,6 @@ t_error	str_to_i16(t_const_str str, t_u32 radix, t_i16 *out);
 /// @return true if an error occured, false otherwise
 t_error	str_to_i8(t_const_str str, t_u32 radix, t_i8 *out);
 
-
 /// @brief convert the string to a number and checks for error
 /// @param str string to convert from
 /// @param radix base of the number (between 2 and 36)

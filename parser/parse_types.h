@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/30 18:03:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:50:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 #include "./src/parser.h"
 #include "me/types.h"
 
-#include "parser/types/types_lexer_state.h"
-
 typedef TSSymbolMetadata   t_symbol_metadata;
 typedef TSSymbol		   t_symbol;
 typedef TSStateId		   t_state_id;
@@ -33,6 +31,18 @@ typedef TSFieldMapEntry	   t_field_map_entry;
 typedef TSParseActionEntry t_parse_action_entry;
 typedef TSLexMode		   t_lex_modes;
 typedef TSCharacterRange   t_char_range;
+
+
+struct s_lexer_state
+{
+	t_u32		lookahead;
+	t_state_id	state;
+	bool		result;
+	bool		skip;
+	bool		eof;
+};
+
+typedef struct s_lexer_state	t_lexer_state;
 
 #define ActionTypeShift TSParseActionTypeShift
 #define ActionTypeReduce TSParseActionTypeReduce

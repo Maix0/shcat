@@ -6,12 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 17:39:36 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/25 18:35:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:57:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
-
 Copyright (c) 2021, Dominic Szablewski - https://phoboslab.org
 SPDX-License-Identifier: MIT
 
@@ -64,7 +63,8 @@ See the function declaration below for the signature and more information.
 If you don't want/need the qoi_read and qoi_write functions, you can define
 QOI_NO_STDIO before including this library.
 
-This library uses malloc() and mem_free(). To supply your own malloc implementation
+This library uses malloc() and mem_free(). To supply your own malloc 
+implementation
 you can define QOI_MALLOC and QOI_FREE before including this library.
 
 This library uses memset() to zero-initialize the index. To supply your own
@@ -227,7 +227,6 @@ Header - Public functions */
 #ifndef QOI_H
 # define QOI_H
 
-# include "me/mem/mem.h"
 # include "me/mem/mem.h"
 # include "me/types.h"
 /* A pot_i32er to a t_qoi_desc struct has to be supplied to all of qoi's

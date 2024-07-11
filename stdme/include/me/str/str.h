@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 23:30:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/19 23:30:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:00:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STR_H
-#define STR_H
+# define STR_H
 
-#include "me/types.h"
+# include "me/types.h"
 /// @brief Get the length of a string
 /// @param str the string
 /// @return the length of the string
@@ -47,25 +47,27 @@ bool		str_n_compare(t_const_str lhs, t_const_str rhs, t_usize n);
 /// @brief Find a character in a string
 /// @param str the string to search in
 /// @param chr the character to find
-/// @return a pointer to the first occurence of the character, or NULL if not found
-char	   *str_find_chr(t_const_str str, char chr);
+/// @return a pointer to the first occurence of the character,
+/// 	or NULL if not found
+char		*str_find_chr(t_const_str str, char chr);
 
 /// @brief Find a character in a string, starting from the end
 /// @param str the string to search in
 /// @param chr the character to find
-/// @return a pointer to the last occurence of the character, or NULL if not found
-char	   *str_find_rev_chr(t_const_str str, char chr);
+/// @return a pointer to the last occurence of the character,
+/// 	or NULL if not found
+char		*str_find_rev_chr(t_const_str str, char chr);
 /// @brief Find a string in a string
 /// @param str the string to be searched
 /// @param to_find the string to find
 /// @return a pointer to the first occurence of the string, or NULL if not found
-const char *str_find_str(t_const_str str, t_const_str to_find);
+const char	*str_find_str(t_const_str str, t_const_str to_find);
 /// @brief Find a string in a string, up to n characters
 /// @param str the string to be searched
 /// @param to_find the string to find
 /// @param len the maximum number of characters to search
 /// @return a pointer to the first occurence of the string, or NULL if not found
-const char *str_n_find_str(t_const_str str, t_const_str to_find, t_usize len);
+const char	*str_n_find_str(t_const_str str, t_const_str to_find, t_usize len);
 
 /// @brief Join two string together
 /// @param s1 First string
@@ -102,7 +104,7 @@ t_str		str_map(t_const_str s, char (*f)(t_usize, char));
 /// @param str the string to be split
 /// @param chr the character to split the string on
 /// @return the vector of strings
-t_str	   *str_split(t_const_str str, char chr);
+t_str		*str_split(t_const_str str, char chr);
 
 /// @brief Remove consecutive leading and trailing characters from a string
 /// @param str the string to trim
