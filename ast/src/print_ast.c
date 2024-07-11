@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/03 22:44:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 14:50:03 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "me/types.h"
 #include <stdio.h>
 
-void ast_print_node(t_ast_node self);
+void	ast_print_node(t_ast_node self);
 
 #define NOT_DONE                                                                                                                           \
 	{                                                                                                                                      \
