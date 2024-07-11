@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:23:25 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:38:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:24:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "line/_line_structs.h"
 # include "me/fs/fs.h"
 # include "me/types.h"
-# include "me/vec/vec_str.h"
 
 t_error	line_edit_insert(t_line_state *state, char c);
 t_error	line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd,
@@ -39,6 +38,7 @@ t_error	line_history_load(t_str name);
 t_error	line_history_save(t_str name);
 
 void	line_clear_screen(t_fd *output);
+void	line_refresh_line(t_line_state *state);
 void	line_refresh(t_line_state *state, t_line_flags flags);
 void	line_hide(t_line_state *state);
 void	line_show(t_line_state *state);

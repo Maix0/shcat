@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/11 17:11:52 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/11 18:33:48 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,8 @@ TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
 CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
 # CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
+CFLAGS 			+= $(CFLAGS_ADD)
+
 BONUS_FILES		=	
 LIBS_NAME		=	
 SUBJECT_URL		=	
