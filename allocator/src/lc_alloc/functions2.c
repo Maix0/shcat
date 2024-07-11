@@ -13,12 +13,12 @@
 #include "aq/allocator.h"
 #include "aq/libc_wrapper.h"
 
-void lc_uninit(t_allocator *self)
+void	lc_uninit(t_allocator *self)
 {
 	(void)(self);
 }
 
-t_allocator lc_init(void)
+t_allocator	lc_init(void)
 {
 	return ((t_allocator){
 		.alloc = lc_malloc,

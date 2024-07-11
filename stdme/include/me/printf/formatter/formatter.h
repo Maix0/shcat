@@ -6,14 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:18:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/11/18 19:11:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:38:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FORMATTER_H
 # define FORMATTER_H
-# include "me/printf/printf.h"
-# include "me/types.h"
+# include "me/printf/_internal_printf.h"
 
 void	printf_x_low(t_printf_arg data, t_printf_func f);
 void	printf_x_up(t_printf_arg data, t_printf_func f);

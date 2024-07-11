@@ -15,17 +15,17 @@
 
 #ifdef VGFUNCS
 
-void vg_block_malloc(void *ptr, t_usize size)
+void	vg_block_malloc(void *ptr, t_usize size)
 {
 	VALGRIND_MALLOCLIKE_BLOCK(ptr, size, redzone_size(), ZEROED_ALLOC);
 }
 
-void vg_block_resize(void *ptr, t_usize oldsize, t_usize newsize)
+void	vg_block_resize(void *ptr, t_usize oldsize, t_usize newsize)
 {
 	VALGRIND_RESIZEINPLACE_BLOCK(ptr, oldsize, newsize, redzone_size());
 }
 
-void vg_block_free(void *ptr)
+void	vg_block_free(void *ptr)
 {
 	VALGRIND_FREELIKE_BLOCK(ptr, redzone_size());
 }

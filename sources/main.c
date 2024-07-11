@@ -6,13 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/03 21:23:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/08 21:11:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/env.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
+#include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
 #include "me/types.h"
@@ -128,14 +129,13 @@ void ft_take_args(t_utils *shcat)
 	while (1)
 	{
 		shcat->str_input = NULL;
-		cmd = readline((t_const_str)shcat->name_shell);
+		cmd = linenoise((t_const_str)shcat->name_shell);
 		if (cmd == NULL)
 			ft_exit(shcat, 0);
-		shcat->str_input = str_clone(cmd);
-		free(cmd);
+		shcat->str_input = cmd;
+		line_history_add(shcat->str_input);
 		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
 		exec_shcat(shcat);
-		add_history(shcat->str_input);
 		mem_free(shcat->str_input);
 	}
 }
@@ -158,6 +158,9 @@ void free_myparser(t_parser self)
 	ts_parser_delete(self.parser);
 }
 
+#define IGN_START "\1"
+#define IGN_END "\2"
+
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
 	t_utils utils;
@@ -172,11 +175,11 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	utils.env = create_env_map();
 	if (populate_env(utils.env, envp))
 		me_abort("Unable to build env hashmap");
-	utils.name_shell = "\001\x1B[93m\002"
+	utils.name_shell = "\x1B[93m"
 					   "42sh"
-					   "\001\x1B[32m\002"
+					   "\x1B[32m"
 					   ">"
-					   "\001\x1B[0m\002"
+					   "\x1B[0m"
 					   "$ ";
 	ft_take_args(&utils);
 }

@@ -14,20 +14,20 @@
 
 #ifndef VGFUNCS
 
-void vg_block_malloc(void *ptr, t_usize size)
+void	vg_block_malloc(void *ptr, t_usize size)
 {
 	(void)(ptr);
 	(void)(size);
 }
 
-void vg_block_resize(void *ptr, t_usize oldsize, t_usize newsize)
+void	vg_block_resize(void *ptr, t_usize oldsize, t_usize newsize)
 {
 	(void)(ptr);
 	(void)(oldsize);
 	(void)(newsize);
 }
 
-void vg_block_free(void *ptr)
+void	vg_block_free(void *ptr)
 {
 	(void)(ptr);
 }

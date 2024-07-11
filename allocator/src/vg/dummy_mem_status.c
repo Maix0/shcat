@@ -14,19 +14,19 @@
 
 #ifndef VGFUNCS
 
-void vg_mem_no_access(void *ptr, t_usize size)
+void	vg_mem_no_access(void *ptr, t_usize size)
 {
 	(void)(ptr);
 	(void)(size);
 }
 
-void vg_mem_undefined(void *ptr, t_usize size)
+void	vg_mem_undefined(void *ptr, t_usize size)
 {
 	(void)(ptr);
 	(void)(size);
 }
 
-void vg_mem_defined(void *ptr, t_usize size)
+void	vg_mem_defined(void *ptr, t_usize size)
 {
 	(void)(ptr);
 	(void)(size);

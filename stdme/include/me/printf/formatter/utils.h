@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:58:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/01 21:24:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:38:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define UTILS_H
 
 # include "me/printf/matchers/matchers.h"
-# include "me/printf/printf.h"
+# include "me/printf/_internal_printf.h"
 # include "me/types.h"
 # include <stdarg.h>
 

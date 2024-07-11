@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 16:05:48 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 16:34:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:00:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include "me/str/str.h"
 #include <stdlib.h>
 
-t_str str_clone(t_const_str source)
+t_str	str_clone(t_const_str source)
 {
 	t_str	res;
-	t_usize len;
+	t_usize	len;
 
 	len = str_len(source) + 1;
 	res = mem_alloc_array(sizeof(*res), len);

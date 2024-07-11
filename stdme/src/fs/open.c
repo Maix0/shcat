@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 15:29:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/06 18:19:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:43:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 t_error	me_open(t_const_str path, bool read, bool write, int *file_out)
 {
 	int	out;
-	int		flags;
+	int	flags;
 
 	flags = 0;
 	if (read && write)
@@ -35,7 +35,7 @@ t_error	me_open(t_const_str path, bool read, bool write, int *file_out)
 t_error	me_open_truncate(t_const_str path, int *file_out)
 {
 	int	out;
-	int		flags;
+	int	flags;
 
 	unlink(path);
 	flags = O_WRONLY | O_CREAT | O_TRUNC;
@@ -49,7 +49,7 @@ t_error	me_open_truncate(t_const_str path, int *file_out)
 t_error	me_open_create(t_const_str path, int *file_out)
 {
 	int	out;
-	int		flags;
+	int	flags;
 
 	flags = O_WRONLY | O_CREAT | O_APPEND;
 	out = open(path, flags, 0666);

@@ -6,14 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:12:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/24 15:03:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:50:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FS_H
 #define FS_H
 
-#include "me/fs/read_to_vec.h"
 #include "me/types.h"
 #include <dirent.h>
 #include <fcntl.h>
@@ -78,9 +77,9 @@ typedef enum e_file_open_option
 /// `G` means group
 /// `U` means user
 /// `ALL` means all
-/// There are the raw permission, you can combine them to get the permission you want
-/// And there are "aliases" that are common permission set
-/// @note you can combine them with the `|` operator 
+/// There are the raw permission, you can combine them to get the permission you
+/// want And there are "aliases" that are common permission set
+/// @note you can combine them with the `|` operator
 typedef enum e_file_perm
 {
 	FP_OEXEC = 1 << 0,
@@ -139,7 +138,6 @@ union u_file_slot {
 	t_file file;
 };
 
-
 /// @brief File slot structure
 /// ty: the type of the slot
 /// slot: the slot itself
@@ -164,46 +162,44 @@ typedef t_const_str t_mode;
 /// @note this is a simple typedef because I hate the struct keyword
 typedef struct stat t_stat;
 
-
 /// @brief Directory entry structure
-/// @note this is a simple typedef because I hate the struct keyword and it is always behind a pointer
+/// @note this is a simple typedef because I hate the struct keyword and it is
+/// always behind a pointer
 typedef struct dirent *t_dir_entry;
 
-/*_____ _   _ _______ ______ _____  _   _          _      
- |_   _| \ | |__   __|  ____|  __ \| \ | |   /\   | |     
-   | | |  \| |  | |  | |__  | |__) |  \| |  /  \  | |     
-   | | | . ` |  | |  |  __| |  _  /| . ` | / /\ \ | |     
-  _| |_| |\  |  | |  | |____| | \ \| |\  |/ ____ \| |____ 
- |_____|_| \_|  |_|  |______|_|  \_\_| \_/_/    \_\______|                                                        
+/*_____ _   _ _______ ______ _____  _   _          _
+ |_   _| \ | |__   __|  ____|  __ \| \ | |   /\   | |
+   | | |  \| |  | |  | |__  | |__) |  \| |  /  \  | |
+   | | | . ` |  | |  |  __| |  _  /| . ` | / /\ \ | |
+  _| |_| |\  |  | |  | |____| | \ \| |\  |/ ____ \| |____
+ |_____|_| \_|  |_|  |______|_|  \_\_| \_/_/    \_\______|
 */
 
 /// @brief Get the fd arrays object
 /// @return pointer to the files's array
 /// @note internal function used to get the files array
-t_fd_array		   *get_fd_arrays(void);
+t_fd_array *get_fd_arrays(void);
 
 /// @brief Get the unused fd slot object
 /// @return pointer to the unused file slot
 /// @note Will abort if no slot is available
 struct s_file_slot *get_unused_fd_slot(void);
 
-
 /// @brief Close all slots
 /// @note This is probably NOT what you want
-void				close_all_slots(void);
+void close_all_slots(void);
 
 /// @note Close the given slot
 /// @param[in] slot the slot to close
 /// @note this is probably NOT what you want
-void				close_slot(struct s_file_slot *slot);
+void close_slot(struct s_file_slot *slot);
 
-
-/* ______ _____  
-  |  ____|  __ \ 
+/* ______ _____
+  |  ____|  __ \
   | |__  | |  | |
   |  __| | |  | |
   | |    | |__| |
-  |_|    |_____/   
+  |_|    |_____/
 */
 
 /// @brief Open a file descriptor
@@ -212,8 +208,8 @@ void				close_slot(struct s_file_slot *slot);
 /// @param open_options the options to open the file
 /// @param fileperm the file permission
 /// @return the file descriptor* on success, NULL otherwise
-t_fd   *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
-				t_file_perm file_perm);
+t_fd *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
+			  t_file_perm file_perm);
 
 /// @brief Read from a file descriptor
 /// @param[in] fd the file descriptor
@@ -241,28 +237,27 @@ t_error stat_fd(t_fd *fd, t_stat *stat);
 /// @brief Close a file descriptor
 /// @param[in] fd the file descriptor
 /// @note Will close the file descriptor and free the slot
-void	close_fd(t_fd *fd);
+void close_fd(t_fd *fd);
 
 /// @brief write a number to a file descriptor
 /// @note will fail silently if the fd is not open in write mode
-void    put_number_fd(t_fd *fd, t_u64 number);
+void put_number_fd(t_fd *fd, t_u64 number);
 
 /// @brief write a string to a file descriptor
 /// @note will fail silently if the fd is not open in write mode
-void    put_string_fd(t_fd *fd, t_const_str string);
+void put_string_fd(t_fd *fd, t_const_str string);
 
 /// @brief write a char to a file descriptor
 /// @note will fail silently if the fd is not open in write mode
-void    put_char_fd(t_fd *fd, t_u8 c);
+void put_char_fd(t_fd *fd, t_u8 c);
 
 /* _____ _____ _____  ______ _____ _______ ____  _______     __
   |  __ \_   _|  __ \|  ____/ ____|__   __/ __ \|  __ \ \   / /
-  | |  | || | | |__) | |__ | |       | | | |  | | |__) \ \_/ / 
-  | |  | || | |  _  /|  __|| |       | | | |  | |  _  / \   /  
-  | |__| || |_| | \ \| |___| |____   | | | |__| | | \ \  | |   
-  |_____/_____|_|  \_\______\_____|  |_|  \____/|_|  \_\ |_|                                                                                                                        
+  | |  | || | | |__) | |__ | |       | | | |  | | |__) \ \_/ /
+  | |  | || | |  _  /|  __|| |       | | | |  | |  _  / \   /
+  | |__| || |_| | \ \| |___| |____   | | | |__| | | \ \  | |
+  |_____/_____|_|  \_\______\_____|  |_|  \____/|_|  \_\ |_|
 */
-
 
 /// @brief Open a file
 /// @param[in] name the name of the file
@@ -283,11 +278,11 @@ t_error read_dir(t_dir *dir, t_dir_entry *out);
 /// @note Will close the directory and free the slot
 void close_dir(t_dir *dir);
 
-/*______ _____ _      ______ 
+/*______ _____ _      ______
  |  ____|_   _| |    |  ____|
- | |__    | | | |    | |__   
- |  __|   | | | |    |  __|  
- | |     _| |_| |____| |____ 
+ | |__    | | | |    | |__
+ |  __|   | | | |    |  __|
+ | |     _| |_| |____| |____
  |_|    |_____|______|______|
 */
 
@@ -304,7 +299,8 @@ t_error open_file(t_str name, t_mode mode, t_file **file);
 /// @param[in] size the size of the buffer
 /// @param[out] read_count the number of bytes read
 /// @return true on error, false otherwise
-t_error read_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *read_count);
+t_error read_file(t_file *file, t_u8 *buffer, t_usize size,
+				  t_isize *read_count);
 
 /// @brief Write to a file
 /// @param[in] file the file to write to
@@ -313,11 +309,25 @@ t_error read_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *read_count)
 /// @param[out] write_count the number of bytes written
 /// @return true on error, false otherwise
 /// @note write_count can be NULL
-t_error write_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *write_count);
+t_error write_file(t_file *file, t_u8 *buffer, t_usize size,
+				   t_isize *write_count);
 
 /// @brief Close the underlying file stream
 /// @param[in] file the file to close
 /// @note Will close the file and free the slot
 void close_file(t_file *file);
+
+/* _____ ______ _______ _______ ______ _____   _____
+  / ____|  ____|__   __|__   __|  ____|  __ \ / ____|
+ | |  __| |__     | |     | |  | |__  | |__) | (___
+ | | |_ |  __|    | |     | |  |  __| |  _  / \___ \
+ | |__| | |____   | |     | |  | |____| | \ \ ____) |
+  \_____|______|  |_|     |_|  |______|_|  \_\_____/
+*/
+
+//TODO: Documentation!
+t_fd *get_stdin(void);
+t_fd *get_stdout(void);
+t_fd *get_stderr(void);
 
 #endif /* FS_H */

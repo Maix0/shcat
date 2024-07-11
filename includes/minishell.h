@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:41:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/09 16:28:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/10 21:02:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 #include "me/types.h"
 
 #include <fcntl.h>
-#include <stdio.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>

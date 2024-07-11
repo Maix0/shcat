@@ -6,16 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 21:05:47 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:43:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:58:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/printf/formatter/utils.h"
-#include "me/printf/printf.h"
 #include "me/mem/mem.h"
+#include "me/printf/formatter/utils.h"
 
 void	handle_weird_precision_stuff(t_printf_arg *data, t_prec_strs strs,
-		t_usize value)
+							t_usize value)
 {
 	if (!value && data->extra.precision == 0 && (data->flags & PRECISION))
 	{

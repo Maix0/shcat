@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:52:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/18 18:06:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:02:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 #include "me/types.h"
 #include <stdlib.h>
 
-t_error str_reserve(t_string *buf, t_usize size)
+t_error	str_reserve(t_string *buf, t_usize size)
 {
 	t_str	temp_buffer;
-	t_usize new_capacity;
+	t_usize	new_capacity;
 
 	if (buf == NULL)
 		return (ERROR);
@@ -42,9 +42,9 @@ t_error str_reserve(t_string *buf, t_usize size)
 	return (NO_ERROR);
 }
 
-t_error string_push(t_string *buf, t_const_str to_push)
+t_error	string_push(t_string *buf, t_const_str to_push)
 {
-	t_usize to_push_len;
+	t_usize	to_push_len;
 
 	if (buf == NULL || to_push == NULL)
 		return (ERROR);
@@ -56,26 +56,26 @@ t_error string_push(t_string *buf, t_const_str to_push)
 	return (NO_ERROR);
 }
 
-bool string_push_char(t_string *buf, char to_push)
+bool	string_push_char(t_string *buf, char to_push)
 {
-	char push_str[2];
+	char	push_str[2];
 
 	push_str[0] = to_push;
 	push_str[1] = 0;
 	return (string_push(buf, push_str));
 }
 
-void string_clear(t_string *buf)
+void	string_clear(t_string *buf)
 {
 	mem_set_zero(buf->buf, buf->capacity);
 	buf->len = 0;
-	return;
+	return ;
 }
 
-t_string string_new(t_usize capacity)
+t_string	string_new(t_usize capacity)
 {
-	t_string out;
-	t_str		 buf;
+	t_string	out;
+	t_str		buf;
 
 	if (capacity == 0)
 		capacity = 16;

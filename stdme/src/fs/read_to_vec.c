@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 18:38:47 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/30 18:15:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:44:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	read_to_vec(t_const_str path, t_vec_u8 *out)
 {
 	t_u8	temp_buffer[READ_BUFFER_SIZE];
 	t_isize	read_amount;
-	int	f;
+	int		f;
 	bool	eof;
 	t_usize	current_size;
 

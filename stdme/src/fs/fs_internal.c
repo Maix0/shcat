@@ -6,19 +6,20 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/30 16:02:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 19:17:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/types.h"
 #include "me/fs/fs.h"
 #include "me/mem/mem.h"
 #include "me/str/str.h"
+#include "me/types.h"
+#include "unistd.h"
 
-#include <stdio.h>
 #include <dirent.h>
-#include <sys/stat.h>
 #include <errno.h>
+#include <stdio.h>
+#include <sys/stat.h>
 
 t_fd_array *get_fd_arrays(void)
 {
@@ -45,7 +46,7 @@ struct s_file_slot *get_unused_fd_slot(void)
 	return (NULL);
 }
 
-void close_all_slots(void)
+__attribute__((destructor(201))) void close_all_slots(void)
 {
 	t_usize		i;
 	t_fd_array *arr;
@@ -63,30 +64,30 @@ void close_slot(struct s_file_slot *slot)
 	if (slot->ty == SLOT_UNUSED)
 		;
 	else if (slot->ty == SLOT_FD)
-		close_fd(&slot->slot.fd);
+		(mem_free(slot->slot.fd.name), close_fd(&slot->slot.fd));
 	else if (slot->ty == SLOT_DIR)
-		close_dir(&slot->slot.dir);
+		(mem_free(slot->slot.dir.name), close_dir(&slot->slot.dir));
 	else if (slot->ty == SLOT_FILE)
-		close_file(&slot->slot.file);
+		(mem_free(slot->slot.file.name), close_file(&slot->slot.file));
 	else
 		(void)!write(2, "Unknown SLOT type", 17);
 	mem_set_zero(slot, sizeof(*slot));
 }
 
-/* ______ _____  
-  |  ____|  __ \ 
+/* ______ _____
+  |  ____|  __ \
   | |__  | |  | |
   |  __| | |  | |
   | |    | |__| |
-  |_|    |_____/   
+  |_|    |_____/
 */
 
-t_fd   *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
-				t_file_perm file_perm)
+t_fd *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
+			  t_file_perm file_perm)
 {
-	t_fd				*fd;
-	struct s_file_slot	*slot;
-	int 				actual_perms;
+	t_fd			   *fd;
+	struct s_file_slot *slot;
+	int					actual_perms;
 
 	if (perms & FD_READ && perms & FD_WRITE)
 		actual_perms = O_RDWR;
@@ -112,8 +113,12 @@ t_fd   *open_fd(t_str name, t_fd_perm perms, t_file_open_option open_options,
 t_error read_fd(t_fd *fd, t_u8 *buffer, t_usize size, t_isize *read_count)
 {
 	t_isize ret;
+	t_isize false_ret;
 
-	if (fd == NULL || buffer == NULL || read_count == NULL || fd->fd == -1 || !(fd->perms & FD_READ))
+	if (read_count == NULL)
+		read_count = &false_ret;
+	if (fd == NULL || buffer == NULL || fd->fd == -1 ||
+		!(fd->perms & FD_READ))
 		return (ERROR);
 	ret = read(fd->fd, buffer, size);
 	if (ret == -1)
@@ -149,13 +154,13 @@ t_error stat_fd(t_fd *fd, t_stat *stat)
 
 void close_fd(t_fd *fd)
 {
-	struct s_file_slot	*slot;
+	struct s_file_slot *slot;
 
 	if (fd == NULL)
-		return ;
+		return;
 	if (close(fd->fd) == -1)
-		return ;
-	slot = (void*)(fd) - offsetof(struct s_file_slot, slot.fd);
+		return;
+	slot = (void *)(fd)-offsetof(struct s_file_slot, slot.fd);
 	mem_set_zero(slot, sizeof(*slot));
 }
 
@@ -163,7 +168,7 @@ void close_fd(t_fd *fd)
 
 void put_number_fd(t_fd *fd, t_u64 number)
 {
-	t_u8 buffer[INLINE_BUFFER_SIZE];
+	t_u8	buffer[INLINE_BUFFER_SIZE];
 	t_usize i;
 
 	i = 0;
@@ -178,7 +183,7 @@ void put_number_fd(t_fd *fd, t_u64 number)
 
 void put_string_fd(t_fd *fd, t_const_str string)
 {
-	write_fd(fd, (t_u8*)string, str_len(string), NULL);
+	write_fd(fd, (t_u8 *)string, str_len(string), NULL);
 }
 
 void put_char_fd(t_fd *fd, t_u8 c)
@@ -188,16 +193,16 @@ void put_char_fd(t_fd *fd, t_u8 c)
 
 /* _____ _____ _____  ______ _____ _______ ____  _______     __
   |  __ \_   _|  __ \|  ____/ ____|__   __/ __ \|  __ \ \   / /
-  | |  | || | | |__) | |__ | |       | | | |  | | |__) \ \_/ / 
-  | |  | || | |  _  /|  __|| |       | | | |  | |  _  / \   /  
-  | |__| || |_| | \ \| |___| |____   | | | |__| | | \ \  | |   
-  |_____/_____|_|  \_\______\_____|  |_|  \____/|_|  \_\ |_|                                                                                                                        
+  | |  | || | | |__) | |__ | |       | | | |  | | |__) \ \_/ /
+  | |  | || | |  _  /|  __|| |       | | | |  | |  _  / \   /
+  | |__| || |_| | \ \| |___| |____   | | | |__| | | \ \  | |
+  |_____/_____|_|  \_\______\_____|  |_|  \____/|_|  \_\ |_|
 */
 
 t_error open_dir(t_str name, t_dir **dir)
 {
-	t_dir *out;
-	struct s_file_slot	*slot;
+	t_dir			   *out;
+	struct s_file_slot *slot;
 
 	slot = get_unused_fd_slot();
 	out = &slot->slot.dir;
@@ -226,28 +231,28 @@ t_error read_dir(t_dir *dir, t_dir_entry *out)
 
 void close_dir(t_dir *dir)
 {
-	struct s_file_slot	*slot;
+	struct s_file_slot *slot;
 
 	if (dir == NULL)
-		return ;
+		return;
 	if (closedir(dir->ptr) == -1)
-		return ;
-	slot = (void*)(dir) - offsetof(struct s_file_slot, slot.dir);
+		return;
+	slot = (void *)(dir)-offsetof(struct s_file_slot, slot.dir);
 	mem_set_zero(slot, sizeof(*slot));
 }
 
-/*______ _____ _      ______ 
+/*______ _____ _      ______
  |  ____|_   _| |    |  ____|
- | |__    | | | |    | |__   
- |  __|   | | | |    |  __|  
- | |     _| |_| |____| |____ 
+ | |__    | | | |    | |__
+ |  __|   | | | |    |  __|
+ | |     _| |_| |____| |____
  |_|    |_____|______|______|
 */
 
 t_error open_file(t_str name, t_mode mode, t_file **file)
 {
-	t_file *out;
-	struct s_file_slot	*slot;
+	t_file			   *out;
+	struct s_file_slot *slot;
 
 	slot = get_unused_fd_slot();
 	out = &slot->slot.file;
@@ -260,7 +265,8 @@ t_error open_file(t_str name, t_mode mode, t_file **file)
 	return (NO_ERROR);
 }
 
-t_error write_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *write_count)
+t_error write_file(t_file *file, t_u8 *buffer, t_usize size,
+				   t_isize *write_count)
 {
 	t_isize ret;
 	t_isize fake_ret;
@@ -280,7 +286,8 @@ t_error read_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *read_count)
 {
 	t_isize ret;
 
-	if (file == NULL || buffer == NULL || read_count == NULL || file->ptr == NULL)
+	if (file == NULL || buffer == NULL || read_count == NULL ||
+		file->ptr == NULL)
 		return (ERROR);
 	ret = fread(buffer, size, 1, file->ptr);
 	if (ret == -1)
@@ -291,12 +298,77 @@ t_error read_file(t_file *file, t_u8 *buffer, t_usize size, t_isize *read_count)
 
 void close_file(t_file *file)
 {
-	struct s_file_slot	*slot;
+	struct s_file_slot *slot;
 
 	if (file == NULL)
-		return ;
+		return;
 	if (fclose(file->ptr) == -1)
-		return ;
-	slot = (void*)(file) - offsetof(struct s_file_slot, slot.file);
+		return;
+	slot = (void *)(file)-offsetof(struct s_file_slot, slot.file);
 	mem_set_zero(slot, sizeof(*slot));
+}
+
+/* _____ ______ _______ _______ ______ _____   _____
+  / ____|  ____|__   __|__   __|  ____|  __ \ / ____|
+ | |  __| |__     | |     | |  | |__  | |__) | (___
+ | | |_ |  __|    | |     | |  |  __| |  _  / \___ \
+ | |__| | |____   | |     | |  | |____| | \ \ ____) |
+  \_____|______|  |_|     |_|  |______|_|  \_\_____/
+*/
+
+t_fd *get_stdin(void)
+{
+	t_fd			   *out;
+	struct s_file_slot *slot;
+	static t_fd		   *value = NULL;
+
+	if (value == NULL)
+	{
+		slot = get_unused_fd_slot();
+		out = &slot->slot.fd;
+		out->fd = STDIN_FILENO;
+		out->perms = FD_READ;
+		out->name = str_clone("<stdin>");
+		slot->ty = SLOT_FD;
+		value = out;
+	}
+	return (value);
+}
+
+t_fd *get_stdout(void)
+{
+	t_fd			   *out;
+	struct s_file_slot *slot;
+	static t_fd		   *value = NULL;
+
+	if (value == NULL)
+	{
+		slot = get_unused_fd_slot();
+		out = &slot->slot.fd;
+		out->fd = STDOUT_FILENO;
+		out->perms = FD_WRITE;
+		out->name = str_clone("<stdout>");
+		slot->ty = SLOT_FD;
+		value = out;
+	}
+	return (value);
+}
+
+t_fd *get_stderr(void)
+{
+	t_fd			   *out;
+	struct s_file_slot *slot;
+	static t_fd		   *value = NULL;
+
+	if (value == NULL)
+	{
+		slot = get_unused_fd_slot();
+		out = &slot->slot.fd;
+		out->fd = STDERR_FILENO;
+		out->perms = FD_WRITE;
+		out->name = str_clone("<stderr>");
+		slot->ty = SLOT_FD;
+		value = out;
+	}
+	return (value);
 }

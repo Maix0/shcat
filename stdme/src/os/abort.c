@@ -6,12 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/16 17:26:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:54:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _GNU_SOURCE
-
+#include "./gnu_source.h"
 #include "me/fs/putendl_fd.h"
 #include "me/fs/putstr_fd.h"
 #include "me/types.h"
@@ -31,24 +30,24 @@
 #  define BACKTRACE_DEEP 256
 # endif
 
-static size_t convert_to_vma(t_usize addr)
+static size_t	convert_to_vma(t_usize addr)
 {
-	Dl_info			 info;
-	struct link_map *link_map;
+	Dl_info			info;
+	struct link_map	*link_map;
 
 	dladdr1((void *)addr, &info, (void **)&link_map, RTLD_DL_LINKMAP);
 	return (addr - link_map->l_addr);
 }
 
-static void print_trace_inner(void **trace, t_str *messages, t_usize i)
+static void	print_trace_inner(void **trace, t_str *messages, t_usize i)
 {
-	char  syscom[1024];
-	t_i32 p;
+	char	syscom[1024];
+	t_i32	p;
 
 	p = 0;
 	fprintf(stderr, "[bt] #%-4zu\t", i);
 	while (messages[i][p] != '(' && messages[i][p] != ' ' &&
-		   messages[i][p] != 0)
+			messages[i][p] != 0)
 		++p;
 	fflush(stderr);
 	snprintf(
@@ -60,12 +59,12 @@ static void print_trace_inner(void **trace, t_str *messages, t_usize i)
 		fprintf(stderr, "%s\n", messages[i]);
 }
 
-void print_trace(void)
+void	print_trace(void)
 {
-	void  *trace[BACKTRACE_DEEP];
-	t_str *messages;
-	t_i32  size;
-	t_i32  i;
+	void	*trace[BACKTRACE_DEEP];
+	t_str	*messages;
+	t_i32	size;
+	t_i32	i;
 
 	size = backtrace(trace, BACKTRACE_DEEP);
 	messages = backtrace_symbols(trace, size);
@@ -79,20 +78,18 @@ void print_trace(void)
 }
 #else
 
-void print_trace(void)
+void	print_trace(void)
 {
 }
 
 #endif
 
-void me_abort(t_str msg)
+void	me_abort(t_str msg)
 {
 	if (msg == NULL)
 		msg = "No message (msg was NULL)";
-	me_putendl_fd("Memory information:", 2);
 	me_putstr_fd("Abort: ", 2);
 	me_putendl_fd(msg, 2);
 	print_trace();
-	// me_exit(1);
-	abort();
+	me_exit(134);
 }

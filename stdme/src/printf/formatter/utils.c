@@ -6,16 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:57:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/14 18:43:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:40:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/string/string.h"
 #include "me/mem/mem.h"
 #include "me/convert/atoi.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
-#include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/str/str.h"
 #include "me/types.h"

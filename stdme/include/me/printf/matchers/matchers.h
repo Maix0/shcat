@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:09:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/11/18 18:10:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:38:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MATCHERS_H
 # define MATCHERS_H
 
-# include "me/printf/printf.h"
+# include "me/printf/_internal_printf.h"
 # include "me/types.h"
 # include <stdarg.h>
 # define PRINTF_BUFFER_CHUNK 20

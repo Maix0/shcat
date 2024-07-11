@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test-skeleton.c                                    :+:      :+:    :+:   */
+/*   dummy_mempool_bis.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/22 15:11:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/22 15:12:44 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/05/12 22:33:30 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/07/10 17:24:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int do_test(int argc, char **argv);
+#include "aq/internal_vg_funcs.h"
 
-int main(int argc, char *argv[])
+#ifndef VGFUNCS
+
+void	vg_mempool_create_ext(void *pool, t_usize flags)
 {
-	return (do_test(argc, argv));
+	(void)(pool);
+	(void)(flags);
 }
+
+#endif
