@@ -25,7 +25,7 @@
 #define PATH_FILES "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
 
 t_i32	main(t_i32 argc, t_str argv[], t_str arge[]);
-void	ft_other_cmd(t_utils *shcat, t_usize i, t_usize prev_i);
+void	ft_other_cmd(t_state *shcat, t_usize i, t_usize prev_i);
 t_i32	ft_strcmp(const char *s1, const char *s2);
 t_i32	ft_check_type_operators(t_str operators);
 t_str  *ft_split(t_const_str s, t_i8 c);
@@ -39,9 +39,9 @@ void	ft_bzero(void *s, t_usize n);
 void	ft_free_strs(t_str *strs);
 void	ft_pwd(void);
 void	ft_echo(t_str txt, t_str flag);
-void	ft_exit(t_utils *maiboyerlpb, t_u8 exit_status);
+void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void	ft_free(void *ptr);
 
-t_error handle_node_getstr(t_node *self, t_utils *shcat, t_str *out);
+t_error handle_node_getstr(t_node *self, t_state *shcat, t_str *out);
 
 #endif

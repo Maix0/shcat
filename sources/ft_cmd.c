@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-// void	ft_exec_cmd(t_utils *utils, t_str cmd, t_str cmd_args[])
+// void	ft_exec_cmd(t_state *utils, t_str cmd, t_str cmd_args[])
 // {
 // 	if (execve(cmd, cmd_args, utils->envp) == -1)
 // 	{
@@ -22,7 +22,7 @@
 // 	}
 // }
 //
-// void	ft_other_cmd(t_utils *shcat, t_usize i, t_usize prev_i)
+// void	ft_other_cmd(t_state *shcat, t_usize i, t_usize prev_i)
 // {
 // 	pid_t	pid;
 // 	t_i32	options;

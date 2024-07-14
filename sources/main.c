@@ -116,13 +116,13 @@ t_node parse_str(t_parser *parser, t_const_str input)
 	return (parse_to_nodes(parser->parser, input));
 }
 
-void exec_shcat(t_utils *shcat)
+void exec_shcat(t_state *shcat)
 {
 	print_node_data(&shcat->current_node, 0);
 	free_node(shcat->current_node);
 }
 
-void ft_take_args(t_utils *shcat)
+void ft_take_args(t_state *shcat)
 {
 	t_str cmd;
 
@@ -163,14 +163,14 @@ void free_myparser(t_parser self)
 
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
-	t_utils utils;
+	t_state utils;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	if (install_signal())
 		me_abort("Unable to install signals");
-	utils = (t_utils){};
+	utils = (t_state){};
 	utils.parser = create_myparser();
 	utils.env = create_env_map();
 	if (populate_env(utils.env, envp))

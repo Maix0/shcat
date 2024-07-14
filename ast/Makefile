@@ -6,13 +6,13 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/03 22:39:28 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/14 10:18:27 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 BUILD_DIR		?=	../build
 SRC_DIR			=	src
-INCLUDE_DIR		=	include output/include ../includes ../output/include/
+INCLUDE_DIR		=	include output/include ../includes ../output/include/ ../stdme/output/include/
 LIBS_DIR		=	. 
 GENERIC_DIR		=	output/src
 GENERIC_INCLUDE	=	output/include

@@ -34,7 +34,7 @@ void ft_free_strs(t_str *strs)
 	ft_free(strs);
 }
 
-void ft_free_utils(t_utils *s)
+void ft_free_utils(t_state *s)
 {
 	if (s->str_input)
 		mem_free(s->str_input);
@@ -45,7 +45,7 @@ void ft_free_utils(t_utils *s)
 	ts_parser_delete(s->parser.parser);
 }
 
-void ft_exit(t_utils *maiboyerlpb, t_u8 exit_status)
+void ft_exit(t_state *maiboyerlpb, t_u8 exit_status)
 {
 	if (maiboyerlpb != NULL)
 		ft_free_utils(maiboyerlpb);

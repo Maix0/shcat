@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/09 16:23:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/12 18:44:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_parser
 	t_first_parser	*parser;
 }					t_parser;
 
-typedef struct s_utils
+typedef struct s_state
 {
 	t_str			name_shell;
 	t_str			str_input;
@@ -33,6 +33,6 @@ typedef struct s_utils
 	t_hashmap_env	*env;
 	t_node			current_node;
 	t_process		ret;
-}					t_utils;
+}					t_state;
 
 #endif /* STATE_H */
