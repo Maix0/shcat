@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/14 10:38:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/15 18:40:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,15 @@
 
 #include <stdio.h>
 #pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wunused-variable"
+
+typedef struct s_expansion_result t_expansion_result;
+
+struct s_expansion_result
+{
+	bool  exists;
+	t_str str;
+};
 
 #define NOT_DONE                                                                                                                           \
 	{                                                                                                                                      \
@@ -31,21 +40,26 @@ bool _is_special_var(t_ast_expansion *self)
 {
 	char name;
 
+	if (self == NULL)
+		return (true);
 	if (self->var_name == NULL)
 		return (true);
 	if (str_len(self->var_name) != 1)
 		return (false);
 	name = self->var_name[0];
-	if (name == '*' || name == '@' || name == '?' || name == '!' || name == '#' || name == '-' || name == '$' || name == '0' || name == '_')
+	if (name == '*' || name == '@' || name == '?' || name == '!' || name == '#' || name == '-' || name == '$' || name == '0')
 		return (true);
 	return (false);
 }
 
-t_str *_run_expansion_special_var(t_ast_expansion *expansion, t_state *state, t_str *storage)
+t_error _run_expansion_special_var(t_ast_expansion *self, t_state *state, t_expansion_result *out)
 {
 	char name;
-	name = expansion->var_name[0];
 
+	if (self == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	name = self->var_name[0];
+	*out = (t_expansion_result){.exists = false, .str = NULL};
 	if (name == '*')
 		; // return all args exept argv[0]
 	if (name == '@')
@@ -55,18 +69,98 @@ t_str *_run_expansion_special_var(t_ast_expansion *expansion, t_state *state, t_
 	if (name == '!')
 		; // return pid of last run program
 	if (name == '#')
-		; // return argc -1 bc we don't care about argv[0]
+		; // return `argc - 1` bc we don't care about argv[0]
 	if (name == '$')
 		; // return pid of self (the shell)
+	if (name == '-')
+		; // return the option string <ask maiboyer>
 
-	return (NULL);
+	printf("PLEASE MAKE SURE TO FINISH THE SPECIAL VAR HANDLING !");
+	return (ERROR);
+}
+
+t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_result *out)
+{
+	t_str			  *hmap_ret;
+	t_expansion_result ret;
+
+	if (self == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	hmap_ret = hmap_env_get(state->env, &self->var_name);
+	ret = (t_expansion_result){.exists = hmap_ret == NULL, .str = NULL};
+	if (ret.exists)
+		ret.str = str_clone(*hmap_ret);
+	*out = ret;
+
+	return (NO_ERROR);
+}
+
+t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_assign_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_assign_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_alternate_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_alternate_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_default_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_default_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_error_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_error_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+
+t_error _handle_suffix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_suffix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_prefix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_prefix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+
+t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)())
+{
+	if (self == NULL || op_func == NULL)
+		return (ERROR);
+	if (self->kind == E_OP_NONE)
+		return (*op_func = _handle_no_operator, NO_ERROR);
+	if (self->kind == E_OP_ERROR)
+		return (*op_func = _handle_error_operator, NO_ERROR);
+	if (self->kind == E_OP_ERROR_COLON)
+		return (*op_func = _handle_error_colon_operator, NO_ERROR);
+	if (self->kind == E_OP_ASSIGN_DEFAULT)
+		return (*op_func = _handle_assign_operator, NO_ERROR);
+	if (self->kind == E_OP_ASSIGN_DEFAULT_COLON)
+		return (*op_func = _handle_assign_colon_operator, NO_ERROR);
+	if (self->kind == E_OP_DEFAULT)
+		return (*op_func = _handle_default_operator, NO_ERROR);
+	if (self->kind == E_OP_DEFAULT_COLON)
+		return (*op_func = _handle_default_colon_operator, NO_ERROR);
+	if (self->kind == E_OP_ALTERNATE)
+		return (*op_func = _handle_alternate_operator, NO_ERROR);
+	if (self->kind == E_OP_ALTERNATE_COLON)
+		return (*op_func = _handle_alternate_colon_operator, NO_ERROR);
+	if (self->kind == E_OP_LARGEST_PREFIX)
+		return (*op_func = _handle_prefix_pattern_smallest_operator, NO_ERROR);
+	if (self->kind == E_OP_SMALLEST_PREFIX)
+		return (*op_func = _handle_prefix_pattern_smallest_operator, NO_ERROR);
+	if (self->kind == E_OP_LARGEST_SUFFIX)
+		return (*op_func = _handle_suffix_pattern_smallest_operator, NO_ERROR);
+	if (self->kind == E_OP_SMALLEST_SUFFIX)
+		return (*op_func = _handle_suffix_pattern_longest_operator, NO_ERROR);
+	return (ERROR);
+}
+
+t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out)
+{
+	t_str value;
+	t_error (*op_func)();
+
+	if (self == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_get_op_func(self, &op_func))
+		return (ERROR);
+	return (ERROR);
 }
 
 // End Internals funcs
 
-t_error run_command(t_ast_command *command, t_state *state, void *out) NOT_DONE;
+t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
 
-t_error run_expansion(t_ast_expansion *expansion, t_state *state, t_str **out) NOT_DONE;
+t_error run_command(t_ast_command *command, t_state *state, void *out) NOT_DONE;
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, void *out) NOT_DONE;
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
@@ -96,25 +190,27 @@ t_error run_word(t_ast_word *word, t_state *state, void *out) NOT_DONE;
 
 // t_error run_command(t_ast_command *command, t_state *state, void *out) {}
 
-/*
 /// this functons returns different things depending on the operator and/or the state of the shell
 /// NULL != empty string for example
-t_error run_expansion(t_ast_expansion *expansion, t_state *state, t_str **out)
+t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out)
 {
-	t_str  backing_storage;
-	t_str *env_var;
+	t_expansion_result ret;
 
-	if (_is_special_var(expansion))
+	if (_is_special_var(self))
 	{
-		backing_storage = _run_expansion_special_var(expansion, state);
-		env_var = &backing_storage;
+		if (_run_expansion_special_var(self, state, &ret))
+			return (ERROR);
 	}
 	else
-		env_var = hmap_env_get(state->env, &expansion->var_name);
+	{
+		if (_get_expansion_value(self, state, &ret))
+			return (ERROR);
+	}
+	if (_handle_expansion_operator(self, state, &ret))
+		return (ERROR);
 
 	return (ERROR);
 }
-*/
 
 // FUNCTIONS
 
