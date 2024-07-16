@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:15:57 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/16 18:19:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:39:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@
 #include "me/types.h"
 #include <stdint.h>
 
-static t_error _check_base(t_str base)
+static t_error	_check_base(t_str base)
 {
-	t_usize i;
-	t_usize j;
+	t_usize	i;
+	t_usize	j;
 
 	i = 0;
 	if (base == NULL)
@@ -37,7 +37,7 @@ static t_error _check_base(t_str base)
 	return (NO_ERROR);
 }
 
-static void _set_modulus(t_num_str_state *s)
+static void	_set_modulus(t_num_str_state *s)
 {
 	s->modulus = 0;
 	s->base_len = str_len(s->base);
@@ -45,7 +45,7 @@ static void _set_modulus(t_num_str_state *s)
 		s->modulus += s->base_len;
 }
 
-static char _get_char(t_u64 value, t_num_str_state *s)
+static char	_get_char(t_u64 value, t_num_str_state *s)
 {
 	if (value == 0)
 		s->zero = true;
@@ -54,9 +54,9 @@ static char _get_char(t_u64 value, t_num_str_state *s)
 	return (s->base[value]);
 }
 
-static t_error _format_u64_base_innner(t_num_str_state *s)
+static t_error	_format_u64_base_innner(t_num_str_state *s)
 {
-	char c;
+	char	c;
 
 	if (s->value == 0)
 		return (s->buffer[s->idx++] = _get_char(0, s), NO_ERROR);
@@ -74,9 +74,9 @@ static t_error _format_u64_base_innner(t_num_str_state *s)
 	return (NO_ERROR);
 }
 
-t_error _format_u64(t_num_str args, t_str *out)
+t_error	_format_u64(t_num_str args, t_str *out)
 {
-	t_num_str_state s;
+	t_num_str_state	s;
 	t_str			res;
 
 	if (_check_base(args.base))
@@ -96,4 +96,3 @@ t_error _format_u64(t_num_str args, t_str *out)
 		return (ERROR);
 	return (*out = res, NO_ERROR);
 }
-
