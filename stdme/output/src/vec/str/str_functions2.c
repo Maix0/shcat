@@ -27,7 +27,7 @@ t_error vec_str_find(t_vec_str *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_str *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -48,7 +48,7 @@ t_error vec_str_find_starting(t_vec_str *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_str *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -69,7 +69,7 @@ t_error vec_str_all(t_vec_str *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn(&vec->buffer[idx]))
+		if (!fn((const t_str *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
@@ -87,7 +87,7 @@ t_error vec_str_any(t_vec_str *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn(&vec->buffer[idx]))
+		if (fn((const t_str *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}

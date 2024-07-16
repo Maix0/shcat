@@ -27,6 +27,7 @@ char/tolower
 char/toupper
 convert/atoi
 convert/itoa
+convert/numbers_to_str
 fs/close
 fs/fs_internal
 fs/open

@@ -11,10 +11,7 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
-#include "me/mem/mem.h"
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
@@ -45,7 +42,7 @@ t_error vec_str_push(t_vec_str *vec, t_str element)
 /// Return true in case of an error
 t_error vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 {
-	size_t		   new_capacity;
+	size_t new_capacity;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -54,7 +51,8 @@ t_error vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, sizeof(t_str));
+		vec->buffer =
+			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_str));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -83,6 +81,8 @@ t_error vec_str_pop(t_vec_str *vec, t_str *value)
 /// This function is safe to call with `free_elem` being NULL
 void vec_str_free(t_vec_str vec)
 {
+	if (vec.buffer == NULL)
+		return;
 	if (vec.free_func)
 	{
 		while (vec.len)

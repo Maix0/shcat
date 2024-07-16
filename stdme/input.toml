@@ -37,6 +37,79 @@ replace.C__MIN__ = "value"
 replace.C__ZERO__ = "value"
 replace.C__SIGNED_TYPE__ = "bool"
 
+[definition.num_to_str]
+headers = []
+sources = ["generic_sources/src/convert/C__PREFIX___to_str.c__TEMPLATE__"]
+replace.C__TYPE__ = "type"
+replace.C__PREFIX__ = "prefix"
+replace.C__FIELD__ = "type"
+replace.C__UFIELD__ = "type"
+
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_i64"
+replace.C__UFIELD__ = "u64"
+replace.C__FIELD__ = "i64"
+replace.C__PREFIX__ = "i64"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_u64"
+replace.C__UFIELD__ = "u64"
+replace.C__FIELD__ = "u64"
+replace.C__PREFIX__ = "u64"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_i32"
+replace.C__UFIELD__ = "u32"
+replace.C__FIELD__ = "i32"
+replace.C__PREFIX__ = "i32"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_u32"
+replace.C__UFIELD__ = "u32"
+replace.C__FIELD__ = "u32"
+replace.C__PREFIX__ = "u32"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_i16"
+replace.C__UFIELD__ = "u16"
+replace.C__FIELD__ = "i16"
+replace.C__PREFIX__ = "i16"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_u16"
+replace.C__UFIELD__ = "u16"
+replace.C__FIELD__ = "u16"
+replace.C__PREFIX__ = "u16"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_i8"
+replace.C__UFIELD__ = "u8"
+replace.C__FIELD__ = "i8"
+replace.C__PREFIX__ = "i8"
+
+[[create.num_to_str]]
+sources_output = "src/convert/"
+headers_output = ""
+replace.C__TYPE__ = "t_u8"
+replace.C__UFIELD__ = "u8"
+replace.C__FIELD__ = "u8"
+replace.C__PREFIX__ = "u8"
+
 [[create.str_to_num]]
 sources_output = "src/convert/"
 headers_output = ""

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/15 18:40:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/16 13:27:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,23 +95,49 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 	return (NO_ERROR);
 }
 
-t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_assign_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_assign_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_alternate_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_alternate_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_default_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_default_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_error_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_error_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+#include "me/convert/itoa.h"
 
-t_error _handle_suffix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_suffix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_prefix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
-t_error _handle_prefix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out) NOT_DONE;
+t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
+{
+	t_str	len_str;
+	t_usize len;
 
-t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)())
+	if (value->exists && value->str != NULL)
+		len = str_len(value->str);
+	else
+		len = 0;
+	len_str = me_itoa(len);
+	mem_free(value->str);
+	value->exists = true;
+	value->str = len_str;
+	return (NO_ERROR);
+};
+
+t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
+{
+	(void)(self);
+	(void)(state);
+	(void)(value);
+	if (self == NULL || state == NULL || value == NULL)
+		return (ERROR);
+	return (NO_ERROR);
+};
+
+t_error _handle_assign_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_assign_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_alternate_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_alternate_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_default_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_default_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_error_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_error_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+
+t_error _handle_suffix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_suffix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_prefix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _handle_prefix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+
+t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)(t_ast_expansion *self, t_state *state, t_expansion_result *value))
 {
 	if (self == NULL || op_func == NULL)
 		return (ERROR);
@@ -144,16 +170,17 @@ t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)())
 	return (ERROR);
 }
 
-t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expansion_result *out)
+t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
 {
-	t_str value;
-	t_error (*op_func)();
+	t_error (*op_func)(t_ast_expansion *self, t_state *state, t_expansion_result *value);
 
-	if (self == NULL || state == NULL || out == NULL)
+	if (self == NULL || state == NULL || value == NULL)
 		return (ERROR);
 	if (_get_op_func(self, &op_func))
 		return (ERROR);
-	return (ERROR);
+	if (op_func(self, state, value))
+		return (ERROR);
+	return (NO_ERROR);
 }
 
 // End Internals funcs
@@ -195,21 +222,18 @@ t_error run_word(t_ast_word *word, t_state *state, void *out) NOT_DONE;
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out)
 {
 	t_expansion_result ret;
+	bool			   is_special_var;
 
-	if (_is_special_var(self))
-	{
-		if (_run_expansion_special_var(self, state, &ret))
-			return (ERROR);
-	}
-	else
-	{
-		if (_get_expansion_value(self, state, &ret))
-			return (ERROR);
-	}
+	is_special_var = _is_special_var(self);
+	if (is_special_var && _run_expansion_special_var(self, state, &ret))
+		return (ERROR);
+	if (!is_special_var && _get_expansion_value(self, state, &ret))
+		return (ERROR);
 	if (_handle_expansion_operator(self, state, &ret))
 		return (ERROR);
-
-	return (ERROR);
+	if (self->len_operator && _handle_len_operator(self, state, &ret))
+		return (ERROR);
+	return (*out = ret, NO_ERROR);
 }
 
 // FUNCTIONS
