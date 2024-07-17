@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/16 13:27:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/17 16:42:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ struct s_expansion_result
 	bool  exists;
 	t_str str;
 };
+
+#ifdef ERROR
+# undef ERROR
+#endif
+#define ERROR ((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)
 
 #define NOT_DONE                                                                                                                           \
 	{                                                                                                                                      \
@@ -61,9 +66,9 @@ t_error _run_expansion_special_var(t_ast_expansion *self, t_state *state, t_expa
 	name = self->var_name[0];
 	*out = (t_expansion_result){.exists = false, .str = NULL};
 	if (name == '*')
-		; // return all args exept argv[0]
-	if (name == '@')
 		; // return all args with argv[0]
+	if (name == '@')
+		; // return all args without argv[0]
 	if (name == '?')
 		; // return exit code of last run program
 	if (name == '!')
@@ -95,7 +100,7 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 	return (NO_ERROR);
 }
 
-#include "me/convert/itoa.h"
+#include "me/convert/numbers_to_str.h"
 
 t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
 {
@@ -106,7 +111,8 @@ t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_
 		len = str_len(value->str);
 	else
 		len = 0;
-	len_str = me_itoa(len);
+	if (u64_to_str(len, &len_str))
+		return (ERROR);
 	mem_free(value->str);
 	value->exists = true;
 	value->str = len_str;
@@ -186,8 +192,8 @@ t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expa
 // End Internals funcs
 
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
+t_error run_command(t_ast_command *command, t_state *state, void *out);
 
-t_error run_command(t_ast_command *command, t_state *state, void *out) NOT_DONE;
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, void *out) NOT_DONE;
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
@@ -234,6 +240,11 @@ t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result 
 	if (self->len_operator && _handle_len_operator(self, state, &ret))
 		return (ERROR);
 	return (*out = ret, NO_ERROR);
+}
+
+t_error run_command(t_ast_command *command, t_state *state, void *out)
+{
+	return (ERROR);
 }
 
 // FUNCTIONS
