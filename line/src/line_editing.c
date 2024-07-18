@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:21:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/18 13:33:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:46:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,5 @@ void	line_refresh(t_line_state *state, t_line_flags flags)
 		me_printf_str(&str, "%s%s\x1b[0G\x1b[%uC", state->prompt,
 			state->buf.buf, state->pos + line_get_prompt_len(state->prompt));
 	me_printf_fd(state->output_fd, "%s", str.buf);
-	//me_eprintf("prompt = %u | pos = %u",line_get_prompt_len(state->prompt) , state->pos);
 	string_free(str);
 }
