@@ -6,45 +6,44 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:57:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/17 15:38:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:21:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/convert/str_to_numbers.h"
 #include "me/mem/mem.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
-#include "me/str/str.h"
 #include "me/str/str.h"
 #include "me/types.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+t_i32 _atoi_printf(t_const_str s);
+
 bool	handle_atoi_stuff(t_const_str fmt, t_usize *c_idx, t_usize *nxt,
 		t_printf_arg *c_arg)
 {
-	t_str str;
-	t_usize i;
-	
-	i = 0;
-	while (fmt[*c_idx + i] != '\0' && fmt[*c_idx + i] >= '0' && \
-		fmt[*c_idx + i] <= '9')
-		i++;
-	str = str_substring(fmt, *c_idx, i);
-	if (str == NULL)
+	t_i32	atoi_res;
+
+	atoi_res = _atoi_printf(&fmt[*c_idx]);
+	if (atoi_res < 0)
 	{
 		*c_idx = *nxt;
 		*nxt = (t_usize)(str_find_chr(fmt + *nxt + 1, '%') - fmt);
 		return (false);
 	}
-	if (str_to_u64(str, 10, &c_arg->extra.precision))
+	advance_atoi(fmt, c_idx);
+	c_arg->extra.align = (t_u64)atoi_res;
+	handle_prec_and_align(fmt, c_idx, c_arg);
+	atoi_res = atoi(&fmt[*c_idx]);
+	if (atoi_res < 0)
 	{
 		*c_idx = *nxt;
 		*nxt = (t_usize)(str_find_chr(fmt + *nxt + 1, '%') - fmt);
-		return (mem_free(str), false);
+		return (false);
 	}
-	mem_free(str);
 	advance_atoi(fmt, c_idx);
+	c_arg->extra.precision = (t_u64)atoi_res;
 	return (true);
 }
 

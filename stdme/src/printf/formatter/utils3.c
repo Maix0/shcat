@@ -6,10 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:06:15 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 19:21:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:20:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/char/char.h"
 #include "me/printf/formatter/utils.h"
 #include "me/printf/matchers/matchers.h"
 #include "me/str/str.h"
@@ -50,4 +51,27 @@ void	print_sign_if_needed(t_pad_and_stuff_args a, t_printf_arg d,
 {
 	if (d.flags & (SIGN) && a.sign != NULL)
 		f(a.sign, a.sign_len, d.p_args);
+}
+
+t_i32   _atoi_printf(t_const_str str)
+{
+    t_u64   out;
+    t_u64   sign;
+    t_usize i;
+
+    out = 0;
+    i = 0;
+    sign = 1;
+    while (me_isspace(str[i]))
+        i++;
+    if (str[i] == '+' || str[i] == '-')
+        if (str[i++] == '-')
+            sign = -1;
+    while (me_isdigit(str[i]))
+    {
+        out *= 10;
+        out += str[i] - '0';
+        i++;
+    }
+    return ((t_i32)(out * sign));
 }

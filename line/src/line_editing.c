@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:21:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:28:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:33:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,20 @@ t_usize	line_get_prompt_len(t_const_str s)
 {
 	t_usize	i;
 	t_usize	ret;
-	t_isize	color;
 
 	if ((_modify_vars(&i, &ret, false), true) && s == NULL)
 		return (0);
 	while (s[i])
 	{
-		if (s[i] == '\x1b' && s[i++] == '[')
+		if (s[i] == '\x1b' && s[i + 1] == '[')
 		{
-			color = ((void)(i++), 0);
-			while (color >= 0)
-			{
-				while (((void)color--, true) && s[i] >= '0' && s[i] <= '9')
-					color += ((void)(i++), 2);
-				if (s[i] == ';')
-					i++;
-				else if (s[i] == 'm' && ((void)i++, true))
-					break ;
-			}
+			i += 2;
+			while (0x30 <= s[i] && s[i] <= 0x3F)
+				i++;
+			while (0x20 <= s[i] && s[i] <= 0x2F)
+				i++;
+			if (0x40 <= s[i] && s[i] <= 0x7E)
+				i++;
 		}
 		_modify_vars(&i, &ret, true);
 	}
@@ -81,5 +77,6 @@ void	line_refresh(t_line_state *state, t_line_flags flags)
 		me_printf_str(&str, "%s%s\x1b[0G\x1b[%uC", state->prompt,
 			state->buf.buf, state->pos + line_get_prompt_len(state->prompt));
 	me_printf_fd(state->output_fd, "%s", str.buf);
+	//me_eprintf("prompt = %u | pos = %u",line_get_prompt_len(state->prompt) , state->pos);
 	string_free(str);
 }
