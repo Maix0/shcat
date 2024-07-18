@@ -6,15 +6,19 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/17 16:42:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 14:36:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/run.h"
+#include "me/mem/mem.h"
+#include "me/os/pipe.h"
+#include "me/os/process.h"
 #include "me/str/str.h"
 #include "me/types.h"
+#include "me/vec/vec_str.h"
 
 #include <stdio.h>
 #pragma clang diagnostic ignored "-Wunused-parameter"
@@ -26,6 +30,15 @@ struct s_expansion_result
 {
 	bool  exists;
 	t_str str;
+};
+
+typedef struct s_command_result t_command_result;
+
+struct s_command_result
+{
+	bool	  is_forked;
+	int		  subshell_pid;
+	t_process process;
 };
 
 #ifdef ERROR
@@ -192,7 +205,7 @@ t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expa
 // End Internals funcs
 
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
-t_error run_command(t_ast_command *command, t_state *state, void *out);
+t_error run_command(t_ast_command *command, t_state *state, t_command_result *out);
 
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, void *out) NOT_DONE;
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
@@ -242,8 +255,20 @@ t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result 
 	return (*out = ret, NO_ERROR);
 }
 
-t_error run_command(t_ast_command *command, t_state *state, void *out)
+t_error run_command(t_ast_command *command, t_state *state, t_command_result *out)
 {
+	t_vec_str args;
+	t_usize	  i;
+
+	if (command == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	args = vec_str_new(command->cmd_word.len, (void (*)(t_str))mem_free);
+	i = 0;
+	while (i < command->cmd_word.len)
+	{
+			i++;
+	}
+
 	return (ERROR);
 }
 

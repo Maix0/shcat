@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/09 14:43:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/18 14:53:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,30 @@
 #include "me/fs/fs.h"
 #include "me/printf/printf.h"
 #include "me/types.h"
+#include "signal.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+typedef struct s_sig_pending t_sig_pending;
+struct s_sig_pending
+{
+	int		pending_signal[1024];
+	int		pending_signal_data[1024];
+	t_usize length;
+};
+
+t_sig_pending *get_sig_pending()
+{
+	static t_sig_pending data = {};
+	
+	return (&data);
+}
+
+t_error append_signal(int signal, int signal_data)
+{
+	
+}
 
 void sigint_handle(int sig, siginfo_t *info, void *ucontext)
 {
@@ -57,12 +79,25 @@ t_error install_signal(void)
 	data = (struct sigaction){};
 	data.sa_sigaction = sigint_handle;
 	data.sa_flags = SA_SIGINFO | SA_NOCLDWAIT;
-	// if (sigaction(SIGINT, &data, NULL))
-	// 	return (ERROR);
+	if (sigaction(SIGINT, &data, NULL))
+		return (ERROR);
 
 	data.sa_sigaction = sigquit_handle;
 	if (sigaction(SIGQUIT, &data, NULL))
 		return (ERROR);
+
+	data.sa_handler = SIG_DFL;
+	sigemptyset(&data.sa_mask);
+	if (sigaction(SIGTSTP, &data, NULL))
+		return (ERROR);
+	if (sigaction(SIGTTIN, &data, NULL))
+		return (ERROR);
+	if (sigaction(SIGTTOU, &data, NULL))
+		return (ERROR);
+	data.sa_handler = SIG_IGN;
+	if (sigaction(SIGCHLD, &data, NULL))
+		return (ERROR);
+	
 
 	// data.sa_sigaction = sigsegv_handle;
 	// if (sigaction(SIGSEGV, &data, NULL))
