@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:18:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 15:01:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 15:02:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ t_u32	line_get_columns(t_fd *input, t_fd *output)
 {
 	struct winsize	ws;
 
+	(void)(input);
+	(void)(output);
 	if (ioctl(1, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
 	{
 		return (80);
