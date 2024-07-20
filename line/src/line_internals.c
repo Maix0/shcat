@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:18:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:20:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 15:01:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@
 
 /* ======================= Low level terminal handling ====================== */
 
-// FIXME: remove the sscanf here !
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
  * and return it. On error -1 is returned, on success the position of the
  * cursor. */
-t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
+/*t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
 {
 	char	buf[32];
 	t_u32	i;
@@ -50,17 +49,14 @@ t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
 		return (ERROR);
 	return (*column_out = cols, NO_ERROR);
 }
+*/
 
 /* Try to get the number of columns in the current terminal, or assume 80
  * if it fails. */
-t_u32	line_get_columns(t_fd *input, t_fd *output)
-{
-	struct winsize	ws;
-	t_u32			cols;
-	t_u32			start;
-
-	if (ioctl(1, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
-	{
+/*
+ // This was inside the if body
+		t_u32			cols;
+		t_u32			start;
 		if (line_get_cursor_position(input, output, &start))
 			return (80);
 		me_printf_fd(output, "\x1b[999C");
@@ -68,7 +64,14 @@ t_u32	line_get_columns(t_fd *input, t_fd *output)
 			return (80);
 		if (cols > start)
 			me_printf_fd(output, "\x1b[%dD", cols - start);
-		return (cols);
+ */
+t_u32	line_get_columns(t_fd *input, t_fd *output)
+{
+	struct winsize	ws;
+
+	if (ioctl(1, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0)
+	{
+		return (80);
 	}
 	else
 		return (ws.ws_col);
