@@ -6,13 +6,15 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/20 14:23:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 15:30:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "app/colors.h"
 #include "app/env.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
+#include "ast/ast.h"
 #include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
@@ -22,13 +24,6 @@
 #include "parser/api.h"
 #include <errno.h>
 #include <sys/types.h>
-
-#undef free
-#undef malloc
-#undef realloc
-#undef calloc
-
-#include "ast/ast.h"
 
 t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
 void	ast_print_node(t_ast_node self);
@@ -124,7 +119,7 @@ void exec_shcat(t_state *shcat)
 	free_node(shcat->current_node);
 }
 
-t_error handle_arguments(t_state *state)
+t_error get_user_input(t_state *state)
 {
 	t_line_state lstate;
 
@@ -150,7 +145,7 @@ void ft_take_args(t_state *state)
 	while (true)
 	{
 		state->str_input = NULL;
-		if (handle_arguments(state))
+		if (get_user_input(state))
 			ft_exit(state, 1);
 		if (state->str_input == NULL)
 			ft_exit(state, 0);
@@ -179,12 +174,10 @@ void free_myparser(t_parser self)
 	ts_parser_delete(self.parser);
 }
 
-#define IGN_START "\1"
-#define IGN_END "\2"
-
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
 	t_state state;
+	//char truc[] = COLB_YELLOW "42sh" COL_GREEN ">" COL_WHITE "$ " RESET;
 
 	(void)argc;
 	(void)argv;
@@ -196,11 +189,6 @@ t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 	state.env = create_env_map();
 	if (populate_env(state.env, envp))
 		me_abort("Unable to build env hashmap");
-	state.prompt = "\x1B[93m"
-				   "42sh"
-				   "\x1B[32m"
-				   ">"
-				   "\x1B[0m"
-				   "$ ";
+	state.prompt = COLB_YELLOW "42sh" COL_GREEN ">" COL_WHITE "$ " RESET;
 	ft_take_args(&state);
 }

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:21:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/18 13:46:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 15:33:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,18 @@ t_usize	line_get_prompt_len(t_const_str s)
 		return (0);
 	while (s[i])
 	{
-		if (s[i] == '\x1b' && s[i + 1] == '[')
+		if (s[i] == '\x1b' && s[++i] == '[')
 		{
-			i += 2;
-			while (0x30 <= s[i] && s[i] <= 0x3F)
+			i++;
+			while ('0' <= s[i] && s[i] <= '?')
 				i++;
-			while (0x20 <= s[i] && s[i] <= 0x2F)
+			while (' ' <= s[i] && s[i] <= '/')
 				i++;
-			if (0x40 <= s[i] && s[i] <= 0x7E)
+			if ('@' <= s[i] && s[i] <= '~')
 				i++;
 		}
-		_modify_vars(&i, &ret, true);
+		else 
+			_modify_vars(&i, &ret, true);
 	}
 	return (ret);
 }
