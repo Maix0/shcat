@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/03 22:30:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 16:29:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1474,6 +1474,7 @@ t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_nod
 	temp_str = _extract_str(self, input);
 	ret->data.raw_string.str = temp_str;
 	ret->data.raw_string.len = str_len(temp_str);
+	ret->data.raw_string.kind = AST_WORD_DOUBLE_QUOTE;
 	return (*out = ret, NO_ERROR);
 }
 
@@ -1492,6 +1493,7 @@ t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *o
 	temp_str = _extract_str(self, input);
 	temp->data.raw_string.str = temp_str;
 	temp->data.raw_string.len = str_len(temp_str);
+	temp->data.raw_string.kind = AST_WORD_SINGLE_QUOTE;
 	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
 	vec_ast_push(&ret->data.word.inner, temp);
 	return (*out = ret, NO_ERROR);
@@ -1554,6 +1556,7 @@ t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out)
 	temp_str = _extract_str(self, input);
 	temp->data.raw_string.str = temp_str;
 	temp->data.raw_string.len = str_len(temp_str);
+	temp->data.raw_string.kind = AST_WORD_NO_QUOTE;
 	vec_ast_push(&ret->data.word.inner, temp);
 	return (*out = ret, NO_ERROR);
 }
