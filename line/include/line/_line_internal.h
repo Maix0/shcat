@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:37:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:48:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 13:58:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_error				line_get_cursor_position(t_fd *input, t_fd *output,
 						t_u32 *column_out);
 t_u32				line_get_columns(t_fd *input, t_fd *output);
 t_usize				line_get_prompt_len(t_const_str s);
-t_str				line_no_tty_impl(void);
+bool				line_no_tty_impl(t_str *out);
 void				line_print_key_codes(void);
 
 t_error				line_enable_raw_mode(t_fd *fd);

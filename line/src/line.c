@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 16:53:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:26:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:00:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,6 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 
-static t_str	_set_line_edit_feed(t_line_state *state, t_str *res)
-{
-	*res = line_edit_feed(state);
-	return (*res);
-}
 
 /* This just implements a blocking loop for the multiplexed API.
  * In many applications that are not event-drivern, we can just call
@@ -38,7 +33,7 @@ t_str	line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 	t_str			res;
 
 	line_edit_start(&state, stdin_fd, stdout_fd, prompt);
-	while (_set_line_edit_feed(&state, &res) == get_unfinished_str())
+	while (!line_edit_feed(&state, &res))
 		;
 	line_edit_stop(&state);
 	return (res);
@@ -54,7 +49,7 @@ t_str	linenoise(t_const_str prompt)
 	t_str	retval;
 
 	if (!isatty(get_stdin()->fd))
-		return (line_no_tty_impl());
+		return (line_no_tty_impl(&retval), retval);
 	retval = line_blocking_edit(get_stdin(), get_stdout(), prompt);
 	return (retval);
 }

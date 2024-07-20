@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:24:34 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:53:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:31:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ enum								e_key_action
 	K_CTRL_U = 21,
 	K_CTRL_W = 23,
 	K_ESC = 27,
+	K_SIGQUIT = 28,
 	K_BACKSPACE = 127
 };
 

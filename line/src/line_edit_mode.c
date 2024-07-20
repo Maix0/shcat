@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:27:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:32:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@
  * fails. If stdin_fd or stdout_fd are set to -1, the default is to use
  * STDIN_FILENO and STDOUT_FILENO.
  */
-t_error	line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd,
-		t_const_str prompt)
+t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 {
 	if (stdin_fd == NULL)
 		stdin_fd = get_stdin();
@@ -89,27 +88,29 @@ t_error	line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd,
  *
  * Some other errno: I/O error.
  */
-t_str	line_edit_feed(t_line_state *state)
+bool line_edit_feed(t_line_state *state, t_str *out)
 {
-	char		c;
-	t_isize		nread;
-	char		seq[3];
-	t_vec_str	*history;
-	t_str		tmp;
+	char	   c;
+	t_isize	   nread;
+	char	   seq[3];
+	t_vec_str *history;
+	t_str	   tmp;
 
+	if (out == NULL)
+		return (true);
 	if (!isatty(state->input_fd->fd))
-		return (line_no_tty_impl());
+		return (line_no_tty_impl(out));
 	history = get_history();
 	if (read_fd(state->input_fd, (t_u8 *)&c, 1, &nread))
-		return (NULL);
+		return (*out = NULL, true);
 	if (c == K_NEWLINE || c == K_ENTER)
 	{
 		if (!vec_str_pop(history, &tmp))
 			mem_free(tmp);
-		return (str_clone(state->buf.buf));
+		return (*out = str_clone(state->buf.buf), true);
 	}
 	else if (c == K_CTRL_C)
-		return (errno = EAGAIN, NULL);
+		return (errno = EAGAIN, *out = NULL, NULL);
 	else if (c == K_BACKSPACE || c == K_CTRL_H)
 		line_edit_backspace(state);
 	else if (c == K_CTRL_D)
@@ -120,7 +121,7 @@ t_str	line_edit_feed(t_line_state *state)
 		{
 			history->len--;
 			mem_free(history->buffer[history->len]);
-			return (errno = ENOENT, NULL);
+			return (errno = ENOENT, *out = NULL, true);
 		}
 	}
 	else if (c == K_CTRL_B)
@@ -131,18 +132,20 @@ t_str	line_edit_feed(t_line_state *state)
 		line_edit_history_next(state, HIST_PREV);
 	else if (c == K_CTRL_N)
 		line_edit_history_next(state, HIST_PREV);
+	else if (c == K_SIGQUIT)
+		return (false);
 	else if (c == K_ESC)
 	{
 		if (read_fd(state->input_fd, (t_u8 *)seq, 1, NULL))
-			return ((t_str)get_unfinished_str());
+			return (false);
 		if (read_fd(state->input_fd, (t_u8 *)(seq + 1), 1, NULL))
-			return ((t_str)get_unfinished_str());
+			return (false);
 		if (seq[0] == '[')
 		{
 			if (seq[1] >= '0' && seq[1] <= '9')
 			{
 				if (read_fd(state->input_fd, (t_u8 *)(seq + 2), 1, NULL))
-					return ((t_str)get_unfinished_str());
+					return (false);
 				if (seq[1] == '3' && seq[2] == '~')
 					line_edit_delete(state);
 			}
@@ -191,18 +194,18 @@ t_str	line_edit_feed(t_line_state *state)
 		line_refresh_line(state);
 	}
 	else if (line_edit_insert(state, c))
-		return (NULL);
-	return ((t_str)get_unfinished_str());
+		return (*out = NULL, true);
+	return (false);
 }
 
 /* This is part of the multiplexed linenoise API. See linenoiseEditStart()
  * for more information. This function is called when linenoiseEditFeed()
  * returns something different than NULL. At this point the user input
  * is in the buffer, and we can restore the terminal in normal mode. */
-void	line_edit_stop(t_line_state *state)
+void line_edit_stop(t_line_state *state)
 {
 	if (!isatty(state->input_fd->fd))
-		return ;
+		return;
 	line_disable_raw_mode(state->input_fd);
 	me_printf_fd(state->output_fd, "\n");
 	string_free(state->buf);

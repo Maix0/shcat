@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/12 18:44:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 13:45:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct s_parser
 
 typedef struct s_state
 {
-	t_str			name_shell;
+	t_str			prompt;
 	t_str			str_input;
 	t_str			*strs_input;
 	t_str			*path;

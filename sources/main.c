@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/08 21:11:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 14:23:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 #include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
+#include "me/string/string.h"
 #include "me/types.h"
 #include "minishell.h"
 #include "parser/api.h"
+#include <errno.h>
 #include <sys/types.h>
 
 #undef free
@@ -122,21 +124,40 @@ void exec_shcat(t_state *shcat)
 	free_node(shcat->current_node);
 }
 
-void ft_take_args(t_state *shcat)
+t_error handle_arguments(t_state *state)
 {
-	t_str cmd;
+	t_line_state lstate;
 
-	while (1)
+	if (line_edit_start(&lstate, get_stdin(), get_stdout(), state->prompt))
+		return (ERROR);
+	while (!line_edit_feed(&lstate, &state->str_input))
 	{
-		shcat->str_input = NULL;
-		cmd = linenoise((t_const_str)shcat->name_shell);
-		if (cmd == NULL)
-			ft_exit(shcat, 0);
-		shcat->str_input = cmd;
-		line_history_add(shcat->str_input);
-		shcat->current_node = parse_str(&shcat->parser, shcat->str_input);
-		exec_shcat(shcat);
-		mem_free(shcat->str_input);
+		if (errno == EAGAIN)
+		{
+			errno = 0;
+			lstate.pos = 0;
+			string_clear(&lstate.buf);
+			write_fd(lstate.output_fd, (void *)"^C\n", 3, NULL);
+			line_refresh_line(&lstate);
+		}
+	}
+	line_edit_stop(&lstate);
+	return (NO_ERROR);
+}
+
+void ft_take_args(t_state *state)
+{
+	while (true)
+	{
+		state->str_input = NULL;
+		if (handle_arguments(state))
+			ft_exit(state, 1);
+		if (state->str_input == NULL)
+			ft_exit(state, 0);
+		line_history_add(state->str_input);
+		state->current_node = parse_str(&state->parser, state->str_input);
+		exec_shcat(state);
+		mem_free(state->str_input);
 	}
 }
 
@@ -163,23 +184,23 @@ void free_myparser(t_parser self)
 
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
-	t_state utils;
+	t_state state;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	if (install_signal())
 		me_abort("Unable to install signals");
-	utils = (t_state){};
-	utils.parser = create_myparser();
-	utils.env = create_env_map();
-	if (populate_env(utils.env, envp))
+	state = (t_state){};
+	state.parser = create_myparser();
+	state.env = create_env_map();
+	if (populate_env(state.env, envp))
 		me_abort("Unable to build env hashmap");
-	utils.name_shell = "\x1B[93m"
-					   "42sh"
-					   "\x1B[32m"
-					   ">"
-					   "\x1B[0m"
-					   "$ ";
-	ft_take_args(&utils);
+	state.prompt = "\x1B[93m"
+				   "42sh"
+				   "\x1B[32m"
+				   ">"
+				   "\x1B[0m"
+				   "$ ";
+	ft_take_args(&state);
 }

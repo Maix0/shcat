@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:23:25 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:24:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/20 13:52:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 t_error	line_edit_insert(t_line_state *state, char c);
 t_error	line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd,
 			t_const_str prompt);
-t_str	line_edit_feed(t_line_state *state);
+bool	line_edit_feed(t_line_state *state, t_str *out);
 void	line_edit_backspace(t_line_state *state);
 void	line_edit_delete(t_line_state *state);
 void	line_edit_history_next(t_line_state *state, t_history_direction dir);
