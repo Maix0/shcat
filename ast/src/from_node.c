@@ -1,8 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   from_node.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 12:41:56 by maiboyer          #+#    #+#             */
@@ -72,6 +67,8 @@ sym_while_statement
 sym_word
 */
 
+#include <ctype.h>
+#include <inttypes.h>
 #include <stdio.h>
 
 #undef ERROR
@@ -617,6 +614,29 @@ t_error build_sym_heredoc_end(t_parse_node self, t_const_str input, t_ast_node *
 t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node *out);
 
 #include <stdio.h>
+
+t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+{
+	t_usize		i;
+	t_ast_node	*ret;
+
+	i = 0;
+	ret = ast_alloc(AST_ARITHMETIC_EXPANSION);
+	while (str[i] == '\0')
+	{
+		if (str[i] == '+')
+			ret->operator = '+';
+		if (str[i] == '-')
+			ret->operator = '-';
+		if (str[i] == '/')
+			ret->operator = '/';
+		if (str[i] == '%')
+			ret->operator = '%';
+		if (str[i] == '*')
+			ret->operator = '*';
+	}
+	 
+}
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
 {

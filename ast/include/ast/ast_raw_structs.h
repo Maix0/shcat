@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 16:28:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:29:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -388,7 +388,7 @@ struct s_ast_heredoc_redirection
 /// 	$@
 /// ```
 
-struct s_ast_expansion
+struct  s_ast_expansion
 {
 	t_str						var_name;
 	bool						len_operator;
@@ -409,6 +409,14 @@ struct s_ast_arithmetic_expansion
 	t_ast_node	expr;
 };
 
+struct s_ast_binary_op
+{
+	t_ast_node	operator;
+};
+
+{
+	t_ast_node	expr;
+};
 /// Command Substitution
 /// ```shell
 /// 	$(command)
