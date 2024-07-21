@@ -584,7 +584,8 @@ t_ast_arithmetic_operator _parse_operator(t_parse_node self)
 		return (ARITH_MULT);
 	if (symbol == anon_sym_SLASH)
 		return (ARITH_DIVIDE);
-	// anon_sym_PERCENT
+	if (symbol == anon_sym_PERCENT)
+		return (ARITH_MOD);
 	return (me_abort("invalid arithmetic operator"), 0);
 }
 
@@ -622,10 +623,12 @@ t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
 
+/* FUNCTION DONE*/
+t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+
 /* FUNCTION THAT ARE NOT DONE */
 
 // TODO: This is your homework raph
-t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -654,6 +657,32 @@ t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str in
 		return (ERROR);
 	i = 0;
 	ret = ast_alloc(AST_ARITHMETIC_BINARY);
+	while (i < ts_node_child_count(self))
+	{
+		if (ts_node_field_id_for_child(self, i) == field_lhs)
+			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.lhs))
+				return (ERROR);
+		if (ts_node_field_id_for_child(self, i) == field_op)
+			ret->data.arithmetic_binary.op = _parse_operator(ts_node_child(self, i));
+		if (ts_node_field_id_for_child(self, i) == field_rhs)
+			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.rhs))
+				return (ERROR);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_usize	   i;
+	t_ast_node ret;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_arithmetic_literal)
+		return (ERROR);
+	i = 0;
+	ret = ast_alloc(AST_ARITHMETIC_LITTERAL);
 	while (i < ts_node_child_count(self))
 	{
 		if (ts_node_field_id_for_child(self, i) == field_lhs)

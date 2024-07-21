@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/21 16:28:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/21 17:42:37 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 enum e_ast_node_kind
 {
 	AST_ARITHMETIC_BINARY,
-	AST_ARITHMETIC_EXPANSION,
+	AST_ARITHMETIC_EXPANSION,	//RAPH
+	AST_ARITHMETIC_LITTERAL,	//RAPH
 	AST_CASE,
 	AST_CASE_ITEM,
 	AST_COMMAND,
@@ -50,7 +51,8 @@ enum e_ast_node_kind
 union u_ast_node_data
 {
 	t_ast_arithmetic_binary		arithmetic_binary;
-	t_ast_arithmetic_expansion	arithmetic_expansion;
+	t_ast_arithmetic_literal	arithmetic_literal;		//RAPH
+	t_ast_arithmetic_expansion	arithmetic_expansion;	//RAPH
 	t_ast_case					case_;
 	t_ast_case_item				case_item;
 	t_ast_command				command;

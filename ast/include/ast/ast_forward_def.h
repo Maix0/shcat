@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:24:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/21 16:26:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/21 17:43:13 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef union u_ast_node_data				t_ast_node_data;
 typedef struct s_ast_node					*t_ast_node;
 
 typedef struct s_ast_arithmetic_expansion	t_ast_arithmetic_expansion;
+typedef struct s_ast_arithmetic_literal		t_ast_arithmetic_literal;
 typedef struct s_ast_arithmetic_binary		t_ast_arithmetic_binary;
 typedef struct s_ast_case					t_ast_case;
 typedef struct s_ast_case_item				t_ast_case_item;

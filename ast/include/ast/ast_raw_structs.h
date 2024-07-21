@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/21 16:26:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/21 17:46:08 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ enum e_ast_arithmetic_operator
 	ARITH_MINUS,
 	ARITH_DIVIDE,
 	ARITH_MULT,
+	ARITH_MOD,
 };
 
 /*
@@ -424,6 +425,17 @@ struct s_ast_arithmetic_binary
 	t_ast_node					rhs;
 };
 
+/// NUMBER
+/*struct s_ast_arithmetic_literal*/
+/*{*/
+/*	t_i64		value;*/
+/*};*/
+
+//	RAPH
+struct s_ast_arithmetic_literal
+{
+	t_ast_node		value;
+};
 /// Command Substitution
 /// ```shell
 /// 	$(command)
