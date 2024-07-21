@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:24:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 14:04:34 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/21 16:26:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ typedef enum e_ast_node_kind				t_ast_node_kind;
 typedef enum e_ast_word_kind				t_ast_word_kind;
 typedef enum e_ast_list_kind				t_ast_list_kind;
 typedef enum e_ast_expansion_operator		t_ast_expansion_operator;
+typedef enum e_ast_arithmetic_operator		t_ast_arithmetic_operator;
 typedef enum e_ast_terminator_kind			t_ast_terminator_kind;
 typedef enum e_ast_redirection_kind			t_ast_redirection_kind;
 typedef union u_ast_node_data				t_ast_node_data;
@@ -24,6 +25,7 @@ typedef union u_ast_node_data				t_ast_node_data;
 typedef struct s_ast_node					*t_ast_node;
 
 typedef struct s_ast_arithmetic_expansion	t_ast_arithmetic_expansion;
+typedef struct s_ast_arithmetic_binary		t_ast_arithmetic_binary;
 typedef struct s_ast_case					t_ast_case;
 typedef struct s_ast_case_item				t_ast_case_item;
 typedef struct s_ast_command				t_ast_command;

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/21 15:29:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/21 16:26:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,14 @@ enum e_ast_terminator_kind
 	AST_TERM_DOUBLE_SEMI,
 	AST_TERM_SEMI,
 	AST_TERM_FORK,
+};
+
+enum e_ast_arithmetic_operator
+{
+	ARITH_PLUS,
+	ARITH_MINUS,
+	ARITH_DIVIDE,
+	ARITH_MULT,
 };
 
 /*
@@ -409,14 +417,13 @@ struct s_ast_arithmetic_expansion
 	t_ast_node	expr;
 };
 
-struct s_ast_binary_op
+struct s_ast_arithmetic_binary
 {
-	t_ast_node	operator;
+	t_ast_node					lhs;
+	t_ast_arithmetic_operator	op;
+	t_ast_node					rhs;
 };
 
-{
-	t_ast_node	expr;
-};
 /// Command Substitution
 /// ```shell
 /// 	$(command)

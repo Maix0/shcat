@@ -83,6 +83,11 @@ void ast_free(t_ast_node elem)
 	{
 		ast_free(elem->data.arithmetic_expansion.expr);
 	}
+	if (elem->kind == AST_ARITHMETIC_BINARY)
+	{
+		ast_free(elem->data.arithmetic_binary.lhs);
+		ast_free(elem->data.arithmetic_binary.rhs);
+	}
 	if (elem->kind == AST_CASE)
 	{
 		ast_free(elem->data.case_.word);
@@ -220,6 +225,12 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	if (kind == AST_ARITHMETIC_EXPANSION)
 	{
 		ret->data.arithmetic_expansion.expr = NULL;
+	}
+	if (kind == AST_ARITHMETIC_BINARY)
+	{
+		ret->data.arithmetic_binary.lhs = NULL;
+		ret->data.arithmetic_binary.op = 0;
+		ret->data.arithmetic_binary.rhs = NULL;
 	}
 	if (kind == AST_CASE)
 	{
@@ -560,6 +571,23 @@ t_ast_redirection_kind _get_redirection_op(t_parse_node self)
 	return (me_abort("invalid redirection symbol"), 0);
 }
 
+t_ast_arithmetic_operator _parse_operator(t_parse_node self)
+{
+	t_symbol symbol;
+
+	symbol = ts_node_grammar_symbol(self);
+	if (symbol == anon_sym_PLUS)
+		return (ARITH_PLUS);
+	if (symbol == anon_sym_DASH)
+		return (ARITH_MINUS);
+	if (symbol == anon_sym_STAR)
+		return (ARITH_MULT);
+	if (symbol == anon_sym_SLASH)
+		return (ARITH_DIVIDE);
+	// anon_sym_PERCENT
+	return (me_abort("invalid arithmetic operator"), 0);
+}
+
 t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE DONE */
@@ -615,27 +643,30 @@ t_error build_sym_heredoc_start(t_parse_node self, t_const_str input, t_ast_node
 
 #include <stdio.h>
 
-t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_usize		i;
-	t_ast_node	*ret;
+	t_usize	   i;
+	t_ast_node ret;
 
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_arithmetic_binary_expression)
+		return (ERROR);
 	i = 0;
-	ret = ast_alloc(AST_ARITHMETIC_EXPANSION);
-	while (str[i] == '\0')
+	ret = ast_alloc(AST_ARITHMETIC_BINARY);
+	while (i < ts_node_child_count(self))
 	{
-		if (str[i] == '+')
-			ret->operator = '+';
-		if (str[i] == '-')
-			ret->operator = '-';
-		if (str[i] == '/')
-			ret->operator = '/';
-		if (str[i] == '%')
-			ret->operator = '%';
-		if (str[i] == '*')
-			ret->operator = '*';
+		if (ts_node_field_id_for_child(self, i) == field_lhs)
+			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.lhs))
+				return (ERROR);
+		if (ts_node_field_id_for_child(self, i) == field_op)
+			ret->data.arithmetic_binary.op = _parse_operator(ts_node_child(self, i));
+		if (ts_node_field_id_for_child(self, i) == field_rhs)
+			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.rhs))
+				return (ERROR);
+		i++;
 	}
-	 
+	return (*out = ret, NO_ERROR);
 }
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
