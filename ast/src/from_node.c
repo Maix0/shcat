@@ -67,7 +67,6 @@ sym_while_statement
 sym_word
 */
 
-#include <ctype.h>
 #include <inttypes.h>
 #include <stdio.h>
 
@@ -625,11 +624,11 @@ t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_a
 
 /* FUNCTION DONE*/
 t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 
 // TODO: This is your homework raph
-t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -672,6 +671,7 @@ t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str in
 	return (*out = ret, NO_ERROR);
 }
 
+//	RAPH
 t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_usize	   i;
@@ -683,19 +683,21 @@ t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast
 		return (ERROR);
 	i = 0;
 	ret = ast_alloc(AST_ARITHMETIC_LITTERAL);
-	while (i < ts_node_child_count(self))
-	{
-		if (ts_node_field_id_for_child(self, i) == field_lhs)
-			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.lhs))
-				return (ERROR);
-		if (ts_node_field_id_for_child(self, i) == field_op)
-			ret->data.arithmetic_binary.op = _parse_operator(ts_node_child(self, i));
-		if (ts_node_field_id_for_child(self, i) == field_rhs)
-			if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_binary.rhs))
-				return (ERROR);
-		i++;
-	}
+	if (ast_from_node(ts_node_child(self, i), input, &ret->data.arithmetic_literal.value))
+		return (ERROR);
 	return (*out = ret, NO_ERROR);
+}
+
+t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_usize	   i;
+	t_ast_node ret;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_arithmetic_parenthesized_expression)
+		return (ERROR);
+	return (ast_from_node(ts_node_child(self, 1), input, out));
 }
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
