@@ -636,18 +636,16 @@ t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
 
-/* FUNCTION DONE*/
+/* FUNCTION DONE BUT BY RAPH */
 t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
-
-// TODO: This is your homework raph
-t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
 // TODO: This is my homework, it'll need to be handled in a special way I feel...
 t_error build_sym_heredoc_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -777,6 +775,7 @@ t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str inp
 		return (ast_free(ret), ERROR);
 	return (*out = ret, NO_ERROR);
 }
+
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_usize	   i;
@@ -786,8 +785,24 @@ t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_a
 		return (ERROR);
 	if (ts_node_symbol(self) != sym_arithmetic_expansion)
 		return (ERROR);
-	i = 0;
 	ret = ast_alloc(AST_ARITHMETIC_EXPANSION);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_binary_expression)
+			return (build_sym_arithmetic_binary_expression(self, input, out));
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_literal)
+			return (build_sym_arithmetic_literal(self, input, out));
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_parenthesized_expression)
+			return (build_sym_arithmetic_parenthesized_expression(self, input, out));
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_postfix_expression)
+			return (build_sym_arithmetic_postfix_expression(self, input, out));
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_ternary_expression)
+			return (build_sym_arithmetic_ternary_expression(self, input, out));
+		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_unary_expression)
+			return (build_sym_arithmetic_unary_expression(self, input, out));
+		i++;
+	}
 	return (*out = ret, NO_ERROR);
 }
 
