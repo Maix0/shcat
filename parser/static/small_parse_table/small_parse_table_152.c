@@ -14,51 +14,51 @@
 
 void	small_parse_table_760(t_small_parse_table_array *v)
 {
-	v->a[15200] = state(1062);
+	v->a[15200] = state(950);
 	v->a[15201] = 1;
-	v->a[15202] = sym_compound_statement;
-	v->a[15203] = state(1063);
+	v->a[15202] = sym_for_statement;
+	v->a[15203] = state(952);
 	v->a[15204] = 1;
-	v->a[15205] = sym_for_statement;
-	v->a[15206] = state(1070);
+	v->a[15205] = sym_while_statement;
+	v->a[15206] = state(953);
 	v->a[15207] = 1;
-	v->a[15208] = sym_while_statement;
-	v->a[15209] = state(1075);
+	v->a[15208] = sym_negated_command;
+	v->a[15209] = state(954);
 	v->a[15210] = 1;
-	v->a[15211] = sym_subshell;
-	v->a[15212] = state(1076);
+	v->a[15211] = sym_command;
+	v->a[15212] = state(955);
 	v->a[15213] = 1;
-	v->a[15214] = sym_if_statement;
-	v->a[15215] = state(1084);
+	v->a[15214] = sym__variable_assignments;
+	v->a[15215] = state(957);
 	v->a[15216] = 1;
-	v->a[15217] = sym_case_statement;
-	v->a[15218] = state(1091);
+	v->a[15217] = sym_if_statement;
+	v->a[15218] = state(958);
 	v->a[15219] = 1;
 	small_parse_table_761(v);
 }
 
 void	small_parse_table_761(t_small_parse_table_array *v)
 {
-	v->a[15220] = sym_list;
-	v->a[15221] = state(1092);
+	v->a[15220] = sym_case_statement;
+	v->a[15221] = state(961);
 	v->a[15222] = 1;
 	v->a[15223] = sym_function_definition;
-	v->a[15224] = state(1093);
+	v->a[15224] = state(962);
 	v->a[15225] = 1;
-	v->a[15226] = sym_negated_command;
-	v->a[15227] = state(1094);
+	v->a[15226] = sym_compound_statement;
+	v->a[15227] = state(964);
 	v->a[15228] = 1;
-	v->a[15229] = sym_command;
-	v->a[15230] = state(1095);
+	v->a[15229] = sym_subshell;
+	v->a[15230] = state(1024);
 	v->a[15231] = 1;
-	v->a[15232] = sym__variable_assignments;
-	v->a[15233] = state(1133);
+	v->a[15232] = sym_list;
+	v->a[15233] = state(1076);
 	v->a[15234] = 1;
 	v->a[15235] = sym_pipeline;
-	v->a[15236] = state(1201);
+	v->a[15236] = state(1149);
 	v->a[15237] = 1;
 	v->a[15238] = aux_sym_redirected_statement_repeat2;
-	v->a[15239] = state(1911);
+	v->a[15239] = state(1922);
 	small_parse_table_762(v);
 }
 
@@ -74,7 +74,7 @@ void	small_parse_table_762(t_small_parse_table_array *v)
 	v->a[15247] = 2;
 	v->a[15248] = sym_raw_string;
 	v->a[15249] = sym_number;
-	v->a[15250] = state(433);
+	v->a[15250] = state(455);
 	v->a[15251] = 5;
 	v->a[15252] = sym_arithmetic_expansion;
 	v->a[15253] = sym_string;

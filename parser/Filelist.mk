@@ -946,15 +946,6 @@ small_parse_table/small_parse_table_828                                       \
 small_parse_table/small_parse_table_829                                       \
 small_parse_table/small_parse_table_830                                       \
 small_parse_table/small_parse_table_831                                       \
-small_parse_table/small_parse_table_832                                       \
-small_parse_table/small_parse_table_833                                       \
-small_parse_table/small_parse_table_834                                       \
-small_parse_table/small_parse_table_835                                       \
-small_parse_table/small_parse_table_836                                       \
-small_parse_table/small_parse_table_837                                       \
-small_parse_table/small_parse_table_838                                       \
-small_parse_table/small_parse_table_839                                       \
-small_parse_table/small_parse_table_840                                       \
 small_parse_table_map/small_parse_table_map_0                                 \
 small_parse_table_map/small_parse_table_map_1                                 \
 small_parse_table_map/small_parse_table_map_2                                 \

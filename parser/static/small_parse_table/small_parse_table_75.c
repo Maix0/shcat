@@ -65,39 +65,39 @@ void	small_parse_table_376(t_small_parse_table_array *v)
 void	small_parse_table_377(t_small_parse_table_array *v)
 {
 	v->a[7540] = sym_variable_name;
-	v->a[7541] = actions(235);
+	v->a[7541] = actions(239);
 	v->a[7542] = 1;
 	v->a[7543] = anon_sym_RBRACE;
-	v->a[7544] = state(102);
+	v->a[7544] = state(90);
 	v->a[7545] = 1;
 	v->a[7546] = aux_sym__terminated_statement;
-	v->a[7547] = state(182);
+	v->a[7547] = state(183);
 	v->a[7548] = 1;
 	v->a[7549] = sym_command_name;
-	v->a[7550] = state(340);
+	v->a[7550] = state(345);
 	v->a[7551] = 1;
 	v->a[7552] = sym_variable_assignment;
-	v->a[7553] = state(584);
+	v->a[7553] = state(655);
 	v->a[7554] = 1;
-	v->a[7555] = sym_concatenation;
-	v->a[7556] = state(620);
+	v->a[7555] = aux_sym_command_repeat1;
+	v->a[7556] = state(661);
 	v->a[7557] = 1;
-	v->a[7558] = sym_file_redirect;
-	v->a[7559] = state(623);
+	v->a[7558] = sym_concatenation;
+	v->a[7559] = state(665);
 	small_parse_table_378(v);
 }
 
 void	small_parse_table_378(t_small_parse_table_array *v)
 {
 	v->a[7560] = 1;
-	v->a[7561] = aux_sym_command_repeat1;
-	v->a[7562] = state(1193);
+	v->a[7561] = sym_file_redirect;
+	v->a[7562] = state(1170);
 	v->a[7563] = 1;
 	v->a[7564] = sym_pipeline;
-	v->a[7565] = state(1201);
+	v->a[7565] = state(1198);
 	v->a[7566] = 1;
 	v->a[7567] = aux_sym_redirected_statement_repeat2;
-	v->a[7568] = state(1911);
+	v->a[7568] = state(1901);
 	v->a[7569] = 1;
 	v->a[7570] = sym__statement_not_pipeline;
 	v->a[7571] = actions(11);
@@ -108,7 +108,7 @@ void	small_parse_table_378(t_small_parse_table_array *v)
 	v->a[7576] = 2;
 	v->a[7577] = sym_raw_string;
 	v->a[7578] = sym_number;
-	v->a[7579] = state(433);
+	v->a[7579] = state(455);
 	small_parse_table_379(v);
 }
 
@@ -129,7 +129,7 @@ void	small_parse_table_379(t_small_parse_table_array *v)
 	v->a[7592] = anon_sym_GT_AMP;
 	v->a[7593] = anon_sym_GT_PIPE;
 	v->a[7594] = anon_sym_LT_GT;
-	v->a[7595] = state(1089);
+	v->a[7595] = state(1081);
 	v->a[7596] = 12;
 	v->a[7597] = sym_redirected_statement;
 	v->a[7598] = sym_for_statement;

@@ -73,7 +73,7 @@ void	symbols_names_2(t_symbols_names_array *v)
 	v->a[anon_sym_CARET_EQ] = "operator";
 	v->a[anon_sym_PIPE_EQ] = "operator";
 	v->a[anon_sym_CARET] = "operator";
-	v->a[anon_sym_AMP] = "&";
+	v->a[anon_sym_AMP] = "operator";
 	v->a[anon_sym_EQ_EQ] = "operator";
 	v->a[anon_sym_BANG_EQ] = "operator";
 	v->a[anon_sym_LT_EQ] = "operator";
@@ -128,12 +128,12 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[aux_sym__multiline_variable_name_token1] = "variable_name";
 	v->a[anon_sym_AT] = "special_variable_name";
 	v->a[anon_sym_0] = "special_variable_name";
-	v->a[anon_sym__] = "special_variable_name";
 	v->a[aux_sym__word_no_brace_token1] = "_word_no_brace_token1";
 	v->a[anon_sym_SEMI] = ";";
 	v->a[sym_heredoc_start] = "heredoc_start";
 	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
+	v->a[sym_heredoc_content] = "heredoc_content";
 	symbols_names_5(v);
 }
 

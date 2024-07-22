@@ -14,7 +14,7 @@
 
 void	small_parse_table_625(t_small_parse_table_array *v)
 {
-	v->a[12500] = actions(215);
+	v->a[12500] = actions(53);
 	v->a[12501] = 7;
 	v->a[12502] = anon_sym_LT;
 	v->a[12503] = anon_sym_GT;
@@ -23,7 +23,7 @@ void	small_parse_table_625(t_small_parse_table_array *v)
 	v->a[12506] = anon_sym_GT_AMP;
 	v->a[12507] = anon_sym_GT_PIPE;
 	v->a[12508] = anon_sym_LT_GT;
-	v->a[12509] = state(958);
+	v->a[12509] = state(1090);
 	v->a[12510] = 12;
 	v->a[12511] = sym_redirected_statement;
 	v->a[12512] = sym_for_statement;
@@ -101,13 +101,13 @@ void	small_parse_table_628(t_small_parse_table_array *v)
 	v->a[12569] = actions(221);
 	v->a[12570] = 1;
 	v->a[12571] = sym_variable_name;
-	v->a[12572] = state(120);
+	v->a[12572] = state(127);
 	v->a[12573] = 1;
 	v->a[12574] = aux_sym__statements_repeat1;
-	v->a[12575] = state(177);
+	v->a[12575] = state(170);
 	v->a[12576] = 1;
 	v->a[12577] = sym_command_name;
-	v->a[12578] = state(208);
+	v->a[12578] = state(241);
 	v->a[12579] = 1;
 	small_parse_table_629(v);
 }
@@ -115,25 +115,25 @@ void	small_parse_table_628(t_small_parse_table_array *v)
 void	small_parse_table_629(t_small_parse_table_array *v)
 {
 	v->a[12580] = sym_variable_assignment;
-	v->a[12581] = state(584);
+	v->a[12581] = state(617);
 	v->a[12582] = 1;
-	v->a[12583] = sym_concatenation;
-	v->a[12584] = state(622);
+	v->a[12583] = aux_sym_command_repeat1;
+	v->a[12584] = state(661);
 	v->a[12585] = 1;
-	v->a[12586] = sym_file_redirect;
-	v->a[12587] = state(639);
+	v->a[12586] = sym_concatenation;
+	v->a[12587] = state(738);
 	v->a[12588] = 1;
-	v->a[12589] = aux_sym_command_repeat1;
-	v->a[12590] = state(1073);
+	v->a[12589] = sym_file_redirect;
+	v->a[12590] = state(1070);
 	v->a[12591] = 1;
 	v->a[12592] = sym_pipeline;
-	v->a[12593] = state(1158);
+	v->a[12593] = state(1177);
 	v->a[12594] = 1;
 	v->a[12595] = aux_sym_redirected_statement_repeat2;
-	v->a[12596] = state(1906);
+	v->a[12596] = state(1919);
 	v->a[12597] = 1;
 	v->a[12598] = sym__statement_not_pipeline;
-	v->a[12599] = state(2086);
+	v->a[12599] = state(2068);
 	small_parse_table_630(v);
 }
 

@@ -14,32 +14,31 @@
 
 void	parse_table_5(t_parse_table_array *v)
 {
-	v->a[1][sym_case_statement] = state(960);
-	v->a[1][sym_function_definition] = state(960);
-	v->a[1][sym_compound_statement] = state(960);
-	v->a[1][sym_subshell] = state(960);
-	v->a[1][sym_pipeline] = state(1069);
-	v->a[1][sym_list] = state(960);
-	v->a[1][sym_negated_command] = state(960);
-	v->a[1][sym_command] = state(960);
-	v->a[1][sym_command_name] = state(175);
-	v->a[1][sym_variable_assignment] = state(213);
-	v->a[1][sym__variable_assignments] = state(960);
-	v->a[1][sym_file_redirect] = state(621);
-	v->a[1][sym_arithmetic_expansion] = state(345);
-	v->a[1][sym_concatenation] = state(583);
-	v->a[1][sym_string] = state(345);
-	v->a[1][sym_simple_expansion] = state(345);
-	v->a[1][sym_expansion] = state(345);
-	v->a[1][sym_command_substitution] = state(345);
-	v->a[1][aux_sym__statements_repeat1] = state(125);
-	v->a[1][aux_sym_redirected_statement_repeat2] = state(1104);
+	v->a[1][sym_function_definition] = state(1022);
+	v->a[1][sym_compound_statement] = state(1022);
+	v->a[1][sym_subshell] = state(1022);
+	v->a[1][sym_pipeline] = state(1029);
+	v->a[1][sym_list] = state(1022);
+	v->a[1][sym_negated_command] = state(1022);
+	v->a[1][sym_command] = state(1022);
+	v->a[1][sym_command_name] = state(174);
+	v->a[1][sym_variable_assignment] = state(247);
+	v->a[1][sym__variable_assignments] = state(1022);
+	v->a[1][sym_file_redirect] = state(676);
+	v->a[1][sym_arithmetic_expansion] = state(373);
+	v->a[1][sym_concatenation] = state(627);
+	v->a[1][sym_string] = state(373);
+	v->a[1][sym_simple_expansion] = state(373);
+	v->a[1][sym_expansion] = state(373);
+	v->a[1][sym_command_substitution] = state(373);
+	v->a[1][aux_sym__statements_repeat1] = state(121);
+	v->a[1][aux_sym_redirected_statement_repeat2] = state(1175);
+	v->a[1][aux_sym_command_repeat1] = state(625);
 	parse_table_6(v);
 }
 
 void	parse_table_6(t_parse_table_array *v)
 {
-	v->a[1][aux_sym_command_repeat1] = state(624);
 	v->a[1][ts_builtin_sym_end] = actions(5);
 	v->a[1][sym_word] = actions(7);
 	v->a[1][anon_sym_for] = actions(9);
@@ -59,12 +58,12 @@ void	parse_table_6(t_parse_table_array *v)
 	v->a[1][anon_sym_LT_GT] = actions(23);
 	v->a[1][anon_sym_DOLLAR_LPAREN_LPAREN] = actions(25);
 	v->a[1][anon_sym_DOLLAR] = actions(27);
+	v->a[1][anon_sym_DQUOTE] = actions(29);
 	parse_table_7(v);
 }
 
 void	parse_table_7(t_parse_table_array *v)
 {
-	v->a[1][anon_sym_DQUOTE] = actions(29);
 	v->a[1][sym_raw_string] = actions(31);
 	v->a[1][sym_number] = actions(31);
 	v->a[1][anon_sym_DOLLAR_LBRACE] = actions(33);

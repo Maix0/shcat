@@ -76,13 +76,13 @@ void	small_parse_table_47(t_small_parse_table_array *v)
 	v->a[949] = actions(71);
 	v->a[950] = 1;
 	v->a[951] = sym_variable_name;
-	v->a[952] = actions(121);
+	v->a[952] = actions(85);
 	v->a[953] = 1;
 	v->a[954] = anon_sym_LF;
-	v->a[955] = state(14);
+	v->a[955] = state(15);
 	v->a[956] = 1;
 	v->a[957] = aux_sym__case_item_last_repeat2;
-	v->a[958] = state(129);
+	v->a[958] = state(119);
 	v->a[959] = 1;
 	small_parse_table_48(v);
 }
@@ -90,25 +90,25 @@ void	small_parse_table_47(t_small_parse_table_array *v)
 void	small_parse_table_48(t_small_parse_table_array *v)
 {
 	v->a[960] = aux_sym__statements_repeat1;
-	v->a[961] = state(182);
+	v->a[961] = state(183);
 	v->a[962] = 1;
 	v->a[963] = sym_command_name;
-	v->a[964] = state(261);
+	v->a[964] = state(323);
 	v->a[965] = 1;
 	v->a[966] = sym_variable_assignment;
-	v->a[967] = state(584);
+	v->a[967] = state(655);
 	v->a[968] = 1;
-	v->a[969] = sym_concatenation;
-	v->a[970] = state(620);
+	v->a[969] = aux_sym_command_repeat1;
+	v->a[970] = state(661);
 	v->a[971] = 1;
-	v->a[972] = sym_file_redirect;
-	v->a[973] = state(623);
+	v->a[972] = sym_concatenation;
+	v->a[973] = state(665);
 	v->a[974] = 1;
-	v->a[975] = aux_sym_command_repeat1;
-	v->a[976] = state(1114);
+	v->a[975] = sym_file_redirect;
+	v->a[976] = state(1141);
 	v->a[977] = 1;
 	v->a[978] = sym_pipeline;
-	v->a[979] = state(1201);
+	v->a[979] = state(1198);
 	small_parse_table_49(v);
 }
 
@@ -116,10 +116,10 @@ void	small_parse_table_49(t_small_parse_table_array *v)
 {
 	v->a[980] = 1;
 	v->a[981] = aux_sym_redirected_statement_repeat2;
-	v->a[982] = state(1911);
+	v->a[982] = state(1901);
 	v->a[983] = 1;
 	v->a[984] = sym__statement_not_pipeline;
-	v->a[985] = state(1938);
+	v->a[985] = state(2061);
 	v->a[986] = 1;
 	v->a[987] = sym__statements;
 	v->a[988] = actions(11);
@@ -130,7 +130,7 @@ void	small_parse_table_49(t_small_parse_table_array *v)
 	v->a[993] = 2;
 	v->a[994] = sym_raw_string;
 	v->a[995] = sym_number;
-	v->a[996] = state(433);
+	v->a[996] = state(455);
 	v->a[997] = 5;
 	v->a[998] = sym_arithmetic_expansion;
 	v->a[999] = sym_string;

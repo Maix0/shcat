@@ -586,7 +586,7 @@ module.exports = grammar({
 			$.variable_name,
 		),
 
-		_special_variable_name: $ => alias(choice('*', '@', '?', '!', '#', '-', '$', '0', '_'), $.special_variable_name),
+		_special_variable_name: $ => alias(choice('*', '@', '?', '!', '#', '-', '$', '0'), $.special_variable_name),
 
 		word: _ => token(seq(
 			choice(
@@ -612,7 +612,7 @@ module.exports = grammar({
 				'\\ ',
 			)),
 		))),
-		terminator: _ => choice(';', ';;', /\n/, '&'),
+		terminator: _ => choice(';', ';;', /\n/),
 	},
 });
 

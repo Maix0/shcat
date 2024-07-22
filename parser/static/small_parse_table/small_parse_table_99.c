@@ -15,25 +15,25 @@
 void	small_parse_table_495(t_small_parse_table_array *v)
 {
 	v->a[9900] = 1;
-	v->a[9901] = aux_sym_command_repeat1;
-	v->a[9902] = state(1118);
+	v->a[9901] = sym_pipeline;
+	v->a[9902] = state(1177);
 	v->a[9903] = 1;
-	v->a[9904] = sym_pipeline;
-	v->a[9905] = state(1201);
+	v->a[9904] = aux_sym_redirected_statement_repeat2;
+	v->a[9905] = state(1919);
 	v->a[9906] = 1;
-	v->a[9907] = aux_sym_redirected_statement_repeat2;
-	v->a[9908] = state(1911);
+	v->a[9907] = sym__statement_not_pipeline;
+	v->a[9908] = state(2120);
 	v->a[9909] = 1;
-	v->a[9910] = sym__statement_not_pipeline;
+	v->a[9910] = sym__statements;
 	v->a[9911] = actions(11);
 	v->a[9912] = 2;
 	v->a[9913] = anon_sym_while;
 	v->a[9914] = anon_sym_until;
-	v->a[9915] = actions(61);
+	v->a[9915] = actions(217);
 	v->a[9916] = 2;
 	v->a[9917] = sym_raw_string;
 	v->a[9918] = sym_number;
-	v->a[9919] = state(433);
+	v->a[9919] = state(374);
 	small_parse_table_496(v);
 }
 
@@ -45,7 +45,7 @@ void	small_parse_table_496(t_small_parse_table_array *v)
 	v->a[9923] = sym_simple_expansion;
 	v->a[9924] = sym_expansion;
 	v->a[9925] = sym_command_substitution;
-	v->a[9926] = actions(53);
+	v->a[9926] = actions(215);
 	v->a[9927] = 7;
 	v->a[9928] = anon_sym_LT;
 	v->a[9929] = anon_sym_GT;
@@ -54,7 +54,7 @@ void	small_parse_table_496(t_small_parse_table_array *v)
 	v->a[9932] = anon_sym_GT_AMP;
 	v->a[9933] = anon_sym_GT_PIPE;
 	v->a[9934] = anon_sym_LT_GT;
-	v->a[9935] = state(1077);
+	v->a[9935] = state(989);
 	v->a[9936] = 12;
 	v->a[9937] = sym_redirected_statement;
 	v->a[9938] = sym_for_statement;
@@ -132,7 +132,7 @@ void	small_parse_table_499(t_small_parse_table_array *v)
 	v->a[9995] = actions(221);
 	v->a[9996] = 1;
 	v->a[9997] = sym_variable_name;
-	v->a[9998] = state(120);
+	v->a[9998] = state(127);
 	v->a[9999] = 1;
 	small_parse_table_500(v);
 }

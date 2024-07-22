@@ -105,16 +105,15 @@ void	parse_table_3(t_parse_table_array *v)
 	v->a[0][sym_comment] = actions(3);
 	v->a[0][anon_sym_AT] = actions(1);
 	v->a[0][anon_sym_0] = actions(1);
-	v->a[0][anon_sym__] = actions(1);
 	v->a[0][anon_sym_SEMI] = actions(1);
 	v->a[0][sym_heredoc_start] = actions(1);
 	v->a[0][sym_simple_heredoc_body] = actions(1);
+	v->a[0][sym__heredoc_body_beginning] = actions(1);
 	parse_table_4(v);
 }
 
 void	parse_table_4(t_parse_table_array *v)
 {
-	v->a[0][sym__heredoc_body_beginning] = actions(1);
 	v->a[0][sym_heredoc_content] = actions(1);
 	v->a[0][sym_heredoc_end] = actions(1);
 	v->a[0][sym_file_descriptor] = actions(1);
@@ -129,11 +128,12 @@ void	parse_table_4(t_parse_table_array *v)
 	v->a[0][sym___error_recovery] = actions(1);
 	v->a[1][sym_program] = state(2101);
 	v->a[1][sym__statements] = state(2100);
-	v->a[1][sym__statement_not_pipeline] = state(1915);
-	v->a[1][sym_redirected_statement] = state(960);
-	v->a[1][sym_for_statement] = state(960);
-	v->a[1][sym_while_statement] = state(960);
-	v->a[1][sym_if_statement] = state(960);
+	v->a[1][sym__statement_not_pipeline] = state(1918);
+	v->a[1][sym_redirected_statement] = state(1022);
+	v->a[1][sym_for_statement] = state(1022);
+	v->a[1][sym_while_statement] = state(1022);
+	v->a[1][sym_if_statement] = state(1022);
+	v->a[1][sym_case_statement] = state(1022);
 	parse_table_5(v);
 }
 

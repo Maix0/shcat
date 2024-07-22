@@ -14,7 +14,6 @@
 
 void	unique_symbols_map_5(t_unique_symbols_map_array *v)
 {
-	v->a[sym_heredoc_content] = sym_heredoc_content;
 	v->a[sym_heredoc_end] = sym_heredoc_end;
 	v->a[sym_file_descriptor] = sym_file_descriptor;
 	v->a[sym__empty_value] = sym__empty_value;
@@ -34,12 +33,12 @@ void	unique_symbols_map_5(t_unique_symbols_map_array *v)
 	v->a[sym_for_statement] = sym_for_statement;
 	v->a[sym_while_statement] = sym_while_statement;
 	v->a[sym_do_group] = sym_do_group;
+	v->a[sym_if_statement] = sym_if_statement;
 	unique_symbols_map_6(v);
 }
 
 void	unique_symbols_map_6(t_unique_symbols_map_array *v)
 {
-	v->a[sym_if_statement] = sym_if_statement;
 	v->a[sym_elif_clause] = sym_elif_clause;
 	v->a[sym_else_clause] = sym_else_clause;
 	v->a[sym_case_statement] = sym_case_statement;
@@ -59,12 +58,12 @@ void	unique_symbols_map_6(t_unique_symbols_map_array *v)
 	v->a[sym_heredoc_redirect] = sym_heredoc_redirect;
 	v->a[sym__heredoc_pipeline] = sym_pipeline;
 	v->a[sym__heredoc_expression] = sym__heredoc_expression;
+	v->a[aux_sym__heredoc_command] = aux_sym__heredoc_command;
 	unique_symbols_map_7(v);
 }
 
 void	unique_symbols_map_7(t_unique_symbols_map_array *v)
 {
-	v->a[aux_sym__heredoc_command] = aux_sym__heredoc_command;
 	v->a[sym__heredoc_body] = sym__heredoc_body;
 	v->a[sym_heredoc_body] = sym_heredoc_body;
 	v->a[sym__simple_heredoc_body] = sym__simple_heredoc_body;
@@ -87,12 +86,12 @@ void	unique_symbols_map_7(t_unique_symbols_map_array *v)
 	v->a[sym__expansion_expression] = sym__expansion_expression;
 	v->a[sym__expansion_regex] = sym__expansion_regex;
 	v->a[sym__concatenation_in_expansion] = sym_concatenation;
+	v->a[sym_command_substitution] = sym_command_substitution;
 	unique_symbols_map_8(v);
 }
 
 void	unique_symbols_map_8(t_unique_symbols_map_array *v)
 {
-	v->a[sym_command_substitution] = sym_command_substitution;
 	v->a[sym__extglob_blob] = sym__extglob_blob;
 	v->a[sym__word_no_brace] = sym__word_no_brace;
 	v->a[sym_terminator] = sym_terminator;
@@ -115,13 +114,13 @@ void	unique_symbols_map_8(t_unique_symbols_map_array *v)
 	v->a[aux_sym_concatenation_repeat1] = aux_sym_concatenation_repeat1;
 	v->a[aux_sym_string_repeat1] = aux_sym_string_repeat1;
 	v->a[aux_sym__expansion_regex_repeat1] = aux_sym__expansion_regex_repeat1;
+	v->a[aux_sym__concatenation_in_expansion_repeat1] \
+	= aux_sym__concatenation_in_expansion_repeat1;
 	unique_symbols_map_9(v);
 }
 
 void	unique_symbols_map_9(t_unique_symbols_map_array *v)
 {
-	v->a[aux_sym__concatenation_in_expansion_repeat1] \
-	= aux_sym__concatenation_in_expansion_repeat1;
 	v->a[alias_sym_statements] = alias_sym_statements;
 }
 

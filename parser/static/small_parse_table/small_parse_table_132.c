@@ -16,7 +16,7 @@ void	small_parse_table_660(t_small_parse_table_array *v)
 {
 	v->a[13200] = sym_expansion;
 	v->a[13201] = sym_command_substitution;
-	v->a[13202] = actions(167);
+	v->a[13202] = actions(53);
 	v->a[13203] = 7;
 	v->a[13204] = anon_sym_LT;
 	v->a[13205] = anon_sym_GT;
@@ -25,7 +25,7 @@ void	small_parse_table_660(t_small_parse_table_array *v)
 	v->a[13208] = anon_sym_GT_AMP;
 	v->a[13209] = anon_sym_GT_PIPE;
 	v->a[13210] = anon_sym_LT_GT;
-	v->a[13211] = state(1074);
+	v->a[13211] = state(965);
 	v->a[13212] = 12;
 	v->a[13213] = sym_redirected_statement;
 	v->a[13214] = sym_for_statement;
@@ -103,10 +103,10 @@ void	small_parse_table_663(t_small_parse_table_array *v)
 	v->a[13271] = actions(221);
 	v->a[13272] = 1;
 	v->a[13273] = sym_variable_name;
-	v->a[13274] = state(120);
+	v->a[13274] = state(127);
 	v->a[13275] = 1;
 	v->a[13276] = aux_sym__statements_repeat1;
-	v->a[13277] = state(177);
+	v->a[13277] = state(170);
 	v->a[13278] = 1;
 	v->a[13279] = sym_command_name;
 	small_parse_table_664(v);
@@ -114,25 +114,25 @@ void	small_parse_table_663(t_small_parse_table_array *v)
 
 void	small_parse_table_664(t_small_parse_table_array *v)
 {
-	v->a[13280] = state(208);
+	v->a[13280] = state(241);
 	v->a[13281] = 1;
 	v->a[13282] = sym_variable_assignment;
-	v->a[13283] = state(584);
+	v->a[13283] = state(617);
 	v->a[13284] = 1;
-	v->a[13285] = sym_concatenation;
-	v->a[13286] = state(639);
+	v->a[13285] = aux_sym_command_repeat1;
+	v->a[13286] = state(661);
 	v->a[13287] = 1;
-	v->a[13288] = aux_sym_command_repeat1;
-	v->a[13289] = state(682);
+	v->a[13288] = sym_concatenation;
+	v->a[13289] = state(724);
 	v->a[13290] = 1;
 	v->a[13291] = sym_file_redirect;
-	v->a[13292] = state(1073);
+	v->a[13292] = state(1070);
 	v->a[13293] = 1;
 	v->a[13294] = sym_pipeline;
-	v->a[13295] = state(1158);
+	v->a[13295] = state(1177);
 	v->a[13296] = 1;
 	v->a[13297] = aux_sym_redirected_statement_repeat2;
-	v->a[13298] = state(1906);
+	v->a[13298] = state(1919);
 	v->a[13299] = 1;
 	small_parse_table_665(v);
 }

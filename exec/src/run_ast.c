@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 16:49:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/22 12:32:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ typedef struct s_command_result t_command_result;
 
 struct s_command_result
 {
-	bool	  is_forked;
-	int		  subshell_pid;
 	t_process process;
 };
 

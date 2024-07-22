@@ -31,7 +31,7 @@ void	small_parse_table_map_0(t_small_parse_table_map_array *v)
 	v->a[14] = 1764;
 	v->a[15] = 1887;
 	v->a[16] = 2010;
-	v->a[17] = 2133;
+	v->a[17] = 2129;
 	v->a[18] = 2252;
 	v->a[19] = 2375;
 	small_parse_table_map_1(v);
@@ -40,13 +40,13 @@ void	small_parse_table_map_0(t_small_parse_table_map_array *v)
 void	small_parse_table_map_1(t_small_parse_table_map_array *v)
 {
 	v->a[20] = 2498;
-	v->a[21] = 2621;
-	v->a[22] = 2744;
-	v->a[23] = 2867;
-	v->a[24] = 2990;
-	v->a[25] = 3113;
-	v->a[26] = 3236;
-	v->a[27] = 3355;
+	v->a[21] = 2617;
+	v->a[22] = 2736;
+	v->a[23] = 2859;
+	v->a[24] = 2982;
+	v->a[25] = 3105;
+	v->a[26] = 3228;
+	v->a[27] = 3351;
 	v->a[28] = 3474;
 	v->a[29] = 3597;
 	v->a[30] = 3720;
