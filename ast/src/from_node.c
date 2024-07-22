@@ -690,9 +690,6 @@ t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast
 
 t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_usize	   i;
-	t_ast_node ret;
-
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_symbol(self) != sym_arithmetic_parenthesized_expression)
