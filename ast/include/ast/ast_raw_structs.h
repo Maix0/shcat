@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 12:43:06 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/22 13:18:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ enum e_ast_terminator_kind
 	AST_TERM_NEWLINE,
 	AST_TERM_DOUBLE_SEMI,
 	AST_TERM_SEMI,
-	AST_TERM_FORK,
 };
 
 enum e_ast_arithmetic_operator

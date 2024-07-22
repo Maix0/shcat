@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 14:50:03 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/22 13:19:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ void _print_term(t_ast_terminator_kind term)
 {
 	if (term == AST_TERM_NONE)
 		return;
-	if (term == AST_TERM_FORK)
-		printf("&");
 	if (term == AST_TERM_SEMI)
 		printf(";");
 	if (term == AST_TERM_DOUBLE_SEMI)
