@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 14:27:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/22 16:52:19 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ enum e_ast_node_kind
 	AST_ARITHMETIC_EXPANSION,	//RAPH
 	AST_ARITHMETIC_LITTERAL,	//RAPH
 	AST_ARITHMETIC_POSTFIX,	//RAPH
+	AST_ARITHMETIC_TERNARY,	//RAPH
+	AST_ARITHMETIC_UNARY,	//RAPH
 	AST_CASE,
 	AST_CASE_ITEM,
 	AST_COMMAND,
@@ -55,6 +57,8 @@ union u_ast_node_data
 	t_ast_arithmetic_literal	arithmetic_literal;		//RAPH
 	t_ast_arithmetic_expansion	arithmetic_expansion;	//RAPH
 	t_ast_arithmetic_postfix	arithmetic_postfix;	//RAPH
+	t_ast_arithmetic_ternary	arithmetic_ternary;	//RAPH
+	t_ast_arithmetic_unary		arithmetic_unary;	//RAPH
 	t_ast_case					case_;
 	t_ast_case_item				case_item;
 	t_ast_command				command;

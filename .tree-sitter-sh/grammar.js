@@ -424,7 +424,7 @@ module.exports = grammar({
 				$._arithmetic_expression,
 			)),
 			prec(PREC.UNARY, seq(
-				field('op', alias(tokenLiterals(1, '-', '+', '~'), $.operator)),
+				field('op', alias(tokenLiterals(1, '-', '+'), $.operator)),
 				$._arithmetic_expression,
 			)),
 			prec.right(PREC.UNARY, seq(
