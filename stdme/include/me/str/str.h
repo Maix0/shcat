@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 23:30:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 19:00:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:10:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define STR_H
 
 # include "me/types.h"
+#include "me/vec/vec_str.h"
 /// @brief Get the length of a string
 /// @param str the string
 /// @return the length of the string
@@ -102,14 +103,24 @@ t_str		str_map(t_const_str s, char (*f)(t_usize, char));
 
 /// @brief Split a string into a vector of strings
 /// @param str the string to be split
-/// @param chr the character to split the string on
-/// @return the vector of strings
-t_str		*str_split(t_const_str str, char chr);
+/// @param chr the list of chars to be used as word delimiter
+/// @param out[out] the returned value, a vector of words
+/// @return True in case of error, false otherwise
+t_error str_split(t_const_str str, t_const_str chrs, t_vec_str *out);
 
 /// @brief Remove consecutive leading and trailing characters from a string
 /// @param str the string to trim
 /// @param charset the characters to remove
 /// @return the trimmed string
 t_str		str_trim(t_const_str str, t_const_str charset);
+
+/// @brief Remove consecutive leading and trailing characters from a string
+/// @param str the string to free
+static inline void		str_free(t_str str)
+{
+	void	mem_free(void *ptr);
+
+	mem_free(str);
+}
 
 #endif /* STR_H */

@@ -6,13 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 18:04:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/22 15:29:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/os/process.h"
 #include "me/string/string.h"
 #include "me/mem/mem.h"
+#include "me/printf/printf.h"
 #include "me/os/pipe.h"
 #include "me/str/str.h"
 #include "me/str/str.h"
@@ -52,31 +53,24 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	return (NO_ERROR);
 }
 
-t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path,
+t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path_raw,
 				t_string *s)
 {
-	t_str	*splitted_path;
-	t_usize	sp_index;
-
-	splitted_path = str_split(path + 5, ':');
-	if (splitted_path == NULL)
+	t_vec_str	path;
+	t_usize		idx;
+	
+	(void)(process);
+	if (str_split(path_raw + 5, ":", &path)) 
 		return (string_free(*s), ERROR);
-	sp_index = 0;
-	while (splitted_path[sp_index])
+	idx = 0;
+	while (idx < path.len)
 	{
-		((void)(process), string_clear(s));
-		string_push(s, splitted_path[sp_index]);
-		string_push(s, "/");
-		string_push(s, info->binary_path);
-		sp_index++;
+		string_clear(s);
+		me_printf_str(s, "%s/%s", path.buffer[idx++], info->binary_path);
 		if (access(s->buf, X_OK | R_OK) == 0)
-			break ;
+			return (vec_str_free(path), NO_ERROR);
 	}
-	sp_index = 0;
-	while (splitted_path[sp_index])
-		mem_free(splitted_path[sp_index++]);
-	mem_free(splitted_path);
-	return (NO_ERROR);
+	return (vec_str_free(path), ERROR);
 }
 
 t_error	find_binary(t_spawn_info *info, t_process *process)
