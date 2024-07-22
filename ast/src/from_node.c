@@ -82,6 +82,10 @@ void ast_free(t_ast_node elem)
 	{
 		ast_free(elem->data.arithmetic_expansion.expr);
 	}
+	if (elem->kind == AST_ARITHMETIC_POSTFIX)
+	{
+		ast_free(elem->data.arithmetic_postfix.value);
+	}
 	if (elem->kind == AST_ARITHMETIC_BINARY)
 	{
 		ast_free(elem->data.arithmetic_binary.lhs);
@@ -224,6 +228,11 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	if (kind == AST_ARITHMETIC_EXPANSION)
 	{
 		ret->data.arithmetic_expansion.expr = NULL;
+	}
+	if (kind == AST_ARITHMETIC_POSTFIX)
+	{
+		ret->data.arithmetic_postfix.value = NULL;
+		ret->data.arithmetic_postfix.op = 0;
 	}
 	if (kind == AST_ARITHMETIC_BINARY)
 	{
@@ -568,6 +577,7 @@ t_ast_redirection_kind _get_redirection_op(t_parse_node self)
 	return (me_abort("invalid redirection symbol"), 0);
 }
 
+// RAPH
 t_ast_arithmetic_operator _parse_operator(t_parse_node self)
 {
 	t_symbol symbol;
@@ -583,6 +593,10 @@ t_ast_arithmetic_operator _parse_operator(t_parse_node self)
 		return (ARITH_DIVIDE);
 	if (symbol == anon_sym_PERCENT)
 		return (ARITH_MOD);
+	if (symbol == anon_sym_PLUS_PLUS)
+		return (ARITH_INCREMENT);
+	if (symbol == anon_sym_DASH_DASH)
+		return (ARITH_DECREMENT);
 	return (me_abort("invalid arithmetic operator"), 0);
 }
 
@@ -623,12 +637,12 @@ t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_a
 /* FUNCTION DONE*/
 t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 
 // TODO: This is your homework raph
-t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
 t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
@@ -693,6 +707,28 @@ t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const
 	if (ts_node_symbol(self) != sym_arithmetic_parenthesized_expression)
 		return (ERROR);
 	return (ast_from_node(ts_node_child(self, 1), input, out));
+}
+
+t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node ret;
+	t_ast_node tmp;
+	t_usize	   i;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_arithmetic_postfix_expression)
+		return (ERROR);
+	ret = ast_alloc(AST_ARITHMETIC_POSTFIX);
+	if (ts_node_child_count(self) != 2)
+		return (ast_free(ret), ERROR);
+	if (ast_from_node(ts_node_child(self, 0), input, &ret->data.arithmetic_postfix.value))
+			return (ast_free(ret), ERROR);
+	if (ts_node_field_id_for_child(self, 1) == field_op)
+		ret->data.arithmetic_postfix.op = _parse_operator(ts_node_child(self, i));
+	else 
+		return (ast_free(ret), ERROR);
+	return (*out = ret, NO_ERROR);
 }
 
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
