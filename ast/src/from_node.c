@@ -777,6 +777,19 @@ t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str inp
 		return (ast_free(ret), ERROR);
 	return (*out = ret, NO_ERROR);
 }
+t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_usize	   i;
+	t_ast_node ret;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_arithmetic_expansion)
+		return (ERROR);
+	i = 0;
+	ret = ast_alloc(AST_ARITHMETIC_EXPANSION);
+	return (*out = ret, NO_ERROR);
+}
 
 //PLUS RAPH
 t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out)
