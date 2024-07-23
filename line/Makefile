@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/23 21:53:05 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/23 22:07:26 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,8 @@ NAME			=	lib$(ANAME).a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
-CFLAGS			=	$(CFLAGS_ADDITIONAL)
+CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"' -g3
+CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 
 -include Filelist.$(ANAME).mk
 

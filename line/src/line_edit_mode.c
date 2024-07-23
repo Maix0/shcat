@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 14:32:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/23 22:19:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_
 	state->prompt = prompt;
 	state->prompt_len = str_len(state->prompt);
 	state->pos = 0;
+	if (!isatty(state->input_fd->fd))
+		return (NO_ERROR);
 	if (line_enable_raw_mode(state->input_fd))
 		return (ERROR);
 	state->columns = line_get_columns(stdin_fd, stdout_fd);
 	state->history_index = 0;
-	if (!isatty(state->input_fd->fd))
-		return (NO_ERROR);
 	line_history_add("");
 	if (write_fd(state->output_fd, (t_u8 *)prompt, state->prompt_len, NULL))
 		return (ERROR);
@@ -204,9 +204,10 @@ bool line_edit_feed(t_line_state *state, t_str *out)
  * is in the buffer, and we can restore the terminal in normal mode. */
 void line_edit_stop(t_line_state *state)
 {
+	printf("stopping\n");
+	string_free(state->buf);
 	if (!isatty(state->input_fd->fd))
 		return;
 	line_disable_raw_mode(state->input_fd);
 	me_printf_fd(state->output_fd, "\n");
-	string_free(state->buf);
 }
