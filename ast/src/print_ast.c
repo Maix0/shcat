@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 13:19:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/23 14:36:20 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ void ast_print_node_function_definition(t_ast_node self);
 /*^^^   DONE   ^^^*/
 /*vvv NOT DONE vvv*/
 
-void ast_print_node_arithmetic_expansion(t_ast_node self) NOT_DONE;
 void ast_print_node_case(t_ast_node self) NOT_DONE;
 void ast_print_node_case_item(t_ast_node self) NOT_DONE;
 void ast_print_node_elif(t_ast_node self) NOT_DONE;
@@ -96,12 +95,28 @@ void _print_term(t_ast_terminator_kind term)
 }
 
 /// IMPL
+void ast_print_node_arithmetic_expansion(t_ast_node self)
+{
+	t_usize	i;
+
+	if (self == NULL)
+		return ;
+	if (self->kind != AST_ARITHMETIC_EXPANSION)
+		return ;
+	i = 0;
+	printf("((%s))", self->data.arithmetic_literal.value);
+	// while (i < self->data.arithmetic_expansion.expr->kind)
+	// {
+	// 	ast_print_node(self->data.function_definition.body.buffer[i++]);
+	// 	printf(" ");
+	// }
+}
 
 void ast_print_node_function_definition(t_ast_node self)
 {
 	t_usize i;
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_FUNCTION_DEFINITION)
 		return;
 	printf("%s()", self->data.function_definition.name);
