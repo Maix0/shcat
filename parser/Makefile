@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/06/09 19:14:28 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/23 20:58:57 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,9 +23,8 @@ libgmr.a:
 	@$(MAKE) --no-print-directory -f Grammar.mk "LIB_NAME=$(shell realpath .)/" "BUILD_DIR=$(shell realpath $(BUILD_DIR))" libgmr.a 
 
 build_filelist:
-	@rm Filelist.mk
-	@printf '%-78s\\\n' "SRC_FILES =" > Filelist.mk
-	@tree static -ifF | rg 'static/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.mk
-	@echo "" >> Filelist.mk
+	@$(MAKE) --no-print-directory -f Parser.mk	build_filelist
+	@$(MAKE) --no-print-directory -f Grammar.mk	build_filelist
+
 
 .PHONY: all bonus clean fclean re libparser.a libgmr.a build_filelist

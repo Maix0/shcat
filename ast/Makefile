@@ -6,9 +6,11 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/14 10:18:27 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/23 21:52:27 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
+ANAME			=	ast
 
 BUILD_DIR		?=	../build
 SRC_DIR			=	src
@@ -19,22 +21,19 @@ GENERIC_INCLUDE	=	output/include
 
 
 BASE_PATH		?=	$(shell pwd)
-NAME			=	libast.a
+NAME			=	lib$(ANAME).a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
 CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
-# CFLAGS 			+=  -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
-CFLAGS 			+= -O2
-BONUS_FILES		=	
-LIBS_NAME		=	
-SUBJECT_URL		=	
+CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 
-SRC_FILES		=	$(shell cat src.list)
+
+-include Filelist.$(ANAME).mk
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
-OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
-DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/ast/,$(SRC_FILES)))
+OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES)))
+DEPS			=	$(addsuffix .d,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES)))
 
 LIBS			=	$(addprefix $(LIBS_DIR)/,$(LIBS_NAME))
 INCLUDES		=	$(addprefix -I,$(foreach P,$(INCLUDE_DIR) $(LIBS) $(addsuffix /include,$(LIBS)) vendor $(addsuffix /vendor,$(LIBS)),$(realpath $(P))))
@@ -44,10 +43,6 @@ COL_WHITE		=	\033[37m
 COL_GREEN		=	\033[32m
 COL_BOLD		=	\033[1m
 COL_RESET		=	\033[0m
-
-# TODO: REMOVE FOR RENDU !!!!!
-CFLAGS += -DPRINT_BACKTRACE
-
 
 .PHONY = all bonus clean re subject
 
@@ -59,15 +54,10 @@ $(TARGET): $(OBJ)
 	@echo -e '$(COL_GRAY) Linking \t$(COL_GOLD)$(TARGET)$(COL_RESET)'
 	@ar rcs $(BUILD_DIR)/$(NAME) $(OBJ)
 
-$(BUILD_DIR)/ast/%.o: $(SRC_DIR)/%.c
+$(BUILD_DIR)/$(ANAME)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
-	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
-
-$(BUILD_DIR)/ast/%.o: $(GENERIC_DIR)/%.c
-	@mkdir -p $(dir $@)
-	@echo -e '$(COL_GRAY) Building\t$(COL_GREEN)$<$(COL_RESET)'
-	@$(CC) $(CFLAGS) $(WERROR) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	@- $(foreach LIB,$(LIBS), \
@@ -90,8 +80,11 @@ subject: subject.txt
 subject.txt:
 	@curl $(SUBJECT_URL) | pdftotext -layout -nopgbrk -q - subject.txt
 
-generate_filelist::
-	@/usr/bin/env zsh -c "tree -iFf --noreport output | rg '^output/src/(.*)\.c\$$' --replace '\$$1' | sort -u" > ./gen.list
-	@/usr/bin/env zsh -c "tree -iFf --noreport src | rg '^src/(.*)\.c\$$' --replace '\$$1' | sort -u" > ./src.list
+build_filelist:
+	@rm -f Filelist.$(ANAME).mk
+	@printf '%-78s\\\n' "SRC_FILES =" > Filelist.$(ANAME).mk
+	@tree src -ifF | rg 'src/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
+	@echo "" >> Filelist.$(ANAME).mk
+	@echo -e "$(COL_GRAY) Populating $(COL_GREEN) Filelist.$(ANAME).mk$(END)"
 
 -include $(DEPS)

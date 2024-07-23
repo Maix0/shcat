@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/06/30 18:45:33 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/23 21:53:40 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,13 +23,10 @@ LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
 CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -I../tree-sitter-sh/src
+CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
-include 		./Filelist.mk
-
-#SRC_FILES		= parser 
-#scanner
-#parser
+-include Filelist.$(ANAME).mk
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)))
 OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES)))
@@ -75,5 +72,12 @@ fclean: clean
 re:
 	@$(MAKE) --no-print-directory fclean
 	@$(MAKE) --no-print-directory all
+
+build_filelist:
+	@rm -f Filelist.$(ANAME).mk
+	@printf '%-78s\\\n' "SRC_FILES =" > Filelist.$(ANAME).mk
+	@tree static -ifF | rg 'static/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
+	@echo "" >> Filelist.$(ANAME).mk
+	@echo -e "$(GREY) Populating $(GREEN) Filelist.$(ANAME).mk$(END)"
 
 -include $(DEPS)

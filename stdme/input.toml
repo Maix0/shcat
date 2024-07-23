@@ -44,6 +44,7 @@ replace.C__TYPE__ = "type"
 replace.C__PREFIX__ = "prefix"
 replace.C__FIELD__ = "type"
 replace.C__UFIELD__ = "type"
+replace.C__NEG__BITMASK__ = "value"
 
 
 [[create.num_to_str]]
@@ -53,6 +54,7 @@ replace.C__TYPE__ = "t_i64"
 replace.C__UFIELD__ = "u64"
 replace.C__FIELD__ = "i64"
 replace.C__PREFIX__ = "i64"
+replace.C__NEG__BITMASK__ = "0x8000000000000000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -61,6 +63,7 @@ replace.C__TYPE__ = "t_u64"
 replace.C__UFIELD__ = "u64"
 replace.C__FIELD__ = "u64"
 replace.C__PREFIX__ = "u64"
+replace.C__NEG__BITMASK__ = "0x0000000000000000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -69,6 +72,7 @@ replace.C__TYPE__ = "t_i32"
 replace.C__UFIELD__ = "u32"
 replace.C__FIELD__ = "i32"
 replace.C__PREFIX__ = "i32"
+replace.C__NEG__BITMASK__ = "0x80000000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -77,6 +81,7 @@ replace.C__TYPE__ = "t_u32"
 replace.C__UFIELD__ = "u32"
 replace.C__FIELD__ = "u32"
 replace.C__PREFIX__ = "u32"
+replace.C__NEG__BITMASK__ = "0x00000000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -85,6 +90,7 @@ replace.C__TYPE__ = "t_i16"
 replace.C__UFIELD__ = "u16"
 replace.C__FIELD__ = "i16"
 replace.C__PREFIX__ = "i16"
+replace.C__NEG__BITMASK__ = "0x8000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -93,6 +99,7 @@ replace.C__TYPE__ = "t_u16"
 replace.C__UFIELD__ = "u16"
 replace.C__FIELD__ = "u16"
 replace.C__PREFIX__ = "u16"
+replace.C__NEG__BITMASK__ = "0x0000"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -101,6 +108,7 @@ replace.C__TYPE__ = "t_i8"
 replace.C__UFIELD__ = "u8"
 replace.C__FIELD__ = "i8"
 replace.C__PREFIX__ = "i8"
+replace.C__NEG__BITMASK__ = "0x80"
 
 [[create.num_to_str]]
 sources_output = "src/convert/"
@@ -109,6 +117,7 @@ replace.C__TYPE__ = "t_u8"
 replace.C__UFIELD__ = "u8"
 replace.C__FIELD__ = "u8"
 replace.C__PREFIX__ = "u8"
+replace.C__NEG__BITMASK__ = "0x00"
 
 [[create.str_to_num]]
 sources_output = "src/convert/"

@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/11 17:14:34 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/23 21:54:12 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,27 +15,24 @@
 link_group = -Wl,--start-group $(1) -Wl,--end-group
 
 # Variables
-
+ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
+
+# TODO: ADD THIS WHEN FINISHING THIS:
+# CFLAGS_ADDITIONAL = -DNVALGRIND
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
-# CFLAGS += -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
-# Sources
-# LIB =	./libft/ft_bzero.c \
-# 		./libft/ft_calloc.c \
-# 		./libft/ft_memset.c \
-# 		./libft/ft_split.c \
-# 		./libft/ft_strcmp.c \
-# 		./libft/ft_strdup.c \
-# 		./libft/ft_strlcpy.c \
-# 		./libft/ft_strjoin.c \
-# 		./libft/ft_strlen.c
+CFLAGS  += $(CFLAGS_ADDITIONAL)
 
 SRC_DIR = sources
 GEN_DIR = output
 
-SRC =	$(addprefix $(SRC_DIR)/,$(shell cat ./src.list)) $(addprefix $(GEN_DIR)/,$(shell cat ./gen.list))
+-include Filelist.$(ANAME).mk
+
+SRC =	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)) $(addprefix $(GEN_DIR)/,$(GEN_FILES)))
+OBJ =	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES) $(GEN_FILES)))
+DEP =	$(addsuffix .d,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES) $(GEN_FILES)))
 NAME = minishell
 
 # Commands
@@ -43,7 +40,6 @@ CC ?= clang
 RM = rm -rf
 
 # Objects
-OBJ = $(addprefix $(BUILD_DIR)/sh/,$(SRC:.c=.o))
 
 # Colors
 GREEN = \033[32m
@@ -52,20 +48,20 @@ RED = \033[0;31m
 GOLD = \033[38;5;220m
 END = \033[0m
 
-.PHONY: all Bonus
+.PHONY: all bonus build_filelist re clean fclean
 
 LIBS_NAMES = me gmr aq ast parser line exec
 LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
 all:
-	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		"BUILD_DIR=$(BUILD_DIR)" libme.a
-	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	"BUILD_DIR=$(BUILD_DIR)" libaq.a
-	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			"BUILD_DIR=$(BUILD_DIR)" libast.a
-	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		"BUILD_DIR=$(BUILD_DIR)" libexec.a
-	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		"BUILD_DIR=$(BUILD_DIR)" libline.a
-	@$(MAKE) -C ./parser/ -f./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libgmr.a
-	@$(MAKE) -C ./parser/ -f./Parser.mk		"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" libparser.a
+	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libme.a
+	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libaq.a
+	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libast.a
+	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libexec.a
+	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libline.a
+	@$(MAKE) -C ./parser/ -f ./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libgmr.a
+	@$(MAKE) -C ./parser/ -f ./Parser.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libparser.a
 	@$(MAKE) -f./Minishell.mk $(NAME)
 
 
@@ -83,9 +79,24 @@ $(NAME): $(OBJ) $(LIBS_FILES)
 	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Creating the objects
-$(BUILD_DIR)/sh/%.o: %.c
+$(BUILD_DIR)/$(ANAME)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@echo -e '$(GREY) Building\t$(END)$(GREEN)$<$(END)'
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
--include	${OBJ:.o=.d}
+$(BUILD_DIR)/$(ANAME)/%.o: $(GEN_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@echo -e '$(GREY) Building\t$(END)$(GREEN)$<$(END)'
+	@$(CC) $(CFLAGS) -o $@ -c $<
+
+build_filelist:
+	@rm -f Filelist.$(ANAME).mk
+	@printf '%-78s\\\n' "SRC_FILES =" > Filelist.$(ANAME).mk
+	@tree $(SRC_DIR) -ifF | rg '$(SRC_DIR)/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
+	@echo "" >> Filelist.$(ANAME).mk
+	@printf '%-78s\\\n' "GEN_FILES =" >> Filelist.$(ANAME).mk
+	@tree $(GEN_DIR) -ifF | rg '$(GEN_DIR)/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
+	@echo "" >> Filelist.$(ANAME).mk
+	@echo -e "$(GREY) Populating $(GREEN) Filelist.$(ANAME).mk$(END)"
+
+-include	$(DEP)

@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/07/17 17:05:25 by rparodi          ###   ########.fr        #
+#    Updated: 2024/07/23 21:47:47 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,13 +42,13 @@ endif
 
 # All (make all)
 all: 
-	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
-	@$(MAKE) --no-print-directory -f./Minishell.mk  "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE)
-	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
+	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
+	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" "" $(PMAKE)
+	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
 
 bonus: 
 	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
-	@$(MAKE) --no-print-directory -f./Minishell.mk  "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE) bonus
+	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE) bonus
 	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
 
 #	Header
@@ -107,8 +107,16 @@ re: header
 tokei:
 	/bin/sh -c 'tokei -tC,C\ Header -e tree-sitter-sh'
 
-generate_filelist:
-	@/usr/bin/env zsh -c "tree -iFf --noreport $(SRC_DIR) | rg '^$(SRC_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./src.list
-	@/usr/bin/env zsh -c "tree -iFf --noreport $(GEN_DIR) | rg '^$(GEN_DIR)/(.*\.c)\$$' --replace '\$$1' | sort -u" > ./gen.list
+
+build_filelist:
+	@$(MAKE) --no-print-directory -C ./stdme/ 					build_filelist
+	@$(MAKE) --no-print-directory -C ./allocator/ 				build_filelist
+	@$(MAKE) --no-print-directory -C ./ast/ 					build_filelist
+	@$(MAKE) --no-print-directory -C ./exec/ 					build_filelist
+	@$(MAKE) --no-print-directory -C ./line/ 					build_filelist
+	@$(MAKE) --no-print-directory -C ./parser/ -f ./Grammar.mk	build_filelist
+	@$(MAKE) --no-print-directory -C ./parser/ -f ./Parser.mk	build_filelist
+	@$(MAKE) --no-print-directory -f ./Minishell.mk	 			build_filelist
+
 #	phony
-.PHONY: all bonus clean fclean re header footer generate_filelist
+.PHONY: all bonus clean fclean re header footer build_filelist

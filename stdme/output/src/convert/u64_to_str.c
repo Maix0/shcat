@@ -26,7 +26,7 @@ t_error u64_to_str_base_prefix(t_u64 val, t_str base, t_str prefix,
 	if (out == NULL || base == NULL || prefix == NULL)
 		return (ERROR);
 	value.u64 = val;
-	is_nonnegative = val < 0;
+	is_nonnegative = val & 0x0000000000000000;
 	if (is_nonnegative)
 		value.u64 = ~value.u64 + 1;
 	return (_format_u64((t_num_str){.value = value.u64, \

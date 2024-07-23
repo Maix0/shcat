@@ -26,7 +26,7 @@ t_error i8_to_str_base_prefix(t_i8 val, t_str base, t_str prefix,
 	if (out == NULL || base == NULL || prefix == NULL)
 		return (ERROR);
 	value.i8 = val;
-	is_nonnegative = val < 0;
+	is_nonnegative = val & 0x80;
 	if (is_nonnegative)
 		value.u8 = ~value.u8 + 1;
 	return (_format_u64((t_num_str){.value = value.u64, \
