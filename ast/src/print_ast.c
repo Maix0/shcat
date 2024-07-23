@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/23 14:36:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/23 15:16:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,13 @@ void _print_term(t_ast_terminator_kind term)
 /// IMPL
 void ast_print_node_arithmetic_expansion(t_ast_node self)
 {
-	t_usize	i;
-
 	if (self == NULL)
 		return ;
 	if (self->kind != AST_ARITHMETIC_EXPANSION)
 		return ;
-	i = 0;
-	printf("((%s))", self->data.arithmetic_literal.value);
-	// while (i < self->data.arithmetic_expansion.expr->kind)
-	// {
-	// 	ast_print_node(self->data.function_definition.body.buffer[i++]);
-	// 	printf(" ");
-	// }
+	printf("$((");
+	ast_print_node(self->data.arithmetic_expansion.expr);
+	printf("))");
 }
 
 void ast_print_node_function_definition(t_ast_node self)
