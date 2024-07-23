@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/23 22:19:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/23 22:24:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,6 @@ bool line_edit_feed(t_line_state *state, t_str *out)
  * is in the buffer, and we can restore the terminal in normal mode. */
 void line_edit_stop(t_line_state *state)
 {
-	printf("stopping\n");
 	string_free(state->buf);
 	if (!isatty(state->input_fd->fd))
 		return;
