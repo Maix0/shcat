@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/23 22:23:57 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/24 14:41:50 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,10 +19,11 @@ ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
 
 # TODO: ADD THIS WHEN FINISHING THIS:
-#CFLAGS_ADDITIONAL = -DNVALGRIND
+CFLAGS_ADDITIONAL += -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL += -DPRINT_BACKTRACE
+CFLAGS_ADDITIONAL += -gcolumn-info
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E

@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/07/23 21:47:47 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/24 12:21:26 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ endif
 # All (make all)
 all: 
 	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
-	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" "" $(PMAKE)
+	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE)
 	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
 
 bonus: 
