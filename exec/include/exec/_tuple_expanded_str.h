@@ -1,31 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_handler.c                                   :+:      :+:    :+:   */
+/*   _tuple_expanded_str.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/24 16:02:17 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/07/24 15:45:08 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/07/24 16:02:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "app/signal_handler.h"
-#include "me/types.h"
-#include "signal.h"
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef _TUPLE_EXPANDED_STR_H
+# define _TUPLE_EXPANDED_STR_H
 
-t_error install_signal(void)
+# include "me/types.h"
+
+typedef struct s_expandable_str	t_expandable_str;
+
+struct s_expandable_str {
+	t_str	value;
+	bool	do_expand;
+};
+
+static inline void	free_expandable_str(t_expandable_str self)
 {
-	struct sigaction data;
+	void	mem_free(void *ptr);
 
-	data = (struct sigaction){};
-	data.sa_handler = SIG_IGN;
-	if (sigaction(SIGINT, &data, NULL))
-		return (ERROR);
-	if (sigaction(SIGQUIT, &data, NULL))
-		return (ERROR);
-	return (NO_ERROR);
+	mem_free(self.value);
 }
+
+#endif /* _TUPLE_EXPANDED_STR_H */

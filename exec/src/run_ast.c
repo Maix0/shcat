@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/24 13:58:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/24 18:53:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
+#include "me/vec/vec_estr.h"
 #include "me/vec/vec_str.h"
 
 #include <stdio.h>
@@ -47,7 +48,7 @@ typedef struct s_word_result t_word_result;
 struct s_word_result
 {
 	bool			has_error;
-	t_vec_str		value;
+	t_vec_estr		value;
 	t_ast_word_kind kind;
 };
 
@@ -245,7 +246,7 @@ t_error _handle_expansion_operator(t_ast_expansion *self, t_state *state, t_expa
 	return (NO_ERROR);
 }
 
-t_error _ast_get_str__raw__no_quote(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__raw__no_quote(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	bool	 last_backslash;
 	t_string ret;
@@ -265,10 +266,10 @@ t_error _ast_get_str__raw__no_quote(t_ast_node elem, t_word_iterator *state, t_v
 			last_backslash = true;
 		i++;
 	}
-	return (vec_str_push(out, ret.buf), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
 }
 
-t_error _ast_get_str__raw__single_quote(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__raw__single_quote(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	t_string ret;
 	t_usize	 i;
@@ -280,10 +281,10 @@ t_error _ast_get_str__raw__single_quote(t_ast_node elem, t_word_iterator *state,
 	while (elem->data.raw_string.str[i])
 		string_push_char(&ret, elem->data.raw_string.str[i++]);
 	string_pop(&ret);
-	return (vec_str_push(out, ret.buf), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
 }
 
-t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	bool	 last_backslash;
 	t_string ret;
@@ -294,8 +295,6 @@ t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state,
 	i = 0;
 	ret = string_new(elem->data.raw_string.len);
 	last_backslash = false;
-	if (elem->data.raw_string.str[0] == '"')
-		i++;
 	while (elem->data.raw_string.str[i])
 	{
 		if (elem->data.raw_string.str[i] != '\\' || last_backslash)
@@ -305,13 +304,10 @@ t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state,
 			last_backslash = true;
 		i++;
 	}
-	if (elem->data.raw_string.len >= 2 && elem->data.raw_string.str[elem->data.raw_string.len - 1] == '"' &&
-		elem->data.raw_string.str[elem->data.raw_string.len - 2] == '\\')
-		string_pop(&ret);
-	return (vec_str_push(out, ret.buf), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
 }
 
-t_error _ast_get_str__raw(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__raw(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	if (elem == NULL || state == NULL || out == NULL || elem->kind != AST_RAW_STRING)
 		return (ERROR);
@@ -324,11 +320,29 @@ t_error _ast_get_str__raw(t_ast_node elem, t_word_iterator *state, t_vec_str *ou
 	return (ERROR);
 }
 
+t_str _get_ifs_value(t_state *state)
+{
+	t_str  ifs;
+	t_str *ifs_entry;
+	t_str  ifs_key;
+
+	ifs_key = "IFS";
+	ifs = NULL;
+	ifs_entry = hmap_env_get(state->env, (t_str *)&ifs_key);
+	if (ifs_entry != NULL)
+		ifs = *ifs_entry;
+	if (ifs == NULL)
+		ifs = " \t\n";
+	return (ifs);
+}
+/*
 t_error _split_ifs_expansion(t_ast_word_kind wkind, t_state *state, t_ast_expansion *exp, t_vec_str *out)
 {
-	t_str			   ifs;
 	const t_str		   ifs_key = "IFS";
+	t_str			   ifs;
 	t_expansion_result exp_out;
+	t_vec_str		   split_res;
+	t_str			   tmp;
 
 	if (exp == NULL || out == NULL)
 		return (ERROR);
@@ -339,16 +353,20 @@ t_error _split_ifs_expansion(t_ast_word_kind wkind, t_state *state, t_ast_expans
 		ifs = " \t\n";
 	if (run_expansion(exp, state, &exp_out))
 		return (ERROR);
-	if (wkind != AST_WORD_NO_QUOTE)
-	{
-		if (exp_out.exists && exp_out.value != NULL)
-			vec_str_push(out, str_clone(exp_out.value));
+	if (!(exp_out.exists && exp_out.value != NULL))
 		return (NO_ERROR);
-	}
+	if (wkind != AST_WORD_NO_QUOTE)
+		return (vec_str_push(out, str_clone(exp_out.value)), NO_ERROR);
+	if (str_split(exp_out.value, ifs, &split_res))
+		return (ERROR);
+	while (vec_str_pop_front(&split_res, &tmp))
+		vec_str_push(out, tmp);
+	vec_str_free(split_res);
 	return (NO_ERROR);
 }
+*/
 
-t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	t_expansion_result exp_ret;
 	t_vec_str		   words;
@@ -357,24 +375,27 @@ t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_s
 		return (ERROR);
 	if (run_expansion(&elem->data.expansion, state->state, &exp_ret))
 		return (ERROR);
-	return (vec_str_push(out, exp_ret.value), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = str_clone(exp_ret.value)}),
+			NO_ERROR);
 }
 
-t_error _ast_get_str__arimethic_expansion(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__arimethic_expansion(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	if (elem == NULL || state == NULL || out == NULL || elem->kind != AST_ARITHMETIC_EXPANSION)
 		return (ERROR);
+	// vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = str_clone(exp_out.value)});
 	return (ERROR);
 }
 
-t_error _ast_get_str__command_substitution(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str__command_substitution(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	if (elem == NULL || state == NULL || out == NULL || elem->kind != AST_COMMAND_SUBSTITUTION)
 		return (ERROR);
+	// vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = str_clone(exp_out.value)});
 	return (ERROR);
 }
 
-t_error _ast_get_str(t_ast_node elem, t_word_iterator *state, t_vec_str *out)
+t_error _ast_get_str(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
 	if (elem == NULL || state == NULL || out == NULL)
 		return (ERROR);
@@ -398,6 +419,109 @@ void _run_word_into_str(t_usize idx, t_ast_node *elem, t_word_iterator *state)
 		return;
 	if (_ast_get_str(*elem, state, &state->res.value))
 		return;
+}
+
+t_error _exp_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	t_expansion_result res;
+	t_vec_str		   splitted;
+	t_str			   tmp;
+
+	if (self == NULL || state == NULL || append == NULL || self->kind == AST_EXPANSION)
+		return (ERROR);
+	if (run_expansion(&self->data.expansion, state, &res))
+		return (ERROR);
+	if (res.value == NULL)
+		return (NO_ERROR);
+	if (str_split(res.value, _get_ifs_value(state), &splitted))
+		return (ERROR);
+	while (vec_str_pop_front(&splitted, &tmp))
+		vec_str_push(append, tmp);
+	vec_str_free(splitted);
+	return (NO_ERROR);
+}
+
+t_error _arith_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	if (self == NULL || state == NULL || append == NULL || self->kind == AST_ARITHMETIC_EXPANSION)
+		return (ERROR);
+	return (NO_ERROR);
+}
+
+t_error _cmd_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	if (self == NULL || state == NULL || append == NULL || self->kind == AST_COMMAND_SUBSTITUTION)
+		return (ERROR);
+	/*
+	if (str_split(res.value, _get_ifs_value(state), &splitted))
+		return (ERROR);
+	while (vec_str_pop_front(&splitted, &tmp))
+		vec_str_push(append, tmp);
+	vec_str_free(splitted);
+	*/
+	return (ERROR);
+}
+
+t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	t_word_result res;
+	t_vec_str	  splitted;
+	t_string	  tmp;
+	t_usize		  i;
+	t_str		  ifs;
+
+	if (self == NULL || state == NULL || append == NULL || self->kind == AST_WORD)
+		return (ERROR);
+	if (run_word(&self->data.word, state, &res))
+		return (ERROR);
+	if (res.kind == AST_WORD_NO_QUOTE)
+	{
+		tmp = string_new(1024);
+		i = 0;
+		while (i < res.value.len)
+		{
+			if (!res.value.buffer[i].do_expand)
+				string_push(&tmp, res.value.buffer[i].value);
+			else
+			{
+				ifs = _get_ifs_value(state);
+				while (*ifs != '\0' && str_find_chr(res.value.buffer[i].value, *ifs) == NULL)
+					ifs++;
+				if (*ifs == '\0')
+					string_push(&tmp, res.value.buffer[i].value);
+				else
+				{
+					if (str_split(res.value.buffer[i].value, ifs, &splitted))
+						return (ERROR);
+				}
+			}
+		}
+		vec_str_push(append, tmp.buf);
+	}
+	else
+	{
+		tmp = string_new(1024);
+		i = 0;
+		while (i < res.value.len)
+			string_push(&tmp, res.value.buffer[i++].value);
+		vec_str_push(append, tmp.buf);
+	}
+	return (NO_ERROR);
+}
+
+t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	if (self == NULL || state == NULL || append == NULL)
+		return (ERROR);
+	if (self->kind == AST_EXPANSION)
+		return (_exp_into_str(self, state, append));
+	if (self->kind == AST_ARITHMETIC_EXPANSION)
+		return (_arith_into_str(self, state, append));
+	if (self->kind == AST_COMMAND_SUBSTITUTION)
+		return (_cmd_into_str(self, state, append));
+	if (self->kind == AST_WORD)
+		return (_word_into_str(self, state, append));
+	return (ERROR);
 }
 
 // End Internals funcs
@@ -464,6 +588,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 	i = 0;
 	while (i < command->cmd_word.len)
 	{
+
 		i++;
 	}
 
@@ -472,17 +597,20 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out)
 {
-	t_word_iterator iter_state;
+	t_word_iterator	 iter_state;
+	t_vec_str		 tmp;
+	t_str			 tmp_str;
+	t_expandable_str s;
 
 	if (word == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	iter_state.res.value = vec_str_new(64, (void (*)())mem_free);
+	iter_state.res.value = vec_estr_new(64, free_expandable_str);
 	iter_state.res.has_error = false;
 	iter_state.res.kind = word->kind;
 	iter_state.state = state;
 	vec_ast_iter(&word->inner, (void (*)())_run_word_into_str, &iter_state);
 	if (iter_state.res.has_error)
-		return (vec_str_free(iter_state.res.value), ERROR);
+		return (vec_estr_free(iter_state.res.value), ERROR);
 	return (*out = iter_state.res, NO_ERROR);
 }
 

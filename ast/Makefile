@@ -85,6 +85,6 @@ build_filelist:
 	@printf '%-78s\\\n' "SRC_FILES =" > Filelist.$(ANAME).mk
 	@tree src -ifF | rg 'src/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
 	@echo "" >> Filelist.$(ANAME).mk
-	@echo -e "$(COL_GRAY) Populating $(COL_GREEN) Filelist.$(ANAME).mk$(END)"
+	@echo -e '$(COL_GRAY) Populating $(COL_GREEN) Filelist.$(ANAME).mk$(END)'
 
 -include $(DEPS)

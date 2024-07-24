@@ -62,3 +62,11 @@ replace.C__TYPENAME__ = "t_ast_node"
 replace.C__TYPEHEADER__ = '#include "ast/ast_forward_def.h"'
 replace.C__PREFIX__ = "ast"
 replace.C__PREFIXUP__ = "AST"
+
+[[create.vec]]
+sources_output = "src/vec/C__PREFIX__/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_expandable_str"
+replace.C__TYPEHEADER__ = '#include "exec/_tuple_expanded_str.h"'
+replace.C__PREFIX__ = "estr"
+replace.C__PREFIXUP__ = "ESTR"

@@ -101,6 +101,6 @@ build_filelist:
 	@printf '%-78s\\\n' "GEN_FILES =" >> Filelist.$(ANAME).mk
 	@tree $(GEN_DIR) -ifF | rg '$(GEN_DIR)/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
 	@echo "" >> Filelist.$(ANAME).mk
-	@echo -e "$(GREY) Populating $(GREEN) Filelist.$(ANAME).mk$(END)"
+	@echo -e '$(GREY) Populating $(GREEN) Filelist.$(ANAME).mk$(END)'
 
 -include	$(DEP)

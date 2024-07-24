@@ -342,6 +342,9 @@ t_ast_node ast_alloc(t_ast_node_kind kind)
 	{
 		ret->data.raw_string.len = 0;
 		ret->data.raw_string.str = NULL;
+		ret->data.raw_string.kind = AST_WORD_NO_QUOTE;
+		ret->data.raw_string.start = true;
+		ret->data.raw_string.end = true;
 	}
 	if (kind == AST_SUBSHELL)
 	{
@@ -1683,6 +1686,8 @@ t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *o
 	temp->data.raw_string.str = temp_str;
 	temp->data.raw_string.len = str_len(temp_str);
 	temp->data.raw_string.kind = AST_WORD_SINGLE_QUOTE;
+	temp->data.raw_string.start = true;
+	temp->data.raw_string.end = true;
 	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
 	vec_ast_push(&ret->data.word.inner, temp);
 	return (*out = ret, NO_ERROR);
