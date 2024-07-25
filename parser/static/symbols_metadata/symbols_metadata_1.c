@@ -119,7 +119,7 @@ void	symbols_metadata_8(t_symbols_metadata_array *v)
 
 void	symbols_metadata_9(t_symbols_metadata_array *v)
 {
-	v->a[alias_sym_statements] = sym_metadata(false, true, false);
+	v->a[alias_sym_statements] = sym_metadata(false, false, false);
 }
 
 /* EOF symbols_metadata_1.c */
