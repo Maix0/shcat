@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/24 14:41:50 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/24 21:25:38 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
 
 # TODO: ADD THIS WHEN FINISHING THIS:
-CFLAGS_ADDITIONAL += -DNVALGRIND
+# CFLAGS_ADDITIONAL += -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL += -DPRINT_BACKTRACE
