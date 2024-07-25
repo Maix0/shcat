@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/23 15:16:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/25 11:05:38 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,16 @@ void ast_print_node_function_definition(t_ast_node self);
 /*^^^   DONE   ^^^*/
 /*vvv NOT DONE vvv*/
 
+
+void ast_print_node_if(t_ast_node self) NOT_DONE;
 void ast_print_node_case(t_ast_node self) NOT_DONE;
 void ast_print_node_case_item(t_ast_node self) NOT_DONE;
 void ast_print_node_elif(t_ast_node self) NOT_DONE;
 void ast_print_node_else(t_ast_node self) NOT_DONE;
 void ast_print_node_for(t_ast_node self) NOT_DONE;
-void ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
-void ast_print_node_if(t_ast_node self) NOT_DONE;
 void ast_print_node_until(t_ast_node self) NOT_DONE;
 void ast_print_node_while(t_ast_node self) NOT_DONE;
+void ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
 
 /// HELPER_FUNCS
 
@@ -95,6 +96,12 @@ void _print_term(t_ast_terminator_kind term)
 }
 
 /// IMPL
+
+// void ast_print_node_if(t_ast_node self)
+// {
+// 	
+// }
+
 void ast_print_node_arithmetic_expansion(t_ast_node self)
 {
 	if (self == NULL)
@@ -160,9 +167,7 @@ void ast_print_node_pipeline(t_ast_node self)
 	while (i < self->data.pipeline.suffixes_redirections.len)
 	{
 		printf(" ");
-		ast_print_node(self->data.pipeline.suffixes_redirections.buffer[i++]);
-	}
-	_print_term(self->data.pipeline.term);
+		ast_print_node(self->data.pipeline.suffixes_redirections.buffer[i++]); } _print_term(self->data.pipeline.term);
 }
 
 void ast_print_node_list(t_ast_node self)
