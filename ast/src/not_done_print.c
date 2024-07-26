@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:00:25 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/26 12:58:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/26 13:01:18 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,3 @@ void	ast_print_node_for(t_ast_node self) NOT_DONE;
 void	ast_print_node_until(t_ast_node self) NOT_DONE;
 void	ast_print_node_while(t_ast_node self) NOT_DONE;
 void	ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
-
