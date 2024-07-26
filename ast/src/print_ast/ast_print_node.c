@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/function_declaration.h"
+#include "ast/_function_declaration.h"
 
 void	ast_print_node_variable_assignment(t_ast_node self)
 {

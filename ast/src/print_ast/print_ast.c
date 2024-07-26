@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/function_declaration.h"
+#include "ast/_function_declaration.h"
 
 /*
 t_ast_arithmetic_expansion arithmetic_expansion;
