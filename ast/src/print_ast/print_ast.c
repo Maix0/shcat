@@ -62,7 +62,7 @@ void	ast_print_node(t_ast_node self)
 	if (self->kind == AST_ELSE)
 		return (ast_print_node_else(self));
 	if (self->kind == AST_EMPTY)
-		return (ast_print_node_empty(self));
+		return ;
 	if (self->kind == AST_EXPANSION)
 		return (ast_print_node_expansion(self));
 	if (self->kind == AST_EXTGLOB)

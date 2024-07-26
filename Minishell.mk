@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/24 21:25:38 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/26 13:52:19 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,10 @@ BUILD_DIR ?= $(shell realpath ./build/)
 # CFLAGS_ADDITIONAL += -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
-CFLAGS_ADDITIONAL += -DPRINT_BACKTRACE
-CFLAGS_ADDITIONAL += -gcolumn-info
+CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE
+CFLAGS_ADDITIONAL	+= -gcolumn-info
+CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
+
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
@@ -59,14 +61,14 @@ LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
 all:
-	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libme.a
-	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libaq.a
-	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libast.a
-	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libexec.a
-	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libline.a
-	@$(MAKE) -C ./parser/ -f ./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libgmr.a
-	@$(MAKE) -C ./parser/ -f ./Parser.mk	"LIB_NAME=$(shell realpath ./parser)/"		"BUILD_DIR=$(BUILD_DIR)" "CFLAGS_ADDITIONAL=$(CFLAGS_ADDITIONAL)"	libparser.a
-	@$(MAKE) -f./Minishell.mk $(NAME)
+	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		libme.a
+	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	libaq.a
+	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			libast.a
+	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		libexec.a
+	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		libline.a
+	@$(MAKE) -C ./parser/ -f ./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		libgmr.a
+	@$(MAKE) -C ./parser/ -f ./Parser.mk	"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
+	@$(MAKE) -f./Minishell.mk 															$(NAME)
 
 
 # Bonus (make bonus)

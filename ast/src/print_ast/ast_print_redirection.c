@@ -12,7 +12,10 @@
 
 #include "../../include/function_declaration.h"
 
-void	ast_print_node_file_redirection_heredoc(t_ast_node self);
+void	ast_print_node_file_redirection_heredoc(t_ast_node self)
+{
+	(void)(self);
+}
 //{
 //	if (self->data.file_redirection.op == AST_REDIR_HEREDOC)
 //		printf("<<");
