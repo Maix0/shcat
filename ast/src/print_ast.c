@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/25 11:05:38 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/26 11:36:30 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,7 @@
 #include "me/types.h"
 #include <stdio.h>
 
-void	ast_print_node(t_ast_node self);
-
-#define NOT_DONE                                                                                                                           \
-	{                                                                                                                                      \
-		printf("function `%s` isn't done !\n", __func__);                                                                                  \
-		(void)(self);                                                                                                                      \
-	}
+#include "../include/function_declaration.h"
 
 /*
 t_ast_arithmetic_expansion arithmetic_expansion;
@@ -51,42 +45,15 @@ t_ast_while				   while_;
 t_ast_word				   word;
 */
 
-void ast_print_node_command(t_ast_node self);
-void ast_print_node_command_substitution(t_ast_node self);
-void ast_print_node_compound_statement(t_ast_node self);
-void ast_print_node_expansion(t_ast_node self);
-void ast_print_node_extglob(t_ast_node self);
-void ast_print_node_file_redirection(t_ast_node self);
-void ast_print_node_list(t_ast_node self);
-void ast_print_node_pipeline(t_ast_node self);
-void ast_print_node_program(t_ast_node self);
-void ast_print_node_raw_string(t_ast_node self);
-void ast_print_node_regex(t_ast_node self);
-void ast_print_node_subshell(t_ast_node self);
-void ast_print_node_variable_assignment(t_ast_node self);
-void ast_print_node_word(t_ast_node self);
-void ast_print_node_function_definition(t_ast_node self);
 
 /*^^^   DONE   ^^^*/
-/*vvv NOT DONE vvv*/
-
-
-void ast_print_node_if(t_ast_node self) NOT_DONE;
-void ast_print_node_case(t_ast_node self) NOT_DONE;
-void ast_print_node_case_item(t_ast_node self) NOT_DONE;
-void ast_print_node_elif(t_ast_node self) NOT_DONE;
-void ast_print_node_else(t_ast_node self) NOT_DONE;
-void ast_print_node_for(t_ast_node self) NOT_DONE;
-void ast_print_node_until(t_ast_node self) NOT_DONE;
-void ast_print_node_while(t_ast_node self) NOT_DONE;
-void ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
 
 /// HELPER_FUNCS
 
-void _print_term(t_ast_terminator_kind term)
+void	_print_term(t_ast_terminator_kind term)
 {
 	if (term == AST_TERM_NONE)
-		return;
+		return ;
 	if (term == AST_TERM_SEMI)
 		printf(";");
 	if (term == AST_TERM_DOUBLE_SEMI)
@@ -97,12 +64,12 @@ void _print_term(t_ast_terminator_kind term)
 
 /// IMPL
 
-// void ast_print_node_if(t_ast_node self)
+// void	ast_print_node_if(t_ast_node self)
 // {
 // 	
 // }
 
-void ast_print_node_arithmetic_expansion(t_ast_node self)
+void	ast_print_node_arithmetic_expansion(t_ast_node self)
 {
 	if (self == NULL)
 		return ;
@@ -113,13 +80,14 @@ void ast_print_node_arithmetic_expansion(t_ast_node self)
 	printf("))");
 }
 
-void ast_print_node_function_definition(t_ast_node self)
+void	ast_print_node_function_definition(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
+
 	if (self == NULL)
 		return ;
 	if (self->kind != AST_FUNCTION_DEFINITION)
-		return;
+		return ;
 	printf("%s()", self->data.function_definition.name);
 	i = 0;
 	while (i < self->data.function_definition.body.len)
@@ -129,12 +97,12 @@ void ast_print_node_function_definition(t_ast_node self)
 	}
 }
 
-void ast_print_node_variable_assignment(t_ast_node self)
+void	ast_print_node_variable_assignment(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_VARIABLE_ASSIGNMENT)
-		return;
+		return ;
 	if (self->data.variable_assignment.bang)
 		printf("! ");
 	printf("%s=", self->data.variable_assignment.name);
@@ -143,14 +111,14 @@ void ast_print_node_variable_assignment(t_ast_node self)
 	printf(" ");
 }
 
-void ast_print_node_pipeline(t_ast_node self)
+void	ast_print_node_pipeline(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_PIPELINE)
-		return;
+		return ;
 	if (self->data.pipeline.bang)
 		printf("! ");
 	if (self->data.pipeline.statements.len != 0)
@@ -167,17 +135,19 @@ void ast_print_node_pipeline(t_ast_node self)
 	while (i < self->data.pipeline.suffixes_redirections.len)
 	{
 		printf(" ");
-		ast_print_node(self->data.pipeline.suffixes_redirections.buffer[i++]); } _print_term(self->data.pipeline.term);
+		ast_print_node(self->data.pipeline.suffixes_redirections.buffer[i++]);
+	}
+	_print_term(self->data.pipeline.term);
 }
 
-void ast_print_node_list(t_ast_node self)
+void	ast_print_node_list(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_LIST)
-		return;
+		return ;
 	ast_print_node(self->data.list.left);
 	if (self->data.list.op == AST_LIST_OR)
 		printf(" || ");
@@ -193,24 +163,23 @@ void ast_print_node_list(t_ast_node self)
 	_print_term(self->data.list.term);
 }
 
-void ast_print_node_extglob(t_ast_node self)
+void	ast_print_node_extglob(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_EXTGLOB)
-		return;
+		return ;
 	printf("%s", self->data.extglob.pattern);
 }
 
-void ast_print_node_file_redirection(t_ast_node self)
+void	ast_print_node_file_redirection(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_FILE_REDIRECTION)
-		return;
+		return ;
 	if (self->data.file_redirection.input != NULL)
 		ast_print_node(self->data.file_redirection.input);
-
 	if (self->data.file_redirection.op == AST_REDIR_INPUT)
 		printf("<");
 	if (self->data.file_redirection.op == AST_REDIR_OUTPUT)
@@ -229,19 +198,18 @@ void ast_print_node_file_redirection(t_ast_node self)
 	// 	printf("<<");
 	// if (self->data.file_redirection.op == AST_REDIR_HEREDOC_INDENT)
 	// 	printf("<<-");
-
 	if (self->data.file_redirection.output != NULL)
 		ast_print_node(self->data.file_redirection.output);
 }
 
-void ast_print_node_expansion(t_ast_node self)
+void	ast_print_node_expansion(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_EXPANSION)
-		return;
+		return ;
 	printf("${");
 	if (self->data.expansion.len_operator)
 		printf("#");
@@ -272,14 +240,14 @@ void ast_print_node_expansion(t_ast_node self)
 	printf("}");
 }
 
-void ast_print_node_command_substitution(t_ast_node self)
+void	ast_print_node_command_substitution(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_COMMAND_SUBSTITUTION)
-		return;
+		return ;
 	printf("$(");
 	i = 0;
 	while (i < self->data.command_substitution.body.len)
@@ -289,14 +257,14 @@ void ast_print_node_command_substitution(t_ast_node self)
 	printf(")");
 }
 
-void ast_print_node_command(t_ast_node self)
+void	ast_print_node_command(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_COMMAND)
-		return;
+		return ;
 	if (self->data.command.bang)
 		printf("! ");
 	i = 0;
@@ -320,22 +288,22 @@ void ast_print_node_command(t_ast_node self)
 	_print_term(self->data.command.term);
 }
 
-void ast_print_node_empty(t_ast_node self)
+void	ast_print_node_empty(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_EMPTY)
-		return;
+		return ;
 }
 
-void ast_print_node_compound_statement(t_ast_node self)
+void	ast_print_node_compound_statement(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_COMPOUND_STATEMENT)
-		return;
+		return ;
 	i = 0;
 	if (self->data.compound_statement.bang)
 		printf("! ");
@@ -356,14 +324,14 @@ void ast_print_node_compound_statement(t_ast_node self)
 	_print_term(self->data.compound_statement.term);
 }
 
-void ast_print_node_subshell(t_ast_node self)
+void	ast_print_node_subshell(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_SUBSHELL)
-		return;
+		return ;
 	i = 0;
 	if (self->data.subshell.bang)
 		printf("! ");
@@ -384,14 +352,14 @@ void ast_print_node_subshell(t_ast_node self)
 	_print_term(self->data.subshell.term);
 }
 
-void ast_print_node_program(t_ast_node self)
+void	ast_print_node_program(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_PROGRAM)
-		return;
+		return ;
 	i = 0;
 	while (i < self->data.program.body.len)
 	{
@@ -400,15 +368,15 @@ void ast_print_node_program(t_ast_node self)
 	}
 }
 
-void ast_print_node_word(t_ast_node self)
+void	ast_print_node_word(t_ast_node self)
 {
-	t_usize i;
+	t_usize	i;
 	t_str	quote_type;
 
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_WORD)
-		return;
+		return ;
 	quote_type = "";
 	if (self->data.word.kind == AST_WORD_SINGLE_QUOTE)
 		quote_type = "\'";
@@ -421,25 +389,25 @@ void ast_print_node_word(t_ast_node self)
 	printf("%s", quote_type);
 }
 
-void ast_print_node_regex(t_ast_node self)
+void	ast_print_node_regex(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_REGEX)
-		return;
+		return ;
 	printf("%s", self->data.regex.pattern);
 }
 
-void ast_print_node_raw_string(t_ast_node self)
+void	ast_print_node_raw_string(t_ast_node self)
 {
 	if (self == NULL)
-		return;
+		return ;
 	if (self->kind != AST_RAW_STRING)
-		return;
+		return ;
 	printf("%s", self->data.raw_string.str);
 }
 
-void ast_print_node(t_ast_node self)
+void	ast_print_node(t_ast_node self)
 {
 	if (self == NULL)
 		return ((void)printf("ast == NULL\n"));
