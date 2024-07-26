@@ -183,9 +183,9 @@ module.exports = grammar({
 
 		if_statement: $ => seq(
 			'if',
-			field('cond', alias($._terminated_statement, $.statements)),
+			field('cond', $._terminated_statement),
 			'then',
-			field('body', alias(optional($._terminated_statement), $.statements)),
+			field('body', optional($._terminated_statement),
 			field('elif', repeat($.elif_clause)),
 			field('else', optional($.else_clause)),
 			'fi',
@@ -193,14 +193,14 @@ module.exports = grammar({
 
 		elif_clause: $ => seq(
 			'elif',
-			field('cond', alias($._terminated_statement, $.statements)),
+			field('cond', $._terminated_statement),
 			'then',
-			field('body', alias(optional($._terminated_statement), $.statements)),
+			field('body', optional($._terminated_statement)),
 		),
 
 		else_clause: $ => seq(
 			'else',
-			field('body', alias(optional($._terminated_statement), $.statements)),
+			field('body', optional($._terminated_statement)),
 		),
 
 		case_statement: $ => seq(
@@ -222,7 +222,7 @@ module.exports = grammar({
 			repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
 			')',
 			repeat('\n'),
-			choice(field('body', alias($._statements, $.statements)),),
+			choice(field('body', $._statements),),
 			optional(';;')
 		),
 
@@ -232,7 +232,7 @@ module.exports = grammar({
 			repeat(seq('|', field('value', choice($._literal, $._extglob_blob)))),
 			')',
 			repeat('\n'),
-			choice(field('body', alias($._statements, $.statements))),
+			choice(field('body', $._statements)),
 			';;'
 		),
 
