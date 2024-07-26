@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/26 13:52:19 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/26 14:04:41 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,15 +17,6 @@ link_group = -Wl,--start-group $(1) -Wl,--end-group
 # Variables
 ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
-
-# TODO: ADD THIS WHEN FINISHING THIS:
-# CFLAGS_ADDITIONAL += -DNVALGRIND
-
-# TODO: REMOVE THIS WHEN FINISHING THIS:
-CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE
-CFLAGS_ADDITIONAL	+= -gcolumn-info
-CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
-
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E

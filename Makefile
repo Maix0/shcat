@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/07/24 12:21:26 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/26 14:04:45 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,14 @@ ifeq ($(shell uname), Darwin)
 	PMAKE = -j$(shell sysctl -n hw.ncpu)
 endif
 endif
+
+# TODO: ADD THIS WHEN FINISHING THIS:
+# CFLAGS_ADDITIONAL += -DNVALGRIND
+
+# TODO: REMOVE THIS WHEN FINISHING THIS:
+CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE
+CFLAGS_ADDITIONAL	+= -gcolumn-info
+CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
 
 # All (make all)
 all: 
