@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/24 18:53:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/26 14:43:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,36 +335,6 @@ t_str _get_ifs_value(t_state *state)
 		ifs = " \t\n";
 	return (ifs);
 }
-/*
-t_error _split_ifs_expansion(t_ast_word_kind wkind, t_state *state, t_ast_expansion *exp, t_vec_str *out)
-{
-	const t_str		   ifs_key = "IFS";
-	t_str			   ifs;
-	t_expansion_result exp_out;
-	t_vec_str		   split_res;
-	t_str			   tmp;
-
-	if (exp == NULL || out == NULL)
-		return (ERROR);
-	ifs = NULL;
-	if (hmap_env_get(state->env, (t_str *)&ifs_key))
-		ifs = *hmap_env_get(state->env, (t_str *)&ifs_key);
-	if (ifs == NULL)
-		ifs = " \t\n";
-	if (run_expansion(exp, state, &exp_out))
-		return (ERROR);
-	if (!(exp_out.exists && exp_out.value != NULL))
-		return (NO_ERROR);
-	if (wkind != AST_WORD_NO_QUOTE)
-		return (vec_str_push(out, str_clone(exp_out.value)), NO_ERROR);
-	if (str_split(exp_out.value, ifs, &split_res))
-		return (ERROR);
-	while (vec_str_pop_front(&split_res, &tmp))
-		vec_str_push(out, tmp);
-	vec_str_free(split_res);
-	return (NO_ERROR);
-}
-*/
 
 t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
@@ -435,7 +405,7 @@ t_error _exp_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		return (NO_ERROR);
 	if (str_split(res.value, _get_ifs_value(state), &splitted))
 		return (ERROR);
-	while (vec_str_pop_front(&splitted, &tmp))
+	while (!vec_str_pop_front(&splitted, &tmp))
 		vec_str_push(append, tmp);
 	vec_str_free(splitted);
 	return (NO_ERROR);
@@ -455,7 +425,7 @@ t_error _cmd_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	/*
 	if (str_split(res.value, _get_ifs_value(state), &splitted))
 		return (ERROR);
-	while (vec_str_pop_front(&splitted, &tmp))
+	while (!vec_str_pop_front(&splitted, &tmp))
 		vec_str_push(append, tmp);
 	vec_str_free(splitted);
 	*/
@@ -468,7 +438,10 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	t_vec_str	  splitted;
 	t_string	  tmp;
 	t_usize		  i;
+	t_usize		  j;
+	t_usize		  len;
 	t_str		  ifs;
+	t_str		  tmp_str;
 
 	if (self == NULL || state == NULL || append == NULL || self->kind == AST_WORD)
 		return (ERROR);
@@ -476,7 +449,9 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		return (ERROR);
 	if (res.kind == AST_WORD_NO_QUOTE)
 	{
-		tmp = string_new(1024);
+		tmp = string_new(64);
+		if (!vec_str_pop_front(&splitted, &tmp_str))
+			string_push(&tmp, tmp_str), str_free(tmp_str);
 		i = 0;
 		while (i < res.value.len)
 		{
@@ -491,8 +466,36 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 					string_push(&tmp, res.value.buffer[i].value);
 				else
 				{
+					ifs = _get_ifs_value(state);
 					if (str_split(res.value.buffer[i].value, ifs, &splitted))
 						return (ERROR);
+					if (!vec_str_pop_front(&splitted, &tmp_str))
+					{
+						if (str_find_chr(ifs, res.value.buffer[i].value[0]) == NULL)
+						{
+							string_push(&tmp, tmp_str), str_free(tmp_str);
+						}
+						else
+						{
+							vec_str_push(append, tmp.buf);
+							tmp = string_new(64);
+							string_push(&tmp, tmp_str);
+							str_free(tmp_str);
+						}
+						j = 0;
+						while (j + 1 < splitted.len)
+						{
+							if (vec_str_pop_front(&splitted, &tmp_str))
+								return (ERROR);
+							vec_str_push(append, tmp_str);
+							j++;
+						}
+						len = str_len(res.value.buffer[i].value);
+						if (len != 0 && str_find_chr(ifs, res.value.buffer[i].value[len - 1]) == NULL)
+							string_push(&tmp, tmp_str), str_free(tmp_str);
+						else
+							vec_str_push(append, tmp_str);
+					}
 				}
 			}
 		}
@@ -500,7 +503,7 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	}
 	else
 	{
-		tmp = string_new(1024);
+		tmp = string_new(64);
 		i = 0;
 		while (i < res.value.len)
 			string_push(&tmp, res.value.buffer[i++].value);
