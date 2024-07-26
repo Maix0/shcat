@@ -6,23 +6,22 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:30:24 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/26 11:38:39 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/26 12:59:29 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FUNCTION_DECLARATION_H
 # define FUNCTION_DECLARATION_H
 
-#include "ast/ast.h"
-#include "me/types.h"
-#include <stdio.h>
+# include "ast/ast.h"
+# include "me/types.h"
+# include <stdio.h>
 
-#define NOT_DONE                                                                                                                           \
-	{                                                                                                                                      \
-		printf("function `%s` isn't done !\n", __func__);                                                                                  \
-		(void)(self);                                                                                                                      \
+#define NOT_DONE                                                       \
+	{                                                                  \
+		printf("function `%s` isn't done !\n", __func__);              \
+		(void)(self);                                                  \
 	}
-
 
 void	ast_print_node(t_ast_node self);
 
@@ -50,15 +49,15 @@ void	ast_print_node_list(t_ast_node self);
 /*^^^   DONE   ^^^*/
 /*vvv NOT DONE vvv*/
 
-void	ast_print_node_if(t_ast_node self) NOT_DONE;
-void	ast_print_node_case(t_ast_node self) NOT_DONE;
-void	ast_print_node_case_item(t_ast_node self) NOT_DONE;
-void	ast_print_node_elif(t_ast_node self) NOT_DONE;
-void	ast_print_node_else(t_ast_node self) NOT_DONE;
-void	ast_print_node_for(t_ast_node self) NOT_DONE;
-void	ast_print_node_until(t_ast_node self) NOT_DONE;
-void	ast_print_node_while(t_ast_node self) NOT_DONE;
-void	ast_print_node_heredoc_redirection(t_ast_node self) NOT_DONE;
+void	ast_print_node_if(t_ast_node self);
+void	ast_print_node_case(t_ast_node self);
+void	ast_print_node_case_item(t_ast_node self);
+void	ast_print_node_elif(t_ast_node self);
+void	ast_print_node_else(t_ast_node self);
+void	ast_print_node_for(t_ast_node self);
+void	ast_print_node_until(t_ast_node self);
+void	ast_print_node_while(t_ast_node self);
+void	ast_print_node_heredoc_redirection(t_ast_node self);
 
 /// HELPER_FUNCS
 

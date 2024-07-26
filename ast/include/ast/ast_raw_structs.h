@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/24 15:40:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/26 12:29:16 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -401,7 +401,7 @@ struct s_ast_heredoc_redirection
 /// 	$@
 /// ```
 
-struct  s_ast_expansion
+struct	s_ast_expansion
 {
 	t_str						var_name;
 	bool						len_operator;
