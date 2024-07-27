@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/27 21:21:17 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/27 22:51:50 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,26 +33,26 @@
 
 typedef t_error	(*t_arith_op_func)(t_ast_node self, t_state *state, t_i64 *out);
 
-t_error	run_arithmetic_binary(t_ast_arithmetic_binary *arithmetic_binary, \
-		t_state *state, t_i64 *out);
-t_error	run_arithmetic_literal(t_ast_arithmetic_literal *arithmetic_literal, \
-		t_state *state, t_i64 *out);
-t_error	run_arithmetic_postfix(t_ast_arithmetic_postfix *arithmetic_postfix, \
-		t_state *state, t_i64 *out);
-t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
-		t_state *state, t_i64 *out);
-t_error	run_arithmetic_unary(t_ast_arithmetic_unary *arithmetic_unary, \
-		t_state *state, t_i64 *out);
-t_error	run_arithmetic_expansion( \
-		t_ast_arithmetic_expansion *arithmetic_expansion, \
-		t_state *state, t_i64 *out);
+t_error		run_arithmetic_binary( \
+t_ast_arithmetic_binary *arithmetic_binary, t_state *state, t_i64 *out);
+t_error		run_arithmetic_literal( \
+t_ast_arithmetic_literal *arithmetic_literal, t_state *state, t_i64 *out);
+t_error		run_arithmetic_postfix( \
+t_ast_arithmetic_postfix *arithmetic_postfix, t_state *state, t_i64 *out);
+t_error		run_arithmetic_ternary( \
+t_ast_arithmetic_ternary *arithmetic_ternary, t_state *state, t_i64 *out);
+t_error		run_arithmetic_unary( \
+t_ast_arithmetic_unary *arithmetic_unary, t_state *state, t_i64 *out);
+t_error		run_arithmetic_expansion( \
+t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 
-t_error	_get_node_number(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_get_node_number(t_ast_node self, t_state *state, t_i64 *out);
 
-t_error	_binary_op_add(t_ast_node self, t_state *state, t_i64 *out);
-t_error	_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out);
-t_error	_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out);
-t_error	_binary_op_div(t_ast_node self, t_state *state, t_i64 *out);
-t_error	_binary_op_mod(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_add(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_div(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_mod(t_ast_node self, t_state *state, t_i64 *out);
+t_ast_node	_arith_binary_to_ast_node(t_ast_arithmetic_binary *self);
 
 #endif
