@@ -362,7 +362,7 @@ module.exports = grammar({
 			$.arithmetic_expansion,
 		),
 
-		arithmetic_expansion: $ => seq('$((', optional($._arithmetic_expression), '))'),
+		arithmetic_expansion: $ => seq('$((', $._arithmetic_expression '))'),
 
 		_arithmetic_expression: $ => prec(1, choice(
 			$.arithmetic_literal,
@@ -371,7 +371,6 @@ module.exports = grammar({
 			$.arithmetic_binary_expression,
 			$.arithmetic_postfix_expression,
 			$.arithmetic_parenthesized_expression,
-			$.command_substitution,
 		)),
 
 		arithmetic_literal: $ => prec(1, choice(
