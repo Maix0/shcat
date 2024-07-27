@@ -1,4 +1,4 @@
 SRC_FILES =                                                                   \
-arith                                                                         \
+arith/arith                                                                   \
 run_ast                                                                       \
 
