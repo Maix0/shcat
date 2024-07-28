@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:23:07 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/27 22:54:43 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/28 14:37:34 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_error	_binary_op_add(t_ast_node self, t_state *state, t_i64 *out)
 	if (_get_node_number(self->data.arithmetic_binary.rhs, state, &rhs))
 		return (ERROR);
 	*out = lhs + rhs;
-	if (*out - lhs != rhs || *out - rhs != lhs)
-		return (ERROR);
 	return (NO_ERROR);
 }
 
@@ -43,8 +41,6 @@ t_error	_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out)
 	if (_get_node_number(self->data.arithmetic_binary.rhs, state, &rhs))
 		return (ERROR);
 	*out = lhs - rhs;
-	if (*out + lhs != rhs || *out + rhs != lhs)
-		return (ERROR);
 	return (NO_ERROR);
 }
 
@@ -61,8 +57,6 @@ t_error	_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out)
 	if (_get_node_number(self->data.arithmetic_binary.rhs, state, &rhs))
 		return (ERROR);
 	*out = lhs * rhs;
-	if (*out / lhs != rhs || *out / rhs != lhs)
-		return (ERROR);
 	return (NO_ERROR);
 }
 
@@ -78,9 +72,9 @@ t_error	_binary_op_div(t_ast_node self, t_state *state, t_i64 *out)
 		return (ERROR);
 	if (_get_node_number(self->data.arithmetic_binary.rhs, state, &rhs))
 		return (ERROR);
-	*out = lhs / rhs;
-	if (*out * rhs != lhs)
+	if (rhs == 0)
 		return (ERROR);
+	*out = lhs / rhs;
 	return (NO_ERROR);
 }
 
@@ -96,8 +90,8 @@ t_error	_binary_op_mod(t_ast_node self, t_state *state, t_i64 *out)
 		return (ERROR);
 	if (_get_node_number(self->data.arithmetic_binary.rhs, state, &rhs))
 		return (ERROR);
-	*out = lhs % rhs;
-	if (*out > rhs)
+	if (rhs == 0)
 		return (ERROR);
+	*out = lhs % rhs;
 	return (NO_ERROR);
 }

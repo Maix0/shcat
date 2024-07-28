@@ -6,11 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/27 22:58:45 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/28 14:44:24 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./arith.h"
+#include "me/types.h"
 
 /// ADD OPERATOR STUFF
 t_error	_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
@@ -54,6 +55,26 @@ t_ast_node	_arith_binary_to_ast_node(t_ast_arithmetic_binary *self)
 					struct s_ast_node, data.arithmetic_binary)));
 }
 
+// this is black magic don't worry
+t_ast_node	_arith_literal_to_ast_node(t_ast_arithmetic_literal *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr - offsetof(\
+					struct s_ast_node, data.arithmetic_literal)));
+}
+
+// this is black magic don't worry
+t_ast_node	_arith_expansion_to_ast_node(t_ast_arithmetic_expansion *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr \
+		- offsetof(struct s_ast_node, data.arithmetic_expansion)));
+}
+
 /// AFTER 65
 /// the from node needs to change
 /// if they find a raw_string, it is a variable expansion,
@@ -69,6 +90,20 @@ t_error	run_arithmetic_literal(t_ast_arithmetic_literal *arithmetic_literal, \
 		return (str_to_i64(\
 				arithmetic_literal->value->data.raw_string.str, 10, out));
 	return (ERROR);
+}
+
+t_error	run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, \
+		t_state *state, t_i64 *out)
+{
+	t_arith_op_func	func;
+	t_i64			ret;
+
+	if (arithmetic_expansion == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_get_node_number(_arith_expansion_to_ast_node(arithmetic_expansion), state, &ret))
+		return (ERROR);
+	*out = ret;
+	return (NO_ERROR);
 }
 
 t_error	run_arithmetic_binary(t_ast_arithmetic_binary *arithmetic_binary, \
