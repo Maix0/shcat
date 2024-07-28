@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 14:47:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/28 18:23:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ struct s_word_iterator
 	t_state		 *state;
 };
 
-t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
+t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 t_error run_command(t_ast_command *command, t_state *state, t_command_result *out);
+t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
 
-t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, void *out);
 t_error run_case_(t_ast_case *case_, t_state *state, void *out);
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out);
 t_error run_command_substitution(t_ast_command_substitution *command_substitution, t_state *state, void *out);
@@ -154,7 +154,7 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 	ret = (t_expansion_result){.exists = hmap_ret == NULL, .value = NULL};
 	if (ret.exists)
 		ret.value = str_clone(*hmap_ret);
-	*out = ret;
+	it @vogsphere .42paris.fr : vogsphere / intra - uuid - bb8bdf20 - 6897 - 4113 - 853a - e5b49f08d101 - 5871258 - shupper *out = ret;
 
 	return (NO_ERROR);
 }
@@ -532,8 +532,8 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
 t_error run_command(t_ast_command *command, t_state *state, t_command_result *out);
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
+t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 
-t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, void *out) NOT_DONE;
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
 t_error run_command_substitution(t_ast_command_substitution *command_substitution, t_state *state, void *out) NOT_DONE;
@@ -580,20 +580,94 @@ t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result 
 	return (*out = ret, NO_ERROR);
 }
 
+t_error _clone_env(const t_kv_env *kv, void *ctx, t_kv_env *out)
+{
+	(void)(ctx);
+
+	out->key = str_clone(kv->key);
+	out->val = str_clone(kv->val);
+	return (NO_ERROR);
+}
+
 t_error run_command(t_ast_command *command, t_state *state, t_command_result *out)
 {
-	t_vec_str	  args;
-	t_usize		  i;
+	t_vec_str	   args;
+	t_vec_str	   split;
+	t_vec_ast	   redirection;
+	t_usize		   i;
+	t_hashmap_env *env_bck;
+	t_ast_node	   tmp;
+	t_str		   tmp_str;
+
+	t_word_result	   word_res;
+	t_expansion_result exp_out;
+	t_i64			   arith_out;
 
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	args = vec_str_new(command->cmd_word.len, (void (*)(t_str))mem_free);
+	env_bck = state->env;
+	if (hmap_env_clone(env_bck, _clone_env, NULL, &state->env))
+		return (state->env = env_bck, ERROR);
+	args = vec_str_new(command->cmd_word.len, str_free);
+	redirection = vec_ast_new(command->suffixes_redirections.len, ast_free);
+	i = 0;
+	while (i < command->prefixes.len)
+	{
+		tmp = command->prefixes.buffer[i];
+		if (tmp->kind == AST_FILE_REDIRECTION || tmp->kind == AST_HEREDOC_REDIRECTION)
+			vec_ast_push(&redirection, tmp);
+		if (tmp->kind == AST_VARIABLE_ASSIGNMENT)
+		{
+			if (run_variable_assignment(&tmp->data.variable_assignment, state, NULL))
+				return (ERROR);
+		}
+		i++;
+	}
 	i = 0;
 	while (i < command->cmd_word.len)
 	{
-
+		tmp = command->cmd_word.buffer[i];
+		if (tmp->kind == AST_WORD)
+		{
+			if (_word_into_str(tmp, state, &args))
+				return (ERROR);
+		}
+		if (tmp->kind == AST_EXPANSION)
+		{
+			if (run_expansion(&tmp->data.expansion, state, &exp_out))
+				return (ERROR);
+			if (!(exp_out.exists && exp_out.value != NULL))
+				continue;
+			if (str_split(exp_out.value, _get_ifs_value(state), &split))
+				return (ERROR);
+			while (!vec_str_pop_front(&split, &tmp_str))
+				vec_str_push(&args, tmp_str);
+			vec_str_free(split);
+		}
+		if (tmp->kind == AST_ARITHMETIC_EXPANSION)
+		{
+			if (run_arithmetic_expansion(&tmp->data.arithmetic_expansion, state, &arith_out))
+				return (ERROR);
+			if (i64_to_str(arith_out, &tmp_str))
+				return (ERROR);
+			vec_str_push(&args, tmp_str);
+		}
+		if (tmp->kind == AST_COMMAND_SUBSTITUTION)
+		{
+			return (ERROR);
+		}
 		i++;
 	}
+	while (i < command->prefixes.len)
+	{
+		tmp = command->prefixes.buffer[i];
+		if (tmp->kind == AST_FILE_REDIRECTION || tmp->kind == AST_HEREDOC_REDIRECTION)
+			vec_ast_push(&redirection, tmp);
+		i++;
+	}
+	i = 0;
+	if (_spawn_cmd_and_run(args, redirection, state, out))
+		return (ERROR);
 
 	return (ERROR);
 }

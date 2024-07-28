@@ -273,13 +273,10 @@ module.exports = grammar({
 				field('redr', $.file_redirect),
 			)),
 			field('name', $.command_name),
-			choice(
-				repeat(choice(
-					field('arg', $._literal),
-					field('arg', alias($._bare_dollar, '$')),
-				)),
-				$.subshell,
-			),
+			repeat(choice(
+				field('arg', $._literal),
+				field('arg', alias($._bare_dollar, $.word)),
+			)),
 		)),
 
 		command_name: $ => $._literal,
