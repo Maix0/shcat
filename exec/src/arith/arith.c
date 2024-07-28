@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 14:44:24 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/28 19:26:01 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ t_error	_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
 		return (*out = _binary_op_mul, NO_ERROR);
 	if (op == ARITH_DIVIDE)
 		return (*out = _binary_op_div, NO_ERROR);
-	if (op == ARITH_MOD)
-		return (*out = _binary_op_mod, NO_ERROR);
 	return (ERROR);
 }
 
@@ -117,5 +115,29 @@ t_error	run_arithmetic_binary(t_ast_arithmetic_binary *arithmetic_binary, \
 		return (ERROR);
 	if (func(_arith_binary_to_ast_node(arithmetic_binary), state, out))
 		return (ERROR);
+	return (NO_ERROR);
+}
+
+t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
+		t_state *state, t_i64 *out)
+{
+	t_arith_op_func	func;
+	t_i64			cond;
+
+	if (arithmetic_ternary == NULL || state == NULL || out == NULL)
+		return (ERROR);
+
+	if (_get_node_number(arithmetic_ternary->condition, state, &cond))
+		return (ERROR);
+	if (cond != 0)
+	{
+		if (_get_node_number(arithmetic_ternary->then, state, out))
+			return (ERROR);
+	}
+	else
+	{
+		if (_get_node_number(arithmetic_ternary->else_, state, out))
+			return (ERROR);
+	}
 	return (NO_ERROR);
 }
