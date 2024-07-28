@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 18:23:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:16:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,6 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 	ret = (t_expansion_result){.exists = hmap_ret == NULL, .value = NULL};
 	if (ret.exists)
 		ret.value = str_clone(*hmap_ret);
-	it @vogsphere .42paris.fr : vogsphere / intra - uuid - bb8bdf20 - 6897 - 4113 - 853a - e5b49f08d101 - 5871258 - shupper *out = ret;
-
 	return (NO_ERROR);
 }
 
