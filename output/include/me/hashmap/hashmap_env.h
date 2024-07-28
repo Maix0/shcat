@@ -122,4 +122,13 @@ t_entry_env *hmap_env_get_entry(t_hashmap_env *hmap, t_usize hash, t_str *key, t
 /// @note The iteration can be stopped by returning an error code from the function
 t_error hmap_env_iter(t_hashmap_env *self, t_error (*func)(t_usize idx, const t_str *key, t_str *val, void *ctx), void *ctx);
 
+
+/// @brief Clone an entire hashmap, using the given function to duplicate the items
+/// @param self The hashmap
+/// @param func The function to call
+/// @param ctx The context to pass to the function
+/// @param out The cloned hashmap
+/// @return An error code
+t_error hmap_env_clone(t_hashmap_env *self, t_error (*clone)(const t_kv_env *val, void *ctx, t_kv_env *out), void *ctx, t_hashmap_env **out);
+
 #endif

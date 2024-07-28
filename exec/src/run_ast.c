@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/26 14:43:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/28 14:47:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -582,8 +582,8 @@ t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result 
 
 t_error run_command(t_ast_command *command, t_state *state, t_command_result *out)
 {
-	t_vec_str args;
-	t_usize	  i;
+	t_vec_str	  args;
+	t_usize		  i;
 
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);

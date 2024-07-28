@@ -122,4 +122,13 @@ t_entry_C__PREFIX__ *hmap_C__PREFIX___get_entry(t_hashmap_C__PREFIX__ *hmap, t_u
 /// @note The iteration can be stopped by returning an error code from the function
 t_error hmap_C__PREFIX___iter(t_hashmap_C__PREFIX__ *self, t_error (*func)(t_usize idx, const C__KEYTYPE__ *key, C__VALTYPE__ *val, void *ctx), void *ctx);
 
+
+/// @brief Clone an entire hashmap, using the given function to duplicate the items
+/// @param self The hashmap
+/// @param func The function to call
+/// @param ctx The context to pass to the function
+/// @param out The cloned hashmap
+/// @return An error code
+t_error hmap_C__PREFIX___clone(t_hashmap_C__PREFIX__ *self, t_error (*clone)(const t_kv_C__PREFIX__ *val, void *ctx, t_kv_C__PREFIX__ *out), void *ctx, t_hashmap_C__PREFIX__ **out);
+
 #endif
