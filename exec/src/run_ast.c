@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 19:16:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/28 19:19:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,6 +585,11 @@ t_error _clone_env(const t_kv_env *kv, void *ctx, t_kv_env *out)
 	out->key = str_clone(kv->key);
 	out->val = str_clone(kv->val);
 	return (NO_ERROR);
+}
+
+t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_command_result *out)
+{
+	return (ERROR);
 }
 
 t_error run_command(t_ast_command *command, t_state *state, t_command_result *out)
