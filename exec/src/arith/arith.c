@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/29 15:23:47 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/29 17:47:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,24 @@ t_error	_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
 		return (*out = _binary_op_mul, NO_ERROR);
 	if (op == ARITH_DIVIDE)
 		return (*out = _binary_op_div, NO_ERROR);
+	return (ERROR);
+}
+
+t_error	_postfix_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
+{
+	if (op == ARITH_INCREMENT)
+		return (*out = _postfix_op_decrement, NO_ERROR);
+	if (op == ARITH_DECREMENT)
+		return (*out = _postfix_op_decrement, NO_ERROR);
+	return (ERROR);
+}
+
+t_error	_unary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
+{
+	if (op == ARITH_INCREMENT)
+		return (*out = _prefix_op_decrement, NO_ERROR);
+	if (op == ARITH_DECREMENT)
+
 	return (ERROR);
 }
 
@@ -140,5 +158,39 @@ t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
 t_error	run_arithmetic_postfix( \
 t_ast_arithmetic_postfix *arithmetic_postfix, t_state *state, t_i64 *out)
 {
+	t_arith_op_func	func;
+
+	if (arithmetic_postfix == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_postfix_get_op(arithmetic_postfix->op, &func))
+		return (ERROR);
+	if (func(_arith_postfix_to_ast_node(arithmetic_postfix), state, out))
+		return (ERROR);
+	return (NO_ERROR);
+}
+
+t_error	run_arithmetic_unary( \
+t_ast_arithmetic_unary *arithmetic_unary, t_state *state, t_i64 *out)
+{
+	t_arith_op_func	func;
+
+	if (arithmetic_unary == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_unary_get_op(arithmetic_unary->op, &func))
+		return (ERROR);
+	if (func(_arith_unary_to_ast_node(arithmetic_unary), state, out))
+		return (ERROR);
+	return (NO_ERROR);
+}
+
+t_error	run_arithmetic_expansion( \
+t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out)
+{
+	t_arith_op_func	func;
+
+	if (arithmetic_expansion == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_get_node_number(arithmetic_expansion, start, out))
+		return (ERROR);
 	return (NO_ERROR);
 }
