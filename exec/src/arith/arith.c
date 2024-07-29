@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/29 17:47:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/29 17:50:51 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ t_error	_postfix_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
 t_error	_unary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
 {
 	if (op == ARITH_INCREMENT)
-		return (*out = _prefix_op_decrement, NO_ERROR);
+		return (*out = _unary_op_increment, NO_ERROR);
 	if (op == ARITH_DECREMENT)
-
+		return (*out = _unary_op_decrement, NO_ERROR);
 	return (ERROR);
 }
 
@@ -108,15 +108,16 @@ t_error	run_arithmetic_literal(t_ast_arithmetic_literal *arithmetic_literal, \
 	return (ERROR);
 }
 
-t_error	run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, \
-		t_state *state, t_i64 *out)
+t_error	run_arithmetic_expansion( \
+t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out)
 {
 	t_arith_op_func	func;
 	t_i64			ret;
 
 	if (arithmetic_expansion == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	if (_get_node_number(_arith_expansion_to_ast_node(arithmetic_expansion), state, &ret))
+	if (_get_node_number(\
+		_arith_expansion_to_ast_node(arithmetic_expansion), state, &ret))
 		return (ERROR);
 	*out = ret;
 	return (NO_ERROR);
