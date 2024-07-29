@@ -6,18 +6,18 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 19:19:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/29 19:04:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/run.h"
+#include "exec/spawn_cmd/pipe.h"
+#include "exec/spawn_cmd/process.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "me/os/pipe.h"
-#include "me/os/process.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
@@ -629,36 +629,8 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 	i = 0;
 	while (i < command->cmd_word.len)
 	{
-		tmp = command->cmd_word.buffer[i];
-		if (tmp->kind == AST_WORD)
-		{
-			if (_word_into_str(tmp, state, &args))
-				return (ERROR);
-		}
-		if (tmp->kind == AST_EXPANSION)
-		{
-			if (run_expansion(&tmp->data.expansion, state, &exp_out))
-				return (ERROR);
-			if (!(exp_out.exists && exp_out.value != NULL))
-				continue;
-			if (str_split(exp_out.value, _get_ifs_value(state), &split))
-				return (ERROR);
-			while (!vec_str_pop_front(&split, &tmp_str))
-				vec_str_push(&args, tmp_str);
-			vec_str_free(split);
-		}
-		if (tmp->kind == AST_ARITHMETIC_EXPANSION)
-		{
-			if (run_arithmetic_expansion(&tmp->data.arithmetic_expansion, state, &arith_out))
-				return (ERROR);
-			if (i64_to_str(arith_out, &tmp_str))
-				return (ERROR);
-			vec_str_push(&args, tmp_str);
-		}
-		if (tmp->kind == AST_COMMAND_SUBSTITUTION)
-		{
+		if (_ast_into_str(command->cmd_word.buffer[i], state, &args))
 			return (ERROR);
-		}
 		i++;
 	}
 	while (i < command->prefixes.len)
