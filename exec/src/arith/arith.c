@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 19:26:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/29 15:23:47 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,18 +126,19 @@ t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
 
 	if (arithmetic_ternary == NULL || state == NULL || out == NULL)
 		return (ERROR);
-
 	if (_get_node_number(arithmetic_ternary->condition, state, &cond))
 		return (ERROR);
 	if (cond != 0)
-	{
 		if (_get_node_number(arithmetic_ternary->then, state, out))
 			return (ERROR);
-	}
 	else
-	{
 		if (_get_node_number(arithmetic_ternary->else_, state, out))
 			return (ERROR);
-	}
+	return (NO_ERROR);
+}
+
+t_error	run_arithmetic_postfix( \
+t_ast_arithmetic_postfix *arithmetic_postfix, t_state *state, t_i64 *out)
+{
 	return (NO_ERROR);
 }
