@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:24:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:25:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:16:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void	line_edit_delete(t_line_state *state)
 	line_refresh_line(state);
 }
 
+// use this to print when a backspace
+// fprintf(stderr, "\x1b[A\x1b[A\x1b[D backspace \x1b[B\x1b[B\x1b[10D");
 /* Backspace implementation. */
 void	line_edit_backspace(t_line_state *state)
 {

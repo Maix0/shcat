@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:19:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 17:48:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:17:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,13 @@ bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, \
 {
 	char	seq[3];
 
-	if (c == K_CTRL_C)
+	if (line_edit_feed_block1(state, out, c))
+		*ret = false;
+	else if (c == K_CTRL_C)
 	{
 		errno = EAGAIN;
 		*out = NULL;
-		*ret = true;
+		*ret = false;
 	}
 	else if (c == K_NEWLINE || c == K_ENTER)
 		*ret = line_edit_feed_enter(state, out, seq);
@@ -89,12 +91,9 @@ bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, \
 		*ret = line_edit_feed_esc(state, out, seq);
 	else if (c == K_SIGQUIT)
 		*ret = false;
-	else
-	{
+	else if (c >= '\x00' && c <= '\x1F')
 		*ret = false;
-		if (line_edit_feed_block1(state, out, c))
-			return (true);
+	else
 		return (false);
-	}
 	return (true);
 }

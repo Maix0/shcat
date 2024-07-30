@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 17:46:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:16:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "me/str/str.h"
 #include "me/vec/vec_str.h"
 #include <errno.h>
+#include <stdio.h>
 
 bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, char c, \
 							bool *ret);
@@ -73,6 +74,8 @@ t_error	line_edit_start( \
 	return (NO_ERROR);
 }
 
+// use this to print the char as hex above the cursor
+// fprintf(stderr, "\x1b[A\x1b[D char = %02x \x1b[B\x1b[10D", c);
 bool	line_edit_feed(t_line_state *state, t_str *out)
 {
 	bool	ret;

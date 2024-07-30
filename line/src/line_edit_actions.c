@@ -6,12 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:24:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:24:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:03:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "line/_line_functions.h"
 #include "line/_line_structs.h"
+#include "me/printf/printf.h"
 
 /* Insert the character 'c' at cursor current position.
  *
