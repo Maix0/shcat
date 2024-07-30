@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 t_error vec_redir_find(t_vec_redir *vec,
-							 bool (*fn)(const t_exec_redirect *), t_usize *index)
+							 bool (*fn)(const t_p_redirection *), t_usize *index)
 {
 	t_usize idx;
 
@@ -27,7 +27,7 @@ t_error vec_redir_find(t_vec_redir *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn((const t_exec_redirect *)&vec->buffer[idx]))
+		if (fn((const t_p_redirection *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -38,7 +38,7 @@ t_error vec_redir_find(t_vec_redir *vec,
 }
 
 t_error vec_redir_find_starting(t_vec_redir *vec,
-									  bool (*fn)(const t_exec_redirect *),
+									  bool (*fn)(const t_p_redirection *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -48,7 +48,7 @@ t_error vec_redir_find_starting(t_vec_redir *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn((const t_exec_redirect *)&vec->buffer[idx]))
+		if (fn((const t_p_redirection *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -59,7 +59,7 @@ t_error vec_redir_find_starting(t_vec_redir *vec,
 }
 
 t_error vec_redir_all(t_vec_redir *vec,
-							bool (*fn)(const t_exec_redirect *), bool *result)
+							bool (*fn)(const t_p_redirection *), bool *result)
 {
 	t_usize idx;
 
@@ -69,7 +69,7 @@ t_error vec_redir_all(t_vec_redir *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn((const t_exec_redirect *)&vec->buffer[idx]))
+		if (!fn((const t_p_redirection *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
@@ -77,7 +77,7 @@ t_error vec_redir_all(t_vec_redir *vec,
 }
 
 t_error vec_redir_any(t_vec_redir *vec,
-							bool (*fn)(const t_exec_redirect *), bool *result)
+							bool (*fn)(const t_p_redirection *), bool *result)
 {
 	t_usize idx;
 
@@ -87,7 +87,7 @@ t_error vec_redir_any(t_vec_redir *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn((const t_exec_redirect *)&vec->buffer[idx]))
+		if (fn((const t_p_redirection *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}
@@ -95,7 +95,7 @@ t_error vec_redir_any(t_vec_redir *vec,
 }
 
 void vec_redir_iter(t_vec_redir *vec,
-						  void (*fn)(t_usize index, t_exec_redirect *value,
+						  void (*fn)(t_usize index, t_p_redirection *value,
 									 void *state),
 						  void *state)
 {

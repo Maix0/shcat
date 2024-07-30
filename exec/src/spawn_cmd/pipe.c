@@ -6,11 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:59:48 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 14:48:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:02:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec/spawn_cmd/pipe.h"
+#include "exec/spawn_cmd/ppipe.h"
 #include "me/fs/fs.h"
 #include "me/str/str.h"
 

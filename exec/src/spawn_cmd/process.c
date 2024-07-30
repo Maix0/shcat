@@ -6,12 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 13:22:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:03:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec/spawn_cmd/process.h"
-#include "exec/spawn_cmd/pipe.h"
+#include "exec/spawn_cmd/pprocess.h"
+#include "exec/spawn_cmd/ppipe.h"
 #include "me/mem/mem.h"
 #include "me/printf/printf.h"
 #include "me/str/str.h"
@@ -25,12 +25,13 @@
 
 bool	exec_find_path(const t_str *s);
 bool	exec_find_null(const t_str *s);
-t_error exec_handle_redirections(t_spawn_info *info, t_process *process);
+t_error exec_handle_redirections(t_p_spawn_info *info, t_p_process *process);
 
-t_error exec_spawn_process_exec(t_spawn_info info, t_process *process)
+t_error exec_spawn_process_exec(t_p_spawn_info info, t_p_process *process)
 {
 	bool res;
 
+	(void)(process);
 	if (info.forked_free)
 		info.forked_free(info.forked_free_args);
 	if (!vec_str_any(&info.arguments, exec_find_null, &res) && res)
@@ -42,7 +43,7 @@ t_error exec_spawn_process_exec(t_spawn_info info, t_process *process)
 	return (ERROR);
 }
 
-t_error exec_in_path(t_spawn_info *info, t_process *process, t_const_str path_raw, t_string *s)
+t_error exec_in_path(t_p_spawn_info *info, t_p_process *process, t_const_str path_raw, t_string *s)
 {
 	t_vec_str path;
 	t_usize	  idx;
@@ -55,13 +56,13 @@ t_error exec_in_path(t_spawn_info *info, t_process *process, t_const_str path_ra
 	{
 		string_clear(s);
 		me_printf_str(s, "%s/%s", path.buffer[idx++], info->binary_path);
-		if (access(s->buf, X_OK | R_OK) == 0)
+		if (access(s->buf, X_OK) == 0)
 			return (vec_str_free(path), NO_ERROR);
 	}
 	return (vec_str_free(path), ERROR);
 }
 
-t_error exec_find_binary(t_spawn_info *info, t_process *process)
+t_error exec_find_binary(t_p_spawn_info *info, t_p_process *process)
 {
 	t_usize	 p_idx;
 	t_string s;
@@ -79,7 +80,7 @@ t_error exec_find_binary(t_spawn_info *info, t_process *process)
 		if (exec_in_path(info, process, info->environement.buffer[p_idx], &s))
 			return (ERROR);
 	}
-	if (access(s.buf, X_OK | R_OK) == 0)
+	if (access(s.buf, X_OK) == 0)
 	{
 		mem_free(info->binary_path);
 		info->binary_path = s.buf;
@@ -88,34 +89,35 @@ t_error exec_find_binary(t_spawn_info *info, t_process *process)
 	return (string_free(s), ERROR);
 }
 
-static void exec_cleanup(t_spawn_info info, t_process *process, bool cleanup_process)
+static void cleanup(t_p_spawn_info info, t_p_process *process, bool cleanup_process)
 {
-	if (cleanup_process && process->stdin.tag != INVALID)
-		close(process->stdin.vals.ro.fd);
-	if (cleanup_process && process->stdout.tag != INVALID)
-		close(process->stdout.vals.ro.fd);
-	if (cleanup_process && process->stderr.tag != INVALID)
-		close(process->stderr.vals.ro.fd);
-	close(info.stdin.vals.fd.value);
-	close(info.stdout.vals.fd.value);
-	close(info.stderr.vals.fd.value);
+	if (cleanup_process && process->stdin != NULL)
+		close_fd(process->stdin);
+	if (cleanup_process && process->stdout != NULL)
+		close_fd(process->stdout);
+	if (cleanup_process && process->stderr != NULL)
+		close_fd(process->stderr);
+	close_fd(info.stdin.vals.fd.value);
+	close_fd(info.stdout.vals.fd.value);
+	close_fd(info.stderr.vals.fd.value);
 	vec_str_free(info.arguments);
 	vec_str_free(info.environement);
 	mem_free(info.binary_path);
 }
 
-t_error exec_spawn_process(t_spawn_info info, t_vec_ast *redirection, t_process *process)
+t_error exec_spawn_process(t_p_spawn_info info, t_vec_ast *redirection, t_p_process *process)
 {
+	(void)(redirection);
 	if (exec_handle_redirections(&info, process))
-		return (exec_cleanup(info, process, true), ERROR);
+		return (cleanup(info, process, true), ERROR);
 	if (exec_find_binary(&info, process))
-		return (exec_cleanup(info, process, true), ERROR);
+		return (cleanup(info, process, true), ERROR);
 	process->pid = fork();
 	if (process->pid == 0)
 		(exec_spawn_process_exec(info, process), exit(1));
 	else
 	{
-		exec_cleanup(info, process, false);
+		cleanup(info, process, false);
 		if (process->pid == -1)
 			return (ERROR);
 	}

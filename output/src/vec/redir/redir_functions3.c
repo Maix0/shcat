@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 t_error vec_redir_push_front(t_vec_redir *vec,
-								   t_exec_redirect	  element)
+								   t_p_redirection	  element)
 {
 	t_usize i;
 
@@ -39,7 +39,7 @@ t_error vec_redir_push_front(t_vec_redir *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_redir_pop_front(t_vec_redir *vec, t_exec_redirect *value)
+t_error vec_redir_pop_front(t_vec_redir *vec, t_p_redirection *value)
 {
 	t_usize i;
 
@@ -59,7 +59,7 @@ t_error vec_redir_pop_front(t_vec_redir *vec, t_exec_redirect *value)
 
 void vec_redir_reverse(t_vec_redir *vec)
 {
-	t_exec_redirect temporary;
+	t_p_redirection temporary;
 	t_usize		  i;
 
 	i = 0;
@@ -72,9 +72,9 @@ void vec_redir_reverse(t_vec_redir *vec)
 	}
 }
 
-t_error vec_redir_back(t_vec_redir *vec, t_exec_redirect **out)
+t_error vec_redir_back(t_vec_redir *vec, t_p_redirection **out)
 {
-	t_exec_redirect *temporary;
+	t_p_redirection *temporary;
 
 	if (out == NULL)
 		out = &temporary;
