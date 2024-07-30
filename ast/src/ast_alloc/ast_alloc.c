@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:26:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 17:57:57 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:32:26 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,15 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-t_ast_node	ast_alloc_boucle(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_condition(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_arith(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_exec(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_expantion(t_ast_node_kind kind, t_ast_node ret);
-t_ast_node	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_boucle(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_condition(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_arith(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_exec(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_expantion(t_ast_node_kind kind, t_ast_node ret);
+void	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret);
 
-t_ast_node	ast_alloc_arith(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_arith(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_ARITHMETIC_EXPANSION)
 		ret->data.arithmetic_expansion.expr = NULL;
@@ -46,7 +46,7 @@ t_ast_node	ast_alloc_arith(t_ast_node_kind kind, t_ast_node ret)
 	}
 }
 
-t_ast_node	ast_alloc_exec(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_exec(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_COMMAND)
 	{
@@ -69,7 +69,7 @@ t_ast_node	ast_alloc_exec(t_ast_node_kind kind, t_ast_node ret)
 	}
 }
 
-t_ast_node	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_FILE_REDIRECTION)
 	{
@@ -91,7 +91,7 @@ t_ast_node	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret)
 	}
 }
 
-t_ast_node	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_FUNCTION_DEFINITION)
 	{
@@ -122,7 +122,7 @@ t_ast_node	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret)
 
 t_ast_node	ast_alloc(t_ast_node_kind kind)
 {
-	t_ast_node	ret;
+	void	ret;
 
 	ret = mem_alloc(sizeof(*ret));
 	ret->kind = kind;

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:57:11 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 17:57:53 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:32:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-t_ast_node	ast_alloc_expantion(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_expantion(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_RAW_STRING)
 	{
@@ -49,7 +49,7 @@ t_ast_node	ast_alloc_expantion(t_ast_node_kind kind, t_ast_node ret)
 		ret->data.regex.pattern = NULL;
 }
 
-t_ast_node	ast_alloc_boucle(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_boucle(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_IF)
 	{
@@ -77,7 +77,7 @@ t_ast_node	ast_alloc_boucle(t_ast_node_kind kind, t_ast_node ret)
 	}
 }
 
-t_ast_node	ast_alloc_condition(t_ast_node_kind kind, t_ast_node ret)
+void	ast_alloc_condition(t_ast_node_kind kind, t_ast_node ret)
 {
 	if (kind == AST_CASE_ITEM)
 	{
