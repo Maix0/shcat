@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 17:24:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 14:30:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 15:56:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ static inline void	free_redirection(t_exec_redirect self)
 	void	mem_free(void *ptr);
 
 	if (self.kind == EXEC_REDIR_FD)
-		(void)(self.fd.file_path != NULL && (mem_free(self.fd.file_path), 1));
+		(void)(self.fd.file_path != NULL && (mem_free((void *)self.fd.file_path), 1));
 	if (self.kind == EXEC_REDIR_HEREDOC)
-		(void)(self.heredoc.data != NULL && (mem_free(self.heredoc.data), 1));
+		(void)(self.heredoc.data != NULL && (mem_free((void *)self.heredoc.data), 1));
 }
 
 #endif /* _REDIRECTION_H */
