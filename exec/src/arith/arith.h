@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 11:59:09 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 14:07:41 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,10 @@ t_error		_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out);
 t_error		_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out);
 t_error		_binary_op_div(t_ast_node self, t_state *state, t_i64 *out);
 t_error		_binary_op_mod(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_postfix_op_inc(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_postfix_op_dec(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_unary_op_plus(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_unary_op_minus(t_ast_node self, t_state *state, t_i64 *out);
 t_ast_node	_arith_binary_to_ast_node(t_ast_arithmetic_binary *self);
 
 #endif
