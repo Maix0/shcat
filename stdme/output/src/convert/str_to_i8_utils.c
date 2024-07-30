@@ -10,14 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "me/char/char.h"
 #include "me/convert/str_to_numbers.h"
+#include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/types.h"
-#include "me/printf/printf.h"
 
-t_error checked_add_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
+t_error	checked_add_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
 {
 	if (rhs > 0 && (lhs > 127 - rhs))
 		return (ERROR);
@@ -25,17 +24,18 @@ t_error checked_add_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
 	return (NO_ERROR);
 }
 
-t_error checked_sub_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
+t_error	checked_sub_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
 {
-	if ((((rhs & (1 << (sizeof(t_i8) - 1)) || rhs == 0) || !true) && (lhs < -128 + rhs)))
+	if ((((rhs & (1 << (sizeof(t_i8) - 1)) || rhs == 0) || !true) && (lhs < -128
+				+ rhs)))
 		return (ERROR);
 	*out = (t_i8)(lhs - rhs);
 	return (NO_ERROR);
 }
 
-t_error checked_mul_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
+t_error	checked_mul_i8(t_i8 lhs, t_i8 rhs, t_i8 *out)
 {
-	t_i8 mul;
+	t_i8	mul;
 
 	mul = lhs * rhs;
 	if (lhs != 0 && mul / lhs != rhs)

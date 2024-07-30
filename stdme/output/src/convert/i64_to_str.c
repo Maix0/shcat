@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   str_to_i64.c                                       :+:      :+:    :+:   */
+/*   i64_to_str.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/01 23:18:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:31:50 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,12 @@
 #include "me/str/str.h"
 #include "me/types.h"
 
-t_error _format_u64(t_num_str args, t_str *out);
+t_error	_format_u64(t_num_str args, t_str *out);
 
-t_error i64_to_str_base_prefix(t_i64 val, t_str base, t_str prefix,
-									   t_str *out)
+t_error	i64_to_str_base_prefix(t_i64 val, t_str base, t_str prefix, t_str *out)
 {
-	union u_nums value;
-	bool		 is_nonnegative;
+	union u_nums	value;
+	bool			is_nonnegative;
 
 	if (out == NULL || base == NULL || prefix == NULL)
 		return (ERROR);
@@ -29,21 +28,19 @@ t_error i64_to_str_base_prefix(t_i64 val, t_str base, t_str prefix,
 	is_nonnegative = val & 0x8000000000000000;
 	if (is_nonnegative)
 		value.u64 = ~value.u64 + 1;
-	return (_format_u64((t_num_str){.value = value.u64, \
-									.is_nonnegative = is_nonnegative, \
-									.base = base, \
-									.prefix = prefix}, \
-						out));
+	return (_format_u64((t_num_str){.value = value.u64,
+			.is_nonnegative = is_nonnegative, .base = base, .prefix = prefix}, \
+			out));
 }
 
-t_error i64_to_str_base(t_i64 val, t_str base, t_str *out)
+t_error	i64_to_str_base(t_i64 val, t_str base, t_str *out)
 {
 	if (out == NULL || base == NULL)
 		return (ERROR);
 	return (i64_to_str_base_prefix(val, base, "", out));
 }
 
-t_error i64_to_str(t_i64 val, t_str *out)
+t_error	i64_to_str(t_i64 val, t_str *out)
 {
 	if (out == NULL)
 		return (ERROR);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/24 19:06:05 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:26:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:35:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 
 /// This has to be added into the me/fs/fs.h header at one point
-t_error read_to_vec(t_const_str filename, t_vec_u8 *out);
+t_error	read_to_vec(t_const_str filename, t_vec_u8 *out);
 
 t_i32	qoi_write(t_const_str filename, const void *data,
 		const t_qoi_desc *desc)

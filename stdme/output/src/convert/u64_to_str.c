@@ -15,13 +15,12 @@
 #include "me/str/str.h"
 #include "me/types.h"
 
-t_error _format_u64(t_num_str args, t_str *out);
+t_error	_format_u64(t_num_str args, t_str *out);
 
-t_error u64_to_str_base_prefix(t_u64 val, t_str base, t_str prefix,
-									   t_str *out)
+t_error	u64_to_str_base_prefix(t_u64 val, t_str base, t_str prefix, t_str *out)
 {
-	union u_nums value;
-	bool		 is_nonnegative;
+	union u_nums	value;
+	bool			is_nonnegative;
 
 	if (out == NULL || base == NULL || prefix == NULL)
 		return (ERROR);
@@ -29,21 +28,19 @@ t_error u64_to_str_base_prefix(t_u64 val, t_str base, t_str prefix,
 	is_nonnegative = val & 0x0000000000000000;
 	if (is_nonnegative)
 		value.u64 = ~value.u64 + 1;
-	return (_format_u64((t_num_str){.value = value.u64, \
-									.is_nonnegative = is_nonnegative, \
-									.base = base, \
-									.prefix = prefix}, \
-						out));
+	return (_format_u64((t_num_str){.value = value.u64,
+			.is_nonnegative = is_nonnegative, .base = base, .prefix = prefix},
+			out));
 }
 
-t_error u64_to_str_base(t_u64 val, t_str base, t_str *out)
+t_error	u64_to_str_base(t_u64 val, t_str base, t_str *out)
 {
 	if (out == NULL || base == NULL)
 		return (ERROR);
 	return (u64_to_str_base_prefix(val, base, "", out));
 }
 
-t_error u64_to_str(t_u64 val, t_str *out)
+t_error	u64_to_str(t_u64 val, t_str *out)
 {
 	if (out == NULL)
 		return (ERROR);

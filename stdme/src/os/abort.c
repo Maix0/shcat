@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:20:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:34:34 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,9 @@ void	me_abort(t_str msg)
 {
 	if (msg == NULL)
 		msg = "No message provided";
-	put_string_fd(get_stderr(),"Abort: ");
-	put_string_fd(get_stderr(),msg);
-	put_char_fd(get_stderr(),'\n');
+	put_string_fd(get_stderr(), "Abort: ");
+	put_string_fd(get_stderr(), msg);
+	put_char_fd(get_stderr(), '\n');
 	print_trace();
 	me_exit(134);
 }

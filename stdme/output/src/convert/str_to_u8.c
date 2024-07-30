@@ -20,20 +20,20 @@
 #define OP_MUL 0b0100
 #define OP_CHK 0b1000
 
-t_error checked_add_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
-t_error checked_sub_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
-t_error checked_mul_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
+t_error					checked_add_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
+t_error					checked_sub_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
+t_error					checked_mul_u8(t_u8 lhs, t_u8 rhs, t_u8 *out);
 
-static inline bool can_not_overflow(t_u32 radix, bool is_signed_type,
-									t_usize digits_len)
+static inline bool	can_not_overflow(t_u32 radix, bool is_signed_type,
+		t_usize digits_len)
 {
-	return (radix <= 16 &&
-			digits_len <= sizeof(t_u8) * 2 - (t_usize)is_signed_type);
+	return (radix <= 16 && digits_len <= sizeof(t_u8) * 2
+		- (t_usize)is_signed_type);
 }
 
-static inline t_error to_digit(t_u8 ascii, t_u32 radix, t_u32 *out)
+static inline t_error	to_digit(t_u8 ascii, t_u32 radix, t_u32 *out)
 {
-	t_u32 digit;
+	t_u32	digit;
 
 	if (radix < 2 || radix > 36)
 		return (ERROR);
@@ -50,10 +50,10 @@ static inline t_error to_digit(t_u8 ascii, t_u32 radix, t_u32 *out)
 	return (NO_ERROR);
 }
 
-static inline t_error do_operation(t_u8 digit, t_u8 op, t_u8 *result)
+static inline t_error	do_operation(t_u8 digit, t_u8 op, t_u8 *result)
 {
-	t_u8 rhs;
-	t_u8 res;
+	t_u8	rhs;
+	t_u8	res;
 
 	rhs = *result;
 	res = *result;
@@ -79,14 +79,13 @@ static inline t_error do_operation(t_u8 digit, t_u8 op, t_u8 *result)
 	return (NO_ERROR);
 }
 
-static inline t_error loop_inner(t_const_str s, t_u32 radix, t_u8 op,
-								 t_u8 *out)
+static inline t_error	loop_inner(t_const_str s, t_u32 radix, t_u8 op,
+		t_u8 *out)
 {
-	t_u32	  digit;
-	t_u8 result;
+	t_u32	digit;
+	t_u8	result;
 
 	result = 0u;
-
 	while (*s)
 	{
 		if (do_operation(radix, (op & OP_CHK) | OP_MUL, &result))
@@ -102,9 +101,9 @@ static inline t_error loop_inner(t_const_str s, t_u32 radix, t_u8 op,
 	return (NO_ERROR);
 }
 
-t_error str_to_u8(t_const_str s, t_u32 radix, t_u8 *out)
+t_error	str_to_u8(t_const_str s, t_u32 radix, t_u8 *out)
 {
-	t_usize digits_len;
+	t_usize	digits_len;
 	bool	is_positive;
 	t_u8	op;
 
