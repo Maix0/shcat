@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 14:52:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:03:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/run.h"
-#include "exec/spawn_cmd/pipe.h"
-#include "exec/spawn_cmd/process.h"
+#include "exec/spawn_cmd/ppipe.h"
+#include "exec/spawn_cmd/pprocess.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
@@ -42,7 +42,7 @@ typedef struct s_command_result t_command_result;
 
 struct s_command_result
 {
-	t_process process;
+	t_p_process process;
 };
 
 typedef struct s_word_result t_word_result;

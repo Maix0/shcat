@@ -22,14 +22,14 @@ t_vec_redir vec_redir_new(t_usize				  capacity,
 
 	out = (t_vec_redir){0};
 	out.free_func = free_function;
-	out.buffer = mem_alloc_array(capacity, sizeof(t_exec_redirect));
+	out.buffer = mem_alloc_array(capacity, sizeof(t_p_redirection));
 	if (out.buffer)
 		out.capacity = capacity;
 	return (out);
 }
 
 /// Return true in case of an error
-t_error vec_redir_push(t_vec_redir *vec, t_exec_redirect element)
+t_error vec_redir_push(t_vec_redir *vec, t_p_redirection element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -52,7 +52,7 @@ t_error vec_redir_reserve(t_vec_redir *vec, t_usize wanted_capacity)
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
 		vec->buffer =
-			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_exec_redirect));
+			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_p_redirection));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -60,10 +60,10 @@ t_error vec_redir_reserve(t_vec_redir *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error vec_redir_pop(t_vec_redir *vec, t_exec_redirect *value)
+t_error vec_redir_pop(t_vec_redir *vec, t_p_redirection *value)
 {
-	t_exec_redirect  temp_value;
-	t_exec_redirect *ptr;
+	t_p_redirection  temp_value;
+	t_p_redirection *ptr;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -74,7 +74,7 @@ t_error vec_redir_pop(t_vec_redir *vec, t_exec_redirect *value)
 		ptr = &temp_value;
 	vec->len--;
 	*ptr = vec->buffer[vec->len];
-	mem_set_zero(&vec->buffer[vec->len], sizeof(t_exec_redirect));
+	mem_set_zero(&vec->buffer[vec->len], sizeof(t_p_redirection));
 	return (NO_ERROR);
 }
 
