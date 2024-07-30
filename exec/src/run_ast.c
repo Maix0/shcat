@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/29 19:04:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:52:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 
+#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wunused-variable"
 
@@ -728,3 +729,5 @@ t_error run_node(t_ast_node self, t_state *state, void *out)
 }
 
 */
+
+#pragma clang diagnostic pop

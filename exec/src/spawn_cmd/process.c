@@ -6,13 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/29 19:06:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 13:22:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec/spawn_cmd/process.h"
+#include "exec/spawn_cmd/pipe.h"
 #include "me/mem/mem.h"
-#include "me/os/pipe.h"
 #include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
@@ -25,7 +25,6 @@
 
 bool	exec_find_path(const t_str *s);
 bool	exec_find_null(const t_str *s);
-bool	exec_str_start_with(t_const_str s, t_const_str prefix);
 t_error exec_handle_redirections(t_spawn_info *info, t_process *process);
 
 t_error exec_spawn_process_exec(t_spawn_info info, t_process *process)
@@ -40,7 +39,7 @@ t_error exec_spawn_process_exec(t_spawn_info info, t_process *process)
 	if (!vec_str_any(&info.environement, exec_find_null, &res) && res)
 		vec_str_push(&info.environement, NULL);
 	execve(info.binary_path, info.arguments.buffer, info.environement.buffer);
-	return (NO_ERROR);
+	return (ERROR);
 }
 
 t_error exec_in_path(t_spawn_info *info, t_process *process, t_const_str path_raw, t_string *s)
@@ -71,7 +70,7 @@ t_error exec_find_binary(t_spawn_info *info, t_process *process)
 	if (info->binary_path == NULL)
 		return (ERROR);
 	s = string_new(256);
-	if (exec_str_start_with(info->binary_path, "/") || str_find_chr(info->binary_path, '/') != NULL)
+	if (info->binary_path[0] == '/' || str_find_chr(info->binary_path, '/') != NULL)
 		string_push(&s, info->binary_path);
 	else
 	{

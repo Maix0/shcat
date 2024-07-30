@@ -12,6 +12,7 @@ signal_handler                                                                \
 
 GEN_FILES =                                                                   \
 src/hashmap/env/env                                                           \
+src/hashmap/env/env_clone                                                     \
 src/hashmap/env/env_iter                                                      \
 src/hashmap/env/env_utils                                                     \
 src/vec/ast/ast                                                               \

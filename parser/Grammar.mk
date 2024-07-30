@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/23 21:53:40 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/30 14:52:58 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,17 +14,14 @@ ANAME			= 	gmr
 
 BUILD_DIR		=	../build
 SRC_DIR			=	./static
-#../tree-sitter-sh/src
-#./static
 
 BONUS_FLAGS		=
 NAME			=	lib$(ANAME).a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
-CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -I../tree-sitter-sh/src
+CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include
 CFLAGS			+=	$(CFLAGS_ADDITIONAL)
-#CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
 -include Filelist.$(ANAME).mk
 

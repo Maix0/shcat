@@ -38,10 +38,10 @@ fs/read                                                                       \
 fs/read_to_vec                                                                \
 fs/write                                                                      \
 gnl/get_next_line                                                             \
-hash/hasher                                                                   \
 hash/hash_signed                                                              \
 hash/hash_str                                                                 \
 hash/hash_unsigned                                                            \
+hash/hasher                                                                   \
 hash/sip/sip13                                                                \
 hash/sip/sip_utils                                                            \
 hash/sip/sip_utils2                                                           \
@@ -89,10 +89,6 @@ printf/printf                                                                 \
 printf/printf_fd                                                              \
 printf/printf_str                                                             \
 printf/vprintf                                                                \
-string/mod                                                                    \
-string/string_insert                                                          \
-string/string_remove                                                          \
-string/string_reserve                                                         \
 str/str_clone                                                                 \
 str/str_compare                                                               \
 str/str_find_chr                                                              \
@@ -109,6 +105,10 @@ str/str_n_find_str                                                            \
 str/str_split                                                                 \
 str/str_substring                                                             \
 str/str_trim                                                                  \
+string/mod                                                                    \
+string/string_insert                                                          \
+string/string_remove                                                          \
+string/string_reserve                                                         \
 
 GEN_FILES =                                                                   \
 convert/i16_to_str                                                            \
