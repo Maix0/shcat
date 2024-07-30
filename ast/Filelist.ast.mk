@@ -1,4 +1,6 @@
 SRC_FILES =                                                                   \
+ast_alloc/ast_alloc                                                           \
+ast_alloc/ast_alloc_scripting                                                 \
 ast_free/ast_free                                                             \
 ast_free/ast_free_scripting                                                   \
 from_node/from_node                                                           \
