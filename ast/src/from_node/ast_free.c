@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 14:29:42 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 14:52:31 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 14:58:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 #include "me/vec/vec_ast.h"
 #include "parser/api.h"
 #include <stdio.h>
+
+
+void	ast_free_arith(t_ast_node elem);
+void	ast_free_condition(t_ast_node elem);
+void	ast_free_exec(t_ast_node elem);
+void	ast_free_loop(t_ast_node elem);
+void	ast_free_other(t_ast_node elem);
+void	ast_free_redirection(t_ast_node elem);
 
 void	ast_free_arith(t_ast_node elem)
 {
@@ -86,13 +94,8 @@ void	ast_free_redirection(t_ast_node elem)
 	}
 }
 
-void	ast_free(t_ast_node elem)
+void	ast_free_other(t_ast_node elem)
 {
-	ast_free_arith(elem);
-	ast_free_loop(elem);
-	ast_free_condition(elem);
-	ast_free_exec(elem);
-	ast_free_redirection(elem);
 	if (elem->kind == AST_COMPOUND_STATEMENT)
 	{
 		vec_ast_free(elem->data.compound_statement.body);
@@ -119,6 +122,12 @@ void	ast_free(t_ast_node elem)
 {
 	if (elem == NULL)
 		return ;
+	ast_free_arith(elem);
+	ast_free_loop(elem);
+	ast_free_condition(elem);
+	ast_free_exec(elem);
+	ast_free_other(elem);
+	ast_free_redirection(elem);
 	if (elem->kind == AST_RAW_STRING)
 		mem_free(elem->data.raw_string.str);
 	if (elem->kind == AST_WORD)
