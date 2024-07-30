@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 17:13:36 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 17:46:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@
 #include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/vec/vec_str.h"
-
 #include <errno.h>
+
+bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, char c, \
+							bool *ret);
 
 /* This function is part of the multiplexed API of Linenoise, that is used
  * in order to implement the blocking variant of the API but can also be
@@ -71,131 +73,21 @@ t_error	line_edit_start( \
 	return (NO_ERROR);
 }
 
-/* This function is part of the multiplexed API of linenoise, see the top
- * comment on linenoiseEditStart() for more information. Call this function
- * each time there is some data to read from the standard input file
- * descriptor. In the case of blocking operations, this function can just be
- * called in a loop, and block.
- *
-
- * The function returns get_unfinished_str() to signal that line editing is still
- * in progress, that is, the user didn't yet pressed enter / CTRL-D. Otherwise
- * the function returns the pointer to the heap-allocated buffer with the
- * edited line, that the user should mem_free with linenoiseFree().
- *
- * On special conditions, NULL is returned and errno is populated:
- *
- * EAGAIN if the user pressed Ctrl-C
- * ENOENT if the user pressed Ctrl-D
- *
- * Some other errno: I/O error.
- */
 bool	line_edit_feed(t_line_state *state, t_str *out)
 {
-	char		c;
-	t_isize		nread;
-	char		seq[3];
-	t_vec_str	*history;
-	t_str		tmp;
+	bool	ret;
+	char	c;
+	t_isize	nread;
 
 	if (out == NULL)
 		return (true);
 	if (!isatty(state->input_fd->fd))
 		return (line_no_tty_impl(out));
-	history = get_history();
 	if (read_fd(state->input_fd, (t_u8 *)&c, 1, &nread))
 		return (*out = NULL, true);
-	if (c == K_NEWLINE || c == K_ENTER)
-	{
-		if (!vec_str_pop(history, &tmp))
-			mem_free(tmp);
-		return (*out = str_clone(state->buf.buf), true);
-	}
-	else if (c == K_CTRL_C)
-		return (errno = EAGAIN, *out = NULL, NULL);
-	else if (c == K_BACKSPACE || c == K_CTRL_H)
-		line_edit_backspace(state);
-	else if (c == K_CTRL_D)
-	{
-		if (state->buf.len > 0)
-			line_edit_delete(state);
-		else
-		{
-			history->len--;
-			mem_free(history->buffer[history->len]);
-			return (errno = ENOENT, *out = NULL, true);
-		}
-	}
-	else if (c == K_CTRL_B)
-		line_edit_move_left(state);
-	else if (c == K_CTRL_F)
-		line_edit_move_right(state);
-	else if (c == K_CTRL_P)
-		line_edit_history_next(state, HIST_PREV);
-	else if (c == K_CTRL_N)
-		line_edit_history_next(state, HIST_PREV);
-	else if (c == K_SIGQUIT)
-		return (false);
-	else if (c == K_ESC)
-	{
-		if (read_fd(state->input_fd, (t_u8 *)seq, 1, NULL))
-			return (false);
-		if (read_fd(state->input_fd, (t_u8 *)(seq + 1), 1, NULL))
-			return (false);
-		if (seq[0] == '[')
-		{
-			if (seq[1] >= '0' && seq[1] <= '9')
-			{
-				if (read_fd(state->input_fd, (t_u8 *)(seq + 2), 1, NULL))
-					return (false);
-				if (seq[1] == '3' && seq[2] == '~')
-					line_edit_delete(state);
-			}
-			else
-			{
-				if (seq[1] == 'A')
-					line_edit_history_next(state, HIST_PREV);
-				if (seq[1] == 'B')
-					line_edit_history_next(state, HIST_NEXT);
-				if (seq[1] == 'C')
-					line_edit_move_right(state);
-				if (seq[1] == 'D')
-					line_edit_move_left(state);
-				if (seq[1] == 'H')
-					line_edit_move_home(state);
-				if (seq[1] == 'F')
-					line_edit_move_end(state);
-			}
-		}
-		else if (seq[0] == 'O')
-		{
-			if (seq[1] == 'H')
-				line_edit_move_home(state);
-			if (seq[1] == 'F')
-				line_edit_move_end(state);
-		}
-	}
-	else if (c == K_CTRL_U)
-	{
-		string_clear(&state->buf);
-		state->pos = 0;
-		line_refresh_line(state);
-	}
-	else if (c == K_CTRL_K)
-	{
-		string_clear_after(&state->buf, state->pos);
-		line_refresh_line(state);
-	}
-	else if (c == K_CTRL_A)
-		line_edit_move_home(state);
-	else if (c == K_CTRL_E)
-		line_edit_move_end(state);
-	else if (c == K_CTRL_L)
-	{
-		line_clear_screen(state->output_fd);
-		line_refresh_line(state);
-	}
-	else if (line_edit_insert(state, c))
+	if (line_edit_feed_block_ret(state, out, c, &ret))
+		return (ret);
+	if (line_edit_insert(state, c))
 		return (*out = NULL, true);
 	return (false);
 }
