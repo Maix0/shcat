@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:23:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/28 16:00:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:41:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,6 @@ struct s_ast_node
 	t_ast_node_data	data;
 };
 
-void ast_free(t_ast_node self);
+void	ast_free(t_ast_node self);
 
 #endif /* AST_H */
