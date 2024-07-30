@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 14:29:42 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 14:58:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:24:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "me/vec/vec_ast.h"
 #include "parser/api.h"
 #include <stdio.h>
-
 
 void	ast_free_arith(t_ast_node elem);
 void	ast_free_condition(t_ast_node elem);

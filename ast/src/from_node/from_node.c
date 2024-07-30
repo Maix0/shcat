@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 17:26:52 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:20:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ sym_variable_name
 sym_while_statement
 sym_word
 */
+
+t_ast_node	ast_alloc(t_ast_node_kind kind);
 
 void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 {

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/26 13:33:00 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:38:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,12 @@ t_ast_while				   while_;
 t_ast_word				   word;
 */
 
-void	ast_print_node(t_ast_node self)
+static inline void	ast_print_block1(t_ast_node self);
+static inline void	ast_print_block2(t_ast_node self);
+static inline void	ast_print_block3(t_ast_node self);
+
+static inline void	ast_print_block1(t_ast_node self)
 {
-	if (self == NULL)
-		return ((void)printf("ast == NULL\n"));
 	if (self->kind == AST_ARITHMETIC_EXPANSION)
 		return (ast_print_node_arithmetic_expansion(self));
 	if (self->kind == AST_CASE)
@@ -63,6 +65,11 @@ void	ast_print_node(t_ast_node self)
 		return (ast_print_node_else(self));
 	if (self->kind == AST_EMPTY)
 		return ;
+	ast_print_block2(self);
+}
+
+static inline void	ast_print_block2(t_ast_node self)
+{
 	if (self->kind == AST_EXPANSION)
 		return (ast_print_node_expansion(self));
 	if (self->kind == AST_EXTGLOB)
@@ -73,12 +80,19 @@ void	ast_print_node(t_ast_node self)
 		return (ast_print_node_for(self));
 	if (self->kind == AST_FUNCTION_DEFINITION)
 		return (ast_print_node_function_definition(self));
+	if (self == NULL)
+		return ((void)printf("ast == NULL\n"));
 	if (self->kind == AST_HEREDOC_REDIRECTION)
 		return (ast_print_node_heredoc_redirection(self));
 	if (self->kind == AST_IF)
 		return (ast_print_node_if(self));
 	if (self->kind == AST_LIST)
 		return (ast_print_node_list(self));
+	ast_print_block3(self);
+}
+
+static inline void	ast_print_block3(t_ast_node self)
+{
 	if (self->kind == AST_PIPELINE)
 		return (ast_print_node_pipeline(self));
 	if (self->kind == AST_PROGRAM)
@@ -98,4 +112,9 @@ void	ast_print_node(t_ast_node self)
 	if (self->kind == AST_WORD)
 		return (ast_print_node_word(self));
 	printf("Unknown ast->kind: %#04x\n", self->kind);
+}
+
+void	ast_print_node(t_ast_node self)
+{
+	ast_print_block1(self);
 }

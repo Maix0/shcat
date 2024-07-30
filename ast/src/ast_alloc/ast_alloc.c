@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:26:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 18:32:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 18:39:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ void	ast_alloc_other(t_ast_node_kind kind, t_ast_node ret)
 
 t_ast_node	ast_alloc(t_ast_node_kind kind)
 {
-	void	ret;
+	t_ast_node	ret;
 
 	ret = mem_alloc(sizeof(*ret));
 	ret->kind = kind;
