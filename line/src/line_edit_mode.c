@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:26:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/23 22:24:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:13:36 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,9 @@
  * fails. If stdin_fd or stdout_fd are set to -1, the default is to use
  * STDIN_FILENO and STDOUT_FILENO.
  */
-t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
+t_error	line_edit_start( \
+		t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, \
+		t_const_str prompt)
 {
 	if (stdin_fd == NULL)
 		stdin_fd = get_stdin();
@@ -76,7 +78,7 @@ t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_
  * called in a loop, and block.
  *
 
-	* The function returns get_unfinished_str() to signal that line editing is still
+ * The function returns get_unfinished_str() to signal that line editing is still
  * in progress, that is, the user didn't yet pressed enter / CTRL-D. Otherwise
  * the function returns the pointer to the heap-allocated buffer with the
  * edited line, that the user should mem_free with linenoiseFree().
@@ -88,13 +90,13 @@ t_error line_edit_start(t_line_state *state, t_fd *stdin_fd, t_fd *stdout_fd, t_
  *
  * Some other errno: I/O error.
  */
-bool line_edit_feed(t_line_state *state, t_str *out)
+bool	line_edit_feed(t_line_state *state, t_str *out)
 {
-	char	   c;
-	t_isize	   nread;
-	char	   seq[3];
-	t_vec_str *history;
-	t_str	   tmp;
+	char		c;
+	t_isize		nread;
+	char		seq[3];
+	t_vec_str	*history;
+	t_str		tmp;
 
 	if (out == NULL)
 		return (true);
@@ -202,11 +204,11 @@ bool line_edit_feed(t_line_state *state, t_str *out)
  * for more information. This function is called when linenoiseEditFeed()
  * returns something different than NULL. At this point the user input
  * is in the buffer, and we can restore the terminal in normal mode. */
-void line_edit_stop(t_line_state *state)
+void	line_edit_stop(t_line_state *state)
 {
 	string_free(state->buf);
 	if (!isatty(state->input_fd->fd))
-		return;
+		return ;
 	line_disable_raw_mode(state->input_fd);
 	me_printf_fd(state->output_fd, "\n");
 }

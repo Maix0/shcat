@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 16:53:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 14:00:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:06:59 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-
 
 /* This just implements a blocking loop for the multiplexed API.
  * In many applications that are not event-drivern, we can just call

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:21:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 15:33:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:07:59 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_usize	line_get_prompt_len(t_const_str s)
 			if ('@' <= s[i] && s[i] <= '~')
 				i++;
 		}
-		else 
+		else
 			_modify_vars(&i, &ret, true);
 	}
 	return (ret);

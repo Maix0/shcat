@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:18:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/20 15:02:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:08:24 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@
 /* Use the ESC [6n escape sequence to query the horizontal cursor position
  * and return it. On error -1 is returned, on success the position of the
  * cursor. */
-/*t_error	line_get_cursor_position(t_fd *input, t_fd *output, t_u32 *column_out)
+/*t_error	line_get_cursor_position( \
+	t_fd *input, t_fd *output, t_u32 *column_out)
 {
 	char	buf[32];
 	t_u32	i;
