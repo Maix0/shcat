@@ -1,6 +1,6 @@
 SRC_FILES =                                                                   \
-from_node/ast_free                                                            \
-from_node/ast_free_scripting                                                  \
+ast_free/ast_free                                                             \
+ast_free/ast_free_scripting                                                   \
 from_node/from_node                                                           \
 not_done_function                                                             \
 not_done_print                                                                \

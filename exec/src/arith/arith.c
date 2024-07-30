@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:31:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:15:00 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,6 @@ t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
 	}
 	return (NO_ERROR);
 }
-
 
 t_error	run_arithmetic_postfix( \
 t_ast_arithmetic_postfix *arithmetic_postfix, t_state *state, t_i64 *out)
