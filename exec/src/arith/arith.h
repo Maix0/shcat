@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/27 22:51:50 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 11:59:09 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stddef.h>
 # include <stdio.h>
+# include <unistd.h>
 
 # include "app/state.h"
 # include "ast/ast.h"

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/29 17:50:51 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 13:17:25 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,42 @@ t_ast_node	_arith_binary_to_ast_node(t_ast_arithmetic_binary *self)
 	ptr = (void *)(self);
 	return ((void *)(ptr - offsetof(\
 					struct s_ast_node, data.arithmetic_binary)));
+}
+
+t_ast_node	_arith_ternary_to_ast_node(t_ast_arithmetic_ternary *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr - offsetof(\
+					struct s_ast_node, data.arithmetic_ternary)));
+}
+
+t_ast_node	_arith_unary_to_ast_node(t_ast_arithmetic_unary *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr - offsetof(\
+					struct s_ast_node, data.arithmetic_unary)));
+}
+
+t_ast_node	_arith_postfix_to_ast_node(t_ast_arithmetic_postfix *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr - offsetof(\
+					struct s_ast_node, data.arithmetic_postfix)));
+}
+
+t_ast_node	_arith_expansion_to_ast_node(t_ast_arithmetic_postfix *self)
+{
+	t_u8	*ptr;
+
+	ptr = (void *)(self);
+	return ((void *)(ptr - offsetof(\
+					struct s_ast_node, data.arithmetic_expansion)));
 }
 
 // this is black magic don't worry
@@ -155,6 +191,7 @@ t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
 			return (ERROR);
 	return (NO_ERROR);
 }
+
 
 t_error	run_arithmetic_postfix( \
 t_ast_arithmetic_postfix *arithmetic_postfix, t_state *state, t_i64 *out)
