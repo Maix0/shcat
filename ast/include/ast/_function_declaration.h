@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   function_declaration.h                             :+:      :+:    :+:   */
+/*   _function_declaration.h                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:30:24 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/26 12:59:29 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 16:59:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FUNCTION_DECLARATION_H
-# define FUNCTION_DECLARATION_H
+#ifndef _FUNCTION_DECLARATION_H
+# define _FUNCTION_DECLARATION_H
 
 # include "ast/ast.h"
 # include "me/types.h"
 # include <stdio.h>
-
-#define NOT_DONE                                                       \
-	{                                                                  \
-		printf("function `%s` isn't done !\n", __func__);              \
-		(void)(self);                                                  \
-	}
 
 void	ast_print_node(t_ast_node self);
 
