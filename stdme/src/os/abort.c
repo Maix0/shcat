@@ -6,13 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:09:47 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 16:20:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./gnu_source.h"
-#include "me/fs/putendl_fd.h"
-#include "me/fs/putstr_fd.h"
+#include "me/fs/fs.h"
 #include "me/types.h"
 #include <dlfcn.h>
 #include <execinfo.h>
@@ -87,9 +86,10 @@ void	print_trace(void)
 void	me_abort(t_str msg)
 {
 	if (msg == NULL)
-		msg = "No message (msg was NULL)";
-	me_putstr_fd("Abort: ", 2);
-	me_putendl_fd(msg, 2);
+		msg = "No message provided";
+	put_string_fd(get_stderr(),"Abort: ");
+	put_string_fd(get_stderr(),msg);
+	put_char_fd(get_stderr(),'\n');
 	print_trace();
 	me_exit(134);
 }

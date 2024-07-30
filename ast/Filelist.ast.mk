@@ -1,5 +1,4 @@
 SRC_FILES =                                                                   \
-from_node                                                                     \
 from_node/ast_free                                                            \
 from_node/ast_free_scripting                                                  \
 from_node/from_node                                                           \

@@ -6,12 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:14:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 14:07:29 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/07/30 16:31:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./arith.h"
+#include "exec/arith.h"
 #include "me/types.h"
+#include "me/convert/str_to_numbers.h"
 
 /// ADD OPERATOR STUFF
 t_error	_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)
@@ -100,17 +101,6 @@ t_ast_node	_arith_postfix_to_ast_node(t_ast_arithmetic_postfix *self)
 					struct s_ast_node, data.arithmetic_postfix)));
 }
 
-/*
-t_ast_node	_arith_postfix_to_ast_node(t_ast_arithmetic_postfix *self)
-{
-	t_u8	*ptr;
-
-	ptr = (void *)(self);
-	return ((void *)(ptr - offsetof(\
-					struct s_ast_node, data.arithmetic_postfix)));
-}
-*/
-
 // this is black magic don't worry
 t_ast_node	_arith_literal_to_ast_node(t_ast_arithmetic_literal *self)
 {
@@ -182,7 +172,6 @@ t_error	run_arithmetic_binary(t_ast_arithmetic_binary *arithmetic_binary, \
 t_error	run_arithmetic_ternary(t_ast_arithmetic_ternary *arithmetic_ternary, \
 		t_state *state, t_i64 *out)
 {
-	t_arith_op_func	func;
 	t_i64			cond;
 
 	if (arithmetic_ternary == NULL || state == NULL || out == NULL)
@@ -234,11 +223,7 @@ t_ast_arithmetic_unary *arithmetic_unary, t_state *state, t_i64 *out)
 t_error	run_arithmetic_expansion( \
 t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out)
 {
-	t_arith_op_func	func;
-
 	if (arithmetic_expansion == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	if (_get_node_number(arithmetic_expansion->expr, state, out))
-		return (ERROR);
-	return (NO_ERROR);
+	return (_get_node_number(arithmetic_expansion->expr, state, out));
 }
