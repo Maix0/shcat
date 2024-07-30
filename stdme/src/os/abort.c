@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 17:54:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:09:47 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # define BASE_PATH "/no_base_path_defined/"
 #endif
 
-#if defined(PRINT_BACKTRACE) || defined(BACKTRACE_DEEP) || true
-
+// #if defined(PRINT_BACKTRACE) || defined(BACKTRACE_DEEP) || true
+#if true					// TO_REMOVE
 # ifndef BACKTRACE_DEEP
 #  define BACKTRACE_DEEP 256
 # endif

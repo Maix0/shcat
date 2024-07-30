@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:57:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/18 13:21:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:10:07 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_i32 _atoi_printf(t_const_str s);
+t_i32	_atoi_printf(t_const_str s);
 
 bool	handle_atoi_stuff(t_const_str fmt, t_usize *c_idx, t_usize *nxt,
 		t_printf_arg *c_arg)

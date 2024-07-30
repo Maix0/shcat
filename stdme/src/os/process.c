@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 15:29:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:08:20 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path_raw,
 {
 	t_vec_str	path;
 	t_usize		idx;
-	
+
 	(void)(process);
-	if (str_split(path_raw + 5, ":", &path)) 
+	if (str_split(path_raw + 5, ":", &path))
 		return (string_free(*s), ERROR);
 	idx = 0;
 	while (idx < path.len)

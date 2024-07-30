@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/17 15:56:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 15:11:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:11:22 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_error str_split(t_const_str str, t_const_str chr, t_vec_str *out)
+t_error	str_split(t_const_str str, t_const_str chr, t_vec_str *out)
 {
-	t_vec_str ret;
-	t_usize	  idx;
-	t_string  buf;
+	t_vec_str	ret;
+	t_usize		idx;
+	t_string	buf;
 
 	if (out == NULL || chr == NULL || str == NULL)
 		return (ERROR);
