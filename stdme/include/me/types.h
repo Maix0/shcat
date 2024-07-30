@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/26 13:55:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:40:58 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,18 @@
 # include <stddef.h>
 # include <stdint.h>
 # include <unistd.h>
+
+# ifndef ERROR
+/// @def signal that an error occured
+#  define ERROR 1
+# else
+#  include <stdio.h>
+# endif
+
+# ifndef NO_ERROR
+/// @def signal that no error occured
+#  define NO_ERROR 0
+# endif
 
 /// @brief A string, null terminated
 typedef char		*t_str;
@@ -64,16 +76,4 @@ void				me_exit(t_i32 code);
 /// @brief a function that prints the current stack trace
 void				print_trace(void);
 
-
-# ifndef ERROR
-/// @def signal that an error occured
-#  define ERROR 1
-# else
-# include <stdio.h>
-# endif
-
-# ifndef NO_ERROR
-/// @def signal that no error occured
-#  define NO_ERROR 0
-# endif
 #endif
