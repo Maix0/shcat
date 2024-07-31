@@ -111,21 +111,5 @@ void	lex_modes_87(t_lex_modes_array *v);
 void	lex_modes_88(t_lex_modes_array *v);
 void	lex_modes_89(t_lex_modes_array *v);
 void	lex_modes_90(t_lex_modes_array *v);
-void	lex_modes_91(t_lex_modes_array *v);
-void	lex_modes_92(t_lex_modes_array *v);
-void	lex_modes_93(t_lex_modes_array *v);
-void	lex_modes_94(t_lex_modes_array *v);
-void	lex_modes_95(t_lex_modes_array *v);
-void	lex_modes_96(t_lex_modes_array *v);
-void	lex_modes_97(t_lex_modes_array *v);
-void	lex_modes_98(t_lex_modes_array *v);
-void	lex_modes_99(t_lex_modes_array *v);
-void	lex_modes_100(t_lex_modes_array *v);
-void	lex_modes_101(t_lex_modes_array *v);
-void	lex_modes_102(t_lex_modes_array *v);
-void	lex_modes_103(t_lex_modes_array *v);
-void	lex_modes_104(t_lex_modes_array *v);
-void	lex_modes_105(t_lex_modes_array *v);
-void	lex_modes_106(t_lex_modes_array *v);
 
 #endif // LEX_MODES_H

@@ -14,7 +14,6 @@
 
 void	symbols_metadata_5(t_symbols_metadata_array *v)
 {
-	v->a[sym_heredoc_end] = sym_metadata(true, true, false);
 	v->a[sym_file_descriptor] = sym_metadata(true, true, false);
 	v->a[sym__empty_value] = sym_metadata(false, true, false);
 	v->a[sym__concat] = sym_metadata(false, true, false);
@@ -34,12 +33,12 @@ void	symbols_metadata_5(t_symbols_metadata_array *v)
 	v->a[sym_while_statement] = sym_metadata(true, true, false);
 	v->a[sym_do_group] = sym_metadata(true, true, false);
 	v->a[sym_if_statement] = sym_metadata(true, true, false);
+	v->a[sym_elif_clause] = sym_metadata(true, true, false);
 	symbols_metadata_6(v);
 }
 
 void	symbols_metadata_6(t_symbols_metadata_array *v)
 {
-	v->a[sym_elif_clause] = sym_metadata(true, true, false);
 	v->a[sym_else_clause] = sym_metadata(true, true, false);
 	v->a[sym_case_statement] = sym_metadata(true, true, false);
 	v->a[sym__case_item_last] = sym_metadata(true, true, false);
@@ -59,12 +58,12 @@ void	symbols_metadata_6(t_symbols_metadata_array *v)
 	v->a[sym__heredoc_pipeline] = sym_metadata(true, true, false);
 	v->a[sym__heredoc_expression] = sym_metadata(false, true, false);
 	v->a[aux_sym__heredoc_command] = sym_metadata(false, false, false);
+	v->a[sym__heredoc_body] = sym_metadata(false, true, false);
 	symbols_metadata_7(v);
 }
 
 void	symbols_metadata_7(t_symbols_metadata_array *v)
 {
-	v->a[sym__heredoc_body] = sym_metadata(false, true, false);
 	v->a[sym_heredoc_body] = sym_metadata(true, true, false);
 	v->a[sym__simple_heredoc_body] = sym_metadata(false, true, false);
 	v->a[sym_arithmetic_expansion] = sym_metadata(true, true, false);
@@ -85,12 +84,12 @@ void	symbols_metadata_7(t_symbols_metadata_array *v)
 	v->a[sym__expansion_regex] = sym_metadata(false, true, false);
 	v->a[sym__concatenation_in_expansion] = sym_metadata(true, true, false);
 	v->a[sym_command_substitution] = sym_metadata(true, true, false);
+	v->a[sym__extglob_blob] = sym_metadata(false, true, false);
 	symbols_metadata_8(v);
 }
 
 void	symbols_metadata_8(t_symbols_metadata_array *v)
 {
-	v->a[sym__extglob_blob] = sym_metadata(false, true, false);
 	v->a[sym__word_no_brace] = sym_metadata(true, true, false);
 	v->a[sym_terminator] = sym_metadata(true, true, false);
 	v->a[aux_sym__statements_repeat1] = sym_metadata(false, false, false);
@@ -114,12 +113,6 @@ void	symbols_metadata_8(t_symbols_metadata_array *v)
 	v->a[aux_sym__expansion_regex_repeat1] = sym_metadata(false, false, false);
 	v->a[aux_sym__concatenation_in_expansion_repeat1] \
 	= sym_metadata(false, false, false);
-	symbols_metadata_9(v);
-}
-
-void	symbols_metadata_9(t_symbols_metadata_array *v)
-{
-	v->a[alias_sym_statements] = sym_metadata(false, false, false);
 }
 
 /* EOF symbols_metadata_1.c */

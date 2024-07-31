@@ -21,7 +21,7 @@
 
 typedef struct s_field_names_array
 {
-	const char	*a[22];
+	const char	*a[21];
 }	t_field_names_array;
 
 #endif // TYPE_FIELD_NAMES_H

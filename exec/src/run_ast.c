@@ -6,18 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 17:03:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/31 15:33:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/run.h"
-#include "exec/spawn_cmd/ppipe.h"
-#include "exec/spawn_cmd/pprocess.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
+#include "me/os/process.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
@@ -26,7 +25,11 @@
 
 #include <stdio.h>
 
-#pragma clang diagnostic push
+#pragma GCC diagnostic	 ignored "-Wunused-parameter"
+#pragma GCC diagnostic	 ignored "-Wunused-variable"
+#pragma GCC diagnostic	 ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic	 ignored "-Wempty-body"
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wunused-variable"
 
@@ -42,7 +45,7 @@ typedef struct s_command_result t_command_result;
 
 struct s_command_result
 {
-	t_p_process process;
+	t_process process;
 };
 
 typedef struct s_word_result t_word_result;
@@ -87,11 +90,6 @@ t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out);
 t_error run_until(t_ast_until *until, t_state *state, void *out);
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, void *out);
 t_error run_while_(t_ast_while *while_, t_state *state, void *out);
-
-#ifdef ERROR
-# undef ERROR
-#endif
-#define ERROR ((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)
 
 #define NOT_DONE                                                                                                                           \
 	{                                                                                                                                      \
@@ -729,5 +727,3 @@ t_error run_node(t_ast_node self, t_state *state, void *out)
 }
 
 */
-
-#pragma clang diagnostic pop

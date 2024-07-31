@@ -21,9 +21,6 @@ src/vec/ast/ast_functions3                                                    \
 src/vec/estr/estr                                                             \
 src/vec/estr/estr_functions2                                                  \
 src/vec/estr/estr_functions3                                                  \
-src/vec/redir/redir                                                           \
-src/vec/redir/redir_functions2                                                \
-src/vec/redir/redir_functions3                                                \
 src/vec/str/str                                                               \
 src/vec/str/str_functions2                                                    \
 src/vec/str/str_functions3                                                    \

@@ -23,7 +23,6 @@ void	field_names_0(t_field_names_array *v)
 	v->a[field_dest] = "dest";
 	v->a[field_elif] = "elif";
 	v->a[field_else] = "else";
-	v->a[field_fd] = "fd";
 	v->a[field_len] = "len";
 	v->a[field_lhs] = "lhs";
 	v->a[field_name] = "name";
@@ -34,11 +33,6 @@ void	field_names_0(t_field_names_array *v)
 	v->a[field_term] = "term";
 	v->a[field_then] = "then";
 	v->a[field_value] = "value";
-	field_names_1(v);
-}
-
-void	field_names_1(t_field_names_array *v)
-{
 	v->a[field_var] = "var";
 }
 

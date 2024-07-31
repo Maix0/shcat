@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 18:57:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/31 15:32:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -698,6 +698,12 @@ t_error	build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out)
 	return (*out = ret, NO_ERROR);
 }
 
+/* if (ts_node_field_id_for_child(self, i) == field_fd) */
+/* { */
+/* 	if (ast_from_node(ts_node_child(self, i), input, &tmp)) */
+/* 		return (ast_free(ret), ERROR); */
+/* 	ret->data.file_redirection.input = tmp; */
+/* } */
 t_error	build_sym_file_redirect(t_parse_node self, t_const_str input,
 		t_ast_node *out)
 {
@@ -718,12 +724,6 @@ t_error	build_sym_file_redirect(t_parse_node self, t_const_str input,
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue ;
-		if (ts_node_field_id_for_child(self, i) == field_fd)
-		{
-			if (ast_from_node(ts_node_child(self, i), input, &tmp))
-				return (ast_free(ret), ERROR);
-			ret->data.file_redirection.input = tmp;
-		}
 		if (ts_node_field_id_for_child(self, i) == field_op)
 		{
 			ret->data.file_redirection.op = _get_redirection_op(ts_node_child(self, \

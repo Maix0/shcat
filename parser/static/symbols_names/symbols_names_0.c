@@ -94,7 +94,6 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[anon_sym_DASH_DASH] = "operator";
 	v->a[anon_sym_DASH2] = "operator";
 	v->a[anon_sym_PLUS2] = "operator";
-	v->a[anon_sym_TILDE] = "operator";
 	v->a[anon_sym_PLUS_PLUS2] = "operator";
 	v->a[anon_sym_DASH_DASH2] = "operator";
 	v->a[aux_sym_concatenation_token1] = "``";
@@ -109,12 +108,12 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[anon_sym_DASH3] = "operator";
 	v->a[anon_sym_COLON_EQ] = "operator";
 	v->a[anon_sym_EQ2] = "operator";
+	v->a[anon_sym_COLON_QMARK] = "operator";
 	symbols_names_4(v);
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
 {
-	v->a[anon_sym_COLON_QMARK] = "operator";
 	v->a[anon_sym_QMARK2] = "operator";
 	v->a[anon_sym_COLON_PLUS] = "operator";
 	v->a[anon_sym_PLUS3] = "operator";
@@ -134,6 +133,7 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
 	v->a[sym_heredoc_content] = "heredoc_content";
+	v->a[sym_heredoc_end] = "heredoc_end";
 	symbols_names_5(v);
 }
 

@@ -41,7 +41,6 @@ module.exports = grammar({
 		[$.command, $._variable_assignments],
 		[$.redirected_statement, $.command],
 		[$.redirected_statement, $.command_substitution],
-		[$.function_definition, $.command_name],
 		[$._expansion_body, $._expansion_regex],
 		[$.pipeline],
 	],
@@ -185,7 +184,7 @@ module.exports = grammar({
 			'if',
 			field('cond', $._terminated_statement),
 			'then',
-			field('body', optional($._terminated_statement),
+			field('body', optional($._terminated_statement)),
 			field('elif', repeat($.elif_clause)),
 			field('else', optional($.else_clause)),
 			'fi',
@@ -296,13 +295,11 @@ module.exports = grammar({
 		_variable_assignments: $ => seq($.variable_assignment, repeat1($.variable_assignment)),
 
 		file_redirect: $ => prec.left(seq(
-			field('fd', optional($.file_descriptor)),
 			field('op', alias(choice('<', '>', '>>', '<&', '>&', '>|', '<>'), $.operator)),
 			field('dest', repeat1($._literal)),
 		)),
 
 		heredoc_redirect: $ => seq(
-			field('fd', optional($.file_descriptor)),
 			field('op', alias(choice('<<', '<<-'), $.operator)),
 			$.heredoc_start,
 			optional(choice(
@@ -359,7 +356,7 @@ module.exports = grammar({
 			$.arithmetic_expansion,
 		),
 
-		arithmetic_expansion: $ => seq('$((', $._arithmetic_expression '))'),
+		arithmetic_expansion: $ => seq('$((', $._arithmetic_expression, '))'),
 
 		_arithmetic_expression: $ => prec(1, choice(
 			$.arithmetic_literal,

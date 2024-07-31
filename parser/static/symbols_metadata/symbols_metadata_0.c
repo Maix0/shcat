@@ -94,7 +94,6 @@ void	symbols_metadata_3(t_symbols_metadata_array *v)
 	v->a[anon_sym_DASH_DASH] = sym_metadata(true, true, false);
 	v->a[anon_sym_DASH2] = sym_metadata(true, true, false);
 	v->a[anon_sym_PLUS2] = sym_metadata(true, true, false);
-	v->a[anon_sym_TILDE] = sym_metadata(true, true, false);
 	v->a[anon_sym_PLUS_PLUS2] = sym_metadata(true, true, false);
 	v->a[anon_sym_DASH_DASH2] = sym_metadata(true, true, false);
 	v->a[aux_sym_concatenation_token1] = sym_metadata(true, false, false);
@@ -109,12 +108,12 @@ void	symbols_metadata_3(t_symbols_metadata_array *v)
 	v->a[anon_sym_DASH3] = sym_metadata(true, true, false);
 	v->a[anon_sym_COLON_EQ] = sym_metadata(true, true, false);
 	v->a[anon_sym_EQ2] = sym_metadata(true, true, false);
+	v->a[anon_sym_COLON_QMARK] = sym_metadata(true, true, false);
 	symbols_metadata_4(v);
 }
 
 void	symbols_metadata_4(t_symbols_metadata_array *v)
 {
-	v->a[anon_sym_COLON_QMARK] = sym_metadata(true, true, false);
 	v->a[anon_sym_QMARK2] = sym_metadata(true, true, false);
 	v->a[anon_sym_COLON_PLUS] = sym_metadata(true, true, false);
 	v->a[anon_sym_PLUS3] = sym_metadata(true, true, false);
@@ -136,6 +135,7 @@ void	symbols_metadata_4(t_symbols_metadata_array *v)
 	v->a[sym_simple_heredoc_body] = sym_metadata(true, true, false);
 	v->a[sym__heredoc_body_beginning] = sym_metadata(false, true, false);
 	v->a[sym_heredoc_content] = sym_metadata(true, true, false);
+	v->a[sym_heredoc_end] = sym_metadata(true, true, false);
 	symbols_metadata_5(v);
 }
 

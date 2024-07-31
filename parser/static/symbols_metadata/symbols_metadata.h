@@ -29,6 +29,5 @@ void	symbols_metadata_5(t_symbols_metadata_array *v);
 void	symbols_metadata_6(t_symbols_metadata_array *v);
 void	symbols_metadata_7(t_symbols_metadata_array *v);
 void	symbols_metadata_8(t_symbols_metadata_array *v);
-void	symbols_metadata_9(t_symbols_metadata_array *v);
 
 #endif // SYMBOLS_METADATA_H

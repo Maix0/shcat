@@ -80,16 +80,15 @@ void	parse_table_2(t_parse_table_array *v)
 	v->a[0][anon_sym_COLON] = actions(1);
 	v->a[0][anon_sym_DASH2] = actions(1);
 	v->a[0][anon_sym_PLUS2] = actions(1);
-	v->a[0][anon_sym_TILDE] = actions(1);
 	v->a[0][aux_sym_concatenation_token1] = actions(1);
 	v->a[0][anon_sym_DOLLAR] = actions(1);
 	v->a[0][anon_sym_DQUOTE] = actions(1);
+	v->a[0][sym_raw_string] = actions(1);
 	parse_table_3(v);
 }
 
 void	parse_table_3(t_parse_table_array *v)
 {
-	v->a[0][sym_raw_string] = actions(1);
 	v->a[0][sym_number] = actions(1);
 	v->a[0][anon_sym_POUND] = actions(1);
 	v->a[0][anon_sym_DOLLAR_LBRACE] = actions(1);
@@ -109,12 +108,12 @@ void	parse_table_3(t_parse_table_array *v)
 	v->a[0][sym_heredoc_start] = actions(1);
 	v->a[0][sym_simple_heredoc_body] = actions(1);
 	v->a[0][sym__heredoc_body_beginning] = actions(1);
+	v->a[0][sym_heredoc_content] = actions(1);
 	parse_table_4(v);
 }
 
 void	parse_table_4(t_parse_table_array *v)
 {
-	v->a[0][sym_heredoc_content] = actions(1);
 	v->a[0][sym_heredoc_end] = actions(1);
 	v->a[0][sym_file_descriptor] = actions(1);
 	v->a[0][sym__empty_value] = actions(1);
@@ -126,14 +125,15 @@ void	parse_table_4(t_parse_table_array *v)
 	v->a[0][sym__bare_dollar] = actions(1);
 	v->a[0][sym__immediate_double_hash] = actions(1);
 	v->a[0][sym___error_recovery] = actions(1);
-	v->a[1][sym_program] = state(2101);
-	v->a[1][sym__statements] = state(2100);
-	v->a[1][sym__statement_not_pipeline] = state(1918);
-	v->a[1][sym_redirected_statement] = state(1022);
-	v->a[1][sym_for_statement] = state(1022);
-	v->a[1][sym_while_statement] = state(1022);
-	v->a[1][sym_if_statement] = state(1022);
-	v->a[1][sym_case_statement] = state(1022);
+	v->a[1][sym_program] = state(1796);
+	v->a[1][sym__statements] = state(1795);
+	v->a[1][sym__statement_not_pipeline] = state(1601);
+	v->a[1][sym_redirected_statement] = state(820);
+	v->a[1][sym_for_statement] = state(820);
+	v->a[1][sym_while_statement] = state(820);
+	v->a[1][sym_if_statement] = state(820);
+	v->a[1][sym_case_statement] = state(820);
+	v->a[1][sym_function_definition] = state(820);
 	parse_table_5(v);
 }
 
