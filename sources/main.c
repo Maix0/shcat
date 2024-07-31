@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/23 22:16:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/31 17:07:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,20 @@
 #include "app/env.h"
 #include "app/node.h"
 #include "app/signal_handler.h"
+#include "app/state.h"
 #include "ast/ast.h"
 #include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
-#include "minishell.h"
 #include "parser/api.h"
 #include <errno.h>
 #include <sys/types.h>
 
 t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
 void	ast_print_node(t_ast_node self);
+void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
@@ -177,7 +178,7 @@ void free_myparser(t_parser self)
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
 {
 	t_state state;
-	//char truc[] = COLB_YELLOW "42sh" COL_GREEN ">" COL_WHITE "$ " RESET;
+	// char truc[] = COLB_YELLOW "42sh" COL_GREEN ">" COL_WHITE "$ " RESET;
 
 	(void)argc;
 	(void)argv;

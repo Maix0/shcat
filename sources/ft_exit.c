@@ -6,15 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/05/29 16:39:24 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/07/31 17:08:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include "app/env.h"
+#include "app/state.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-
+#include "parser/api.h"
 
 void ts_parser_delete(t_first_parser *self);
 

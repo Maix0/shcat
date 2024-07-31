@@ -1,13 +1,8 @@
 SRC_FILES =                                                                   \
 env                                                                           \
-ft_cmd                                                                        \
-ft_echo                                                                       \
 ft_exit                                                                       \
-ft_pwd                                                                        \
 main                                                                          \
 node/node                                                                     \
-operation/ft_classic_op                                                       \
-operation/ft_hard_op                                                          \
 signal_handler                                                                \
 
 GEN_FILES =                                                                   \

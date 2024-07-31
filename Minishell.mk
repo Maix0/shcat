@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/26 14:04:41 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/07/31 17:18:34 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,13 @@ link_group = -Wl,--start-group $(1) -Wl,--end-group
 ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
 
+export CFLAGS_ADDITIONAL
+export CC
+
 # Flags
-CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD  -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
+CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
 CFLAGS  += $(CFLAGS_ADDITIONAL)
+
 
 SRC_DIR = sources
 GEN_DIR = output
