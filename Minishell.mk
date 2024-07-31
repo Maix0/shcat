@@ -22,7 +22,7 @@ export CFLAGS_ADDITIONAL
 export CC
 
 # Flags
-CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -g3 -MMD -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
+CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -MMD -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
 CFLAGS  += $(CFLAGS_ADDITIONAL)
 
 

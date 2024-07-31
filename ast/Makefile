@@ -25,7 +25,7 @@ NAME			=	lib$(ANAME).a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -g3 -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
+CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
 CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 
 

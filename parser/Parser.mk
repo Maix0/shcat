@@ -21,7 +21,7 @@ NAME			=	lib$(ANAME).a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
-CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -g3 -I$(SRC_DIR)
+CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -I$(SRC_DIR)
 CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
