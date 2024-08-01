@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/07/31 17:42:00 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/01 07:16:16 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,10 +45,10 @@ endif
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE
-#CFLAGS_ADDITIONAL	+= -gcolumn-info
+CFLAGS_ADDITIONAL	+= -gcolumn-info -g3
 CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
-CFLAGS_ADDITIONAL 	+= -O2
-# CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols.count.log
+#CFLAGS_ADDITIONAL 	+= -O2
+#CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols.count.log
 
 export CFLAGS_ADDITIONAL
 export CC

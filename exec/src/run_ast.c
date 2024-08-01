@@ -6,17 +6,19 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/31 15:33:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 06:23:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
+#include "me/os/os.h"
+#include "me/os/os.h"
 #include "exec/run.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "me/os/process.h"
+#include "me/os/os.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"

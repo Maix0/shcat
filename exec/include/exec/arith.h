@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 15:58:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 06:21:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,22 @@ t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 t_error		_get_node_number(t_ast_node self, t_state *state, t_i64 *out);
 
 t_error		_binary_op_add(t_ast_node self, t_state *state, t_i64 *out);
-t_error		_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out);
-t_error		_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out);
 t_error		_binary_op_div(t_ast_node self, t_state *state, t_i64 *out);
 t_error		_binary_op_mod(t_ast_node self, t_state *state, t_i64 *out);
-t_error		_postfix_op_inc(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_mul(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_binary_op_sub(t_ast_node self, t_state *state, t_i64 *out);
+
 t_error		_postfix_op_dec(t_ast_node self, t_state *state, t_i64 *out);
-t_error		_unary_op_plus(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_postfix_op_inc(t_ast_node self, t_state *state, t_i64 *out);
+
 t_error		_unary_op_minus(t_ast_node self, t_state *state, t_i64 *out);
+t_error		_unary_op_plus(t_ast_node self, t_state *state, t_i64 *out);
+
 t_ast_node	_arith_binary_to_ast_node(t_ast_arithmetic_binary *self);
+t_ast_node	_arith_expansion_to_ast_node(t_ast_arithmetic_expansion *self);
+t_ast_node	_arith_literal_to_ast_node(t_ast_arithmetic_literal *self);
+t_ast_node	_arith_postfix_to_ast_node(t_ast_arithmetic_postfix *self);
+t_ast_node	_arith_ternary_to_ast_node(t_ast_arithmetic_ternary *self);
+t_ast_node	_arith_unary_to_ast_node(t_ast_arithmetic_unary *self);
 
 #endif
