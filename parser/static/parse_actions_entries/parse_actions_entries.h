@@ -192,8 +192,5 @@ void	parse_actions_entries_168(t_parse_actions_entries_array *v);
 void	parse_actions_entries_169(t_parse_actions_entries_array *v);
 void	parse_actions_entries_170(t_parse_actions_entries_array *v);
 void	parse_actions_entries_171(t_parse_actions_entries_array *v);
-void	parse_actions_entries_172(t_parse_actions_entries_array *v);
-void	parse_actions_entries_173(t_parse_actions_entries_array *v);
-void	parse_actions_entries_174(t_parse_actions_entries_array *v);
 
 #endif // PARSE_ACTIONS_ENTRIES_H

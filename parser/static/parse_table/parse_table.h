@@ -27,6 +27,5 @@ void	parse_table_3(t_parse_table_array *v);
 void	parse_table_4(t_parse_table_array *v);
 void	parse_table_5(t_parse_table_array *v);
 void	parse_table_6(t_parse_table_array *v);
-void	parse_table_7(t_parse_table_array *v);
 
 #endif // PARSE_TABLE_H

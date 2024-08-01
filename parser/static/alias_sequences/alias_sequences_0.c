@@ -16,17 +16,15 @@ void	alias_sequences_0(t_alias_sequences_array *v)
 {
 	v->a[6][1] = anon_sym_AT;
 	v->a[7][0] = anon_sym_AT;
-	v->a[19][0] = sym__immediate_double_hash;
 	v->a[21][1] = sym_string_content;
-	v->a[24][0] = anon_sym_AT;
-	v->a[26][1] = anon_sym_AT;
-	v->a[37][1] = sym__immediate_double_hash;
-	v->a[38][2] = sym_string_content;
-	v->a[39][3] = sym_word;
-	v->a[40][0] = sym_regex;
-	v->a[43][1] = anon_sym_AT;
-	v->a[51][0] = sym_word;
-	v->a[62][1] = sym_word;
+	v->a[23][0] = anon_sym_AT;
+	v->a[25][1] = anon_sym_AT;
+	v->a[37][2] = sym_string_content;
+	v->a[38][3] = sym_word;
+	v->a[39][0] = sym_regex;
+	v->a[42][1] = anon_sym_AT;
+	v->a[50][0] = sym_word;
+	v->a[61][1] = sym_word;
 }
 
 /* EOF alias_sequences_0.c */

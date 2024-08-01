@@ -6,16 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 06:23:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 10:15:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
-#include "me/os/os.h"
-#include "me/os/os.h"
 #include "exec/run.h"
 #include "me/convert/numbers_to_str.h"
+#include "me/fs/fs.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
 #include "me/os/os.h"
@@ -63,6 +62,14 @@ struct s_word_iterator
 {
 	t_word_result res;
 	t_state		 *state;
+};
+
+typedef struct s_cmd_pipe t_cmd_pipe;
+
+struct s_cmd_pipe
+{
+	t_fd *output;
+	bool  create_input;
 };
 
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
@@ -588,8 +595,96 @@ t_error _clone_env(const t_kv_env *kv, void *ctx, t_kv_env *out)
 	return (NO_ERROR);
 }
 
-t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_command_result *out)
+t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
+	t_spawn_info info;
+	t_usize		 i;
+	t_ast_node	 red;
+	t_vec_str	 filename_args;
+	t_fd		*red_fd;
+
+	if (cmd_pipe.output)
+		info.stdout = fd(cmd_pipe.output);
+	i = 0;
+	filename_args = vec_str_new(16, str_free);
+	while (i < redirection.len)
+	{
+		red = redirection.buffer[i];
+		if (red == NULL)
+			continue;
+		vec_str_free(filename_args);
+		filename_args = vec_str_new(16, str_free);
+		if (red->kind == AST_FILE_REDIRECTION)
+		{
+			if (red->data.file_redirection.op == AST_REDIR_INPUT)
+			{
+				if (info.stdin.tag == R_FD)
+					close_fd(info.stdin.fd.fd);
+				info.stdin.tag = R_INHERITED;
+				if (_ast_into_str(red->data.file_redirection.output, state, &filename_args))
+					return (ERROR);
+				if (filename_args.len != 1)
+					return (vec_str_free(filename_args), ERROR);
+				red_fd = open_fd(filename_args.buffer[i], FD_READ, 0 | O_CLOEXEC, 0);
+				if (red_fd == NULL)
+					return (vec_str_free(filename_args), ERROR);
+				info.stdin = fd(red_fd);
+			};
+			if (red->data.file_redirection.op == AST_REDIR_OUTPUT)
+			{
+				if (info.stdout.tag == R_FD)
+					close_fd(info.stdout.fd.fd);
+				info.stdout.tag = R_INHERITED;
+				if (_ast_into_str(red->data.file_redirection.output, state, &filename_args))
+					return (ERROR);
+				if (filename_args.len != 1)
+					return (vec_str_free(filename_args), ERROR);
+				red_fd = open_fd(filename_args.buffer[i], FD_WRITE, O_TRUNC | O_CREAT | O_CLOEXEC, FP_ALL_READ | FP_ALL_WRITE);
+				if (red_fd == NULL)
+					return (vec_str_free(filename_args), ERROR);
+				info.stdout = fd(red_fd);
+			};
+			if (red->data.file_redirection.op == AST_REDIR_APPEND)
+			{
+				if (info.stdout.tag == R_FD)
+					close_fd(info.stdout.fd.fd);
+				info.stdout.tag = R_INHERITED;
+				if (_ast_into_str(red->data.file_redirection.output, state, &filename_args))
+					return (ERROR);
+				if (filename_args.len != 1)
+					return (vec_str_free(filename_args), ERROR);
+				red_fd = open_fd(filename_args.buffer[i], FD_WRITE, O_TRUNC | O_CREAT | O_CLOEXEC, FP_ALL_READ | FP_ALL_WRITE);
+				if (red_fd == NULL)
+					return (vec_str_free(filename_args), ERROR);
+				info.stdout = fd(red_fd);
+			};
+			if (red->data.file_redirection.op == AST_REDIR_DUP_INPUT || red->data.file_redirection.op == AST_REDIR_DUP_OUTPUT ||
+				red->data.file_redirection.op == AST_REDIR_CLOSE_INPUT || red->data.file_redirection.op == AST_REDIR_CLOSE_OUTPUT ||
+				red->data.file_redirection.op == AST_REDIR_INPUT_OUTPUT || red->data.file_redirection.op == AST_REDIR_OUTPUT_CLOBBER)
+				return (ERROR);
+		}
+		if (red->kind == AST_HEREDOC_REDIRECTION)
+		{
+			if (red->data.heredoc_redirection.op == AST_REDIR_HEREDOC)
+			{
+				t_pipe heredoc_pipe;
+
+				if (info.stdout.tag == R_FD)
+					close_fd(info.stdout.fd.fd);
+				info.stdout.tag = R_INHERITED;
+				if (create_pipe(&heredoc_pipe))
+					return (ERROR);
+				put_string_fd(heredoc_pipe.write, red->data.heredoc_redirection.content);
+				close_fd(heredoc_pipe.write);
+				info.stdin = fd(heredoc_pipe.read);
+			}
+			if (red->data.heredoc_redirection.op == AST_REDIR_HEREDOC_INDENT)
+				return (ERROR);
+		}
+
+		i++;
+	}
+	vec_str_free(filename_args);
 	return (ERROR);
 }
 
@@ -602,10 +697,6 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 	t_hashmap_env *env_bck;
 	t_ast_node	   tmp;
 	t_str		   tmp_str;
-
-	t_word_result	   word_res;
-	t_expansion_result exp_out;
-	t_i64			   arith_out;
 
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);
@@ -642,10 +733,9 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 		i++;
 	}
 	i = 0;
-	if (_spawn_cmd_and_run(args, redirection, state, out))
+	if (_spawn_cmd_and_run(args, redirection, state, (t_cmd_pipe){0, 0}, out))
 		return (ERROR);
-
-	return (ERROR);
+	return (NO_ERROR);
 }
 
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out)

@@ -108,8 +108,5 @@ void	lex_modes_84(t_lex_modes_array *v);
 void	lex_modes_85(t_lex_modes_array *v);
 void	lex_modes_86(t_lex_modes_array *v);
 void	lex_modes_87(t_lex_modes_array *v);
-void	lex_modes_88(t_lex_modes_array *v);
-void	lex_modes_89(t_lex_modes_array *v);
-void	lex_modes_90(t_lex_modes_array *v);
 
 #endif // LEX_MODES_H

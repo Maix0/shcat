@@ -21,7 +21,7 @@
 
 typedef struct s_external_scanner_states_array
 {
-	bool	a[51][EXTERNAL_TOKEN_COUNT];
+	bool	a[50][EXTERNAL_TOKEN_COUNT];
 }	t_external_scanner_states_array;
 
 #endif // TYPE_EXTERNAL_SCANNER_STATES_H

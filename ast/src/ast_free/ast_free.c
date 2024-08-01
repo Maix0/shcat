@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 14:29:42 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 18:24:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 09:35:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,8 @@ void	ast_free_redirection(t_ast_node elem)
 	}
 	if (elem->kind == AST_HEREDOC_REDIRECTION)
 	{
-		ast_free(elem->data.heredoc_redirection.delimiter);
-		ast_free(elem->data.heredoc_redirection.output);
+		mem_free(elem->data.heredoc_redirection.delimiter);
+		mem_free(elem->data.heredoc_redirection.content);
 	}
 }
 

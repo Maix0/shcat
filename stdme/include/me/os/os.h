@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:43:08 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 06:32:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 08:17:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ enum							e_redirection
 	R_INHERITED = 0,
 	R_PIPED = 1,
 	R_FD = 2,
+	R_NONE,
 };
 
 union							u_redirection

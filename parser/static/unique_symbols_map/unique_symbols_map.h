@@ -28,6 +28,5 @@ void	unique_symbols_map_4(t_unique_symbols_map_array *v);
 void	unique_symbols_map_5(t_unique_symbols_map_array *v);
 void	unique_symbols_map_6(t_unique_symbols_map_array *v);
 void	unique_symbols_map_7(t_unique_symbols_map_array *v);
-void	unique_symbols_map_8(t_unique_symbols_map_array *v);
 
 #endif // UNIQUE_SYMBOLS_MAP_H

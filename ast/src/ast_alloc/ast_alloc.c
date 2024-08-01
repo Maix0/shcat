@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:26:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 18:39:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 09:35:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ast_alloc_redirection(t_ast_node_kind kind, t_ast_node ret)
 	if (kind == AST_HEREDOC_REDIRECTION)
 	{
 		ret->data.heredoc_redirection.delimiter = NULL;
-		ret->data.heredoc_redirection.output = NULL;
+		ret->data.heredoc_redirection.content = NULL;
 	}
 	if (kind == AST_LIST)
 	{

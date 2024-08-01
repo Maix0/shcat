@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/26 12:29:16 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/01 09:34:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,9 +387,9 @@ struct s_ast_file_redirection
 
 struct s_ast_heredoc_redirection
 {
-	t_ast_node				output;
+	t_str					content;
 	t_ast_redirection_kind	op;
-	t_ast_node				delimiter;
+	t_str					delimiter;
 };
 
 /// Variable Expension

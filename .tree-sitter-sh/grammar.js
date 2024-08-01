@@ -295,12 +295,12 @@ module.exports = grammar({
 		_variable_assignments: $ => seq($.variable_assignment, repeat1($.variable_assignment)),
 
 		file_redirect: $ => prec.left(seq(
-			field('op', alias(choice('<', '>', '>>', '<&', '>&', '>|', '<>'), $.operator)),
+			field('op', alias(choice('<', '>', '>>'), $.operator)),
 			field('dest', repeat1($._literal)),
 		)),
 
 		heredoc_redirect: $ => seq(
-			field('op', alias(choice('<<', '<<-'), $.operator)),
+			field('op', alias('<<', $.operator)),
 			$.heredoc_start,
 			optional(choice(
 				alias($._heredoc_pipeline, $.pipeline),
@@ -380,16 +380,6 @@ module.exports = grammar({
 
 			/** @type {[RuleOrLiteral, number][]} */
 			const table = [
-				[choice('+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '&=', '^=', '|='), PREC.UPDATE],
-				['=', PREC.ASSIGN],
-				['||', PREC.LOGICAL_OR],
-				['&&', PREC.LOGICAL_AND],
-				['|', PREC.BITWISE_OR],
-				['^', PREC.BITWISE_XOR],
-				['&', PREC.BITWISE_AND],
-				[choice('==', '!='), PREC.EQUALITY],
-				[choice('<', '>', '<=', '>='), PREC.COMPARE],
-				[choice('<<', '>>'), PREC.SHIFT],
 				[choice('+', '-'), PREC.ADD],
 				[choice('*', '/', '%'), PREC.MULTIPLY],
 			];
@@ -411,20 +401,10 @@ module.exports = grammar({
 			field('else', $._arithmetic_expression),
 		)),
 
-		arithmetic_unary_expression: $ => choice(
-			prec(PREC.PREFIX, seq(
-				field('op', alias(tokenLiterals(1, '++', '--'), $.operator)),
-				$._arithmetic_expression,
-			)),
-			prec(PREC.UNARY, seq(
+		arithmetic_unary_expression: $ =>prec(PREC.UNARY, seq(
 				field('op', alias(tokenLiterals(1, '-', '+'), $.operator)),
 				$._arithmetic_expression,
 			)),
-			prec.right(PREC.UNARY, seq(
-				field('op', alias('!', $.operator)),
-				$._arithmetic_expression,
-			)),
-		),
 
 		arithmetic_postfix_expression: $ => prec(PREC.POSTFIX, seq(
 			$._arithmetic_expression,

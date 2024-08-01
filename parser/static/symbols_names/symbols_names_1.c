@@ -14,33 +14,6 @@
 
 void	symbols_names_5(t_symbols_names_array *v)
 {
-	v->a[sym_file_descriptor] = "file_descriptor";
-	v->a[sym__empty_value] = "_empty_value";
-	v->a[sym__concat] = "_concat";
-	v->a[sym_variable_name] = "variable_name";
-	v->a[sym_regex] = "regex";
-	v->a[sym__expansion_word] = "word";
-	v->a[sym_extglob_pattern] = "extglob_pattern";
-	v->a[sym__bare_dollar] = "word";
-	v->a[sym__immediate_double_hash] = "operator";
-	v->a[sym___error_recovery] = "__error_recovery";
-	v->a[sym_program] = "program";
-	v->a[sym__statements] = "_statements";
-	v->a[aux_sym__terminated_statement] = "_terminated_statement";
-	v->a[sym__statement_not_pipeline] = "_statement_not_pipeline";
-	v->a[sym_redirected_statement] = "redirected_statement";
-	v->a[sym_for_statement] = "for_statement";
-	v->a[sym_while_statement] = "while_statement";
-	v->a[sym_do_group] = "do_group";
-	v->a[sym_if_statement] = "if_statement";
-	v->a[sym_elif_clause] = "elif_clause";
-	symbols_names_6(v);
-}
-
-void	symbols_names_6(t_symbols_names_array *v)
-{
-	v->a[sym_else_clause] = "else_clause";
-	v->a[sym_case_statement] = "case_statement";
 	v->a[sym__case_item_last] = "case_item";
 	v->a[sym_case_item] = "case_item";
 	v->a[sym_function_definition] = "function_definition";
@@ -59,13 +32,13 @@ void	symbols_names_6(t_symbols_names_array *v)
 	v->a[sym__heredoc_expression] = "_heredoc_expression";
 	v->a[aux_sym__heredoc_command] = "_heredoc_command";
 	v->a[sym__heredoc_body] = "_heredoc_body";
-	symbols_names_7(v);
-}
-
-void	symbols_names_7(t_symbols_names_array *v)
-{
 	v->a[sym_heredoc_body] = "heredoc_body";
 	v->a[sym__simple_heredoc_body] = "_simple_heredoc_body";
+	symbols_names_6(v);
+}
+
+void	symbols_names_6(t_symbols_names_array *v)
+{
 	v->a[sym_arithmetic_expansion] = "arithmetic_expansion";
 	v->a[sym__arithmetic_expression] = "_arithmetic_expression";
 	v->a[sym_arithmetic_literal] = "arithmetic_literal";
@@ -85,13 +58,13 @@ void	symbols_names_7(t_symbols_names_array *v)
 	v->a[sym__concatenation_in_expansion] = "concatenation";
 	v->a[sym_command_substitution] = "command_substitution";
 	v->a[sym__extglob_blob] = "_extglob_blob";
-	symbols_names_8(v);
-}
-
-void	symbols_names_8(t_symbols_names_array *v)
-{
 	v->a[sym__word_no_brace] = "word2";
 	v->a[sym_terminator] = "terminator";
+	symbols_names_7(v);
+}
+
+void	symbols_names_7(t_symbols_names_array *v)
+{
 	v->a[aux_sym__statements_repeat1] = "_statements_repeat1";
 	v->a[aux_sym_redirected_statement_repeat1] \
 	= "redirected_statement_repeat1";

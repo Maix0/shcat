@@ -48,54 +48,26 @@ void	symbols_names_1(t_symbols_names_array *v)
 	v->a[anon_sym_LT] = "operator";
 	v->a[anon_sym_GT] = "operator";
 	v->a[anon_sym_GT_GT] = "operator";
-	v->a[anon_sym_LT_AMP] = "operator";
-	v->a[anon_sym_GT_AMP] = "operator";
-	v->a[anon_sym_GT_PIPE] = "operator";
-	v->a[anon_sym_LT_GT] = "operator";
 	v->a[anon_sym_LT_LT] = "operator";
-	v->a[anon_sym_LT_LT_DASH] = "operator";
 	v->a[aux_sym_heredoc_redirect_token1] = "heredoc_redirect_token1";
 	v->a[anon_sym_DOLLAR_LPAREN_LPAREN] = "$((";
 	v->a[anon_sym_RPAREN_RPAREN] = "))";
-	v->a[anon_sym_PLUS_EQ] = "operator";
-	v->a[anon_sym_DASH_EQ] = "operator";
-	symbols_names_2(v);
-}
-
-void	symbols_names_2(t_symbols_names_array *v)
-{
-	v->a[anon_sym_STAR_EQ] = "operator";
-	v->a[anon_sym_SLASH_EQ] = "operator";
-	v->a[anon_sym_PERCENT_EQ] = "operator";
-	v->a[anon_sym_LT_LT_EQ] = "operator";
-	v->a[anon_sym_GT_GT_EQ] = "operator";
-	v->a[anon_sym_AMP_EQ] = "operator";
-	v->a[anon_sym_CARET_EQ] = "operator";
-	v->a[anon_sym_PIPE_EQ] = "operator";
-	v->a[anon_sym_CARET] = "operator";
-	v->a[anon_sym_AMP] = "operator";
-	v->a[anon_sym_EQ_EQ] = "operator";
-	v->a[anon_sym_BANG_EQ] = "operator";
-	v->a[anon_sym_LT_EQ] = "operator";
-	v->a[anon_sym_GT_EQ] = "operator";
 	v->a[anon_sym_PLUS] = "operator";
 	v->a[anon_sym_DASH] = "operator";
 	v->a[anon_sym_STAR] = "operator";
 	v->a[anon_sym_SLASH] = "operator";
 	v->a[anon_sym_PERCENT] = "operator";
 	v->a[anon_sym_QMARK] = "\\\?";
-	symbols_names_3(v);
+	v->a[anon_sym_COLON] = ":";
+	symbols_names_2(v);
 }
 
-void	symbols_names_3(t_symbols_names_array *v)
+void	symbols_names_2(t_symbols_names_array *v)
 {
-	v->a[anon_sym_COLON] = ":";
-	v->a[anon_sym_PLUS_PLUS] = "operator";
-	v->a[anon_sym_DASH_DASH] = "operator";
 	v->a[anon_sym_DASH2] = "operator";
 	v->a[anon_sym_PLUS2] = "operator";
-	v->a[anon_sym_PLUS_PLUS2] = "operator";
-	v->a[anon_sym_DASH_DASH2] = "operator";
+	v->a[anon_sym_PLUS_PLUS] = "operator";
+	v->a[anon_sym_DASH_DASH] = "operator";
 	v->a[aux_sym_concatenation_token1] = "``";
 	v->a[anon_sym_DOLLAR] = "$";
 	v->a[anon_sym_DQUOTE] = "\\\"";
@@ -109,14 +81,14 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[anon_sym_COLON_EQ] = "operator";
 	v->a[anon_sym_EQ2] = "operator";
 	v->a[anon_sym_COLON_QMARK] = "operator";
-	symbols_names_4(v);
-}
-
-void	symbols_names_4(t_symbols_names_array *v)
-{
 	v->a[anon_sym_QMARK2] = "operator";
 	v->a[anon_sym_COLON_PLUS] = "operator";
 	v->a[anon_sym_PLUS3] = "operator";
+	symbols_names_3(v);
+}
+
+void	symbols_names_3(t_symbols_names_array *v)
+{
 	v->a[anon_sym_PERCENT_PERCENT] = "operator";
 	v->a[aux_sym__expansion_regex_token1] = "regex";
 	v->a[anon_sym_DOLLAR_LPAREN] = "$(";
@@ -129,11 +101,39 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[anon_sym_0] = "special_variable_name";
 	v->a[aux_sym__word_no_brace_token1] = "_word_no_brace_token1";
 	v->a[anon_sym_SEMI] = ";";
+	v->a[anon_sym_LT_LT_DASH] = "<<-";
 	v->a[sym_heredoc_start] = "heredoc_start";
 	v->a[sym_simple_heredoc_body] = "heredoc_body";
 	v->a[sym__heredoc_body_beginning] = "_heredoc_body_beginning";
 	v->a[sym_heredoc_content] = "heredoc_content";
 	v->a[sym_heredoc_end] = "heredoc_end";
+	v->a[sym_file_descriptor] = "file_descriptor";
+	v->a[sym__empty_value] = "_empty_value";
+	symbols_names_4(v);
+}
+
+void	symbols_names_4(t_symbols_names_array *v)
+{
+	v->a[sym__concat] = "_concat";
+	v->a[sym_variable_name] = "variable_name";
+	v->a[sym_regex] = "regex";
+	v->a[sym__expansion_word] = "word";
+	v->a[sym_extglob_pattern] = "extglob_pattern";
+	v->a[sym__bare_dollar] = "word";
+	v->a[sym__immediate_double_hash] = "operator";
+	v->a[sym___error_recovery] = "__error_recovery";
+	v->a[sym_program] = "program";
+	v->a[sym__statements] = "_statements";
+	v->a[aux_sym__terminated_statement] = "_terminated_statement";
+	v->a[sym__statement_not_pipeline] = "_statement_not_pipeline";
+	v->a[sym_redirected_statement] = "redirected_statement";
+	v->a[sym_for_statement] = "for_statement";
+	v->a[sym_while_statement] = "while_statement";
+	v->a[sym_do_group] = "do_group";
+	v->a[sym_if_statement] = "if_statement";
+	v->a[sym_elif_clause] = "elif_clause";
+	v->a[sym_else_clause] = "else_clause";
+	v->a[sym_case_statement] = "case_statement";
 	symbols_names_5(v);
 }
 
