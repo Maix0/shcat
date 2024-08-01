@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:12:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:56:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:25:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,6 +254,9 @@ void						put_string_fd(t_fd *fd, t_const_str string);
 /// @note will fail silently if the fd is not open in write mode
 void						put_char_fd(t_fd *fd, t_u8 c);
 
+/// @brief Duplicate a t_fd using the dup syscall
+/// @note will return NULL in case of error (either fd is null or dup failed)
+t_fd						*dup_fd(t_fd *fd);
 /* _____ _____ _____  ______ _____ _______ ____  _______     __
   |  __ \_   _|  __ \|  ____/ ____|__   __/ __ \|  __ \ \   / /
   | |  | || | | |__) | |__ | |       | | | |  | | |__) \ \_/ /

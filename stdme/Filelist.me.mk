@@ -30,6 +30,7 @@ convert/numbers_to_str                                                        \
 fs/directory                                                                  \
 fs/fd                                                                         \
 fs/file                                                                       \
+fs/file_dup                                                                   \
 fs/fs_internal                                                                \
 fs/getters                                                                    \
 fs/putfd                                                                      \

@@ -6,31 +6,31 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:27:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/04 23:01:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:14:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/fs/fs.h"
+#include "me/os/os.h"
 #include "me/types.h"
-#include "me/os/process.h"
-#include "me/os/pipe.h"
 
-void	handle_redirections_second(t_spawn_info *info, t_process *process)
+void	handle_redirections_inherited(t_spawn_info *info, t_process *process)
 {
 	(void)(process);
 	if (info->stdin.tag == R_INHERITED)
 	{
-		info->stdin = fd(dup(0));
-		process->stdin = ro(dup(0));
+		info->stdin = fd(dup_fd(get_stdin()));
+		process->stdin = dup_fd(get_stdin());
 	}
 	if (info->stdout.tag == R_INHERITED)
 	{
-		info->stdout = fd(dup(1));
-		process->stdout = wo(dup(1));
+		info->stdout = fd(dup_fd(get_stdout()));
+		process->stdout = dup_fd(get_stdout());
 	}
 	if (info->stderr.tag == R_INHERITED)
 	{
-		info->stderr = fd(dup(2));
-		process->stderr = wo(dup(2));
+		info->stderr = fd(dup_fd(get_stderr()));
+		process->stderr = dup_fd(get_stderr());
 	}
 }
 
@@ -38,28 +38,28 @@ void	handle_redirections_fds(t_spawn_info *info, t_process *process)
 {
 	if (info->stdin.tag == R_FD)
 	{
-		info->stdin = fd(dup(info->stdin.vals.fd.value));
-		process->stdin = wo(dup(info->stdin.vals.fd.value));
+		info->stdin = fd(dup_fd(info->stdin.fd.fd));
+		process->stdin = dup_fd(info->stdin.fd.fd);
 	}
 	if (info->stdout.tag == R_FD)
 	{
-		info->stdout = fd(dup(info->stdout.vals.fd.value));
-		process->stdout = ro(dup(info->stdout.vals.fd.value));
+		info->stdout = fd(dup_fd(info->stdout.fd.fd));
+		process->stdout = dup_fd(info->stdout.fd.fd);
 	}
 	if (info->stderr.tag == R_FD)
 	{
-		info->stderr = fd(dup(info->stderr.vals.fd.value));
-		process->stderr = ro(dup(info->stderr.vals.fd.value));
+		info->stderr = fd(dup_fd(info->stderr.fd.fd));
+		process->stderr = dup_fd(info->stderr.fd.fd);
 	}
 }
 
 static inline void	redirection_inner(t_spawn_info *info, t_process *process)
 {
-	process->stderr.tag = INVALID;
-	process->stdout.tag = INVALID;
-	process->stdin.tag = INVALID;
+	process->stderr = NULL;
+	process->stdout = NULL;
+	process->stdin = NULL;
 	handle_redirections_fds(info, process);
-	handle_redirections_second(info, process);
+	handle_redirections_inherited(info, process);
 }
 
 t_error	handle_redirections(t_spawn_info *info, t_process *process)
@@ -71,21 +71,21 @@ t_error	handle_redirections(t_spawn_info *info, t_process *process)
 	{
 		if (create_pipe(&pipe_fd))
 			return (ERROR);
-		process->stdin = wo(pipe_fd.write);
+		process->stdin = pipe_fd.write;
 		info->stdin = fd(pipe_fd.read);
 	}
 	if (info->stdout.tag == R_PIPED)
 	{
 		if (create_pipe(&pipe_fd))
 			return (ERROR);
-		process->stdout = ro(pipe_fd.read);
+		process->stdout = pipe_fd.read;
 		info->stdout = fd(pipe_fd.write);
 	}
 	if (info->stderr.tag == R_PIPED)
 	{
 		if (create_pipe(&pipe_fd))
 			return (ERROR);
-		process->stderr = ro(pipe_fd.read);
+		process->stderr = pipe_fd.read;
 		info->stderr = fd(pipe_fd.write);
 	}
 	return (NO_ERROR);
