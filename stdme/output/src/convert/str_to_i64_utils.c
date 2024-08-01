@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   str_to_i64.c                                       :+:      :+:    :+:   */
+/*   str_to_i64_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/01 23:18:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:29:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_error	checked_add_i64(t_i64 lhs, t_i64 rhs, t_i64 *out)
 
 t_error	checked_sub_i64(t_i64 lhs, t_i64 rhs, t_i64 *out)
 {
-	if ((((rhs & (1 << (sizeof(t_i64) - 1)) || rhs == 0) || !true) && (lhs <
+	if ((((rhs & (1 << (sizeof(t_i64) - 1)) || rhs == 0) || !true) && (lhs < \
 				-(~9223372036854775807ll + 1) + rhs)))
 		return (ERROR);
 	*out = (t_i64)(lhs - rhs);

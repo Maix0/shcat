@@ -11,16 +11,14 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_buf_str.h"
 #include <stdlib.h>
 
-t_error vec_buf_str_find(t_vec_buf_str *vec,
-							 bool (*fn)(const t_string *), t_usize *index)
+t_error	vec_buf_str_find(t_vec_buf_str *vec, bool (*fn)(const t_string *),
+		t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -37,11 +35,10 @@ t_error vec_buf_str_find(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
-									  bool (*fn)(const t_string *),
-									  t_usize starting_index, t_usize *index)
+t_error	vec_buf_str_find_starting(t_vec_buf_str *vec,
+		bool (*fn)(const t_string *), t_usize starting_index, t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -58,10 +55,10 @@ t_error vec_buf_str_find_starting(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_all(t_vec_buf_str *vec,
-							bool (*fn)(const t_string *), bool *result)
+t_error	vec_buf_str_all(t_vec_buf_str *vec, bool (*fn)(const t_string *),
+		bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -76,10 +73,10 @@ t_error vec_buf_str_all(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-t_error vec_buf_str_any(t_vec_buf_str *vec,
-							bool (*fn)(const t_string *), bool *result)
+t_error	vec_buf_str_any(t_vec_buf_str *vec, bool (*fn)(const t_string *),
+		bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -94,15 +91,13 @@ t_error vec_buf_str_any(t_vec_buf_str *vec,
 	return (ERROR);
 }
 
-void vec_buf_str_iter(t_vec_buf_str *vec,
-						  void (*fn)(t_usize index, t_string *value,
-									 void *state),
-						  void *state)
+void	vec_buf_str_iter(t_vec_buf_str *vec, void (*fn)(t_usize index,
+			t_string *value, void *state), void *state)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL)
-		return;
+		return ;
 	idx = 0;
 	while (idx < vec->len)
 	{

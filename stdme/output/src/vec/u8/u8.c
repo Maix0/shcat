@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_u8.c                                  :+:      :+:    :+:   */
+/*   u8.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 18:46:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 17:54:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:31:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 #include "me/vec/vec_u8.h"
 #include <stdlib.h>
 
-t_vec_u8 vec_u8_new(t_usize				  capacity,
-									  t_free_u8_item free_function)
+t_vec_u8	vec_u8_new(t_usize capacity, t_free_u8_item free_function)
 {
-	t_vec_u8 out;
+	t_vec_u8	out;
 
 	out = (t_vec_u8){0};
 	out.free_func = free_function;
@@ -29,7 +28,7 @@ t_vec_u8 vec_u8_new(t_usize				  capacity,
 }
 
 /// Return true in case of an error
-t_error vec_u8_push(t_vec_u8 *vec, t_u8 element)
+t_error	vec_u8_push(t_vec_u8 *vec, t_u8 element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -40,9 +39,9 @@ t_error vec_u8_push(t_vec_u8 *vec, t_u8 element)
 }
 
 /// Return true in case of an error
-t_error vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
+t_error	vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
 {
-	size_t new_capacity;
+	size_t	new_capacity;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -51,8 +50,8 @@ t_error vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer =
-			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_u8));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity, \
+			sizeof(t_u8));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -60,10 +59,10 @@ t_error vec_u8_reserve(t_vec_u8 *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error vec_u8_pop(t_vec_u8 *vec, t_u8 *value)
+t_error	vec_u8_pop(t_vec_u8 *vec, t_u8 *value)
 {
-	t_u8  temp_value;
-	t_u8 *ptr;
+	t_u8	temp_value;
+	t_u8	*ptr;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -79,10 +78,10 @@ t_error vec_u8_pop(t_vec_u8 *vec, t_u8 *value)
 }
 
 /// This function is safe to call with `free_elem` being NULL
-void vec_u8_free(t_vec_u8 vec)
+void	vec_u8_free(t_vec_u8 vec)
 {
 	if (vec.buffer == NULL)
-		return;
+		return ;
 	if (vec.free_func)
 	{
 		while (vec.len)

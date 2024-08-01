@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   str_to_i64.c                                       :+:      :+:    :+:   */
+/*   str_to_i16_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/01 23:18:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:28:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_error	checked_add_i16(t_i16 lhs, t_i16 rhs, t_i16 *out)
 
 t_error	checked_sub_i16(t_i16 lhs, t_i16 rhs, t_i16 *out)
 {
-	if ((((rhs & (1 << (sizeof(t_i16) - 1)) || rhs == 0) || !true) && (lhs <
+	if ((((rhs & (1 << (sizeof(t_i16) - 1)) || rhs == 0) || !true) && (lhs < \
 				-32768 + rhs)))
 		return (ERROR);
 	*out = (t_i16)(lhs - rhs);

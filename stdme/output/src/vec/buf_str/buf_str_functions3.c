@@ -11,22 +11,19 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_buf_str.h"
 #include <stdlib.h>
 
-t_error vec_buf_str_push_front(t_vec_buf_str *vec,
-								   t_string	  element)
+t_error	vec_buf_str_push_front(t_vec_buf_str *vec, t_string element)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len == 0)
 		return (vec_buf_str_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 &&
-		vec_buf_str_reserve(vec, 3 * vec->len / 2 + 1))
+	if (vec->capacity < vec->len + 1 && vec_buf_str_reserve(vec, 3 * vec->len
+			/ 2 + 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -39,9 +36,9 @@ t_error vec_buf_str_push_front(t_vec_buf_str *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_string *value)
+t_error	vec_buf_str_pop_front(t_vec_buf_str *vec, t_string *value)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len <= 1)
 		return (vec_buf_str_pop(vec, value));
@@ -57,10 +54,10 @@ t_error vec_buf_str_pop_front(t_vec_buf_str *vec, t_string *value)
 	return (NO_ERROR);
 }
 
-void vec_buf_str_reverse(t_vec_buf_str *vec)
+void	vec_buf_str_reverse(t_vec_buf_str *vec)
 {
-	t_string temporary;
-	t_usize		  i;
+	t_string	temporary;
+	t_usize		i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -72,9 +69,9 @@ void vec_buf_str_reverse(t_vec_buf_str *vec)
 	}
 }
 
-t_error vec_buf_str_back(t_vec_buf_str *vec, t_string **out)
+t_error	vec_buf_str_back(t_vec_buf_str *vec, t_string **out)
 {
-	t_string *temporary;
+	t_string	*temporary;
 
 	if (out == NULL)
 		out = &temporary;

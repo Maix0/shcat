@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   str_to_i64.c                                       :+:      :+:    :+:   */
+/*   u8_to_str.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/02/01 23:18:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/01 07:30:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_error	u8_to_str_base_prefix(t_u8 val, t_str base, t_str prefix, t_str *out)
 	if (is_nonnegative)
 		value.u8 = ~value.u8 + 1;
 	return (_format_u64((t_num_str){.value = value.u64,
-			.is_nonnegative = is_nonnegative, .base = base, .prefix = prefix},
+			.is_nonnegative = is_nonnegative, .base = base, .prefix = prefix}, \
 			out));
 }
 
