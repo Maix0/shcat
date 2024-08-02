@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:41:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/02 18:51:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 21:13:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ struct s_cmd_pipe
 };
 
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
-t_error run_command(t_ast_command *command, t_state *state, t_command_result *out);
+t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out);
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
 
@@ -97,7 +97,7 @@ t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out);
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out);
 t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out);
 t_error run_until(t_ast_until *until, t_state *state, void *out);
-t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, void *out);
+t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out);
 t_error run_while_(t_ast_while *while_, t_state *state, void *out);
 
 #endif

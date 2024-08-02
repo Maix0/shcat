@@ -27,7 +27,7 @@ t_error hmap_C__PREFIX___clone(t_hashmap_C__PREFIX__ *self,
 	t_hashmap_C__PREFIX__	*ret;
 
 	bucket_id = 0;
-	ret = hmap_C__PREFIX___new_with_buckets(self->hfunc, self->cfunc, self->drop, self->num_buckets);
+	ret = hmap_C__PREFIX___new_with_buckets(self->hfunc, self->cfunc, self->free, self->num_buckets);
 	if (ret == NULL)
 		return (ERROR);
 	while (bucket_id < self->num_buckets)

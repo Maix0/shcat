@@ -19,15 +19,15 @@
 
 t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new(t_hash_C__PREFIX___fn hfunc,
 											t_eq_C__PREFIX___fn	  cfunc,
-											t_drop_C__PREFIX___fn drop)
+											t_free_C__PREFIX___fn free)
 {
 	return (
-		hmap_C__PREFIX___new_with_buckets(hfunc, cfunc, drop, DEFAULT_BUCKETS));
+		hmap_C__PREFIX___new_with_buckets(hfunc, cfunc, free, DEFAULT_BUCKETS));
 }
 
 t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new_with_buckets(
 	t_hash_C__PREFIX___fn hfunc, t_eq_C__PREFIX___fn cfunc,
-	t_drop_C__PREFIX___fn drop, t_usize buckets)
+	t_free_C__PREFIX___fn free, t_usize buckets)
 {
 	t_hashmap_C__PREFIX__ *hmap;
 
@@ -39,7 +39,7 @@ t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new_with_buckets(
 	hmap->hasher = hasher_sip13_new();
 	hmap->hfunc = hfunc;
 	hmap->cfunc = cfunc;
-	hmap->drop = drop;
+	hmap->free = free;
 	if (hmap->buckets == NULL)
 		return ((void)mem_free(hmap), NULL);
 	return (hmap);
@@ -57,7 +57,7 @@ void hmap_C__PREFIX___free(t_hashmap_C__PREFIX__ *hmap)
 		entry = hmap->buckets[index];
 		while (entry != NULL)
 		{
-			hmap->drop(entry->kv);
+			hmap->free(entry->kv);
 			tmp = entry->next;
 			mem_free(entry);
 			entry = tmp;
@@ -117,7 +117,7 @@ bool hmap_C__PREFIX___insert(t_hashmap_C__PREFIX__ *hmap, C__KEYTYPE__ key,
 	}
 	else
 	{
-		hmap->drop(entry->kv);
+		hmap->free(entry->kv);
 		entry->kv.key = key;
 		entry->kv.val = value;
 		return (true);

@@ -48,7 +48,7 @@ void hmap_env_remove(t_hashmap_env *hmap, t_str *key)
 		hmap->buckets[hashed_key % hmap->num_buckets] = entry->next;
 	else
 		prev->next = entry->next;
-	hmap->drop(entry->kv);
+	hmap->free(entry->kv);
 	mem_free(entry);
 	hmap->buckets[hashed_key % hmap->num_buckets] = NULL;
 }

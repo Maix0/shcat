@@ -35,7 +35,7 @@ typedef struct s_kv_env
 /// @typedef A function that hashes a key
 typedef void (*t_hash_env_fn)(t_hasher *hasher, t_str *key);
 /// @typedef A function that drops a key-value pair
-typedef void (*t_drop_env_fn)(t_kv_env val);
+typedef void (*t_free_env_fn)(t_kv_env val);
 /// @typedef A function that compares two keys and returns true if they are equal
 typedef bool (*t_eq_env_fn)(t_str *lhs, t_str *rhs);
 
@@ -57,7 +57,7 @@ typedef struct s_entry_env
 /// @var hasher The hasher function
 /// @var hfunc The hash function
 /// @var cfunc The comparison function
-/// @var drop The drop function
+/// @var free The free function
 typedef struct s_hashmap_env
 {
 	t_entry_env **buckets;
@@ -65,27 +65,31 @@ typedef struct s_hashmap_env
 	t_hasher			  hasher;
 	t_hash_env_fn hfunc;
 	t_eq_env_fn	  cfunc;
-	t_drop_env_fn drop;
+	t_free_env_fn free;
 } t_hashmap_env;
 
-/// @brief Creates a new hashmap with the given hash, comparison, and drop functions
+/// @brief Creates a new hashmap with the given hash, comparison, and free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
-/// @param drop The drop function
+/// @param free The free function
 /// @return A new hashmap
-t_hashmap_env *hmap_env_new(t_hash_env_fn hash, t_eq_env_fn	cmp, t_drop_env_fn drop);
+t_hashmap_env *hmap_env_new(t_hash_env_fn hash, t_eq_env_fn	cmp, t_free_env_fn free);
 
-/// @brief Creates a new hashmap with the given hash, comparison, and drop functions
+/// @brief Creates a new hashmap with the given hash, comparison, and free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
-/// @param drop The drop function
+/// @param free The free function
 /// @param cap The number of buckets
 /// @return A new hashmap
-t_hashmap_env *hmap_env_new_with_buckets(t_hash_env_fn hash, t_eq_env_fn cmp, t_drop_env_fn drop, size_t cap);
+t_hashmap_env *hmap_env_new_with_buckets(t_hash_env_fn hash, t_eq_env_fn cmp, t_free_env_fn free, size_t cap);
 
 /// @brief Free the hashmap and all of its entries
 /// @param hmap The hashmap to free
 void hmap_env_free(t_hashmap_env *hmap);
+
+/// @brief Clear the hashmap, removing all of its entries
+/// @param hmap The hashmap to clear
+void hmap_env_clear(t_hashmap_env *hmap);
 
 /// @brief Inserts a key-value pair into the hashmap
 /// @param hmap The hashmap

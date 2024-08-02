@@ -6,13 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 19:04:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 23:17:47 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/_run_ast.h"
+#include "app/env.h"
 #include "exec/run.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/fs/fs.h"
@@ -22,6 +23,7 @@
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
+#include "me/vec/vec_ast.h"
 #include "me/vec/vec_estr.h"
 #include "me/vec/vec_str.h"
 
@@ -77,7 +79,9 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 
 	if (self == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	hmap_ret = hmap_env_get(state->env, &self->var_name);
+	hmap_ret = hmap_env_get(state->tmp_var, &self->var_name);
+	if (hmap_ret == NULL)
+		hmap_ret = hmap_env_get(state->env, &self->var_name);
 	ret = (t_expansion_result){.exists = hmap_ret == NULL, .value = NULL};
 	if (ret.exists)
 		ret.value = str_clone(*hmap_ret);
@@ -455,7 +459,6 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 // End Internals funcs
 
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
-t_error run_command(t_ast_command *command, t_state *state, t_command_result *out);
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 
@@ -479,7 +482,7 @@ t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) 
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out) NOT_DONE;
 t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out) NOT_DONE;
 t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
-t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, void *out) NOT_DONE;
+t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
 
 // FUNCTIONS
@@ -606,11 +609,23 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 
 		i++;
 	}
+	redirection.len = 0;
+	vec_ast_free(redirection);
 	vec_str_free(filename_args);
+	info.arguments = args;
+	//if (build_envp(state, info.arguments));
+	if (args.len == 0)
+	{
+		vec_str_free(args);
+		return (ERROR);
+	}
+	//if (_is_builtin(args.buffer[0]))
+	//	return (_handle_builtin(args, info));
+
 	return (ERROR);
 }
 
-t_error run_command(t_ast_command *command, t_state *state, t_command_result *out)
+t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
 	t_vec_str	   args;
 	t_vec_str	   split;
@@ -622,9 +637,6 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);
-	env_bck = state->env;
-	if (hmap_env_clone(env_bck, _clone_env, NULL, &state->env))
-		return (state->env = env_bck, ERROR);
 	args = vec_str_new(command->cmd_word.len, str_free);
 	redirection = vec_ast_new(command->suffixes_redirections.len, ast_free);
 	i = 0;
@@ -635,7 +647,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 			vec_ast_push(&redirection, tmp);
 		if (tmp->kind == AST_VARIABLE_ASSIGNMENT)
 		{
-			if (run_variable_assignment(&tmp->data.variable_assignment, state, NULL))
+			if (run_variable_assignment(&tmp->data.variable_assignment, state, true, NULL))
 				return (ERROR);
 		}
 		i++;
@@ -655,7 +667,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_command_result *ou
 		i++;
 	}
 	i = 0;
-	if (_spawn_cmd_and_run(args, redirection, state, (t_cmd_pipe){0, 0}, out))
+	if (_spawn_cmd_and_run(args, redirection, state, cmd_pipe, out))
 		return (ERROR);
 	return (NO_ERROR);
 }

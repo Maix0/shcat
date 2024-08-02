@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:32:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 12:09:05 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/02 22:37:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,11 @@ t_error	_build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
 	return (NO_ERROR);
 }
 
-t_error	build_envp(t_hashmap_env *envs, t_vec_str *envp)
+t_error	build_envp(t_hashmap_env *envs, t_hashmap_env *tmp_vars, t_vec_str *envp)
 {
 	struct s_build_envp_state	state;
 
+	state.tmp_vars = tmp_vars;
 	state.buf = string_new(8096);
 	state.out = vec_str_new(1024, (void (*)(t_str))mem_free);
 	if (hmap_env_iter(envs, _build_envp_iterator, &state))

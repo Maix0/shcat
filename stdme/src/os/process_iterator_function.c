@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_inner.c                                    :+:      :+:    :+:   */
+/*   process_iterator_function.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:25:44 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 06:37:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:26:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-bool	find_null(const t_str *s)
+bool	_find_null(const t_str *s)
 {
 	return (s == NULL);
 }
 
-bool	find_path(const t_str *s)
+bool	_find_path(const t_str *s)
 {
 	t_str	ss;
 

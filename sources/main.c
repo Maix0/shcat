@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/02 12:16:09 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/02 23:00:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,6 +184,7 @@ t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
 	(void)argc;
 	(void)argv;
 	(void)envp;
+	me_abort("abort");
 	if (install_signal())
 		me_abort("Unable to install signals");
 	state = (t_state){};

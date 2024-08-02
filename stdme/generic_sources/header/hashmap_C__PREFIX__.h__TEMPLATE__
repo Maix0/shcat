@@ -35,7 +35,7 @@ typedef struct s_kv_C__PREFIX__
 /// @typedef A function that hashes a key
 typedef void (*t_hash_C__PREFIX___fn)(t_hasher *hasher, C__KEYTYPE__ *key);
 /// @typedef A function that drops a key-value pair
-typedef void (*t_drop_C__PREFIX___fn)(t_kv_C__PREFIX__ val);
+typedef void (*t_free_C__PREFIX___fn)(t_kv_C__PREFIX__ val);
 /// @typedef A function that compares two keys and returns true if they are equal
 typedef bool (*t_eq_C__PREFIX___fn)(C__KEYTYPE__ *lhs, C__KEYTYPE__ *rhs);
 
@@ -57,7 +57,7 @@ typedef struct s_entry_C__PREFIX__
 /// @var hasher The hasher function
 /// @var hfunc The hash function
 /// @var cfunc The comparison function
-/// @var drop The drop function
+/// @var free The free function
 typedef struct s_hashmap_C__PREFIX__
 {
 	t_entry_C__PREFIX__ **buckets;
@@ -65,27 +65,31 @@ typedef struct s_hashmap_C__PREFIX__
 	t_hasher			  hasher;
 	t_hash_C__PREFIX___fn hfunc;
 	t_eq_C__PREFIX___fn	  cfunc;
-	t_drop_C__PREFIX___fn drop;
+	t_free_C__PREFIX___fn free;
 } t_hashmap_C__PREFIX__;
 
-/// @brief Creates a new hashmap with the given hash, comparison, and drop functions
+/// @brief Creates a new hashmap with the given hash, comparison, and free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
-/// @param drop The drop function
+/// @param free The free function
 /// @return A new hashmap
-t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new(t_hash_C__PREFIX___fn hash, t_eq_C__PREFIX___fn	cmp, t_drop_C__PREFIX___fn drop);
+t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new(t_hash_C__PREFIX___fn hash, t_eq_C__PREFIX___fn	cmp, t_free_C__PREFIX___fn free);
 
-/// @brief Creates a new hashmap with the given hash, comparison, and drop functions
+/// @brief Creates a new hashmap with the given hash, comparison, and free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
-/// @param drop The drop function
+/// @param free The free function
 /// @param cap The number of buckets
 /// @return A new hashmap
-t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new_with_buckets(t_hash_C__PREFIX___fn hash, t_eq_C__PREFIX___fn cmp, t_drop_C__PREFIX___fn drop, size_t cap);
+t_hashmap_C__PREFIX__ *hmap_C__PREFIX___new_with_buckets(t_hash_C__PREFIX___fn hash, t_eq_C__PREFIX___fn cmp, t_free_C__PREFIX___fn free, size_t cap);
 
 /// @brief Free the hashmap and all of its entries
 /// @param hmap The hashmap to free
 void hmap_C__PREFIX___free(t_hashmap_C__PREFIX__ *hmap);
+
+/// @brief Clear the hashmap, removing all of its entries
+/// @param hmap The hashmap to clear
+void hmap_C__PREFIX___clear(t_hashmap_C__PREFIX__ *hmap);
 
 /// @brief Inserts a key-value pair into the hashmap
 /// @param hmap The hashmap

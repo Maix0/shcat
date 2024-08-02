@@ -18,6 +18,7 @@ sources = [
 	"stdme/generic_sources/src/hashmap/C__PREFIX___utils.c__TEMPLATE__",
 	"stdme/generic_sources/src/hashmap/C__PREFIX___iter.c__TEMPLATE__",
 	"stdme/generic_sources/src/hashmap/C__PREFIX___clone.c__TEMPLATE__",
+	"stdme/generic_sources/src/hashmap/C__PREFIX___clear.c__TEMPLATE__",
 ]
 replace.C__VALTYPE__ = "type"
 replace.C__KEYTYPE__ = "type"
