@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec/arith.h"
+#include "exec/_run_arith.h"
 
 t_error	_binary_op_add(t_ast_node self, t_state *state, t_i64 *out)
 {

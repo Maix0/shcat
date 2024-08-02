@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/30 14:52:58 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/02 18:57:50 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -76,5 +76,7 @@ build_filelist:
 	@tree static -ifF | rg 'static/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
 	@echo "" >> Filelist.$(ANAME).mk
 	@echo -e '$(GREY) Populating $(GREEN) Filelist.$(ANAME).mk$(END)'
+
+%.h: ;
 
 -include $(DEPS)

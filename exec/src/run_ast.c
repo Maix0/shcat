@@ -6,15 +6,30 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 14:45:19 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/02 19:04:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./run_ast.h"
+#include "app/state.h"
+#include "ast/ast.h"
+#include "exec/_run_ast.h"
+#include "exec/run.h"
+#include "me/convert/numbers_to_str.h"
+#include "me/fs/fs.h"
+#include "me/hashmap/hashmap_env.h"
+#include "me/mem/mem.h"
+#include "me/os/os.h"
+#include "me/str/str.h"
+#include "me/string/string.h"
+#include "me/types.h"
+#include "me/vec/vec_estr.h"
+#include "me/vec/vec_str.h"
 
-bool	_is_special_var(t_ast_expansion *self)
+#include <stdio.h>
+
+bool _is_special_var(t_ast_expansion *self)
 {
-	char	name;
+	char name;
 
 	if (self == NULL)
 		return (true);
@@ -23,18 +38,14 @@ bool	_is_special_var(t_ast_expansion *self)
 	if (str_len(self->var_name) != 1)
 		return (false);
 	name = self->var_name[0];
-	if (name == '*' || name == '@' || \
-		name == '?' || name == '!' || \
-		name == '#' || name == '-' || \
-		name == '$' || name == '0')
+	if (name == '*' || name == '@' || name == '?' || name == '!' || name == '#' || name == '-' || name == '$' || name == '0')
 		return (true);
 	return (false);
 }
 
-t_error	_run_expansion_special_var(\
-		t_ast_expansion *self, t_state *state, t_expansion_result *out)
+t_error _run_expansion_special_var(t_ast_expansion *self, t_state *state, t_expansion_result *out)
 {
-	char	name;
+	char name;
 
 	if (self == NULL || state == NULL || out == NULL)
 		return (ERROR);
@@ -100,19 +111,19 @@ t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_r
 	return (NO_ERROR);
 };
 
-t_error _handle_assign_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_assign_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_alternate_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_alternate_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_default_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_default_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_error_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_error_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_assign_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_assign_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_alternate_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_alternate_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_default_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_default_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_error_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_error_colon_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
 
-t_error _handle_suffix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_suffix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_prefix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
-t_error _handle_prefix_pattern_longest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_suffix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_suffix_pattern_largest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_prefix_pattern_smallest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
+t_error _exp_prefix_pattern_largest_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value) NOT_DONE;
 
 t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)(t_ast_expansion *self, t_state *state, t_expansion_result *value))
 {
@@ -121,29 +132,29 @@ t_error _get_op_func(t_ast_expansion *self, t_error (**op_func)(t_ast_expansion 
 	if (self->kind == E_OP_NONE)
 		return (*op_func = _handle_no_operator, NO_ERROR);
 	if (self->kind == E_OP_ERROR)
-		return (*op_func = _handle_error_operator, NO_ERROR);
+		return (*op_func = _exp_error_operator, NO_ERROR);
 	if (self->kind == E_OP_ERROR_COLON)
-		return (*op_func = _handle_error_colon_operator, NO_ERROR);
+		return (*op_func = _exp_error_colon_operator, NO_ERROR);
 	if (self->kind == E_OP_ASSIGN_DEFAULT)
-		return (*op_func = _handle_assign_operator, NO_ERROR);
+		return (*op_func = _exp_assign_operator, NO_ERROR);
 	if (self->kind == E_OP_ASSIGN_DEFAULT_COLON)
-		return (*op_func = _handle_assign_colon_operator, NO_ERROR);
+		return (*op_func = _exp_assign_colon_operator, NO_ERROR);
 	if (self->kind == E_OP_DEFAULT)
-		return (*op_func = _handle_default_operator, NO_ERROR);
+		return (*op_func = _exp_default_operator, NO_ERROR);
 	if (self->kind == E_OP_DEFAULT_COLON)
-		return (*op_func = _handle_default_colon_operator, NO_ERROR);
+		return (*op_func = _exp_default_colon_operator, NO_ERROR);
 	if (self->kind == E_OP_ALTERNATE)
-		return (*op_func = _handle_alternate_operator, NO_ERROR);
+		return (*op_func = _exp_alternate_operator, NO_ERROR);
 	if (self->kind == E_OP_ALTERNATE_COLON)
-		return (*op_func = _handle_alternate_colon_operator, NO_ERROR);
+		return (*op_func = _exp_alternate_colon_operator, NO_ERROR);
 	if (self->kind == E_OP_LARGEST_PREFIX)
-		return (*op_func = _handle_prefix_pattern_smallest_operator, NO_ERROR);
+		return (*op_func = _exp_prefix_pattern_largest_operator, NO_ERROR);
 	if (self->kind == E_OP_SMALLEST_PREFIX)
-		return (*op_func = _handle_prefix_pattern_smallest_operator, NO_ERROR);
+		return (*op_func = _exp_prefix_pattern_smallest_operator, NO_ERROR);
 	if (self->kind == E_OP_LARGEST_SUFFIX)
-		return (*op_func = _handle_suffix_pattern_smallest_operator, NO_ERROR);
+		return (*op_func = _exp_suffix_pattern_largest_operator, NO_ERROR);
 	if (self->kind == E_OP_SMALLEST_SUFFIX)
-		return (*op_func = _handle_suffix_pattern_longest_operator, NO_ERROR);
+		return (*op_func = _exp_suffix_pattern_smallest_operator, NO_ERROR);
 	return (ERROR);
 }
 
@@ -511,8 +522,11 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	t_vec_str	 filename_args;
 	t_fd		*red_fd;
 
-	if (cmd_pipe.output)
-		info.stdout = fd(cmd_pipe.output);
+	info = (t_spawn_info){};
+	if (cmd_pipe.input)
+		info.stdin = fd(cmd_pipe.input);
+	if (cmd_pipe.create_output)
+		info.stdout = piped();
 	i = 0;
 	filename_args = vec_str_new(16, str_free);
 	while (i < redirection.len)
@@ -533,7 +547,7 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 					return (ERROR);
 				if (filename_args.len != 1)
 					return (vec_str_free(filename_args), ERROR);
-				red_fd = open_fd(filename_args.buffer[i], FD_READ, 0 | O_CLOEXEC, 0);
+				red_fd = open_fd(filename_args.buffer[i], FD_READ, O_CLOEXEC, 0);
 				if (red_fd == NULL)
 					return (vec_str_free(filename_args), ERROR);
 				info.stdin = fd(red_fd);

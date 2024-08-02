@@ -68,8 +68,8 @@ os/abort                                                                      \
 os/exit                                                                       \
 os/pipe                                                                       \
 os/process                                                                    \
-os/process_inner                                                              \
-os/process_inner2                                                             \
+os/process_iterator_function                                                  \
+os/process_redirection                                                        \
 printf/callbacks                                                              \
 printf/formatter/char                                                         \
 printf/formatter/decimal                                                      \

@@ -1,5 +1,5 @@
 SRC_FILES =                                                                   \
-arith/arith                                                                   \
-arith/arith_operation                                                         \
+run_arithmetic/arithmetic                                                     \
+run_arithmetic/arithmetic_operation                                           \
 run_ast                                                                       \
 

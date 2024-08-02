@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/07/23 21:49:24 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/02 18:57:39 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -99,5 +99,7 @@ build_filelist:
 	@printf '%-78s\\\n' "GEN_FILES =" >> Filelist.$(ANAME).mk
 	@tree $(GEN_DIR) -ifF | rg '$(GEN_DIR)/(.*)\.c$$' --replace '$$1' | sed -re 's/^(.*)_([0-9]+)$$/\1|\2/g' | sort -t'|' --key=1,1 --key=2,2n | sed -e's/|/_/' | xargs printf '%-78s\\\n' >> Filelist.$(ANAME).mk
 	@echo "" >> Filelist.$(ANAME).mk
+
+%.h: ;
 
 -include $(DEPS)

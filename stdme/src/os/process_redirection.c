@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process_inner2.c                                   :+:      :+:    :+:   */
+/*   process_redirection.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:27:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 07:14:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 19:10:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "me/os/os.h"
 #include "me/types.h"
 
-void	handle_redirections_inherited(t_spawn_info *info, t_process *process)
+t_error	_handle_redirections_inherited(t_spawn_info *info, t_process *process)
 {
 	(void)(process);
 	if (info->stdin.tag == R_INHERITED)
@@ -32,9 +32,10 @@ void	handle_redirections_inherited(t_spawn_info *info, t_process *process)
 		info->stderr = fd(dup_fd(get_stderr()));
 		process->stderr = dup_fd(get_stderr());
 	}
+	return (NO_ERROR);
 }
 
-void	handle_redirections_fds(t_spawn_info *info, t_process *process)
+t_error	_handle_redirections_fds(t_spawn_info *info, t_process *process)
 {
 	if (info->stdin.tag == R_FD)
 	{
@@ -51,22 +52,13 @@ void	handle_redirections_fds(t_spawn_info *info, t_process *process)
 		info->stderr = fd(dup_fd(info->stderr.fd.fd));
 		process->stderr = dup_fd(info->stderr.fd.fd);
 	}
+	return (NO_ERROR);
 }
 
-static inline void	redirection_inner(t_spawn_info *info, t_process *process)
-{
-	process->stderr = NULL;
-	process->stdout = NULL;
-	process->stdin = NULL;
-	handle_redirections_fds(info, process);
-	handle_redirections_inherited(info, process);
-}
-
-t_error	handle_redirections(t_spawn_info *info, t_process *process)
+t_error	_handle_redirections_pipe(t_spawn_info *info, t_process *process)
 {
 	t_pipe	pipe_fd;
 
-	redirection_inner(info, process);
 	if (info->stdin.tag == R_PIPED)
 	{
 		if (create_pipe(&pipe_fd))
@@ -88,5 +80,19 @@ t_error	handle_redirections(t_spawn_info *info, t_process *process)
 		process->stderr = pipe_fd.read;
 		info->stderr = fd(pipe_fd.write);
 	}
+	return (NO_ERROR);
+}
+
+t_error	handle_redirections(t_spawn_info *info, t_process *process)
+{
+	process->stderr = NULL;
+	process->stdout = NULL;
+	process->stdin = NULL;
+	if (_handle_redirections_fds(info, process))
+		return (ERROR);
+	if (_handle_redirections_inherited(info, process))
+		return (ERROR);
+	if (_handle_redirections_pipe(info, process))
+		return (ERROR);
 	return (NO_ERROR);
 }
