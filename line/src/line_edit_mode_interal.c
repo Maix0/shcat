@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:19:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 18:17:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 23:21:18 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, \
 		*ret = line_edit_feed_esc(state, out, seq);
 	else if (c == K_SIGQUIT)
 		*ret = false;
-	else if (c >= '\x00' && c <= '\x1F')
+	else if (c <= '\x1F')
 		*ret = false;
 	else
 		return (false);
