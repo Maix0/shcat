@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/02 13:11:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:17:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_node build_node(t_parse_node current, t_const_str input);
+t_node		build_node(t_parse_node current, t_const_str input);
 
-t_language *tree_sitter_bash(void);
+t_language	*tree_sitter_bash(void);
 
-t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
+t_node	*build_childs(t_parse_node parent, t_const_str input, t_usize count)
 {
-	t_node		*ret;
-	t_usize		 idx;
-	t_parse_node child;
+	t_node			*ret;
+	t_usize			idx;
+	t_parse_node	child;
 
 	ret = mem_alloc_array(sizeof(*ret), count);
 	if (ret == NULL)
@@ -41,9 +41,9 @@ t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 	return (ret);
 }
 
-t_node build_node(t_parse_node curr, t_const_str input)
+t_node	build_node(t_parse_node curr, t_const_str input)
 {
-	t_node out;
+	t_node	out;
 
 	out.kind = ts_node_symbol(curr);
 	out.kind_str = ts_node_type(curr);
@@ -61,10 +61,10 @@ t_node build_node(t_parse_node curr, t_const_str input)
 	return (out);
 }
 
-t_str node_getstr(t_node *node)
+t_str	node_getstr(t_node *node)
 {
-	t_usize start;
-	t_usize end;
+	t_usize	start;
+	t_usize	end;
 	t_str	ret;
 
 	if (node->single_str == NULL)
@@ -80,9 +80,9 @@ t_str node_getstr(t_node *node)
 	return (node->single_str);
 }
 
-void free_node(t_node self)
+void	free_node(t_node self)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (self.single_str)
 		mem_free(self.single_str);

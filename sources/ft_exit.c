@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/31 17:08:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:09:53 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 #include "me/mem/mem.h"
 #include "parser/api.h"
 
-void ts_parser_delete(t_first_parser *self);
+void	ts_parser_delete(t_first_parser *self);
 
-void ft_free(void *ptr)
+void	ft_free(void *ptr)
 {
 	if (!ptr)
 		mem_free(ptr);
 }
 
-void ft_free_strs(t_str *strs)
+void	ft_free_strs(t_str *strs)
 {
-	t_usize i;
+	t_usize	i;
 
 	i = 0;
 	while (strs[i])
@@ -33,7 +33,7 @@ void ft_free_strs(t_str *strs)
 	ft_free(strs);
 }
 
-void ft_free_utils(t_state *s)
+void	ft_free_utils(t_state *s)
 {
 	if (s->str_input)
 		mem_free(s->str_input);
@@ -44,7 +44,7 @@ void ft_free_utils(t_state *s)
 	ts_parser_delete(s->parser.parser);
 }
 
-void ft_exit(t_state *maiboyerlpb, t_u8 exit_status)
+void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status)
 {
 	if (maiboyerlpb != NULL)
 		ft_free_utils(maiboyerlpb);

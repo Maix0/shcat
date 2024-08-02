@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/01 13:48:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:54:11 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ sym_while_statement
 sym_word
 */
 
-t_ast_node ast_alloc(t_ast_node_kind kind);
+t_ast_node	ast_alloc(t_ast_node_kind kind);
 
-void ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
+void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 {
-	t_ast_terminator_kind  void_storage;
-	t_ast_terminator_kind *ptr;
-	t_ast_node			   val;
+	t_ast_terminator_kind	void_storage;
+	t_ast_terminator_kind	*ptr;
+	t_ast_node				val;
 
 	if (node == NULL)
 		return ((void)printf("node == NULL\n"));
@@ -104,7 +104,7 @@ void ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	(void)(void_storage);
 }
 
-t_vec_ast *_vec_command(t_ast_command *val, t_usize i)
+t_vec_ast	*_vec_command(t_ast_command *val, t_usize i)
 {
 	if (i == 0)
 		return (&val->prefixes);
@@ -116,10 +116,10 @@ t_vec_ast *_vec_command(t_ast_command *val, t_usize i)
 	return (NULL);
 }
 
-void _add_negation(t_ast_node *node)
+void	_add_negation(t_ast_node *node)
 {
 	if (node == NULL || *node == NULL)
-		return;
+		return ;
 	if ((*node)->kind == AST_PIPELINE)
 		(*node)->data.pipeline.bang = true;
 	if ((*node)->kind == AST_COMMAND)
@@ -132,12 +132,13 @@ void _add_negation(t_ast_node *node)
 		(*node)->data.variable_assignment.bang = true;
 }
 
-void _append_redirection(t_ast_node node, t_ast_node redirection)
+void	_append_redirection(t_ast_node node, t_ast_node redirection)
 {
-	t_vec_ast *vec;
+	t_vec_ast	*vec;
 
 	vec = NULL;
-	if (!(redirection->kind == AST_FILE_REDIRECTION || redirection->kind == AST_HEREDOC_REDIRECTION))
+	if (!(redirection->kind == AST_FILE_REDIRECTION || \
+			redirection->kind == AST_HEREDOC_REDIRECTION))
 		return (ast_free(redirection));
 	if (node->kind == AST_CASE)
 		vec = &node->data.case_.suffixes_redirections;
@@ -165,9 +166,9 @@ void _append_redirection(t_ast_node node, t_ast_node redirection)
 		ast_free(redirection);
 }
 
-t_ast_terminator_kind _select_term(t_parse_node node)
+t_ast_terminator_kind	_select_term(t_parse_node node)
 {
-	t_symbol symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node_grammar_symbol(ts_node_child(node, 0));
 	if (symbol == anon_sym_SEMI)
@@ -178,10 +179,10 @@ t_ast_terminator_kind _select_term(t_parse_node node)
 	return (AST_TERM_NONE);
 }
 
-t_str _extract_str(t_parse_node self, t_const_str input)
+t_str	_extract_str(t_parse_node self, t_const_str input)
 {
-	t_usize start;
-	t_usize end;
+	t_usize	start;
+	t_usize	end;
 	t_str	result;
 
 	start = ts_node_start_byte(self);
@@ -206,10 +207,10 @@ t_str _extract_str(t_parse_node self, t_const_str input)
 	E_OP_LARGEST_SUFFIX,		// ${var%%pattern}
 */
 
-t_ast_expansion_operator _extract_exp_op(t_parse_node self)
+t_ast_expansion_operator	_extract_exp_op(t_parse_node self)
 {
-	t_ast_expansion_operator kind;
-	t_symbol				 symbol;
+	t_ast_expansion_operator	kind;
+	t_symbol					symbol;
 
 	kind = E_OP_NONE;
 	symbol = ts_node_grammar_symbol(self);
@@ -252,9 +253,9 @@ if (symbol == anon_sym_GT_PIPE)
 if (symbol == anon_sym_LT_GT)
 	return (AST_REDIR_INPUT_OUTPUT);
 */
-t_ast_redirection_kind _get_redirection_op(t_parse_node self)
+t_ast_redirection_kind	_get_redirection_op(t_parse_node self)
 {
-	t_symbol symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node_grammar_symbol(self);
 	if (symbol == anon_sym_LT)
@@ -269,9 +270,9 @@ t_ast_redirection_kind _get_redirection_op(t_parse_node self)
 }
 
 // RAPH
-t_ast_arithmetic_operator _parse_operator(t_parse_node self)
+t_ast_arithmetic_operator	_parse_operator(t_parse_node self)
 {
-	t_symbol symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node_grammar_symbol(self);
 	if (symbol == anon_sym_PLUS)
@@ -293,48 +294,48 @@ t_ast_arithmetic_operator _parse_operator(t_parse_node self)
 	return (me_abort("invalid arithmetic operator"), 0);
 }
 
-t_error ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
+t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE DONE */
 
-t_error build_sym_case_item(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_case_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_extglob_pattern(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_file_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_function_definition(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_case_item(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_case_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_command_name(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_compound_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_elif_clause(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_else_clause(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_extglob_pattern(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_file_redirect(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_for_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_function_definition(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_if_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_number(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_raw_string(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_redirected_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_regex(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_simple_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_string_content(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_subshell(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_while_statement(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_word(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_command_substitution(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION DONE BUT BY RAPH */
-t_error build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
-t_error build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_binary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_literal(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_parenthesized_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_postfix_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_ternary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_unary_expression(t_parse_node self, t_const_str input, t_ast_node *out);
+t_error	build_sym_arithmetic_expansion(t_parse_node self, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 

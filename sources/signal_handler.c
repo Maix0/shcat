@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/24 16:02:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:17:50 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_error install_signal(void)
+t_error	install_signal(void)
 {
-	struct sigaction data;
+	struct sigaction	data;
 
 	data = (struct sigaction){};
 	data.sa_handler = SIG_IGN;

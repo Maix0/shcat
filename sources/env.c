@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:32:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/21 14:55:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 12:09:05 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-static void _hash_str(t_hasher *hasher, t_str *s)
+static void	_hash_str(t_hasher *hasher, t_str *s)
 {
-	t_usize len;
+	t_usize	len;
 
 	len = str_len(*s);
 	hasher_write_u64(hasher, (t_u64)len);
@@ -32,12 +32,12 @@ static void _hash_str(t_hasher *hasher, t_str *s)
 	hasher_write_u8(hasher, 0);
 }
 
-static bool _cmp_str(t_str *s1, t_str *s2)
+static bool	_cmp_str(t_str *s1, t_str *s2)
 {
 	return (str_compare(*s1, *s2));
 }
 
-static void _free_env(t_kv_env kv)
+static void	_free_env(t_kv_env kv)
 {
 	if (kv.key)
 		mem_free(kv.key);
@@ -45,20 +45,20 @@ static void _free_env(t_kv_env kv)
 		mem_free(kv.val);
 }
 
-t_hashmap_env *create_env_map(void)
+t_hashmap_env	*create_env_map(void)
 {
 	return (hmap_env_new(_hash_str, _cmp_str, _free_env));
 }
 
-t_error _build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
-							 void *ctx)
+t_error	_build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
+							void *ctx)
 {
-	struct s_build_envp_state *s;
-	t_str					   push;
+	struct s_build_envp_state	*s;
+	t_str						push;
 
 	(void)(idx);
 	s = ctx;
-	if (string_push(&s->buf, *key) || string_push(&s->buf, "=") ||
+	if (string_push(&s->buf, *key) || string_push(&s->buf, "=") || \
 		string_push(&s->buf, *val))
 		return (vec_str_free(s->out), ERROR);
 	push = str_clone(s->buf.buf);
@@ -68,9 +68,9 @@ t_error _build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
 	return (NO_ERROR);
 }
 
-t_error build_envp(t_hashmap_env *envs, t_vec_str *envp)
+t_error	build_envp(t_hashmap_env *envs, t_vec_str *envp)
 {
-	struct s_build_envp_state state;
+	struct s_build_envp_state	state;
 
 	state.buf = string_new(8096);
 	state.out = vec_str_new(1024, (void (*)(t_str))mem_free);
