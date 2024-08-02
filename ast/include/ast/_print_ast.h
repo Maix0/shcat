@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _function_declaration.h                            :+:      :+:    :+:   */
+/*   _print_ast.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 11:30:24 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 16:59:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:04:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _FUNCTION_DECLARATION_H
-# define _FUNCTION_DECLARATION_H
+#ifndef _PRINT_AST_H
+# define _PRINT_AST_H
 
 # include "ast/ast.h"
 # include "me/types.h"

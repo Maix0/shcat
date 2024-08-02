@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast/_function_declaration.h"
+#include "ast/_print_ast.h"
 
 void	_print_term(t_ast_terminator_kind term)
 {

@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_raw_structs.h                                  :+:      :+:    :+:   */
+/*   _raw_structs.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 09:34:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:03:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AST_RAW_STRUCTS_H
-# define AST_RAW_STRUCTS_H
+#ifndef _RAW_STRUCTS_H
+# define _RAW_STRUCTS_H
 
-# include "ast/ast_forward_def.h"
+# include "ast/_forward_def.h"
 # include "me/types.h"
 # include "me/vec/vec_ast.h"
 

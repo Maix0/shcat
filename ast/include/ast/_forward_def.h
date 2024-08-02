@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_forward_def.h                                  :+:      :+:    :+:   */
+/*   _forward_def.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 14:24:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 16:52:42 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/02 17:04:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AST_FORWARD_DEF_H
-# define AST_FORWARD_DEF_H
+#ifndef _FORWARD_DEF_H
+# define _FORWARD_DEF_H
 
 typedef enum e_ast_node_kind				t_ast_node_kind;
 typedef enum e_ast_word_kind				t_ast_word_kind;

@@ -6,11 +6,21 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/02 15:48:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/02 16:58:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./from_node.h"
+#include "ast/_from_node.h"
+#include "ast/ast.h"
+#include "gmr/field_identifiers.h"
+#include "gmr/field_identifiers.h"
+#include "gmr/symbols.h"
+#include "gmr/symbols.h"
+#include "me/str/str.h"
+#include "me/types.h"
+#include "me/vec/vec_ast.h"
+#include "parser/api.h"
+#include <stdio.h>
 
 /*
 sym_arithmetic_binary_expression

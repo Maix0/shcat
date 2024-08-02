@@ -1,11 +1,11 @@
 SRC_FILES =                                                                   \
+_not_done_function                                                            \
+_not_done_print                                                               \
 ast_alloc/ast_alloc                                                           \
 ast_alloc/ast_alloc_scripting                                                 \
 ast_free/ast_free                                                             \
 ast_free/ast_free_scripting                                                   \
 from_node/from_node                                                           \
-not_done_function                                                             \
-not_done_print                                                                \
 print_ast/ast_print_command                                                   \
 print_ast/ast_print_global                                                    \
 print_ast/ast_print_node                                                      \

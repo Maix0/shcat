@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast/_function_declaration.h"
+#include "ast/_print_ast.h"
 
 void	ast_print_node_command_substitution(t_ast_node self)
 {

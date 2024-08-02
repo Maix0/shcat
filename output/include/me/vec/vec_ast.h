@@ -13,7 +13,7 @@
 #ifndef VEC_AST_H
 #define VEC_AST_H
 
-#include "ast/ast_forward_def.h"
+#include "ast/_forward_def.h"
 #include "me/types.h"
 
 /// @brief A function that takes two t_ast_node and compare them
