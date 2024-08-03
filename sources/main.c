@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/03 16:16:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:18:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,7 @@ void ft_take_args(t_state *state)
 		line_history_add(state->str_input);
 		state->current_node = parse_str(state);
 		exec_shcat(state);
+		ft_exit(state, 42);
 		mem_free(state->str_input);
 	}
 }

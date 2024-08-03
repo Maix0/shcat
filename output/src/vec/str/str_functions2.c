@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_str.c                                  :+:      :+:    :+:   */
+/*   str_functions2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/30 17:59:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/30 17:59:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:23:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_error vec_str_find(t_vec_str *vec,
-							 bool (*fn)(const t_str *), t_usize *index)
+t_error vec_str_find(t_vec_str *vec, bool (*fn)(const t_str *), t_usize *index)
 {
 	t_usize idx;
 
@@ -37,9 +34,7 @@ t_error vec_str_find(t_vec_str *vec,
 	return (ERROR);
 }
 
-t_error vec_str_find_starting(t_vec_str *vec,
-									  bool (*fn)(const t_str *),
-									  t_usize starting_index, t_usize *index)
+t_error vec_str_find_starting(t_vec_str *vec, bool (*fn)(const t_str *), t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
 
@@ -58,8 +53,7 @@ t_error vec_str_find_starting(t_vec_str *vec,
 	return (ERROR);
 }
 
-t_error vec_str_all(t_vec_str *vec,
-							bool (*fn)(const t_str *), bool *result)
+t_error vec_str_all(t_vec_str *vec, bool (*fn)(const t_str *), bool *result)
 {
 	t_usize idx;
 
@@ -76,8 +70,7 @@ t_error vec_str_all(t_vec_str *vec,
 	return (ERROR);
 }
 
-t_error vec_str_any(t_vec_str *vec,
-							bool (*fn)(const t_str *), bool *result)
+t_error vec_str_any(t_vec_str *vec, bool (*fn)(const t_str *), bool *result)
 {
 	t_usize idx;
 
@@ -94,10 +87,7 @@ t_error vec_str_any(t_vec_str *vec,
 	return (ERROR);
 }
 
-void vec_str_iter(t_vec_str *vec,
-						  void (*fn)(t_usize index, t_str *value,
-									 void *state),
-						  void *state)
+void vec_str_iter(t_vec_str *vec, void (*fn)(t_usize index, t_str *value, void *state), void *state)
 {
 	t_usize idx;
 

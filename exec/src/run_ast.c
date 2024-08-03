@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/03 16:13:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:20:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -516,6 +516,7 @@ t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 			;
 		else
 			;
+		i++;
 	}
 
 	return (ERROR);

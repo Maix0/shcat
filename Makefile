@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/08/02 22:42:24 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/03 16:22:06 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ endif
 endif
 
 # TODO: ADD THIS WHEN FINISHING THIS:
-# CFLAGS_ADDITIONAL += -DNVALGRIND
+CFLAGS_ADDITIONAL	+= -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE

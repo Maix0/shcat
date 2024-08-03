@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 19:11:00 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:34:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ t_error		handle_redirections(t_spawn_info *info, t_process *process);
 
 t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 {
-	bool	res;
-
 	if (info.forked_free)
 		info.forked_free(info.forked_free_args);
 	dup2(info.stdin.fd.fd->fd, 0);
@@ -40,11 +38,8 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	close_fd(info.stdin.fd.fd);
 	close_fd(info.stdout.fd.fd);
 	close_fd(info.stderr.fd.fd);
-	if (!vec_str_any(&info.arguments, _find_null, &res) && res)
-		vec_str_push(&info.arguments, NULL);
-	res = false;
-	if (!vec_str_any(&info.environement, _find_null, &res) && res)
-		vec_str_push(&info.environement, NULL);
+	vec_str_push(&info.arguments, NULL);
+	vec_str_push(&info.environement, NULL);
 	execve(info.binary_path, info.arguments.buffer, info.environement.buffer);
 	return (NO_ERROR);
 }

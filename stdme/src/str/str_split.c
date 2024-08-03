@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/17 15:56:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:11:22 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/03 16:33:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_error	str_split(t_const_str str, t_const_str chr, t_vec_str *out)
 		while (str[idx] != '\0' && str_find_chr(chr, str[idx]) != NULL)
 			idx++;
 		while (str[idx] != '\0' && str_find_chr(chr, str[idx]) == NULL)
-			string_push_char(&buf, str[idx]);
+			string_push_char(&buf, str[idx++]);
 		if (buf.len != 0)
 		{
 			vec_str_push(&ret, buf.buf);
