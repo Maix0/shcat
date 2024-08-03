@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 23:17:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:13:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "app/env.h"
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/_run_ast.h"
-#include "app/env.h"
 #include "exec/run.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/fs/fs.h"
@@ -26,6 +26,7 @@
 #include "me/vec/vec_ast.h"
 #include "me/vec/vec_estr.h"
 #include "me/vec/vec_str.h"
+#include <sys/wait.h>
 
 #include <stdio.h>
 
@@ -372,15 +373,13 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	t_str		  ifs;
 	t_str		  tmp_str;
 
-	if (self == NULL || state == NULL || append == NULL || self->kind == AST_WORD)
+	if (self == NULL || state == NULL || append == NULL || self->kind != AST_WORD)
 		return (ERROR);
 	if (run_word(&self->data.word, state, &res))
 		return (ERROR);
 	if (res.kind == AST_WORD_NO_QUOTE)
 	{
 		tmp = string_new(64);
-		if (!vec_str_pop_front(&splitted, &tmp_str))
-			string_push(&tmp, tmp_str), str_free(tmp_str);
 		i = 0;
 		while (i < res.value.len)
 		{
@@ -427,6 +426,7 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 					}
 				}
 			}
+			i++;
 		}
 		vec_str_push(append, tmp.buf);
 	}
@@ -477,13 +477,49 @@ t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, 
 t_error run_if_(t_ast_if *if_, t_state *state, void *out) NOT_DONE;
 t_error run_list(t_ast_list *list, t_state *state, void *out) NOT_DONE;
 t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, void *out) NOT_DONE;
-t_error run_program(t_ast_program *program, t_state *state, void *out) NOT_DONE;
 t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) NOT_DONE;
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out) NOT_DONE;
 t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out) NOT_DONE;
 t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
+
+/// TODO: remove this
+void mem_free(void *ptr);
+
+t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
+{
+	t_usize	   i;
+	t_ast_node child;
+
+	t_command_result cmd_result;
+
+	if (self == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	i = 0;
+	while (i < self->body.len)
+	{
+		child = self->body.buffer[i];
+		if (child->kind == AST_COMMAND)
+		{
+			if (run_command(&child->data.command, state, (t_cmd_pipe){NULL, false}, &cmd_result))
+				return (out->exit = 127, ERROR);
+			out->exit = cmd_result.exit;
+			if (cmd_result.process.stdin != NULL)
+				close_fd(cmd_result.process.stdin);
+			if (cmd_result.process.stdout != NULL)
+				close_fd(cmd_result.process.stdout);
+			if (cmd_result.process.stderr != NULL)
+				close_fd(cmd_result.process.stderr);
+		}
+		else if (child->kind == AST_IF)
+			;
+		else
+			;
+	}
+
+	return (ERROR);
+}
 
 // FUNCTIONS
 
@@ -517,13 +553,37 @@ t_error _clone_env(const t_kv_env *kv, void *ctx, t_kv_env *out)
 	return (NO_ERROR);
 }
 
+struct s_ffree_state
+{
+	t_state	  *state;
+	t_cmd_pipe cmd_pipe;
+};
+
+void _ffree_func(struct s_ffree_state *state)
+{
+	if (state == NULL)
+		return;
+	hmap_env_free(state->state->env);
+	hmap_env_free(state->state->tmp_var);
+}
+
+bool	_is_builtin(t_const_str argv0);
+t_error	_handle_builtin(t_spawn_info info, t_state *state);
+
+t_error _handle_builtin(t_spawn_info info, t_state *state)
+{
+	return (ERROR);
+}
+
+
 t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
-	t_spawn_info info;
-	t_usize		 i;
-	t_ast_node	 red;
-	t_vec_str	 filename_args;
-	t_fd		*red_fd;
+	t_spawn_info		 info;
+	t_usize				 i;
+	t_ast_node			 red;
+	t_vec_str			 filename_args;
+	t_fd				*red_fd;
+	struct s_ffree_state ffree;
 
 	info = (t_spawn_info){};
 	if (cmd_pipe.input)
@@ -609,20 +669,44 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 
 		i++;
 	}
+	ffree = (struct s_ffree_state){.state = state, .cmd_pipe = cmd_pipe};
 	redirection.len = 0;
 	vec_ast_free(redirection);
 	vec_str_free(filename_args);
 	info.arguments = args;
-	//if (build_envp(state, info.arguments));
 	if (args.len == 0)
-	{
-		vec_str_free(args);
+		return (vec_str_free(args), ERROR);
+	if (_is_builtin(args.buffer[0]))
+		return (_handle_builtin(info, state));
+	if (build_envp(state->env, state->tmp_var, &info.environement))
 		return (ERROR);
-	}
-	//if (_is_builtin(args.buffer[0]))
-	//	return (_handle_builtin(args, info));
+	info.binary_path = str_clone(info.arguments.buffer[0]);
+	info.forked_free_args = &ffree;
+	info.forked_free = (void (*)(void *))_ffree_func;
+	if (spawn_process(info, &out->process))
+		return (ERROR);
+	int status;
+	if (waitpid(out->process.pid, &status, 0) == -1)
+		return (ERROR);
+	if (WIFEXITED(status))
+		out->exit = WEXITSTATUS(status);
+	if (WIFSIGNALED(status))
+		out->exit = WTERMSIG(status);
+	return (NO_ERROR);
+}
 
-	return (ERROR);
+bool _is_builtin(t_const_str argv0)
+{
+	t_usize		i;
+	const t_str value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
+
+	i = 0;
+	if (argv0 == NULL)
+		return (false);
+	while (value[i] != NULL)
+		if (str_compare(argv0, value[i++]))
+			return (true);
+	return (false);
 }
 
 t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
@@ -637,6 +721,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe,
 
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);
+	hmap_env_clear(state->tmp_var);
 	args = vec_str_new(command->cmd_word.len, str_free);
 	redirection = vec_ast_new(command->suffixes_redirections.len, ast_free);
 	i = 0;
