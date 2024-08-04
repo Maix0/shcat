@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/08/03 16:22:06 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/04 12:57:09 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,11 +37,12 @@ ifeq ($(shell uname), Linux)
 endif
 ifeq ($(shell uname), Darwin)
 	PMAKE = -j$(shell sysctl -n hw.ncpu)
+	CFLAGS_ADDITIONAL	+= -DNVALGRIND
 endif
 endif
 
 # TODO: ADD THIS WHEN FINISHING THIS:
-CFLAGS_ADDITIONAL	+= -DNVALGRIND
+# CFLAGS_ADDITIONAL	+= -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL	+= -DPRINT_BACKTRACE

@@ -6,12 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 22:51:55 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/05/12 22:55:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:41:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "aq/internal_vg_funcs.h"
-#include "valgrind/valgrind.h"
 
 #ifdef VGFUNCS
 

@@ -41,8 +41,10 @@
             c_formatter_42.packages.${system}.default
             llvmPackages.bintools
             norminette
-          ];
-          VALGRIND_INC_OPT = "${pkgs.valgrind.dev}/include";
+            tokei
+            coreutils
+          ] ++ (if system == "x86_64-linux" then [valgrind valgrind.dev] else []);
+
           ASAN_OPTIONS = "strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1";
         };
       }

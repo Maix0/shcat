@@ -5,7 +5,10 @@ ast_alloc/ast_alloc                                                           \
 ast_alloc/ast_alloc_scripting                                                 \
 ast_free/ast_free                                                             \
 ast_free/ast_free_scripting                                                   \
+from_node/arithmetic_node2                                                    \
+from_node/artihmetic_node                                                     \
 from_node/from_node                                                           \
+from_node/node_utils                                                          \
 print_ast/ast_print_command                                                   \
 print_ast/ast_print_global                                                    \
 print_ast/ast_print_node                                                      \

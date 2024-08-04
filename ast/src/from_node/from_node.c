@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 11:54:08 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/04 12:43:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,8 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	(void)(void_storage);
 }
 
-t_ast_vec	_append_scripting(\
-	t_ast_node node, t_ast_node redirection)
+t_vec_ast	*_append_scripting(\
+	t_ast_node node)
 {
 	if (node->kind == AST_WHILE)
 		return (&node->data.while_.suffixes_redirections);
@@ -137,8 +137,8 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 		vec = &node->data.pipeline.suffixes_redirections;
 	if (node->kind == AST_SUBSHELL)
 		vec = &node->data.subshell.suffixes_redirections;
-	if (_append_scripting(node, redirection) != NULL)
-		vec = _append_scripting(node, redirection);
+	if (vec == NULL)
+		vec = _append_scripting(node);
 	if (vec != NULL)
 		vec_ast_push(vec, redirection);
 	else
