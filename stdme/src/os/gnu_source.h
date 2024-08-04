@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 17:53:46 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 17:54:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:28:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,13 @@
 # define GNU_SOURCE_H
 
 # define _GNU_SOURCE
+
+# if defined(PRINT_BACKTRACE) || defined(BACKTRACE_DEEP)
+#  include <dlfcn.h>
+#  include <execinfo.h>
+#  include <link.h>
+#  include <stdio.h>
+#  include <stdlib.h>
+# endif
 
 #endif /* GNU_SOURCE_H */

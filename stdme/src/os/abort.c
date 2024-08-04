@@ -6,18 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 11:08:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 06:38:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:28:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./gnu_source.h"
 #include "me/fs/fs.h"
 #include "me/types.h"
-#include <dlfcn.h>
-#include <execinfo.h>
-#include <link.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #ifndef BASE_PATH
 # define BASE_PATH "/no_base_path_defined/"
