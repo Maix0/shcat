@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/02 16:58:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 11:23:56 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,34 +103,6 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	(void)(void_storage);
 }
 
-t_vec_ast	*_vec_command(t_ast_command *val, t_usize i)
-{
-	if (i == 0)
-		return (&val->prefixes);
-	if (i == 1)
-		return (&val->cmd_word);
-	if (i == 2)
-		return (&val->suffixes_redirections);
-	me_abort("invalid index for i in _get_vec_command");
-	return (NULL);
-}
-
-void	_add_negation(t_ast_node *node)
-{
-	if (node == NULL || *node == NULL)
-		return ;
-	if ((*node)->kind == AST_PIPELINE)
-		(*node)->data.pipeline.bang = true;
-	if ((*node)->kind == AST_COMMAND)
-		(*node)->data.command.bang = true;
-	if ((*node)->kind == AST_SUBSHELL)
-		(*node)->data.subshell.bang = true;
-	if ((*node)->kind == AST_COMPOUND_STATEMENT)
-		(*node)->data.compound_statement.bang = true;
-	if ((*node)->kind == AST_VARIABLE_ASSIGNMENT)
-		(*node)->data.variable_assignment.bang = true;
-}
-
 void	_append_redirection(t_ast_node node, t_ast_node redirection)
 {
 	t_vec_ast	*vec;
@@ -206,40 +178,6 @@ t_str	_extract_str(t_parse_node self, t_const_str input)
 	E_OP_LARGEST_SUFFIX,		// ${var%%pattern}
 */
 
-t_ast_expansion_operator	_extract_exp_op(t_parse_node self)
-{
-	t_ast_expansion_operator	kind;
-	t_symbol					symbol;
-
-	kind = E_OP_NONE;
-	symbol = ts_node_grammar_symbol(self);
-	if (symbol == anon_sym_DASH)
-		kind = E_OP_DEFAULT;
-	if (symbol == anon_sym_EQ)
-		kind = E_OP_ASSIGN_DEFAULT;
-	if (symbol == anon_sym_QMARK)
-		kind = E_OP_ERROR;
-	if (symbol == anon_sym_PLUS)
-		kind = E_OP_ALTERNATE;
-	if (symbol == anon_sym_COLON_DASH)
-		kind = E_OP_DEFAULT_COLON;
-	if (symbol == anon_sym_COLON_EQ)
-		kind = E_OP_ASSIGN_DEFAULT_COLON;
-	if (symbol == anon_sym_COLON_QMARK)
-		kind = E_OP_ERROR_COLON;
-	if (symbol == anon_sym_COLON_PLUS)
-		kind = E_OP_ALTERNATE_COLON;
-	if (symbol == anon_sym_POUND)
-		kind = E_OP_SMALLEST_PREFIX;
-	if (symbol == sym__immediate_double_hash)
-		kind = E_OP_LARGEST_PREFIX;
-	if (symbol == anon_sym_PERCENT)
-		kind = E_OP_SMALLEST_SUFFIX;
-	if (symbol == anon_sym_PERCENT_PERCENT)
-		kind = E_OP_LARGEST_SUFFIX;
-	return (kind);
-}
-
 /*
 if (symbol == anon_sym_LT_LT_DASH)
 	return (AST_REDIR_HEREDOC_INDENT);
@@ -252,46 +190,8 @@ if (symbol == anon_sym_GT_PIPE)
 if (symbol == anon_sym_LT_GT)
 	return (AST_REDIR_INPUT_OUTPUT);
 */
-t_ast_redirection_kind	_get_redirection_op(t_parse_node self)
-{
-	t_symbol	symbol;
-
-	symbol = ts_node_grammar_symbol(self);
-	if (symbol == anon_sym_LT)
-		return (AST_REDIR_INPUT);
-	if (symbol == anon_sym_GT)
-		return (AST_REDIR_OUTPUT);
-	if (symbol == anon_sym_GT_GT)
-		return (AST_REDIR_APPEND);
-	if (symbol == anon_sym_LT_LT)
-		return (AST_REDIR_HEREDOC);
-	return (me_abort("invalid redirection symbol"), 0);
-}
-
 // RAPH
-t_ast_arithmetic_operator	_parse_operator(t_parse_node self)
-{
-	t_symbol	symbol;
 
-	symbol = ts_node_grammar_symbol(self);
-	if (symbol == anon_sym_PLUS)
-		return (ARITH_PLUS);
-	if (symbol == anon_sym_DASH)
-		return (ARITH_MINUS);
-	if (symbol == anon_sym_STAR)
-		return (ARITH_MULT);
-	if (symbol == anon_sym_SLASH)
-		return (ARITH_DIVIDE);
-	if (symbol == anon_sym_PERCENT)
-		return (ARITH_MOD);
-	if (symbol == anon_sym_PLUS_PLUS)
-		return (ARITH_INCREMENT);
-	if (symbol == anon_sym_DASH_DASH)
-		return (ARITH_DECREMENT);
-	if (symbol == anon_sym_BANG)
-		return (ARITH_NOT);
-	return (me_abort("invalid arithmetic operator"), 0);
-}
 
 t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
@@ -299,179 +199,7 @@ t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE NOT DONE */
 
-t_error	build_sym_arithmetic_binary_expression(\
-		t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_usize		i;
-	t_ast_node	ret;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_binary_expression)
-		return (ERROR);
-	i = 0;
-	ret = ast_alloc(AST_ARITHMETIC_BINARY);
-	while (i < ts_node_child_count(self))
-	{
-		if (ts_node_field_id_for_child(self, i) == field_lhs)
-			if (ast_from_node(ts_node_child(self, i), \
-				input, &ret->data.arithmetic_binary.lhs))
-				return (ERROR);
-		if (ts_node_field_id_for_child(self, i) == field_op)
-			ret->data.arithmetic_binary.op = _parse_operator(\
-				ts_node_child(self, i));
-		if (ts_node_field_id_for_child(self, i) == field_rhs)
-			if (ast_from_node(ts_node_child(self, i), \
-				input, &ret->data.arithmetic_binary.rhs))
-				return (ERROR);
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
-
 //	RAPH
-t_error	build_sym_arithmetic_literal(\
-		t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_usize		i;
-	t_ast_node	ret;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_literal)
-		return (ERROR);
-	i = 0;
-	ret = ast_alloc(AST_ARITHMETIC_LITTERAL);
-	if (ast_from_node(\
-		ts_node_child(self, i), input, &ret->data.arithmetic_literal.value))
-		return (ERROR);
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_arithmetic_parenthesized_expression( \
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_parenthesized_expression)
-		return (ERROR);
-	return (ast_from_node(ts_node_child(self, 1), input, out));
-}
-
-t_error	build_sym_arithmetic_postfix_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_postfix_expression)
-		return (ERROR);
-	if (ts_node_child_count(self) != 2)
-		return (ERROR);
-	ret = ast_alloc(AST_ARITHMETIC_POSTFIX);
-	if (ast_from_node(ts_node_child(self, 0), \
-		input, &ret->data.arithmetic_postfix.value))
-		return (ast_free(ret), ERROR);
-	if (ts_node_field_id_for_child(self, 1) == field_op)
-		ret->data.arithmetic_postfix.op = _parse_operator(\
-			ts_node_child(self, 1));
-	else
-		return (ast_free(ret), ERROR);
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_arithmetic_ternary_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-	t_usize		i;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_child_count(self) != 5)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_ternary_expression)
-		return (ERROR);
-	i = 0;
-	ret = ast_alloc(AST_ARITHMETIC_TERNARY);
-	while (i < ts_node_child_count(self))
-	{
-		if (ts_node_field_id_for_child(self, i) == field_cond)
-			if (ast_from_node(ts_node_child(self, i), \
-				input, &ret->data.arithmetic_ternary.condition))
-				return (ast_free(ret), ERROR);
-		if (ts_node_field_id_for_child(self, i) == field_then)
-			if (ast_from_node(ts_node_child(self, i), \
-				input, &ret->data.arithmetic_ternary.then))
-				return (ast_free(ret), ERROR);
-		if (ts_node_field_id_for_child(self, i) == field_else)
-			if (ast_from_node(ts_node_child(self, i), \
-				input, &ret->data.arithmetic_ternary.else_))
-				return (ast_free(ret), ERROR);
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_arithmetic_unary_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_unary_expression)
-		return (ERROR);
-	if (ts_node_child_count(self) != 2)
-		return (ERROR);
-	ret = ast_alloc(AST_ARITHMETIC_UNARY);
-	if (ts_node_field_id_for_child(self, 0) == field_op)
-		ret->data.arithmetic_unary.operator = _parse_operator(\
-			ts_node_child(self, 0));
-	if (ast_from_node(ts_node_child(self, 1), \
-		input, &ret->data.arithmetic_unary.value))
-		return (ast_free(ret), ERROR);
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_arithmetic_expansion(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_usize		i;
-	t_ast_node	ret;
-
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_arithmetic_expansion)
-		return (ERROR);
-	ret = ast_alloc(AST_ARITHMETIC_EXPANSION);
-	i = 0;
-	while (i < ts_node_child_count(self))
-	{
-		if (ts_node_field_id_for_child(self, i) \
-			== sym_arithmetic_binary_expression)
-			return (build_sym_arithmetic_binary_expression(self, input, out));
-		if (ts_node_field_id_for_child(self, i) == sym_arithmetic_literal)
-			return (build_sym_arithmetic_literal(self, input, out));
-		if (ts_node_field_id_for_child(self, i) \
-			== sym_arithmetic_parenthesized_expression)
-			return (build_sym_arithmetic_parenthesized_expression(\
-					self, input, out));
-		if (ts_node_field_id_for_child(self, i) \
-			== sym_arithmetic_postfix_expression)
-			return (build_sym_arithmetic_postfix_expression(self, input, out));
-		if (ts_node_field_id_for_child(self, i) \
-			== sym_arithmetic_ternary_expression)
-			return (build_sym_arithmetic_ternary_expression(self, input, out));
-		if (ts_node_field_id_for_child(self, i) \
-			== sym_arithmetic_unary_expression)
-			return (build_sym_arithmetic_unary_expression(self, input, out));
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
-
 // PLUS RAPH
 t_error	build_sym_command_substitution(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
