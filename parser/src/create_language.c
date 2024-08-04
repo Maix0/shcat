@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/06/30 16:44:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:12:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void *create_non_terminal_alias_map(void);
 void *create_unique_symbols_map(void);
 void *create_symbols_metadata(void);
 void *create_parse_table(void);
-void *create_small_parse_table(void);
-void *create_small_parse_table_map(void);
+/* void *create_small_parse_table(void); */
+/* void *create_small_parse_table_map(void); */
 bool  ts_lex_keywords(TSLexer *lexer, TSStateId state);
 bool  ts_lex(TSLexer *lexer, TSStateId state);
 t_u32 tree_sitter_sh_external_scanner_serialize(void *ctx, t_u8 *state);
@@ -56,9 +56,11 @@ static struct ExternalScannerDefinition init_scanner(void)
 
 static void init_language(TSLanguage *language)
 {
+	static uint32_t	empty_map[] = {0, 0 ,0};
+
 	language->parse_table = create_parse_table();
-	language->small_parse_table = create_small_parse_table();
-	language->small_parse_table_map = create_small_parse_table_map();
+	language->small_parse_table = (void *)empty_map;
+	language->small_parse_table_map = (void *)empty_map;
 	language->parse_actions = create_parse_actions_entries();
 	language->symbol_names = create_symbols_names();
 	language->field_names = create_field_names();

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/03 15:18:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:17:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	ft_free_utils(t_state *s)
 		mem_free(s->str_input);
 	if (s->env)
 		hmap_env_free(s->env);
+	if (s->tmp_var)
+		hmap_env_free(s->tmp_var);
 	ts_parser_delete(s->parser);
 }
 

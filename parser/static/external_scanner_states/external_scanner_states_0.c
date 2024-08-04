@@ -34,7 +34,7 @@ void	external_scanner_states_0(t_external_scanner_states_array *v)
 	v->a[1][ts_external_token_esac] = true;
 	v->a[1][ts_external_token___error_recovery] = true;
 	v->a[2][ts_external_token_variable_name] = true;
-	external_scanner_states_1(v);
+	return (external_scanner_states_1(v));
 }
 
 void	external_scanner_states_1(t_external_scanner_states_array *v)
@@ -59,7 +59,7 @@ void	external_scanner_states_1(t_external_scanner_states_array *v)
 	v->a[7][ts_external_token__bare_dollar] = true;
 	v->a[7][ts_external_token_LT_LT] = true;
 	v->a[7][ts_external_token_heredoc_redirect_token1] = true;
-	external_scanner_states_2(v);
+	return (external_scanner_states_2(v));
 }
 
 void	external_scanner_states_2(t_external_scanner_states_array *v)
@@ -84,7 +84,7 @@ void	external_scanner_states_2(t_external_scanner_states_array *v)
 	v->a[14][ts_external_token_variable_name] = true;
 	v->a[14][ts_external_token_LT_LT] = true;
 	v->a[15][ts_external_token__concat] = true;
-	external_scanner_states_3(v);
+	return (external_scanner_states_3(v));
 }
 
 void	external_scanner_states_3(t_external_scanner_states_array *v)
@@ -109,7 +109,7 @@ void	external_scanner_states_3(t_external_scanner_states_array *v)
 	v->a[19][ts_external_token__bare_dollar] = true;
 	v->a[19][ts_external_token_LT_LT] = true;
 	v->a[19][ts_external_token_heredoc_redirect_token1] = true;
-	external_scanner_states_4(v);
+	return (external_scanner_states_4(v));
 }
 
 void	external_scanner_states_4(t_external_scanner_states_array *v)
@@ -134,7 +134,7 @@ void	external_scanner_states_4(t_external_scanner_states_array *v)
 	v->a[25][ts_external_token_variable_name] = true;
 	v->a[26][ts_external_token_LT_LT] = true;
 	v->a[27][ts_external_token__concat] = true;
-	external_scanner_states_5(v);
+	return (external_scanner_states_5(v));
 }
 
 /* EOF external_scanner_states_0.c */

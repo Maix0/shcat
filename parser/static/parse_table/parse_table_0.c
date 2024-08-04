@@ -34,7 +34,7 @@ void	parse_table_0(t_parse_table_array *v)
 	v->a[0][anon_sym_RPAREN] = actions(1);
 	v->a[0][anon_sym_SEMI_SEMI] = actions(1);
 	v->a[0][anon_sym_LBRACE] = actions(1);
-	parse_table_1(v);
+	return (parse_table_1(v));
 }
 
 void	parse_table_1(t_parse_table_array *v)
@@ -59,7 +59,7 @@ void	parse_table_1(t_parse_table_array *v)
 	v->a[0][anon_sym_DASH2] = actions(1);
 	v->a[0][anon_sym_PLUS2] = actions(1);
 	v->a[0][aux_sym_concatenation_token1] = actions(1);
-	parse_table_2(v);
+	return (parse_table_2(v));
 }
 
 void	parse_table_2(t_parse_table_array *v)
@@ -84,7 +84,7 @@ void	parse_table_2(t_parse_table_array *v)
 	v->a[0][anon_sym_0] = actions(1);
 	v->a[0][anon_sym_SEMI] = actions(1);
 	v->a[0][anon_sym_LT_LT_DASH] = actions(1);
-	parse_table_3(v);
+	return (parse_table_3(v));
 }
 
 void	parse_table_3(t_parse_table_array *v)
@@ -109,7 +109,7 @@ void	parse_table_3(t_parse_table_array *v)
 	v->a[1][sym__statement_not_pipeline] = state(1558);
 	v->a[1][sym_redirected_statement] = state(853);
 	v->a[1][sym_for_statement] = state(853);
-	parse_table_4(v);
+	return (parse_table_4(v));
 }
 
 void	parse_table_4(t_parse_table_array *v)
@@ -134,7 +134,7 @@ void	parse_table_4(t_parse_table_array *v)
 	v->a[1][sym_simple_expansion] = state(280);
 	v->a[1][sym_expansion] = state(280);
 	v->a[1][sym_command_substitution] = state(280);
-	parse_table_5(v);
+	return (parse_table_5(v));
 }
 
 /* EOF parse_table_0.c */

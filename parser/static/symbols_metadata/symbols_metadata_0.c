@@ -34,7 +34,7 @@ void	symbols_metadata_0(t_symbols_metadata_array *v)
 	v->a[anon_sym_RPAREN] = sym_metadata(true, false, false);
 	v->a[anon_sym_LF] = sym_metadata(true, false, false);
 	v->a[anon_sym_SEMI_SEMI] = sym_metadata(true, false, false);
-	symbols_metadata_1(v);
+	return (symbols_metadata_1(v));
 }
 
 void	symbols_metadata_1(t_symbols_metadata_array *v)
@@ -59,7 +59,7 @@ void	symbols_metadata_1(t_symbols_metadata_array *v)
 	v->a[anon_sym_PERCENT] = sym_metadata(true, true, false);
 	v->a[anon_sym_QMARK] = sym_metadata(true, false, false);
 	v->a[anon_sym_COLON] = sym_metadata(true, false, false);
-	symbols_metadata_2(v);
+	return (symbols_metadata_2(v));
 }
 
 void	symbols_metadata_2(t_symbols_metadata_array *v)
@@ -84,7 +84,7 @@ void	symbols_metadata_2(t_symbols_metadata_array *v)
 	v->a[anon_sym_QMARK2] = sym_metadata(true, true, false);
 	v->a[anon_sym_COLON_PLUS] = sym_metadata(true, true, false);
 	v->a[anon_sym_PLUS3] = sym_metadata(true, true, false);
-	symbols_metadata_3(v);
+	return (symbols_metadata_3(v));
 }
 
 void	symbols_metadata_3(t_symbols_metadata_array *v)
@@ -111,7 +111,7 @@ void	symbols_metadata_3(t_symbols_metadata_array *v)
 	v->a[sym_heredoc_end] = sym_metadata(true, true, false);
 	v->a[sym_file_descriptor] = sym_metadata(true, true, false);
 	v->a[sym__empty_value] = sym_metadata(false, true, false);
-	symbols_metadata_4(v);
+	return (symbols_metadata_4(v));
 }
 
 void	symbols_metadata_4(t_symbols_metadata_array *v)
@@ -136,7 +136,7 @@ void	symbols_metadata_4(t_symbols_metadata_array *v)
 	v->a[sym_elif_clause] = sym_metadata(true, true, false);
 	v->a[sym_else_clause] = sym_metadata(true, true, false);
 	v->a[sym_case_statement] = sym_metadata(true, true, false);
-	symbols_metadata_5(v);
+	return (symbols_metadata_5(v));
 }
 
 /* EOF symbols_metadata_0.c */

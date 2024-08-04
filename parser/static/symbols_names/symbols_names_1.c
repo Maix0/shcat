@@ -34,7 +34,7 @@ void	symbols_names_5(t_symbols_names_array *v)
 	v->a[sym__heredoc_body] = "_heredoc_body";
 	v->a[sym_heredoc_body] = "heredoc_body";
 	v->a[sym__simple_heredoc_body] = "_simple_heredoc_body";
-	symbols_names_6(v);
+	return (symbols_names_6(v));
 }
 
 void	symbols_names_6(t_symbols_names_array *v)
@@ -60,7 +60,7 @@ void	symbols_names_6(t_symbols_names_array *v)
 	v->a[sym__extglob_blob] = "_extglob_blob";
 	v->a[sym__word_no_brace] = "word2";
 	v->a[sym_terminator] = "terminator";
-	symbols_names_7(v);
+	return (symbols_names_7(v));
 }
 
 void	symbols_names_7(t_symbols_names_array *v)

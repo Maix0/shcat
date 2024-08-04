@@ -34,7 +34,7 @@ void	field_map_slices_0(t_field_map_slices_array *v)
 	v->a[19] = fmap_slice(33, 1);
 	v->a[20] = fmap_slice(34, 1);
 	v->a[22] = fmap_slice(35, 3);
-	field_map_slices_1(v);
+	return (field_map_slices_1(v));
 }
 
 void	field_map_slices_1(t_field_map_slices_array *v)
@@ -59,7 +59,7 @@ void	field_map_slices_1(t_field_map_slices_array *v)
 	v->a[43] = fmap_slice(73, 2);
 	v->a[44] = fmap_slice(75, 3);
 	v->a[45] = fmap_slice(78, 6);
-	field_map_slices_2(v);
+	return (field_map_slices_2(v));
 }
 
 void	field_map_slices_2(t_field_map_slices_array *v)
@@ -84,7 +84,7 @@ void	field_map_slices_2(t_field_map_slices_array *v)
 	v->a[65] = fmap_slice(153, 8);
 	v->a[66] = fmap_slice(161, 4);
 	v->a[67] = fmap_slice(165, 4);
-	field_map_slices_3(v);
+	return (field_map_slices_3(v));
 }
 
 void	field_map_slices_3(t_field_map_slices_array *v)

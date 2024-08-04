@@ -34,7 +34,7 @@ void	primary_state_ids_85(t_primary_state_ids_array *v)
 	v->a[1717] = 1717;
 	v->a[1718] = 1604;
 	v->a[1719] = 1692;
-	primary_state_ids_86(v);
+	return (primary_state_ids_86(v));
 }
 
 void	primary_state_ids_86(t_primary_state_ids_array *v)
@@ -59,7 +59,7 @@ void	primary_state_ids_86(t_primary_state_ids_array *v)
 	v->a[1737] = 1598;
 	v->a[1738] = 1583;
 	v->a[1739] = 1578;
-	primary_state_ids_87(v);
+	return (primary_state_ids_87(v));
 }
 
 void	primary_state_ids_87(t_primary_state_ids_array *v)

@@ -34,7 +34,7 @@ void	parse_actions_entries_170(t_parse_actions_entries_array *v)
 	v->a[3417] = shift(1387);
 	v->a[3418] = entry(1, true);
 	v->a[3419] = shift(1280);
-	parse_actions_entries_171(v);
+	return (parse_actions_entries_171(v));
 }
 
 void	parse_actions_entries_171(t_parse_actions_entries_array *v)

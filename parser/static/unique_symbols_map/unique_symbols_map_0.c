@@ -34,7 +34,7 @@ void	unique_symbols_map_0(t_unique_symbols_map_array *v)
 	v->a[anon_sym_RPAREN] = anon_sym_RPAREN;
 	v->a[anon_sym_LF] = anon_sym_LF;
 	v->a[anon_sym_SEMI_SEMI] = anon_sym_SEMI_SEMI;
-	unique_symbols_map_1(v);
+	return (unique_symbols_map_1(v));
 }
 
 void	unique_symbols_map_1(t_unique_symbols_map_array *v)
@@ -59,7 +59,7 @@ void	unique_symbols_map_1(t_unique_symbols_map_array *v)
 	v->a[anon_sym_PERCENT] = sym__immediate_double_hash;
 	v->a[anon_sym_QMARK] = anon_sym_QMARK;
 	v->a[anon_sym_COLON] = anon_sym_COLON;
-	unique_symbols_map_2(v);
+	return (unique_symbols_map_2(v));
 }
 
 void	unique_symbols_map_2(t_unique_symbols_map_array *v)
@@ -84,7 +84,7 @@ void	unique_symbols_map_2(t_unique_symbols_map_array *v)
 	v->a[anon_sym_QMARK2] = sym__immediate_double_hash;
 	v->a[anon_sym_COLON_PLUS] = sym__immediate_double_hash;
 	v->a[anon_sym_PLUS3] = sym__immediate_double_hash;
-	unique_symbols_map_3(v);
+	return (unique_symbols_map_3(v));
 }
 
 void	unique_symbols_map_3(t_unique_symbols_map_array *v)
@@ -109,7 +109,7 @@ void	unique_symbols_map_3(t_unique_symbols_map_array *v)
 	v->a[sym_heredoc_end] = sym_heredoc_end;
 	v->a[sym_file_descriptor] = sym_file_descriptor;
 	v->a[sym__empty_value] = sym__empty_value;
-	unique_symbols_map_4(v);
+	return (unique_symbols_map_4(v));
 }
 
 void	unique_symbols_map_4(t_unique_symbols_map_array *v)
@@ -134,7 +134,7 @@ void	unique_symbols_map_4(t_unique_symbols_map_array *v)
 	v->a[sym_elif_clause] = sym_elif_clause;
 	v->a[sym_else_clause] = sym_else_clause;
 	v->a[sym_case_statement] = sym_case_statement;
-	unique_symbols_map_5(v);
+	return (unique_symbols_map_5(v));
 }
 
 /* EOF unique_symbols_map_0.c */

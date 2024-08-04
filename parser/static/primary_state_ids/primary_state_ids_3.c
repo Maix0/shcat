@@ -34,7 +34,7 @@ void	primary_state_ids_15(t_primary_state_ids_array *v)
 	v->a[317] = 301;
 	v->a[318] = 296;
 	v->a[319] = 307;
-	primary_state_ids_16(v);
+	return (primary_state_ids_16(v));
 }
 
 void	primary_state_ids_16(t_primary_state_ids_array *v)
@@ -59,7 +59,7 @@ void	primary_state_ids_16(t_primary_state_ids_array *v)
 	v->a[337] = 270;
 	v->a[338] = 296;
 	v->a[339] = 339;
-	primary_state_ids_17(v);
+	return (primary_state_ids_17(v));
 }
 
 void	primary_state_ids_17(t_primary_state_ids_array *v)
@@ -84,7 +84,7 @@ void	primary_state_ids_17(t_primary_state_ids_array *v)
 	v->a[357] = 357;
 	v->a[358] = 323;
 	v->a[359] = 324;
-	primary_state_ids_18(v);
+	return (primary_state_ids_18(v));
 }
 
 void	primary_state_ids_18(t_primary_state_ids_array *v)
@@ -109,7 +109,7 @@ void	primary_state_ids_18(t_primary_state_ids_array *v)
 	v->a[377] = 330;
 	v->a[378] = 304;
 	v->a[379] = 295;
-	primary_state_ids_19(v);
+	return (primary_state_ids_19(v));
 }
 
 void	primary_state_ids_19(t_primary_state_ids_array *v)
@@ -134,7 +134,7 @@ void	primary_state_ids_19(t_primary_state_ids_array *v)
 	v->a[397] = 270;
 	v->a[398] = 298;
 	v->a[399] = 296;
-	primary_state_ids_20(v);
+	return (primary_state_ids_20(v));
 }
 
 /* EOF primary_state_ids_3.c */

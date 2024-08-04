@@ -34,7 +34,7 @@ void	parse_actions_entries_5(t_parse_actions_entries_array *v)
 	v->a[117] = entry(1, false);
 	v->a[118] = shift(10);
 	v->a[119] = entry(1, false);
-	parse_actions_entries_6(v);
+	return (parse_actions_entries_6(v));
 }
 
 void	parse_actions_entries_6(t_parse_actions_entries_array *v)
@@ -59,7 +59,7 @@ void	parse_actions_entries_6(t_parse_actions_entries_array *v)
 	v->a[137] = entry(2, false);
 	v->a[138] = reduce(aux_sym__terminated_statement, 2, 0, 13);
 	v->a[139] = shift_repeat(846);
-	parse_actions_entries_7(v);
+	return (parse_actions_entries_7(v));
 }
 
 void	parse_actions_entries_7(t_parse_actions_entries_array *v)
@@ -84,7 +84,7 @@ void	parse_actions_entries_7(t_parse_actions_entries_array *v)
 	v->a[157] = shift_repeat(1213);
 	v->a[158] = entry(2, false);
 	v->a[159] = reduce(aux_sym__terminated_statement, 2, 0, 13);
-	parse_actions_entries_8(v);
+	return (parse_actions_entries_8(v));
 }
 
 void	parse_actions_entries_8(t_parse_actions_entries_array *v)
@@ -109,7 +109,7 @@ void	parse_actions_entries_8(t_parse_actions_entries_array *v)
 	v->a[177] = shift(11);
 	v->a[178] = entry(1, false);
 	v->a[179] = shift(13);
-	parse_actions_entries_9(v);
+	return (parse_actions_entries_9(v));
 }
 
 void	parse_actions_entries_9(t_parse_actions_entries_array *v)
@@ -134,7 +134,7 @@ void	parse_actions_entries_9(t_parse_actions_entries_array *v)
 	v->a[197] = shift(102);
 	v->a[198] = entry(1, false);
 	v->a[199] = shift(58);
-	parse_actions_entries_10(v);
+	return (parse_actions_entries_10(v));
 }
 
 /* EOF parse_actions_entries_1.c */

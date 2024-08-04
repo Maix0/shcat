@@ -34,7 +34,7 @@ void	lex_modes_65(t_lex_modes_array *v)
 	v->a[1317] = lex_mode_external(169, 43);
 	v->a[1318] = lex_mode_normal(169);
 	v->a[1319] = lex_mode_external(204, 26);
-	lex_modes_66(v);
+	return (lex_modes_66(v));
 }
 
 void	lex_modes_66(t_lex_modes_array *v)
@@ -59,7 +59,7 @@ void	lex_modes_66(t_lex_modes_array *v)
 	v->a[1337] = lex_mode_external(204, 26);
 	v->a[1338] = lex_mode_normal(163);
 	v->a[1339] = lex_mode_normal(169);
-	lex_modes_67(v);
+	return (lex_modes_67(v));
 }
 
 void	lex_modes_67(t_lex_modes_array *v)
@@ -84,7 +84,7 @@ void	lex_modes_67(t_lex_modes_array *v)
 	v->a[1357] = lex_mode_external(204, 26);
 	v->a[1358] = lex_mode_normal(163);
 	v->a[1359] = lex_mode_normal(169);
-	lex_modes_68(v);
+	return (lex_modes_68(v));
 }
 
 void	lex_modes_68(t_lex_modes_array *v)
@@ -109,7 +109,7 @@ void	lex_modes_68(t_lex_modes_array *v)
 	v->a[1377] = lex_mode_external(204, 14);
 	v->a[1378] = lex_mode_external(168, 44);
 	v->a[1379] = lex_mode_external(168, 44);
-	lex_modes_69(v);
+	return (lex_modes_69(v));
 }
 
 void	lex_modes_69(t_lex_modes_array *v)
@@ -134,7 +134,7 @@ void	lex_modes_69(t_lex_modes_array *v)
 	v->a[1397] = lex_mode_external(204, 26);
 	v->a[1398] = lex_mode_external(204, 26);
 	v->a[1399] = lex_mode_external(204, 26);
-	lex_modes_70(v);
+	return (lex_modes_70(v));
 }
 
 /* EOF lex_modes_13.c */

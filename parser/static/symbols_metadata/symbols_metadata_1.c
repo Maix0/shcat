@@ -34,7 +34,7 @@ void	symbols_metadata_5(t_symbols_metadata_array *v)
 	v->a[sym__heredoc_body] = sym_metadata(false, true, false);
 	v->a[sym_heredoc_body] = sym_metadata(true, true, false);
 	v->a[sym__simple_heredoc_body] = sym_metadata(false, true, false);
-	symbols_metadata_6(v);
+	return (symbols_metadata_6(v));
 }
 
 void	symbols_metadata_6(t_symbols_metadata_array *v)
@@ -60,7 +60,7 @@ void	symbols_metadata_6(t_symbols_metadata_array *v)
 	v->a[sym__extglob_blob] = sym_metadata(false, true, false);
 	v->a[sym__word_no_brace] = sym_metadata(true, true, false);
 	v->a[sym_terminator] = sym_metadata(true, true, false);
-	symbols_metadata_7(v);
+	return (symbols_metadata_7(v));
 }
 
 void	symbols_metadata_7(t_symbols_metadata_array *v)

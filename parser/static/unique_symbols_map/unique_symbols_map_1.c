@@ -34,7 +34,7 @@ void	unique_symbols_map_5(t_unique_symbols_map_array *v)
 	v->a[sym__heredoc_body] = sym__heredoc_body;
 	v->a[sym_heredoc_body] = sym_heredoc_body;
 	v->a[sym__simple_heredoc_body] = sym__simple_heredoc_body;
-	unique_symbols_map_6(v);
+	return (unique_symbols_map_6(v));
 }
 
 void	unique_symbols_map_6(t_unique_symbols_map_array *v)
@@ -62,7 +62,7 @@ void	unique_symbols_map_6(t_unique_symbols_map_array *v)
 	v->a[sym__extglob_blob] = sym__extglob_blob;
 	v->a[sym__word_no_brace] = sym__word_no_brace;
 	v->a[sym_terminator] = sym_terminator;
-	unique_symbols_map_7(v);
+	return (unique_symbols_map_7(v));
 }
 
 void	unique_symbols_map_7(t_unique_symbols_map_array *v)

@@ -34,7 +34,7 @@ void	symbols_names_0(t_symbols_names_array *v)
 	v->a[anon_sym_RPAREN] = ")";
 	v->a[anon_sym_LF] = "\\n";
 	v->a[anon_sym_SEMI_SEMI] = ";;";
-	symbols_names_1(v);
+	return (symbols_names_1(v));
 }
 
 void	symbols_names_1(t_symbols_names_array *v)
@@ -59,7 +59,7 @@ void	symbols_names_1(t_symbols_names_array *v)
 	v->a[anon_sym_PERCENT] = "operator";
 	v->a[anon_sym_QMARK] = "\\\?";
 	v->a[anon_sym_COLON] = ":";
-	symbols_names_2(v);
+	return (symbols_names_2(v));
 }
 
 void	symbols_names_2(t_symbols_names_array *v)
@@ -84,7 +84,7 @@ void	symbols_names_2(t_symbols_names_array *v)
 	v->a[anon_sym_QMARK2] = "operator";
 	v->a[anon_sym_COLON_PLUS] = "operator";
 	v->a[anon_sym_PLUS3] = "operator";
-	symbols_names_3(v);
+	return (symbols_names_3(v));
 }
 
 void	symbols_names_3(t_symbols_names_array *v)
@@ -109,7 +109,7 @@ void	symbols_names_3(t_symbols_names_array *v)
 	v->a[sym_heredoc_end] = "heredoc_end";
 	v->a[sym_file_descriptor] = "file_descriptor";
 	v->a[sym__empty_value] = "_empty_value";
-	symbols_names_4(v);
+	return (symbols_names_4(v));
 }
 
 void	symbols_names_4(t_symbols_names_array *v)
@@ -134,7 +134,7 @@ void	symbols_names_4(t_symbols_names_array *v)
 	v->a[sym_elif_clause] = "elif_clause";
 	v->a[sym_else_clause] = "else_clause";
 	v->a[sym_case_statement] = "case_statement";
-	symbols_names_5(v);
+	return (symbols_names_5(v));
 }
 
 /* EOF symbols_names_0.c */
