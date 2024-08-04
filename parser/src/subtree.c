@@ -5,10 +5,10 @@
 #include <stddef.h>
 
 #include "me/types.h"
-#include "./array.h"
-#include "./language.h"
-#include "./length.h"
-#include "./subtree.h"
+#include "parser/array.h"
+#include "parser/language.h"
+#include "parser/length.h"
+#include "parser/subtree.h"
 #include "me/mem/mem.h"
 
 typedef struct

@@ -1,5 +1,5 @@
-#include "./length.h"
-#include "./point.h"
+#include "parser/length.h"
+#include "parser/point.h"
 
 bool length_is_undefined(Length length)
 {

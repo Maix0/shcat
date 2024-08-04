@@ -16,9 +16,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./src/api.h"
-#include "./src/lexer.h"
-#include "./src/parser.h"
+#include "parser/api.h"
+#include "parser/lexer.h"
+#include "parser/parser.h"
 #include "me/types.h"
 
 typedef TSSymbolMetadata   t_symbol_metadata;

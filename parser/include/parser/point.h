@@ -1,7 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include "./api.h"
+#include "parser/api.h"
 #include "me/types.h"
 
 #define POINT_ZERO ((TSPoint){0, 0})

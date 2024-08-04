@@ -2,11 +2,12 @@
 
 
 #include "me/types.h"
-#include "./tree.h"
-#include "./array.h"
-#include "./length.h"
-#include "./subtree.h"
-#include "api.h"
+#include "parser/tree.h"
+#include "parser/array.h"
+#include "parser/length.h"
+#include "parser/subtree.h"
+#include "parser/api.h"
+#include "parser/point.h"
 
 TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *included_ranges, t_u32 included_range_count)
 {

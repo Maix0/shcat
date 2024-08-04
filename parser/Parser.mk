@@ -21,15 +21,15 @@ NAME			=	lib$(ANAME).a
 LIB_NAME		?=
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	cc
-CFLAGS			=	-Wall -Wextra -Werror -MMD -I./includes -I../includes -I../output/include -I$(SRC_DIR)
+CFLAGS			=	-Wall -Wextra -Werror -MMD -I./include -I../includes -I../output/include -I$(SRC_DIR)
 CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 #CFLAGS 			+= -fsanitize=address -fno-omit-frame-pointer -fsanitize-address-use-after-return=runtime -fno-common -fsanitize-address-use-after-scope
 
-SRC_FILES		=	lib
-GEN_FILES		=
+# SRC_FILES		=	lib
+# GEN_FILES		=
 
 # TODO: change from only lib.c to filelist
-#-include Filelist.$(ANAME).mk
+-include Filelist.$(ANAME).mk
 
 SRC				=	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)) $(addprefix $(GEN_DIR)/,$(GEN_FILES)))
 OBJ				=	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES))) $(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(GEN_FILES)))

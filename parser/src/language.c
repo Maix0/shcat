@@ -1,7 +1,7 @@
-#include "./language.h"
-#include "./api.h"
+#include "parser/language.h"
+#include "parser/api.h"
+#include "parser/parser.h"
 #include "me/types.h"
-#include "parser.h"
 #include <assert.h>
 #include <string.h>
 

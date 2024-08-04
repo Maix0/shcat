@@ -1,8 +1,8 @@
 #ifndef PARSE_STACK_H
 #define PARSE_STACK_H
 
-#include "./array.h"
-#include "./subtree.h"
+#include "parser/array.h"
+#include "parser/subtree.h"
 #include "me/types.h"
 
 typedef struct Stack Stack;

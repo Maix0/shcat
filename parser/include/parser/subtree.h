@@ -1,10 +1,10 @@
 #ifndef SUBTREE_H
 #define SUBTREE_H
 
-#include "./api.h"
-#include "./array.h"
-#include "./length.h"
-#include "./parser.h"
+#include "parser/api.h"
+#include "parser/array.h"
+#include "parser/length.h"
+#include "parser/parser.h"
 #include "me/types.h"
 #include <limits.h>
 #include <stdbool.h>

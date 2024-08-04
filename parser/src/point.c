@@ -1,4 +1,4 @@
-#include "./point.h"
+#include "parser/point.h"
 
 TSPoint point__new(t_u32 row, t_u32 column)
 {

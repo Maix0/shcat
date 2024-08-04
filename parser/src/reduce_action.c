@@ -1,4 +1,4 @@
-#include "./reduce_action.h"
+#include "parser/reduce_action.h"
 
 void ts_reduce_action_set_add(ReduceActionSet *self, ReduceAction new_action)
 {

@@ -1,14 +1,14 @@
 #define _POSIX_C_SOURCE 200112L
 
-#include "./api.h"
-#include "./array.h"
-#include "./language.h"
-#include "./length.h"
-#include "./lexer.h"
-#include "./reduce_action.h"
-#include "./stack.h"
-#include "./subtree.h"
-#include "./tree.h"
+#include "parser/api.h"
+#include "parser/array.h"
+#include "parser/language.h"
+#include "parser/length.h"
+#include "parser/lexer.h"
+#include "parser/reduce_action.h"
+#include "parser/stack.h"
+#include "parser/subtree.h"
+#include "parser/tree.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include <assert.h>

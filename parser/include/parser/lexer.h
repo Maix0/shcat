@@ -1,9 +1,9 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include "./api.h"
-#include "./length.h"
-#include "./parser.h"
+#include "parser/api.h"
+#include "parser/length.h"
+#include "parser/parser.h"
 #include "me/types.h"
 
 struct Lexer

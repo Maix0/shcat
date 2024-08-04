@@ -1,6 +1,6 @@
-#include "./lexer.h"
-#include "./length.h"
-#include "./input.h"
+#include "parser/lexer.h"
+#include "parser/length.h"
+#include "parser/input.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include <string.h>

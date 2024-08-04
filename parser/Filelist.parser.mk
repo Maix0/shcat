@@ -5,7 +5,6 @@ language                                                                      \
 length                                                                        \
 lex                                                                           \
 lexer                                                                         \
-lib                                                                           \
 node                                                                          \
 parser                                                                        \
 point                                                                         \

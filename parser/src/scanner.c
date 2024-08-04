@@ -1,6 +1,6 @@
-#include "array.h"
+#include "parser/array.h"
+#include "parser/parser.h"
 #include "me/types.h"
-#include "parser.h"
 #include <assert.h>
 #include <string.h>
 #include <wctype.h>

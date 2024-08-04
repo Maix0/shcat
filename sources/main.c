@@ -25,6 +25,7 @@
 #include "parser/api.h"
 #include <errno.h>
 #include <sys/types.h>
+#include "me/mem/mem.h"
 
 t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
 void	ast_print_node(t_ast_node self);

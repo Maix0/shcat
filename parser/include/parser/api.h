@@ -118,6 +118,12 @@ typedef struct TSNode
 	const TSTree *tree;
 } TSNode;
 
+typedef TSNode t_parse_node;
+typedef TSSymbol t_symbol;
+typedef TSParser t_first_parser;
+typedef TSLanguage t_language;
+typedef TSTree t_first_tree;
+
 typedef struct TSTreeCursor
 {
 	const void *tree;

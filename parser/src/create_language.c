@@ -12,7 +12,7 @@
 
 #include "../static/headers/constants.h"
 #include "../static/headers/symbols.h"
-#include "./parser.h"
+#include "parser/parser.h"
 #include "me/types.h"
 
 // bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);

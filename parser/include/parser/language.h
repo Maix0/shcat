@@ -1,7 +1,7 @@
 #ifndef LANGUAGE_H
 #define LANGUAGE_H
 
-#include "./parser.h"
+#include "parser/parser.h"
 #include "me/types.h"
 
 #define ts_builtin_sym_error_repeat (ts_builtin_sym_error - 1)

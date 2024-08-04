@@ -1,4 +1,4 @@
-#include "./input.h"
+#include "parser/input.h"
 #include "me/types.h"
 
 t_u32 ts_decode_ascii(const t_u8 *string, t_u32 length, t_i32 *code_point)

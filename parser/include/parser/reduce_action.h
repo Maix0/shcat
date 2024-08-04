@@ -1,8 +1,8 @@
 #ifndef REDUCE_ACTION_H
 #define REDUCE_ACTION_H
 
-#include "./api.h"
-#include "./array.h"
+#include "parser/api.h"
+#include "parser/array.h"
 #include "me/types.h"
 
 struct ReduceAction

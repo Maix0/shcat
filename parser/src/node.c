@@ -1,7 +1,8 @@
-#include "./api.h"
-#include "./language.h"
-#include "./subtree.h"
-#include "./tree.h"
+#include "parser/api.h"
+#include "parser/language.h"
+#include "parser/subtree.h"
+#include "parser/tree.h"
+#include "parser/point.h"
 #include "me/types.h"
 
 typedef struct NodeChildIterator
