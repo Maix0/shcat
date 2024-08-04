@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 11:23:56 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/04 11:54:08 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,20 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	(void)(void_storage);
 }
 
+t_ast_vec	_append_scripting(\
+	t_ast_node node, t_ast_node redirection)
+{
+	if (node->kind == AST_WHILE)
+		return (&node->data.while_.suffixes_redirections);
+	if (node->kind == AST_FOR)
+		return (&node->data.for_.suffixes_redirections);
+	if (node->kind == AST_IF)
+		return (&node->data.if_.suffixes_redirections);
+	if (node->kind == AST_UNTIL)
+		return (&node->data.until.suffixes_redirections);
+	return (NULL);
+}
+
 void	_append_redirection(t_ast_node node, t_ast_node redirection)
 {
 	t_vec_ast	*vec;
@@ -117,20 +131,14 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 		vec = &node->data.command.suffixes_redirections;
 	if (node->kind == AST_COMPOUND_STATEMENT)
 		vec = &node->data.compound_statement.suffixes_redirections;
-	if (node->kind == AST_FOR)
-		vec = &node->data.for_.suffixes_redirections;
-	if (node->kind == AST_IF)
-		vec = &node->data.if_.suffixes_redirections;
 	if (node->kind == AST_LIST)
 		vec = &node->data.list.suffixes_redirections;
 	if (node->kind == AST_PIPELINE)
 		vec = &node->data.pipeline.suffixes_redirections;
 	if (node->kind == AST_SUBSHELL)
 		vec = &node->data.subshell.suffixes_redirections;
-	if (node->kind == AST_UNTIL)
-		vec = &node->data.until.suffixes_redirections;
-	if (node->kind == AST_WHILE)
-		vec = &node->data.while_.suffixes_redirections;
+	if (_append_scripting(node, redirection) != NULL)
+		vec = _append_scripting(node, redirection);
 	if (vec != NULL)
 		vec_ast_push(vec, redirection);
 	else
@@ -192,7 +200,6 @@ if (symbol == anon_sym_LT_GT)
 */
 // RAPH
 
-
 t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 /* FUNCTION THAT ARE DONE */
@@ -201,6 +208,7 @@ t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
 //	RAPH
 // PLUS RAPH
+
 t_error	build_sym_command_substitution(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
