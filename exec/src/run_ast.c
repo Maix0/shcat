@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 16:55:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:32:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -488,6 +488,8 @@ t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
 
+void mem_free(void *free);
+
 t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out)
 {
 	t_usize			 i;
@@ -500,6 +502,7 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 	if (pipeline == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	i = 0;
+	ret = NO_ERROR;
 	cmd_pipe.input = NULL;
 	cmd_pipe.create_output = true;
 	while (i < pipeline->statements.len - 1)
@@ -514,6 +517,8 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			}
 			else
 			{
+				out->exit = cmd_result.exit;
+				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					cmd_pipe.input = cmd_result.process.stdout;
 				else
@@ -540,6 +545,7 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			else
 			{
 				out->exit = cmd_result.exit;
+				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					close_fd(cmd_result.process.stdout);
 				if (cmd_result.process.stdin != NULL)
@@ -549,6 +555,7 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			}
 		}
 	}
+
 	return (ret);
 }
 
@@ -635,6 +642,7 @@ void _ffree_func(struct s_ffree_state *state)
 		return;
 	hmap_env_free(state->state->env);
 	hmap_env_free(state->state->tmp_var);
+	close_fd(state->cmd_pipe.input);
 }
 
 bool	_is_builtin(t_const_str argv0);
