@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 15:29:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:55:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "me/vec/vec_ast.h"
 #include "me/vec/vec_estr.h"
 #include "me/vec/vec_str.h"
+#include <signal.h>
 #include <sys/wait.h>
 
 #include <stdio.h>
@@ -108,11 +109,17 @@ t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_
 
 t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
 {
-	(void)(self);
-	(void)(state);
-	(void)(value);
+	t_str *val;
+
 	if (self == NULL || state == NULL || value == NULL)
 		return (ERROR);
+	val = hmap_env_get(state->tmp_var, &self->var_name);
+	if (val == NULL)
+		val = hmap_env_get(state->env, &self->var_name);
+	if (val == NULL)
+		return (value->exists = false, NO_ERROR);
+	value->exists = true;
+	value->value = *val;
 	return (NO_ERROR);
 };
 
@@ -275,8 +282,7 @@ t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_e
 		return (ERROR);
 	if (run_expansion(&elem->data.expansion, state->state, &exp_ret))
 		return (ERROR);
-	return (vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = str_clone(exp_ret.value)}),
-			NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = exp_ret.value}), NO_ERROR);
 }
 
 t_error _ast_get_str__arimethic_expansion(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
@@ -327,7 +333,7 @@ t_error _exp_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	t_vec_str		   splitted;
 	t_str			   tmp;
 
-	if (self == NULL || state == NULL || append == NULL || self->kind == AST_EXPANSION)
+	if (self == NULL || state == NULL || append == NULL || self->kind != AST_EXPANSION)
 		return (ERROR);
 	if (run_expansion(&self->data.expansion, state, &res))
 		return (ERROR);
@@ -343,14 +349,14 @@ t_error _exp_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 
 t_error _arith_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 {
-	if (self == NULL || state == NULL || append == NULL || self->kind == AST_ARITHMETIC_EXPANSION)
+	if (self == NULL || state == NULL || append == NULL || self->kind != AST_ARITHMETIC_EXPANSION)
 		return (ERROR);
 	return (NO_ERROR);
 }
 
 t_error _cmd_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 {
-	if (self == NULL || state == NULL || append == NULL || self->kind == AST_COMMAND_SUBSTITUTION)
+	if (self == NULL || state == NULL || append == NULL || self->kind != AST_COMMAND_SUBSTITUTION)
 		return (ERROR);
 	/*
 	if (str_split(res.value, _get_ifs_value(state), &splitted))
@@ -459,9 +465,10 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 
 // End Internals funcs
 
-t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
-t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
-t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
+// These are done externally
+// t_error run_file_redirection(t_ast_file_redirection *file_redirection, t_state *state, void *out) NOT_DONE;
+// t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out) NOT_DONE;
+// t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) NOT_DONE;
 
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
@@ -471,26 +478,87 @@ t_error run_elif(t_ast_elif *elif, t_state *state, void *out) NOT_DONE;
 t_error run_else_(t_ast_else *else_, t_state *state, void *out) NOT_DONE;
 t_error run_empty(t_ast_empty *empty, t_state *state, void *out) NOT_DONE;
 t_error run_extglob(t_ast_extglob *extglob, t_state *state, void *out) NOT_DONE;
-t_error run_file_redirection(t_ast_file_redirection *file_redirection, t_state *state, void *out) NOT_DONE;
 t_error run_for_(t_ast_for *for_, t_state *state, void *out) NOT_DONE;
 t_error run_function_definition(t_ast_function_definition *function_definition, t_state *state, void *out) NOT_DONE;
-t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out) NOT_DONE;
 t_error run_if_(t_ast_if *if_, t_state *state, void *out) NOT_DONE;
 t_error run_list(t_ast_list *list, t_state *state, void *out) NOT_DONE;
-t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, void *out) NOT_DONE;
-t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) NOT_DONE;
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out) NOT_DONE;
 t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out) NOT_DONE;
 t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
 
+t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out)
+{
+	t_usize			 i;
+	t_cmd_pipe		 cmd_pipe;
+	t_ast_node		 child;
+	t_error			 ret;
+	t_command_result cmd_result;
+	t_ast_node		 tmp_ast;
+
+	if (pipeline == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	i = 0;
+	cmd_pipe.input = NULL;
+	cmd_pipe.create_output = true;
+	while (i < pipeline->statements.len - 1)
+	{
+		child = pipeline->statements.buffer[i];
+		if (child->kind == AST_COMMAND)
+		{
+			if (run_command(&child->data.command, state, cmd_pipe, &cmd_result))
+			{
+				cmd_pipe.input = NULL;
+				ret = ERROR;
+			}
+			else
+			{
+				if (cmd_result.process.stdout != NULL)
+					cmd_pipe.input = cmd_result.process.stdout;
+				else
+					(printf("WTF ???\n"));
+				if (cmd_result.process.stdin != NULL)
+					close_fd(cmd_result.process.stdin);
+				if (cmd_result.process.stderr != NULL)
+					close_fd(cmd_result.process.stderr);
+			}
+		}
+		i++;
+	}
+	{
+		cmd_pipe.create_output = false;
+		child = pipeline->statements.buffer[i];
+		if (child->kind == AST_COMMAND)
+		{
+			while (!vec_ast_pop_front(&pipeline->suffixes_redirections, &tmp_ast))
+				vec_ast_push(&child->data.command.suffixes_redirections, tmp_ast);
+			if (run_command(&child->data.command, state, cmd_pipe, &cmd_result))
+			{
+				ret = ERROR;
+			}
+			else
+			{
+				out->exit = cmd_result.exit;
+				if (cmd_result.process.stdout != NULL)
+					close_fd(cmd_result.process.stdout);
+				if (cmd_result.process.stdin != NULL)
+					close_fd(cmd_result.process.stdin);
+				if (cmd_result.process.stderr != NULL)
+					close_fd(cmd_result.process.stderr);
+			}
+		}
+	}
+	return (ret);
+}
+
 t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 {
 	t_usize	   i;
 	t_ast_node child;
 
-	t_command_result cmd_result;
+	t_command_result  cmd_result;
+	t_pipeline_result pipeline_result;
 
 	if (self == NULL || state == NULL || out == NULL)
 		return (ERROR);
@@ -510,8 +578,11 @@ t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 			if (cmd_result.process.stderr != NULL)
 				close_fd(cmd_result.process.stderr);
 		}
-		else if (child->kind == AST_IF)
-			;
+		else if (child->kind == AST_PIPELINE)
+		{
+			if (run_pipeline(&child->data.pipeline, state, &pipeline_result))
+				return (out->exit = 127, ERROR);
+		}
 		else
 			;
 		i++;
@@ -567,13 +638,12 @@ void _ffree_func(struct s_ffree_state *state)
 }
 
 bool	_is_builtin(t_const_str argv0);
-t_error	_handle_builtin(t_spawn_info info, t_state *state);
+t_error _handle_builtin(t_spawn_info info, t_state *state);
 
 t_error _handle_builtin(t_spawn_info info, t_state *state)
 {
 	return (ERROR);
 }
-
 
 t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
@@ -585,8 +655,10 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	struct s_ffree_state ffree;
 
 	info = (t_spawn_info){};
-	if (cmd_pipe.input)
+	if (cmd_pipe.input != NULL)
 		info.stdin = fd(cmd_pipe.input);
+	if (cmd_pipe.input != NULL && !(cmd_pipe.input->perms & FD_READ))
+		printf("PERMISSION ERROR for %s !\n", cmd_pipe.input->name);
 	if (cmd_pipe.create_output)
 		info.stdout = piped();
 	i = 0;
@@ -682,6 +754,8 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	info.binary_path = str_clone(info.arguments.buffer[0]);
 	info.forked_free_args = &ffree;
 	info.forked_free = (void (*)(void *))_ffree_func;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	if (spawn_process(info, &out->process))
 		return (ERROR);
 	int status;
@@ -732,7 +806,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe,
 		if (tmp->kind == AST_VARIABLE_ASSIGNMENT)
 		{
 			if (run_variable_assignment(&tmp->data.variable_assignment, state, true, NULL))
-				return (ERROR);
+				return (vec_str_free(args), vec_ast_free(redirection), ERROR);
 		}
 		i++;
 	}
@@ -740,19 +814,19 @@ t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe,
 	while (i < command->cmd_word.len)
 	{
 		if (_ast_into_str(command->cmd_word.buffer[i], state, &args))
-			return (ERROR);
+			return (vec_str_free(args), vec_ast_free(redirection), ERROR);
 		i++;
 	}
-	while (i < command->prefixes.len)
+	i = 0;
+	while (i < command->suffixes_redirections.len)
 	{
-		tmp = command->prefixes.buffer[i];
+		tmp = command->suffixes_redirections.buffer[i];
 		if (tmp->kind == AST_FILE_REDIRECTION || tmp->kind == AST_HEREDOC_REDIRECTION)
 			vec_ast_push(&redirection, tmp);
 		i++;
 	}
-	i = 0;
 	if (_spawn_cmd_and_run(args, redirection, state, cmd_pipe, out))
-		return (ERROR);
+		return (vec_str_free(args), vec_ast_free(redirection), ERROR);
 	return (NO_ERROR);
 }
 
@@ -774,66 +848,3 @@ t_error run_word(t_ast_word *word, t_state *state, t_word_result *out)
 		return (vec_estr_free(iter_state.res.value), ERROR);
 	return (*out = iter_state.res, NO_ERROR);
 }
-
-// FUNCTIONS
-
-/*
-
-t_error run_node(t_ast_node self, t_state *state, void *out)
-{
-	if (self->kind == AST_ARITHMETIC_EXPANSION)
-		return (run_arithmetic_expansion(&self->data.arithmetic_expansion, state, out));
-	if (self->kind == AST_CASE)
-		return (run_case_(&self->data.case_, state, out));
-	if (self->kind == AST_CASE_ITEM)
-		return (run_case_item(&self->data.case_item, state, out));
-	if (self->kind == AST_COMMAND)
-		return (run_command(&self->data.command, state, out));
-	if (self->kind == AST_COMMAND_SUBSTITUTION)
-		return (run_command_substitution(&self->data.command_substitution, state, out));
-	if (self->kind == AST_COMPOUND_STATEMENT)
-		return (run_compound_statement(&self->data.compound_statement, state, out));
-	if (self->kind == AST_ELIF)
-		return (run_elif(&self->data.elif, state, out));
-	if (self->kind == AST_ELSE)
-		return (run_else_(&self->data.else_, state, out));
-	if (self->kind == AST_EMPTY)
-		return (run_empty(&self->data.empty, state, out));
-	if (self->kind == AST_EXPANSION)
-		return (run_expansion(&self->data.expansion, state, out));
-	if (self->kind == AST_EXTGLOB)
-		return (run_extglob(&self->data.extglob, state, out));
-	if (self->kind == AST_FILE_REDIRECTION)
-		return (run_file_redirection(&self->data.file_redirection, state, out));
-	if (self->kind == AST_FOR)
-		return (run_for_(&self->data.for_, state, out));
-	if (self->kind == AST_FUNCTION_DEFINITION)
-		return (run_function_definition(&self->data.function_definition, state, out));
-	if (self->kind == AST_HEREDOC_REDIRECTION)
-		return (run_heredoc_redirection(&self->data.heredoc_redirection, state, out));
-	if (self->kind == AST_IF)
-		return (run_if_(&self->data.if_, state, out));
-	if (self->kind == AST_LIST)
-		return (run_list(&self->data.list, state, out));
-	if (self->kind == AST_PIPELINE)
-		return (run_pipeline(&self->data.pipeline, state, out));
-	if (self->kind == AST_PROGRAM)
-		return (run_program(&self->data.program, state, out));
-	if (self->kind == AST_RAW_STRING)
-		return (run_raw_string(&self->data.raw_string, state, out));
-	if (self->kind == AST_REGEX)
-		return (run_regex(&self->data.regex, state, out));
-	if (self->kind == AST_SUBSHELL)
-		return (run_subshell(&self->data.subshell, state, out));
-	if (self->kind == AST_UNTIL)
-		return (run_until(&self->data.until, state, out));
-	if (self->kind == AST_VARIABLE_ASSIGNMENT)
-		return (run_variable_assignment(&self->data.variable_assignment, state, out));
-	if (self->kind == AST_WHILE)
-		return (run_while_(&self->data.while_, state, out));
-	if (self->kind == AST_WORD)
-		return (run_word(&self->data.word, state, out));
-	return (ERROR);
-}
-
-*/

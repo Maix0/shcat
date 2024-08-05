@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/03 16:34:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 15:46:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "me/string/string.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -29,6 +30,8 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 {
 	if (info.forked_free)
 		info.forked_free(info.forked_free_args);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	dup2(info.stdin.fd.fd->fd, 0);
 	dup2(info.stdout.fd.fd->fd, 1);
 	dup2(info.stderr.fd.fd->fd, 2);

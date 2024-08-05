@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:59:48 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 06:56:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:08:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_error	create_pipe(t_pipe *out)
 		return (ERROR);
 	}
 	read->slot.fd.fd = fd[0];
-	write->slot.fd.fd = fd[0];
+	write->slot.fd.fd = fd[1];
 	read->slot.fd.type = FD_PIPE;
 	write->slot.fd.type = FD_PIPE;
 	read->slot.fd.perms = FD_READ;

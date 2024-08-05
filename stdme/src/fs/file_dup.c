@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 06:59:44 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/01 07:03:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:01:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_fd	*dup_fd(t_fd *fd)
 		return (NULL);
 	tmp = dup(fd->fd);
 	if (tmp == -1)
-		return (NULL);
+		return (printf("There was an error while duping the fd %d `%s`\n", fd->fd, fd->name), NULL);
 	slot->ty = SLOT_FD;
 	slot->slot.fd.fd = tmp;
 	slot->slot.fd.perms = fd->perms;

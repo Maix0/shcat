@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:41:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/03 15:39:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:07:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,18 @@ struct s_program_result
 	int exit;
 };
 
+typedef struct s_pipeline_result t_pipeline_result;
+struct s_pipeline_result
+{
+	int exit;
+};
+
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
 t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out);
 t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result *out);
 t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
 t_error run_program(t_ast_program *program, t_state *state, t_program_result *out);
+t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out);
 
 t_error run_case_(t_ast_case *case_, t_state *state, void *out);
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out);
@@ -98,7 +105,6 @@ t_error run_function_definition(t_ast_function_definition *function_definition, 
 t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out);
 t_error run_if_(t_ast_if *if_, t_state *state, void *out);
 t_error run_list(t_ast_list *list, t_state *state, void *out);
-t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, void *out);
 t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out);
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out);
 t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out);

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 12:43:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:37:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,22 +127,22 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 		return (ast_free(redirection));
 	if (node->kind == AST_CASE)
 		vec = &node->data.case_.suffixes_redirections;
-	if (node->kind == AST_COMMAND)
+	else if (node->kind == AST_COMMAND)
 		vec = &node->data.command.suffixes_redirections;
-	if (node->kind == AST_COMPOUND_STATEMENT)
+	else if (node->kind == AST_COMPOUND_STATEMENT)
 		vec = &node->data.compound_statement.suffixes_redirections;
-	if (node->kind == AST_LIST)
+	else if (node->kind == AST_LIST)
 		vec = &node->data.list.suffixes_redirections;
-	if (node->kind == AST_PIPELINE)
+	else if (node->kind == AST_PIPELINE)
 		vec = &node->data.pipeline.suffixes_redirections;
-	if (node->kind == AST_SUBSHELL)
+	else if (node->kind == AST_SUBSHELL)
 		vec = &node->data.subshell.suffixes_redirections;
-	if (vec == NULL)
+	else 
 		vec = _append_scripting(node);
 	if (vec != NULL)
 		vec_ast_push(vec, redirection);
 	else
-		ast_free(redirection);
+		(ast_free(redirection));
 }
 
 t_ast_terminator_kind	_select_term(t_parse_node node)
