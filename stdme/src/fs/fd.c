@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 16:17:17 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 16:23:47 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/05 15:19:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,9 @@ void	close_fd(t_fd *fd)
 		return ;
 	if (close(fd->fd) == -1)
 		return ;
+	if (fd->name != NULL)
+		mem_free(fd->name);
 	slot = (void *)(fd)-offsetof(struct s_file_slot, slot.fd);
 	mem_set_zero(slot, sizeof(*slot));
+	slot->ty = SLOT_UNUSED;
 }

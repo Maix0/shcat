@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 16:39:16 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/05 14:50:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,11 @@ void print_node_data(t_node *t, t_usize depth)
 	idx = 0;
 	if (t->kind == 7)
 		return;
-	printf("\x1b[%im[%-6s](%llu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
+	printf("\x1b[%im[%-6s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
 	while (idx++ < depth + 1)
 		printf("\t");
 	idx = 0;
-	printf("%s(%llu) = %s\n", t->kind_str, t->kind, node_getstr(t));
+	printf("%s(%lu) = %s\n", t->kind_str, t->kind, node_getstr(t));
 	while (idx < t->childs_count)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
@@ -103,7 +103,6 @@ t_node parse_str(t_state *state)
 
 	tree = ts_parser_parse_string(state->parser, NULL, state->str_input, str_len(state->str_input));
 	node = ts_tree_root_node(tree);
-	printf("BUILDING AST\n");
 	if (ast_from_node(node, state->str_input, &out))
 		(state->ast = NULL, printf("Error when building node\n"));
 	else
@@ -115,13 +114,13 @@ t_node parse_str(t_state *state)
 
 void exec_shcat(t_state *state)
 {
-	/* t_program_result prog_res; */
+	t_program_result prog_res;
 	/*  */
-	/* prog_res = (t_program_result){.exit = 0}; */
+	prog_res = (t_program_result){.exit = 0};
 	print_node_data(&state->current_node, 0);
 	free_node(state->current_node);
-	/* if (state->ast != NULL && run_program(&state->ast->data.program, state, &prog_res)) */
-	/* 	printf("Error when execting the Command \n"); */
+	if (state->ast != NULL && run_program(&state->ast->data.program, state, &prog_res))
+		printf("Error when execting the Command \n");
 	ast_free(state->ast);
 }
 

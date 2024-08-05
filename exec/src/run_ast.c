@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/03 16:20:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/05 15:29:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ t_error _ast_get_str__raw__no_quote(t_ast_node elem, t_word_iterator *state, t_v
 			last_backslash = true;
 		i++;
 	}
-	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = ret.buf}), NO_ERROR);
 }
 
 t_error _ast_get_str__raw__single_quote(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
@@ -211,7 +211,7 @@ t_error _ast_get_str__raw__single_quote(t_ast_node elem, t_word_iterator *state,
 	while (elem->data.raw_string.str[i])
 		string_push_char(&ret, elem->data.raw_string.str[i++]);
 	string_pop(&ret);
-	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = ret.buf}), NO_ERROR);
 }
 
 t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
@@ -234,7 +234,7 @@ t_error _ast_get_str__raw__double_quote(t_ast_node elem, t_word_iterator *state,
 			last_backslash = true;
 		i++;
 	}
-	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = str_clone(ret.buf)}), NO_ERROR);
+	return (vec_estr_push(out, (t_expandable_str){.do_expand = false, .value = ret.buf}), NO_ERROR);
 }
 
 t_error _ast_get_str__raw(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
@@ -396,7 +396,7 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 				{
 					ifs = _get_ifs_value(state);
 					if (str_split(res.value.buffer[i].value, ifs, &splitted))
-						return (ERROR);
+						return (vec_estr_free(res.value), ERROR);
 					if (!vec_str_pop_front(&splitted, &tmp_str))
 					{
 						if (str_find_chr(ifs, res.value.buffer[i].value[0]) == NULL)
@@ -414,7 +414,7 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 						while (j + 1 < splitted.len)
 						{
 							if (vec_str_pop_front(&splitted, &tmp_str))
-								return (ERROR);
+								return (vec_estr_free(res.value), ERROR);
 							vec_str_push(append, tmp_str);
 							j++;
 						}
@@ -438,6 +438,7 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 			string_push(&tmp, res.value.buffer[i++].value);
 		vec_str_push(append, tmp.buf);
 	}
+	vec_estr_free(res.value);
 	return (NO_ERROR);
 }
 
@@ -483,9 +484,6 @@ t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out) NOT_DO
 t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
-
-/// TODO: remove this
-void mem_free(void *ptr);
 
 t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 {

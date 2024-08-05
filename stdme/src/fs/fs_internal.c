@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:28:09 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/05 15:18:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,11 @@ void	close_slot(struct s_file_slot *slot)
 	if (slot->ty == SLOT_UNUSED)
 		;
 	else if (slot->ty == SLOT_FD)
-		(mem_free(slot->slot.fd.name), close_fd(&slot->slot.fd));
+		close_fd(&slot->slot.fd);
 	else if (slot->ty == SLOT_DIR)
-		(mem_free(slot->slot.dir.name), close_dir(&slot->slot.dir));
+		close_dir(&slot->slot.dir);
 	else if (slot->ty == SLOT_FILE)
-		(mem_free(slot->slot.file.name), close_file(&slot->slot.file));
+		close_file(&slot->slot.file);
 	else
 		(void)!write(2, "Unknown SLOT type", 17);
 	mem_set_zero(slot, sizeof(*slot));
