@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 16:54:31 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 17:00:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/06 19:02:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,5 +124,6 @@ t_error						build_sym_while_statement(t_parse_node self,
 								t_const_str input, t_ast_node *out);
 t_error						build_sym_word(t_parse_node self, t_const_str input,
 								t_ast_node *out);
+t_vec_ast					*_append_scripting(t_ast_node node);
 
 #endif /* _FROM_NODE_H */
