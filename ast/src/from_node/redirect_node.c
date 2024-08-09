@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:45:21 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 18:59:40 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/09 14:35:02 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,3 @@ t_error	build_sym_redirected_statement(\
 	return ((void)((ret != ret_tmp) \
 			&& (ast_free(ret_tmp), true)), *out = ret, NO_ERROR);
 }
-
-

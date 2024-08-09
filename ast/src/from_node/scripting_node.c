@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:34:12 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 18:35:57 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/09 14:34:51 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,4 +164,3 @@ t_error	build_sym_case_item(\
 	}
 	return (*out = ret, NO_ERROR);
 }
-
