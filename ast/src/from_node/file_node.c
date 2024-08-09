@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redirect_node.c                                    :+:      :+:    :+:   */
+/*   file_node.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/06 18:45:21 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/09 14:38:26 by rparodi          ###   ########.fr       */
+/*   Created: 2024/08/09 16:25:02 by rparodi           #+#    #+#             */
+/*   Updated: 2024/08/09 16:26:09 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,40 +58,39 @@ t_error	build_sym_file_redirect(\
 	return (*out = ret, NO_ERROR);
 }
 
-t_error	build_sym_redirected_statement(\
+t_error	build_sym_number(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node	ret_tmp;
 	t_ast_node	ret;
-	t_ast_node	tmp;
-	t_usize		i;
 
 	(void)(out);
 	(void)(input);
 	(void)(self);
 	if (out == NULL)
 		return (ERROR);
-	if (ts_node_symbol(self) != sym_redirected_statement)
+	if (ts_node_symbol(self) != sym_number)
 		return (ERROR);
-	i = 0;
-	ret = ast_alloc(AST_COMMAND);
-	ret_tmp = ret;
-	while (i < ts_node_child_count(self))
-	{
-		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
-			continue ;
-		if (!(ts_node_symbol(ts_node_child(self, i)) == sym_file_redirect || \
-			ts_node_symbol(ts_node_child(self, i)) == sym_heredoc_redirect))
-		{
-			if (ast_from_node(ts_node_child(self, i++), input, &ret))
-				return (ast_free(ret_tmp), ERROR);
-			continue ;
-		}
-		if (ast_from_node(ts_node_child(self, i++), input, &tmp))
-			return ((void)((ret != ret_tmp) \
-			&& (ast_free(ret_tmp), true)), ast_free(ret), ERROR);
-		_append_redirection(ret, tmp);
-	}
-	return ((void)((ret != ret_tmp) \
-			&& (ast_free(ret_tmp), true)), *out = ret, NO_ERROR);
+	ret = ast_alloc(AST_RAW_STRING);
+	ret->data.raw_string.str = _extract_str(self, input);
+	ret->data.raw_string.len = str_len(ret->data.raw_string.str);
+	return (*out = ret, NO_ERROR);
 }
+
+t_error	build_sym_file_descriptor(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node	ret;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_file_descriptor)
+		return (ERROR);
+	ret = ast_alloc(AST_RAW_STRING);
+	ret->data.raw_string.str = _extract_str(self, input);
+	ret->data.raw_string.len = str_len(ret->data.raw_string.str);
+	return (*out = ret, NO_ERROR);
+}
+

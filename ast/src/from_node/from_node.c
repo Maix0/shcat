@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 19:00:51 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/09 16:26:13 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,112 +150,12 @@ t_error	build_sym_command_substitution(\
 	return (*out = ret, NO_ERROR);
 }
 
-t_error	build_sym_file_descriptor(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_file_descriptor)
-		return (ERROR);
-	ret = ast_alloc(AST_RAW_STRING);
-	ret->data.raw_string.str = _extract_str(self, input);
-	ret->data.raw_string.len = str_len(ret->data.raw_string.str);
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_number(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_number)
-		return (ERROR);
-	ret = ast_alloc(AST_RAW_STRING);
-	ret->data.raw_string.str = _extract_str(self, input);
-	ret->data.raw_string.len = str_len(ret->data.raw_string.str);
-	return (*out = ret, NO_ERROR);
-}
-
 /* if (ts_node_field_id_for_child(self, i) == field_fd) */
 /* { */
 /* 	if (ast_from_node(ts_node_child(self, i), input, &tmp)) */
 /* 		return (ast_free(ret), ERROR); */
 /* 	ret->data.file_redirection.input = tmp; */
 /* } */
-
-t_error	build_sym_file_redirect(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-	t_ast_node	tmp;
-	t_usize		i;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_file_redirect)
-		return (ERROR);
-	ret = ast_alloc(AST_FILE_REDIRECTION);
-	i = 0;
-	while (i < ts_node_child_count(self))
-	{
-		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
-			continue ;
-		if (ts_node_field_id_for_child(self, i) == field_op)
-		{
-			ret->data.file_redirection.op = \
-			_get_redirection_op(ts_node_child(self, i));
-		}
-		if (ts_node_field_id_for_child(self, i) == field_dest)
-		{
-			if (ast_from_node(ts_node_child(self, i), input, &tmp))
-				return (ast_free(ret), ERROR);
-			ret->data.file_redirection.output = tmp;
-		}
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_pipeline(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-	t_ast_node	tmp;
-	t_usize		i;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_pipeline)
-		return (ERROR);
-	ret = ast_alloc(AST_PIPELINE);
-	i = 0;
-	while (i < ts_node_child_count(self))
-	{
-		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
-			continue ;
-		if (ast_from_node(ts_node_child(self, i), input, &tmp))
-			return (ast_free(ret), ERROR);
-		vec_ast_push(&ret->data.pipeline.statements, tmp);
-		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
 
 t_error	build_sym_do_group(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
@@ -343,26 +243,6 @@ t_error	build_sym_subshell(\
 
 // t_error	buildw
 
-t_error	build_sym_negated_command(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node	ret;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_negated_command)
-		return (ERROR);
-	if (ts_node_child_count(self) != 1)
-		return (ERROR);
-	if (ast_from_node(ts_node_child(self, 1), input, &ret))
-		return (ERROR);
-	_add_negation(&ret);
-	return (*out = ret, NO_ERROR);
-}
-
 t_error	build_sym_compound_statement(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
@@ -398,49 +278,6 @@ t_error	build_sym_compound_statement(\
 			vec_ast_push(&ret->data.compound_statement.body, tmp);
 		}
 		i++;
-	}
-	return (*out = ret, NO_ERROR);
-}
-
-t_error	build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_comment)
-		return (ERROR);
-	*out = ast_alloc(AST_EMPTY);
-	return (NO_ERROR);
-}
-
-t_error	build_sym_variable_assignment(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node		ret;
-	t_parse_node	temp_ast;
-
-	(void)(self);
-	(void)(input);
-	(void)(out);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_variable_assignment)
-		return (ERROR);
-	ret = ast_alloc(AST_VARIABLE_ASSIGNMENT);
-	if (ts_node_child_count(self) >= 2)
-	{
-		temp_ast = ts_node_child(self, 0);
-		if (ts_node_symbol(temp_ast) != sym_variable_name)
-			return (ast_free(ret), ERROR);
-		ret->data.variable_assignment.name = _extract_str(temp_ast, input);
-	}
-	if (ts_node_child_count(self) > 2)
-	{
-		if (ast_from_node(ts_node_child(self, 2), \
-			input, &ret->data.variable_assignment.value))
-			return (ast_free(ret), ERROR);
 	}
 	return (*out = ret, NO_ERROR);
 }
