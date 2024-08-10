@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 17:32:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:43:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "app/state.h"
 #include "ast/ast.h"
 #include "exec/_run_ast.h"
+#include "exec/builtins.h"
 #include "exec/run.h"
 #include "me/convert/numbers_to_str.h"
 #include "me/fs/fs.h"
@@ -84,10 +85,10 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 	hmap_ret = hmap_env_get(state->tmp_var, &self->var_name);
 	if (hmap_ret == NULL)
 		hmap_ret = hmap_env_get(state->env, &self->var_name);
-	ret = (t_expansion_result){.exists = hmap_ret == NULL, .value = NULL};
+	ret = (t_expansion_result){.exists = (hmap_ret != NULL), .value = NULL};
 	if (ret.exists)
 		ret.value = str_clone(*hmap_ret);
-	return (NO_ERROR);
+	return (*out = ret, NO_ERROR);
 }
 
 t_error _handle_len_operator(t_ast_expansion *self, t_state *state, t_expansion_result *value)
@@ -521,8 +522,6 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					cmd_pipe.input = cmd_result.process.stdout;
-				else
-					(printf("WTF ???\n"));
 				if (cmd_result.process.stdin != NULL)
 					close_fd(cmd_result.process.stdin);
 				if (cmd_result.process.stderr != NULL)
@@ -643,14 +642,38 @@ void _ffree_func(struct s_ffree_state *state)
 	hmap_env_free(state->state->env);
 	hmap_env_free(state->state->tmp_var);
 	close_fd(state->cmd_pipe.input);
+	me_exit(127);
 }
 
-bool	_is_builtin(t_const_str argv0);
-t_error _handle_builtin(t_spawn_info info, t_state *state);
+bool _is_builtin(t_const_str argv0);
 
-t_error _handle_builtin(t_spawn_info info, t_state *state)
+t_error _handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
-	return (ERROR);
+	t_usize				 i;
+	const t_const_str	 argv0 = info.binary_path;
+	const t_str			 value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
+	const t_builtin_func funcs[] = {builtin_cd____, builtin_echo__, builtin_env___, builtin_exit__,
+									builtin_export, builtin_pwd___, builtin_unset_, NULL};
+	t_builtin_func		 actual_func;
+
+	i = 0;
+	if (argv0 == NULL)
+		return (ERROR);
+	actual_func = NULL;
+	while (value[i] != NULL)
+	{
+		if (str_compare(argv0, value[i]))
+		{
+			actual_func = funcs[i];
+			break;
+		}
+		i++;
+	}
+	if (actual_func == NULL)
+		return (me_abort("Builtin found but no function found..."), ERROR);
+	// we need to check if we have to fork !
+	
+	return (NO_ERROR);
 }
 
 t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
@@ -756,7 +779,7 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	if (args.len == 0)
 		return (vec_str_free(args), ERROR);
 	if (_is_builtin(args.buffer[0]))
-		return (_handle_builtin(info, state));
+		return (_handle_builtin(info, state, cmd_pipe, out));
 	if (build_envp(state->env, state->tmp_var, &info.environement))
 		return (ERROR);
 	info.binary_path = str_clone(info.arguments.buffer[0]);
@@ -780,6 +803,7 @@ bool _is_builtin(t_const_str argv0)
 {
 	t_usize		i;
 	const t_str value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
+	const t_str funcs[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
 
 	i = 0;
 	if (argv0 == NULL)
@@ -834,7 +858,7 @@ t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe,
 		i++;
 	}
 	if (_spawn_cmd_and_run(args, redirection, state, cmd_pipe, out))
-		return (vec_str_free(args), vec_ast_free(redirection), ERROR);
+		return (ERROR);
 	return (NO_ERROR);
 }
 

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 15:46:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/10 18:41:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ t_error	find_binary(t_spawn_info *info, t_process *process)
 		if (vec_str_find(&info->environement, _find_path, &p_idx))
 			return (string_free(s), ERROR);
 		if (in_path(info, process, info->environement.buffer[p_idx], &s))
-			return (ERROR);
+			return (string_free(s), ERROR);
 	}
 	if (access(s.buf, X_OK | R_OK) == 0)
 	{

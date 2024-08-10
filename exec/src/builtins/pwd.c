@@ -1,36 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/07 14:22:50 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/07 14:23:14 by rparodi          ###   ########.fr       */
+/*   Created: 2024/08/07 13:58:37 by rparodi           #+#    #+#             */
+/*   Updated: 2024/08/10 19:44:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "app/env.h"
-#include "me/string/string.h"
-#include "me/hash/hasher.h"
-#include "me/hashmap/hashmap_env.h"
+#include "exec/builtins.h"
 #include "me/mem/mem.h"
-#include "me/str/str.h"
-#include "me/str/str.h"
-#include "me/str/str.h"
+#include "me/string/string.h"
 #include "me/types.h"
-#include "me/vec/vec_str.h"
-#include <cstddef>
-#include <stdlib.h>
 
-void	env(t_str *envp)
+t_error builtin_pwd___(t_state *state, t_spawn_info info)
 {
-	size_t	i;
+	t_string s;
 
-	i = 0;
-	while (envp[i] != NULL)
-	{
-		printf("%s\n", envp[i]);
-		i++;
-	}
+	s = string_new(1024);
+	while (getcwd(s.buf, s.capacity - 1) == NULL)
+		string_reserve(&s, s.capacity * 2);
+	printf("%s\n", s.buf);
+	string_free(s);
+	return (NO_ERROR);
 }
