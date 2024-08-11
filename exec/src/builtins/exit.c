@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/10 20:01:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 11:26:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,15 @@
 #include "me/convert/str_to_numbers.h"
 #include "me/types.h"
 
-t_error builtin_exit__(t_state *state, t_spawn_info info)
+t_error builtin_exit__(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	t_i32 exit_code;
+	t_i32 actual_exit_code;
 
-	if (info.arguments.len < 2)
-		exit_code = 0;
-	else if (str_to_i32(info.arguments.buffer[1], 10, &exit_code))
+	if (info.args.len < 2)
+		actual_exit_code = 0;
+	else if (str_to_i32(info.args.buffer[1], 10, &actual_exit_code))
 		return (ERROR);
-	me_exit(exit_code);
+	*exit_code = actual_exit_code;
+	me_exit(actual_exit_code);
 	return (NO_ERROR);
 }

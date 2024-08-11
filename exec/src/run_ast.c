@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/10 19:43:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 11:41:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 		hmap_ret = hmap_env_get(state->env, &self->var_name);
 	ret = (t_expansion_result){.exists = (hmap_ret != NULL), .value = NULL};
 	if (ret.exists)
-		ret.value = str_clone(*hmap_ret);
+	{
+		ret.value = *hmap_ret;
+		printf("source = %p; ret = %p\n", *hmap_ret, ret.value);
+	}
 	return (*out = ret, NO_ERROR);
 }
 
@@ -620,15 +623,6 @@ t_error run_expansion(t_ast_expansion *self, t_state *state, t_expansion_result 
 	return (*out = ret, NO_ERROR);
 }
 
-t_error _clone_env(const t_kv_env *kv, void *ctx, t_kv_env *out)
-{
-	(void)(ctx);
-
-	out->key = str_clone(kv->key);
-	out->val = str_clone(kv->val);
-	return (NO_ERROR);
-}
-
 struct s_ffree_state
 {
 	t_state	  *state;
@@ -671,8 +665,63 @@ t_error _handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, 
 	}
 	if (actual_func == NULL)
 		return (me_abort("Builtin found but no function found..."), ERROR);
+	t_builtin_spawn_info binfo;
+	mem_set_zero(out, sizeof(*out));
+	if (info.stdin.tag == R_FD)
+		binfo.stdin = info.stdin.fd.fd;
+	if (info.stdin.tag == R_INHERITED)
+		binfo.stdin = dup_fd(get_stdin());
+	if (info.stderr.tag == R_FD)
+		binfo.stderr = info.stderr.fd.fd;
+	if (info.stderr.tag == R_INHERITED)
+		binfo.stderr = dup_fd(get_stderr());
+	if (info.stdout.tag == R_FD)
+		binfo.stdout = info.stdout.fd.fd;
+	if (info.stdout.tag == R_INHERITED)
+		binfo.stdout = dup_fd(get_stdout());
+	if (info.stdout.tag == R_PIPED)
+	{
+		t_pipe pipe_fd;
+		if (create_pipe(&pipe_fd))
+			return (ERROR);
+		out->process.stdout = pipe_fd.read;
+		binfo.stdout = pipe_fd.write;
+	}
+	binfo.args = info.arguments;
+	bool  do_fork = cmd_pipe.input != NULL || cmd_pipe.create_output;
+	t_i32 exit_code;
+	if (do_fork)
+	{
+		out->process.pid = fork();
+		if (out->process.pid == 0)
+		{
+			if (actual_func(state, binfo, &exit_code))
+				me_exit(127);
+			me_exit(exit_code);
+		}
+		if (out->process.pid == -1)
+			out->exit = 126;
+		else
+		{
+			int status;
+			if (waitpid(out->process.pid, &status, 0) == -1)
+				return (ERROR);
+			if (WIFEXITED(status))
+				out->exit = WEXITSTATUS(status);
+			if (WIFSIGNALED(status))
+				out->exit = WTERMSIG(status);
+		}
+	}
+	else
+	{
+		if (actual_func(state, binfo, &exit_code))
+			return (out->exit = 126, ERROR);
+		out->exit = exit_code;
+	}
+	vec_str_free(info.arguments);
+	str_free(info.binary_path);
 	// we need to check if we have to fork !
-	
+
 	return (NO_ERROR);
 }
 
@@ -778,11 +827,11 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	info.arguments = args;
 	if (args.len == 0)
 		return (vec_str_free(args), ERROR);
-	if (_is_builtin(args.buffer[0]))
+	info.binary_path = str_clone(info.arguments.buffer[0]);
+	if (_is_builtin(info.binary_path))
 		return (_handle_builtin(info, state, cmd_pipe, out));
 	if (build_envp(state->env, state->tmp_var, &info.environement))
-		return (ERROR);
-	info.binary_path = str_clone(info.arguments.buffer[0]);
+		return (str_free(info.binary_path), ERROR);
 	info.forked_free_args = &ffree;
 	info.forked_free = (void (*)(void *))_ffree_func;
 	signal(SIGINT, SIG_IGN);

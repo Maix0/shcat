@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:22:50 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/10 19:57:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 11:25:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 struct s_print_env_state
 {
 	t_state		 *state;
-	t_spawn_info *info;
+	t_builtin_spawn_info *info;
 };
 
 static t_error _print_env(t_usize _idx, const t_str *key, t_str *value, void *vctx)
@@ -36,12 +36,12 @@ static t_error _print_env(t_usize _idx, const t_str *key, t_str *value, void *vc
 	return (NO_ERROR);
 }
 
-t_error builtin_env___(t_state *state, t_spawn_info info)
+t_error builtin_env___(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	struct s_print_env_state ctx;
 
 	ctx.info = &info;
 	ctx.state = state;
 	hmap_env_iter(state->env, _print_env, &ctx);
-	return (NO_ERROR);
+	return (*exit_code = 0, NO_ERROR);
 }

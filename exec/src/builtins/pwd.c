@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 13:58:37 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/10 19:44:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 11:26:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-t_error builtin_pwd___(t_state *state, t_spawn_info info)
+t_error builtin_pwd___(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	t_string s;
 
@@ -24,5 +24,5 @@ t_error builtin_pwd___(t_state *state, t_spawn_info info)
 		string_reserve(&s, s.capacity * 2);
 	printf("%s\n", s.buf);
 	string_free(s);
-	return (NO_ERROR);
+	return (*exit_code = 0, NO_ERROR);
 }
