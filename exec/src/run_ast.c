@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 12:19:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:48:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -452,6 +452,14 @@ t_error _word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 	return (NO_ERROR);
 }
 
+t_error _raw_str_into_str(t_ast_node self, t_state *state, t_vec_str *append)
+{
+	if (self == NULL || state == NULL || append == NULL || self->kind != AST_RAW_STRING)
+		return (ERROR);
+	vec_str_push(append, str_clone(self->data.raw_string.str));
+	return (NO_ERROR);
+}
+
 t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 {
 	if (self == NULL || state == NULL || append == NULL)
@@ -464,6 +472,9 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		return (_cmd_into_str(self, state, append));
 	if (self->kind == AST_WORD)
 		return (_word_into_str(self, state, append));
+	if (self->kind == AST_RAW_STRING)
+		return (_raw_str_into_str(self, state, append));
+	printf("unknown Kind = %#04x\n", self->kind);
 	return (ERROR);
 }
 

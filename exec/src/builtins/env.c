@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:22:50 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/11 11:25:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:49:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static t_error _print_env(t_usize _idx, const t_str *key, t_str *value, void *vc
 	if (val == NULL || *val == NULL)
 		return (NO_ERROR);
 	// TODO: Fix this to handle the corrrect output
-	me_printf_fd(NULL, "%s=%s\n", *key, *val);
+	me_printf_fd(ctx->info->stdout, "%s=%s\n", *key, *val);
 	return (NO_ERROR);
 }
 
