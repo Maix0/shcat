@@ -1,4 +1,5 @@
 SRC_FILES =                                                                   \
+builtins/_debug                                                               \
 builtins/cd                                                                   \
 builtins/echo                                                                 \
 builtins/env                                                                  \

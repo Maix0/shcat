@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 11:20:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:01:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ t_error builtin_exit__(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 t_error builtin_export(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
 t_error builtin_pwd___(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
 t_error builtin_unset_(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
+t_error builtin_debug_(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
 
 #endif /* BUILTINS_H */

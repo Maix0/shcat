@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/10 18:41:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:00:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	vec_str_push(&info.arguments, NULL);
 	vec_str_push(&info.environement, NULL);
 	execve(info.binary_path, info.arguments.buffer, info.environement.buffer);
-	return (NO_ERROR);
+	return (ERROR);
 }
 
 t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path_raw,

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 11:41:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/11 12:19:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -597,7 +597,7 @@ t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 		i++;
 	}
 
-	return (ERROR);
+	return (NO_ERROR);
 }
 
 // FUNCTIONS
@@ -636,18 +636,30 @@ void _ffree_func(struct s_ffree_state *state)
 	hmap_env_free(state->state->env);
 	hmap_env_free(state->state->tmp_var);
 	close_fd(state->cmd_pipe.input);
-	me_exit(127);
 }
 
-bool _is_builtin(t_const_str argv0);
+bool _is_builtin(t_const_str argv0)
+{
+	t_usize		i;
+	const t_str value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", "_debug", NULL};
+
+	i = 0;
+	if (argv0 == NULL)
+		return (false);
+	while (value[i] != NULL)
+		if (str_compare(argv0, value[i++]))
+			return (true);
+	return (false);
+}
 
 t_error _handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
 {
 	t_usize				 i;
 	const t_const_str	 argv0 = info.binary_path;
-	const t_str			 value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
-	const t_builtin_func funcs[] = {builtin_cd____, builtin_echo__, builtin_env___, builtin_exit__,
-									builtin_export, builtin_pwd___, builtin_unset_, NULL};
+	const t_str			 value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", "_debug", NULL};
+	const t_builtin_func funcs[] = {builtin_cd____, builtin_echo__, builtin_env___,
+									builtin_exit__, builtin_export, builtin_pwd___,
+									builtin_unset_, builtin_debug_, NULL};
 	t_builtin_func		 actual_func;
 
 	i = 0;
@@ -715,13 +727,18 @@ t_error _handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, 
 	else
 	{
 		if (actual_func(state, binfo, &exit_code))
-			return (out->exit = 126, ERROR);
-		out->exit = exit_code;
+			out->exit = 126;
+		else
+			out->exit = exit_code;
 	}
+	if (binfo.stdin)
+		close_fd(binfo.stdin);
+	if (binfo.stdout)
+		close_fd(binfo.stdout);
+	if (binfo.stderr)
+		close_fd(binfo.stderr);
 	vec_str_free(info.arguments);
 	str_free(info.binary_path);
-	// we need to check if we have to fork !
-
 	return (NO_ERROR);
 }
 
@@ -837,7 +854,7 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	if (spawn_process(info, &out->process))
-		return (ERROR);
+		return (close_fd(cmd_pipe.input), out->exit = 127, ERROR);
 	int status;
 	if (waitpid(out->process.pid, &status, 0) == -1)
 		return (ERROR);
@@ -846,21 +863,6 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	if (WIFSIGNALED(status))
 		out->exit = WTERMSIG(status);
 	return (NO_ERROR);
-}
-
-bool _is_builtin(t_const_str argv0)
-{
-	t_usize		i;
-	const t_str value[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
-	const t_str funcs[] = {"cd", "echo", "env", "exit", "export", "pwd", "unset", NULL};
-
-	i = 0;
-	if (argv0 == NULL)
-		return (false);
-	while (value[i] != NULL)
-		if (str_compare(argv0, value[i++]))
-			return (true);
-	return (false);
 }
 
 t_error run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
