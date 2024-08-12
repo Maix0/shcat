@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/10 11:11:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/09 16:53:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/12 16:05:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ const char	*str_find_str(t_const_str str, t_const_str to_find)
 	t_str	needle;
 	t_str	haystack;
 
+	if (str == NULL || to_find == NULL)
+		return (NULL);
 	if (*to_find == '\0')
 		return (str);
 	while (*str)

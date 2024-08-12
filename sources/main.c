@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/05 14:50:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/12 16:58:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@
 #include "exec/_run_ast.h"
 #include "line/line.h"
 #include "me/hashmap/hashmap_env.h"
+#include "me/mem/mem.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
 #include "parser/api.h"
 #include <errno.h>
 #include <sys/types.h>
-#include "me/mem/mem.h"
 
 t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
 void	ast_print_node(t_ast_node self);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_ast.c                                        :+:      :+:    :+:   */
+/*   ast_print.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 18:38:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/12 16:34:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,6 @@ static inline void	ast_print_block2(t_ast_node self)
 		return (ast_print_node_for(self));
 	if (self->kind == AST_FUNCTION_DEFINITION)
 		return (ast_print_node_function_definition(self));
-	if (self == NULL)
-		return ((void)printf("ast == NULL\n"));
 	if (self->kind == AST_HEREDOC_REDIRECTION)
 		return (ast_print_node_heredoc_redirection(self));
 	if (self->kind == AST_IF)
@@ -114,7 +112,9 @@ static inline void	ast_print_block3(t_ast_node self)
 	printf("Unknown ast->kind: %#04x\n", self->kind);
 }
 
-void	ast_print_node(t_ast_node self)
+void	ast_print(t_ast_node self)
 {
+	if (self == NULL)
+		return ((void)printf("ast == NULL\n"));
 	ast_print_block1(self);
 }
