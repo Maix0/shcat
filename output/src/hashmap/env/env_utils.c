@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hashmap_env_utils.c                        :+:      :+:    :+:   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 10:58:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 15:35:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/12 17:14:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void hmap_env_remove(t_hashmap_env *hmap, t_str *key)
 
 	hmap->hfunc(&hmap->hasher, key);
 	hashed_key = hasher_reset_and_finish(&hmap->hasher);
-	hmap->hasher = hasher_sip13_new();
 	prev = NULL;
 	entry = hmap_env_get_entry(hmap, hashed_key, key, &prev);
 	if (entry == NULL)
