@@ -6,17 +6,34 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 11:21:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/12 17:25:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec/builtins.h"
+#include "me/hashmap/hashmap_env.h"
 #include "me/printf/printf.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
+#include "unistd.h"
 
 t_error builtin_cd____(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	return (ERROR);
+	const t_str key = "HOME";
+	t_str	   *home;
+
+	if (info.args.len <= 1)
+	{
+		home = hmap_env_get(state->tmp_var, (t_str *)&key);
+		if (home == NULL || *home == NULL)
+			home = hmap_env_get(state->env, (t_str *)&key);
+		if (home == NULL || *home == NULL)
+			return (*exit_code = 0, NO_ERROR);
+		if (chdir(*home) == -1)
+			return (*exit_code = 2, me_printf_fd(info.stderr, "cd: Unable to change directory\n"), NO_ERROR);
+	}
+	else if (chdir(info.args.buffer[1]) == -1)
+		return (*exit_code = 2, me_printf_fd(info.stderr, "cd: Unable to change directory\n"), NO_ERROR);
+	return (*exit_code = 0, NO_ERROR);
 }
