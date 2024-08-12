@@ -1161,7 +1161,7 @@ brace_start:
 
 void *tree_sitter_sh_external_scanner_create()
 {
-	Scanner *scanner = calloc(1, sizeof(Scanner));
+	Scanner *scanner = mem_alloc(sizeof(Scanner));
 	array_init(&scanner->heredocs);
 	return scanner;
 }
@@ -1194,5 +1194,5 @@ void tree_sitter_sh_external_scanner_destroy(void *payload)
 		array_delete(&heredoc->delimiter);
 	}
 	array_delete(&scanner->heredocs);
-	free(scanner);
+	mem_free(scanner);
 }
