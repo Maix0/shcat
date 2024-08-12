@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/08/02 18:58:21 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/12 17:05:33 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,8 @@ BUILD_DIR ?= $(shell realpath ./build/)
 
 export CFLAGS_ADDITIONAL
 export CC
+export BASE_PATH
+export BUILD_DIR
 
 # Flags
 CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -MMD -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E

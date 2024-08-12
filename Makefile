@@ -6,12 +6,13 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/08/12 17:00:12 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/12 17:05:19 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Objdir
 BUILD_DIR = $(shell realpath ./build)
+BASE_PATH = $(shell pwd)
 
 # Colors
 GREEN = \033[32m
@@ -43,7 +44,7 @@ endif
 endif
 
 # TODO: ADD THIS WHEN FINISHING THIS:
-CFLAGS_ADDITIONAL	+= -DNVALGRIND
+# CFLAGS_ADDITIONAL	+= -DNVALGRIND
 CFLAGS_ADDITIONAL	+= -O0 -Wno-cpp
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
@@ -52,19 +53,23 @@ CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n
 #CFLAGS_ADDITIONAL 	+= -O2
 #CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols.count.log
 
+
 export CFLAGS_ADDITIONAL
 export CC
+export BASE_PATH
+export BUILD_DIR
+
 
 # All (make all)
 all: 
-	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
-	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE)
-	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" 
+	@$(MAKE) --no-print-directory header
+	@$(MAKE) --no-print-directory -f ./Minishell.mk $(PMAKE)
+	@$(MAKE) --no-print-directory footer
 
 bonus: 
-	@$(MAKE) --no-print-directory header            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
-	@$(MAKE) --no-print-directory -f ./Minishell.mk "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)" $(PMAKE) bonus
-	@$(MAKE) --no-print-directory footer            "BUILD_DIR=$(BUILD_DIR)" "BASE_PATH=$(shell pwd)"
+	@$(MAKE) --no-print-directory header
+	@$(MAKE) --no-print-directory -f ./Minishell.mk $(PMAKE) bonus
+	@$(MAKE) --no-print-directory footer
 
 #	Header
 header:
