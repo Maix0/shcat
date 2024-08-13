@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/13 15:59:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:08:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -519,14 +519,95 @@ t_error run_extglob(t_ast_extglob *extglob, t_state *state, void *out) NOT_DONE;
 t_error run_for_(t_ast_for *for_, t_state *state, void *out) NOT_DONE;
 t_error run_function_definition(t_ast_function_definition *function_definition, t_state *state, void *out) NOT_DONE;
 t_error run_if_(t_ast_if *if_, t_state *state, void *out) NOT_DONE;
-t_error run_list(t_ast_list *list, t_state *state, void *out) NOT_DONE;
 t_error run_regex(t_ast_regex *regex, t_state *state, void *out) NOT_DONE;
-t_error run_subshell(t_ast_subshell *subshell, t_state *state, void *out) NOT_DONE;
 t_error run_until(t_ast_until *until, t_state *state, void *out) NOT_DONE;
 t_error run_variable_assignment(t_ast_variable_assignment *variable_assignment, t_state *state, bool is_temporary, void *out) NOT_DONE;
 t_error run_while_(t_ast_while *while_, t_state *state, void *out) NOT_DONE;
 
 void mem_free(void *free);
+
+t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_subshell_result *out) NOT_DONE;
+
+t_error _run_get_exit_code(t_ast_node self, t_state *state, int *out)
+{
+	t_command_result  cmd_res;
+	t_pipeline_result pipe_res;
+	t_list_result	  list_res;
+	t_subshell_result subshell_res;
+
+	if (self->kind == AST_COMMAND)
+	{
+		if (run_command(&self->data.command, state, (t_cmd_pipe){NULL, false}, &cmd_res))
+			return (ERROR);
+		if (cmd_res.process.stdin != NULL)
+			close_fd(cmd_res.process.stdin);
+		if (cmd_res.process.stdout != NULL)
+			close_fd(cmd_res.process.stdout);
+		if (cmd_res.process.stderr != NULL)
+			close_fd(cmd_res.process.stderr);
+		*out = cmd_res.exit;
+	}
+	if (self->kind == AST_PIPELINE)
+	{
+		if (run_pipeline(&self->data.pipeline, state, &pipe_res))
+			return (ERROR);
+		*out = pipe_res.exit;
+	}
+	if (self->kind == AST_LIST)
+	{
+		if (run_list(&self->data.list, state, &list_res))
+			return (ERROR);
+		*out = list_res.exit;
+	}
+	if (self->kind == AST_SUBSHELL)
+	{
+		if (run_subshell(&self->data.subshell, state, &subshell_res))
+			return (ERROR);
+		*out = subshell_res.exit;
+	}
+	return (NO_ERROR);
+}
+
+t_error run_list(t_ast_list *list, t_state *state, t_list_result *out)
+{
+	t_ast_node tmp;
+	t_vec_ast *append;
+	int		   left;
+	int		   right;
+	if (list == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	append = NULL;
+	printf("LIST\n");
+	if (list->right->kind == AST_COMMAND)
+		append = &list->right->data.command.suffixes_redirections;
+	if (list->right->kind == AST_PIPELINE)
+		append = &list->right->data.pipeline.suffixes_redirections;
+	if (list->right->kind == AST_LIST)
+		append = &list->right->data.list.suffixes_redirections;
+	if (list->right->kind == AST_SUBSHELL)
+		append = &list->right->data.subshell.suffixes_redirections;
+	if (append != NULL)
+	{
+		while (!vec_ast_pop_front(&list->suffixes_redirections, &tmp))
+			vec_ast_push(append, tmp);
+	}
+	left = -1;
+	right = -1;
+	if (_run_get_exit_code(list->left, state, &left))
+		return (ERROR);
+	printf("left == %i\n", left);
+	printf("(list->op == AST_LIST_AND && left == 0) == %s\n", (list->op == AST_LIST_AND && left == 0) ? "true" : "false");
+	printf("(list->op == AST_LIST_OR && left != 0) == %s\n", (list->op == AST_LIST_OR && left != 0) ? "true" : "false");
+	if ((list->op == AST_LIST_OR && left != 0) || (list->op == AST_LIST_AND && left == 0))
+	{
+		if (_run_get_exit_code(list->right, state, &right))
+			return (ERROR);
+		out->exit = right;
+	}
+	else
+		out->exit = left;
+	return (NO_ERROR);
+};
 
 t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out)
 {
@@ -614,46 +695,20 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 
 t_error run_program(t_ast_program *self, t_state *state, t_program_result *out)
 {
-	t_usize	   i;
-	t_ast_node child;
-
-	t_command_result  cmd_result;
-	t_pipeline_result pipeline_result;
+	t_usize i;
 
 	if (self == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	i = 0;
 	while (i < self->body.len)
 	{
-		child = self->body.buffer[i];
-		if (child->kind == AST_COMMAND)
-		{
-			if (run_command(&child->data.command, state, (t_cmd_pipe){NULL, false}, &cmd_result))
-				return (out->exit = 127, ERROR);
-			out->exit = cmd_result.exit;
-			if (cmd_result.process.stdin != NULL)
-				close_fd(cmd_result.process.stdin);
-			if (cmd_result.process.stdout != NULL)
-				close_fd(cmd_result.process.stdout);
-			if (cmd_result.process.stderr != NULL)
-				close_fd(cmd_result.process.stderr);
-		}
-		else if (child->kind == AST_PIPELINE)
-		{
-			if (run_pipeline(&child->data.pipeline, state, &pipeline_result))
-				return (out->exit = 127, ERROR);
-		}
-		else
-			;
+		if (_run_get_exit_code(self->body.buffer[i], state, &out->exit))
+			return (ERROR);
 		i++;
 	}
 
 	return (NO_ERROR);
 }
-
-// FUNCTIONS
-
-// t_error run_command(t_ast_command *command, t_state *state, void *out) {}
 
 /// this functons returns different things depending on the operator and/or the state of the shell
 /// NULL != empty string for example
