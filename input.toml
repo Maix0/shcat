@@ -72,3 +72,11 @@ replace.C__TYPENAME__ = "t_expandable_str"
 replace.C__TYPEHEADER__ = '#include "exec/_tuple_expanded_str.h"'
 replace.C__PREFIX__ = "estr"
 replace.C__PREFIXUP__ = "ESTR"
+
+[[create.vec]]
+sources_output = "src/vec/C__PREFIX__/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_pid"
+replace.C__TYPEHEADER__ = '#include "me/os/os.h"'
+replace.C__PREFIX__ = "pid"
+replace.C__PREFIXUP__ = "PID"

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_str.c                                  :+:      :+:    :+:   */
+/*   vec_pid.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,11 +14,11 @@
 #include "me/mem/mem.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
-#include "me/vec/vec_str.h"
+#include "me/vec/vec_pid.h"
 #include <stdlib.h>
 
-t_error vec_str_find(t_vec_str *vec,
-							 bool (*fn)(const t_str *), t_usize *index)
+t_error vec_pid_find(t_vec_pid *vec,
+							 bool (*fn)(const t_pid *), t_usize *index)
 {
 	t_usize idx;
 
@@ -27,7 +27,7 @@ t_error vec_str_find(t_vec_str *vec,
 	idx = 0;
 	while (idx < vec->len)
 	{
-		if (fn((const t_str *)&vec->buffer[idx]))
+		if (fn((const t_pid *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -37,8 +37,8 @@ t_error vec_str_find(t_vec_str *vec,
 	return (ERROR);
 }
 
-t_error vec_str_find_starting(t_vec_str *vec,
-									  bool (*fn)(const t_str *),
+t_error vec_pid_find_starting(t_vec_pid *vec,
+									  bool (*fn)(const t_pid *),
 									  t_usize starting_index, t_usize *index)
 {
 	t_usize idx;
@@ -48,7 +48,7 @@ t_error vec_str_find_starting(t_vec_str *vec,
 	idx = starting_index;
 	while (idx < vec->len)
 	{
-		if (fn((const t_str *)&vec->buffer[idx]))
+		if (fn((const t_pid *)&vec->buffer[idx]))
 		{
 			*index = idx;
 			return (NO_ERROR);
@@ -58,8 +58,8 @@ t_error vec_str_find_starting(t_vec_str *vec,
 	return (ERROR);
 }
 
-t_error vec_str_all(t_vec_str *vec,
-							bool (*fn)(const t_str *), bool *result)
+t_error vec_pid_all(t_vec_pid *vec,
+							bool (*fn)(const t_pid *), bool *result)
 {
 	t_usize idx;
 
@@ -69,15 +69,15 @@ t_error vec_str_all(t_vec_str *vec,
 	*result = true;
 	while (*result && idx < vec->len)
 	{
-		if (!fn((const t_str *)&vec->buffer[idx]))
+		if (!fn((const t_pid *)&vec->buffer[idx]))
 			*result = false;
 		idx++;
 	}
 	return (ERROR);
 }
 
-t_error vec_str_any(t_vec_str *vec,
-							bool (*fn)(const t_str *), bool *result)
+t_error vec_pid_any(t_vec_pid *vec,
+							bool (*fn)(const t_pid *), bool *result)
 {
 	t_usize idx;
 
@@ -87,15 +87,15 @@ t_error vec_str_any(t_vec_str *vec,
 	*result = false;
 	while (*result && idx < vec->len)
 	{
-		if (fn((const t_str *)&vec->buffer[idx]))
+		if (fn((const t_pid *)&vec->buffer[idx]))
 			*result = true;
 		idx++;
 	}
 	return (ERROR);
 }
 
-void vec_str_iter(t_vec_str *vec,
-						  void (*fn)(t_usize index, t_str *value,
+void vec_pid_iter(t_vec_pid *vec,
+						  void (*fn)(t_usize index, t_pid *value,
 									 void *state),
 						  void *state)
 {

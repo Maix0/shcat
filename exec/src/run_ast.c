@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/12 16:57:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/13 15:59:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
 #include "me/vec/vec_estr.h"
+#include "me/vec/vec_pid.h"
 #include "me/vec/vec_str.h"
 #include <signal.h>
 #include <sys/wait.h>
@@ -87,10 +88,7 @@ t_error _get_expansion_value(t_ast_expansion *self, t_state *state, t_expansion_
 		hmap_ret = hmap_env_get(state->env, &self->var_name);
 	ret = (t_expansion_result){.exists = (hmap_ret != NULL), .value = NULL};
 	if (ret.exists)
-	{
 		ret.value = *hmap_ret;
-		printf("source = %p; ret = %p\n", *hmap_ret, ret.value);
-	}
 	return (*out = ret, NO_ERROR);
 }
 
@@ -269,7 +267,9 @@ t_str _get_ifs_value(t_state *state)
 
 	ifs_key = "IFS";
 	ifs = NULL;
-	ifs_entry = hmap_env_get(state->env, (t_str *)&ifs_key);
+	ifs_entry = hmap_env_get(state->tmp_var, (t_str *)&ifs_key);
+	if (ifs_entry != NULL)
+		ifs_entry = hmap_env_get(state->env, (t_str *)&ifs_key);
 	if (ifs_entry != NULL)
 		ifs = *ifs_entry;
 	if (ifs == NULL)
@@ -536,6 +536,8 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 	t_error			 ret;
 	t_command_result cmd_result;
 	t_ast_node		 tmp_ast;
+	t_vec_pid		 pids;
+	int				 waitpid_status;
 
 	if (pipeline == NULL || state == NULL || out == NULL)
 		return (ERROR);
@@ -543,6 +545,8 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 	ret = NO_ERROR;
 	cmd_pipe.input = NULL;
 	cmd_pipe.create_output = true;
+	out->exit = 127;
+	pids = vec_pid_new(32, NULL);
 	while (i < pipeline->statements.len - 1)
 	{
 		child = pipeline->statements.buffer[i];
@@ -555,7 +559,7 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			}
 			else
 			{
-				out->exit = cmd_result.exit;
+				vec_pid_push(&pids, cmd_result.process.pid);
 				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					cmd_pipe.input = cmd_result.process.stdout;
@@ -580,7 +584,7 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			}
 			else
 			{
-				out->exit = cmd_result.exit;
+				vec_pid_push(&pids, cmd_result.process.pid);
 				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					close_fd(cmd_result.process.stdout);
@@ -591,7 +595,20 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 			}
 		}
 	}
-
+	if (pids.len != 0)
+	{
+		while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0)
+			;
+		while (waitpid(-1, NULL, 0) != -1)
+			;
+		if (WIFEXITED(waitpid_status))
+			out->exit = WEXITSTATUS(waitpid_status);
+		if (WIFSIGNALED(waitpid_status))
+			out->exit = WTERMSIG(waitpid_status);
+	}
+	else
+		out->exit = 127;
+	vec_pid_free(pids);
 	return (ret);
 }
 
@@ -748,15 +765,7 @@ t_error _handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, 
 		if (out->process.pid == -1)
 			out->exit = 126;
 		else
-		{
-			int status;
-			if (waitpid(out->process.pid, &status, 0) == -1)
-				return (ERROR);
-			if (WIFEXITED(status))
-				out->exit = WEXITSTATUS(status);
-			if (WIFSIGNALED(status))
-				out->exit = WTERMSIG(status);
-		}
+			out->exit = -1;
 	}
 	else
 	{
@@ -889,6 +898,8 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	signal(SIGQUIT, SIG_IGN);
 	if (spawn_process(info, &out->process))
 		return (close_fd(cmd_pipe.input), out->exit = 127, ERROR);
+	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
+		return (out->exit = -1, NO_ERROR);
 	int status;
 	if (waitpid(out->process.pid, &status, 0) == -1)
 		return (ERROR);
