@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arith.h                                            :+:      :+:    :+:   */
+/*   _run_arith.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/01 06:21:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:38:32 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ARITH_H
-# define ARITH_H
+#ifndef _RUN_ARITH_H
+# define _RUN_ARITH_H
 
 # include "app/state.h"
 # include "ast/ast.h"

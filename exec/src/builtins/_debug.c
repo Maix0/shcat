@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 12:11:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:14:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static t_error _debug_fd(t_state *state, t_builtin_spawn_info info, t_i32 *exit_
 	const t_fd_array *fds = get_fd_arrays();
 	t_usize			  i;
 
+	(void)(state);
 	i = 0;
 	while (i < FILE_SLOT_LEN)
 	{

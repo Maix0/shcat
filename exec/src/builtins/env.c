@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:22:50 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/12 14:16:45 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/14 18:14:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static t_error _print_env(t_usize _idx, const t_str *key, t_str *value, void *vc
 	const struct s_print_env_state *ctx = vctx;
 	t_str						   *val;
 
+	(void)(_idx);
 	val = hmap_env_get(ctx->state->tmp_var, (t_str *)key);
 	if (val == NULL)
 		val = value;

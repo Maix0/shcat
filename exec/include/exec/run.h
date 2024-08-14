@@ -6,15 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:23:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 17:38:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:36:15 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RUN_H
-#define RUN_H
+# define RUN_H
 
-#include "me/types.h"
-
-
+# include "me/types.h"
 
 #endif /* RUN_H */

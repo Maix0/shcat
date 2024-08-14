@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 13:58:37 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/13 15:14:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:15:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_error builtin_pwd___(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 {
 	t_string s;
 
+	(void)(state);
 	s = string_new(1024);
 	while (getcwd(s.buf, s.capacity - 1) == NULL)
 	{

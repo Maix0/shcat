@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:07:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:13:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,20 @@
 #include <sys/wait.h>
 
 #include <stdio.h>
+
+#define NOT_DONE                                                                                                                           \
+	{                                                                                                                                      \
+		printf("function `%s` isn't done !\n", __func__);                                                                                  \
+		return (ERROR);                                                                                                                    \
+	}
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic ignored "-Wempty-body"
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wunused-variable"
 
 bool _is_special_var(t_ast_expansion *self)
 {
@@ -508,6 +522,7 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 // t_error run_file_redirection(t_ast_file_redirection *file_redirection, t_state *state, void *out) NOT_DONE;
 // t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out) NOT_DONE;
 // t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) NOT_DONE;
+
 
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
