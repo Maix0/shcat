@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:41:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/13 16:52:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:41:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@
 		return (ERROR);                                                                                                                    \
 	}
 
-#pragma GCC diagnostic	 ignored "-Wunused-parameter"
-#pragma GCC diagnostic	 ignored "-Wunused-variable"
-#pragma GCC diagnostic	 ignored "-Wunknown-pragmas"
-#pragma GCC diagnostic	 ignored "-Wempty-body"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+#pragma GCC diagnostic ignored "-Wempty-body"
 #pragma clang diagnostic ignored "-Wunknown-pragmas"
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wunused-variable"
@@ -93,7 +93,11 @@ struct s_list_result
 typedef struct s_subshell_result t_subshell_result;
 struct s_subshell_result
 {
-	int exit;
+	t_pid pid;
+	int	  exit;
+	t_fd *stdin;
+	t_fd *stdout;
+	t_fd *stderr;
 };
 
 t_error run_arithmetic_expansion(t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
@@ -103,7 +107,7 @@ t_error run_word(t_ast_word *word, t_state *state, t_word_result *out);
 t_error run_program(t_ast_program *program, t_state *state, t_program_result *out);
 t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out);
 t_error run_list(t_ast_list *list, t_state *state, t_list_result *out);
-t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_subshell_result *out);
+t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pipe, t_subshell_result *out);
 
 t_error run_case_(t_ast_case *case_, t_state *state, void *out);
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out);
