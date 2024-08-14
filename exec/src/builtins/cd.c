@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/13 15:13:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:15:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_error builtin_cd____(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 	t_str	   *home;
 	t_str		path;
 
+	(void)(state);
 	if (info.args.len <= 1)
 	{
 		home = hmap_env_get(state->tmp_var, (t_str *)&key);

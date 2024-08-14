@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/14 18:04:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/14 18:16:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,6 @@
 # include "me/os/os.h"
 # include "me/types.h"
 # include "me/vec/vec_estr.h"
-
-/*# define NOT_DONE                                                 \*/
-/*	{                                                             \*/
-/*		printf("function `%s` isn't done !\n", __func__);         \*/
-/*		return (ERROR);                                           \*/
-/*	}*/
-
-/*# pragma GCC diagnostic ignored "-Wunused-parameter"*/
-/*# pragma GCC diagnostic ignored "-Wunused-variable"*/
-/*# pragma GCC diagnostic ignored "-Wunknown-pragmas"*/
-/*# pragma GCC diagnostic ignored "-Wempty-body"*/
-/*# pragma clang diagnostic ignored "-Wunknown-pragmas"*/
-/*# pragma clang diagnostic ignored "-Wunused-parameter"*/
-/*# pragma clang diagnostic ignored "-Wunused-variable"*/
 
 typedef struct s_expansion_result	t_expansion_result;
 
@@ -93,7 +79,11 @@ struct s_list_result
 typedef struct s_subshell_result	t_subshell_result;
 struct s_subshell_result
 {
-	int	exit;
+	t_pid pid;
+	int	  exit;
+	t_fd *stdin;
+	t_fd *stdout;
+	t_fd *stderr;
 };
 
 t_error	run_arithmetic_expansion(\
@@ -112,8 +102,8 @@ t_error	run_pipeline(\
 t_error	run_list(\
 	t_ast_list *list, t_state *state, t_list_result *out);
 t_error	run_subshell(\
-	t_ast_subshell *subshell, t_state *state, t_subshell_result *out);
-
+	t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pipe,\
+	t_subshell_result *out);
 t_error	run_case_(\
 	t_ast_case *case_, t_state *state, void *out);
 t_error	run_case_item(\

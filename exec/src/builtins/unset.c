@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/12 17:11:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:15:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_error builtin_unset_(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 {
 	t_usize i;
 
+	(void)(state);
 	i = 1;
 	while (i < info.args.len)
 		hmap_env_remove(state->env, &info.args.buffer[i++]);

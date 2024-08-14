@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/12 15:58:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:16:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static t_error _print_export(t_usize _idx, const t_str *key, t_str *value, void 
 	t_str							  *val;
 	t_str							   true_val;
 
+	(void)(_idx);
 	val = hmap_env_get(ctx->state->tmp_var, (t_str *)key);
 	if (val == NULL)
 		val = value;
@@ -69,6 +70,8 @@ t_error builtin_export(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 {
 	struct s_print_export_state	 print_ctx;
 	struct s_assign_export_state assign_ctx;
+	
+	(void)(state);
 	print_ctx.info = &info;
 	print_ctx.state = state;
 	assign_ctx.info = &info;

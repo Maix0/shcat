@@ -84,6 +84,8 @@ static inline bool ts_node_child_iterator_next(NodeChildIterator *self, TSNode *
 		return false;
 	const Subtree *child = &ts_subtree_children(self->parent)[self->child_index];
 	TSSymbol	   alias_symbol = 0;
+	if (child == NULL)
+		return (false);
 	if (!ts_subtree_extra(*child))
 	{
 		if (self->alias_sequence)
@@ -509,12 +511,14 @@ t_const_str ts_node_grammar_type(TSNode self)
 	return ts_language_symbol_name(self.tree->language, symbol);
 }
 
+/*
 char *ts_node_string(TSNode self)
 {
 	TSSymbol alias_symbol = ts_node__alias(&self);
 	return ts_subtree_string(ts_node__subtree(self), alias_symbol, ts_language_symbol_metadata(self.tree->language, alias_symbol).visible,
 							 self.tree->language, false);
 }
+*/
 
 bool ts_node_eq(TSNode self, TSNode other)
 {

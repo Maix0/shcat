@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 12:41:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:15:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_error builtin_exit__(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 {
 	t_i32 actual_exit_code;
 
+	(void)(state);
 	if (info.args.len < 2)
 		actual_exit_code = 0;
 	else if (str_to_i32(info.args.buffer[1], 10, &actual_exit_code))
