@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:13:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:30:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,7 +523,6 @@ t_error _ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 // t_error run_heredoc_redirection(t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out) NOT_DONE;
 // t_error run_raw_string(t_ast_raw_string *raw_string, t_state *state, void *out) NOT_DONE;
 
-
 t_error run_case_(t_ast_case *case_, t_state *state, void *out) NOT_DONE;
 t_error run_case_item(t_ast_case_item *case_item, t_state *state, void *out) NOT_DONE;
 t_error run_command_substitution(t_ast_command_substitution *command_substitution, t_state *state, void *out) NOT_DONE;
@@ -709,6 +708,7 @@ t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pi
 		if (info.stderr != NULL)
 			(dup2(info.stderr->fd, 2), close_fd(info.stderr));
 		i = 0;
+		code = 0;
 		while (i < subshell->body.len)
 		{
 			if (_run_get_exit_code(subshell->body.buffer[i], state, &code))
@@ -719,6 +719,8 @@ t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pi
 	}
 	if (forked == -1)
 		return (ERROR);
+	out->exit = -1;
+	out->pid = forked;
 	if (info.stdin != NULL)
 		(dup2(info.stdin->fd, 0), close_fd(info.stdin));
 	if (info.stdout != NULL)
@@ -726,7 +728,7 @@ t_error run_subshell(t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pi
 	if (info.stderr != NULL)
 		(dup2(info.stderr->fd, 2), close_fd(info.stderr));
 	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
-		return (out->pid = forked, out->stdout = info.ret_stdout, NO_ERROR);
+		return (out->stdout = info.ret_stdout, NO_ERROR);
 	int status;
 	if (waitpid(forked, &status, 0) == -1)
 		return (ERROR);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_utils.c                                        :+:      :+:    :+:   */
+/*   node_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:55:45 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 11:06:14 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/14 18:29:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_ast_expansion_operator	_extract_exp_op(t_parse_node self)
 	t_ast_expansion_operator	kind;
 	t_symbol					symbol;
 
-	kind = E_OP_NONE;
 	symbol = ts_node_grammar_symbol(self);
 	if (symbol == anon_sym_DASH)
 		kind = E_OP_DEFAULT;

@@ -1,14 +1,14 @@
 #ifndef PARSE_STACK_H
 #define PARSE_STACK_H
 
+#include "me/types.h"
 #include "parser/array.h"
 #include "parser/subtree.h"
-#include "me/types.h"
 
 typedef struct Stack Stack;
 typedef t_u32		 StackVersion;
 
-#define STACK_VERSION_NONE ((StackVersion)-1)
+#define STACK_VERSION_NONE ((StackVersion) - 1)
 
 typedef struct StackSlice
 {
@@ -29,7 +29,7 @@ typedef Array(StackSummaryEntry) StackSummary;
 typedef void (*StackIterateCallback)(void *, TSStateId, t_u32);
 
 // Create a stack.
-Stack *ts_stack_new(SubtreePool *);
+Stack *ts_stack_new(void);
 
 // Release the memory reserved for a given stack.
 void ts_stack_delete(Stack *);
