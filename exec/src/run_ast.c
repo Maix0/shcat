@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/13 17:08:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:39:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -577,7 +577,6 @@ t_error run_list(t_ast_list *list, t_state *state, t_list_result *out)
 	if (list == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	append = NULL;
-	printf("LIST\n");
 	if (list->right->kind == AST_COMMAND)
 		append = &list->right->data.command.suffixes_redirections;
 	if (list->right->kind == AST_PIPELINE)
@@ -595,9 +594,6 @@ t_error run_list(t_ast_list *list, t_state *state, t_list_result *out)
 	right = -1;
 	if (_run_get_exit_code(list->left, state, &left))
 		return (ERROR);
-	printf("left == %i\n", left);
-	printf("(list->op == AST_LIST_AND && left == 0) == %s\n", (list->op == AST_LIST_AND && left == 0) ? "true" : "false");
-	printf("(list->op == AST_LIST_OR && left != 0) == %s\n", (list->op == AST_LIST_OR && left != 0) ? "true" : "false");
 	if ((list->op == AST_LIST_OR && left != 0) || (list->op == AST_LIST_AND && left == 0))
 	{
 		if (_run_get_exit_code(list->right, state, &right))
@@ -852,8 +848,6 @@ t_error _spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection, t_state *state
 	info = (t_spawn_info){};
 	if (cmd_pipe.input != NULL)
 		info.stdin = fd(cmd_pipe.input);
-	if (cmd_pipe.input != NULL && !(cmd_pipe.input->perms & FD_READ))
-		printf("PERMISSION ERROR for %s !\n", cmd_pipe.input->name);
 	if (cmd_pipe.create_output)
 		info.stdout = piped();
 	i = 0;
