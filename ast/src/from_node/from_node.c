@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/12 16:35:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 17:37:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,7 +469,7 @@ t_error build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 		}
 		else if (ts_node_field_id_for_child(self, i) == field_op)
 		{
-			temp = ts_node_symbol(ts_node_child(self, i));
+			temp = ts_node_grammar_symbol(ts_node_child(self, i));
 			if (temp == anon_sym_PIPE_PIPE)
 				ret->data.list.op = AST_LIST_OR;
 			if (temp == anon_sym_AMP_AMP)
