@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:41:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 22:11:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:17:08 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "me/string/string.h"
 # include "me/types.h"
 # include "me/vec/vec_str.h"
-
 
 t_hashmap_env	*create_env_map(void);
 
