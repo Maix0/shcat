@@ -2,6 +2,7 @@
 headers = ["generic_sources/header/vec_C__PREFIX__.h__TEMPLATE__"]
 sources = [
 	"generic_sources/src/vec/C__PREFIX__.c__TEMPLATE__",
+	"generic_sources/src/vec/C__PREFIX___sort.c__TEMPLATE__",
 	"generic_sources/src/vec/C__PREFIX___functions2.c__TEMPLATE__",
 	"generic_sources/src/vec/C__PREFIX___functions3.c__TEMPLATE__",
 ]

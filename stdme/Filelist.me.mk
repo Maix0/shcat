@@ -138,6 +138,7 @@ vec/buf_str/buf_str_functions3                                                \
 vec/str/str                                                                   \
 vec/str/str_functions2                                                        \
 vec/str/str_functions3                                                        \
+vec/str/str_sort                                                              \
 vec/u8/u8                                                                     \
 vec/u8/u8_functions2                                                          \
 vec/u8/u8_functions3                                                          \
