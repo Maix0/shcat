@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/08/12 17:05:33 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/17 23:30:58 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,7 @@ END = \033[0m
 
 .PHONY: all bonus build_filelist re clean fclean
 
-LIBS_NAMES = me gmr aq ast parser line exec
+LIBS_NAMES = me gmr aq ast parser line exec sh
 LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
@@ -65,6 +65,7 @@ all:
 	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		libline.a
 	@$(MAKE) -C ./parser/ -f ./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		libgmr.a
 	@$(MAKE) -C ./parser/ -f ./Parser.mk	"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
+	@$(MAKE) -f./Minishell.mk 															lib$(ANAME).a
 	@$(MAKE) -f./Minishell.mk 															$(NAME)
 
 
@@ -77,9 +78,13 @@ bonus: $(OBJ) $(LIBS_FILES)
 	@$(CC) $(CFLAGS) -DDEBUG=1 -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
 # Dependences for all
-$(NAME): $(OBJ) $(LIBS_FILES)
+$(NAME): $(LIBS_FILES)
 	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
+	@$(CC) $(CFLAGS) -o $(NAME) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
+
+lib$(ANAME).a: $(OBJ)
+	@ar rcs $(BUILD_DIR)/lib$(ANAME).a $(OBJ)
+
 
 # Creating the objects
 $(BUILD_DIR)/$(ANAME)/%.o: $(SRC_DIR)/%.c

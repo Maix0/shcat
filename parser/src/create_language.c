@@ -54,7 +54,7 @@ static struct ExternalScannerDefinition init_scanner(void)
 	});
 }
 
-static void init_language(TSLanguage *language)
+/*R static R*/ void init_language(TSLanguage *language)
 {
 	static uint32_t	empty_map[] = {0, 0 ,0};
 
@@ -80,7 +80,7 @@ static void init_language(TSLanguage *language)
 
 const TSLanguage *tree_sitter_sh(void)
 {
-	static bool		  init = false;
+	/*R static R*/ bool		  init = false;
 	static TSLanguage language = {
 		.version = LANGUAGE_VERSION,
 		.symbol_count = SYMBOL_COUNT,

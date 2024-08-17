@@ -15,49 +15,37 @@
 #pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #pragma clang diagnostic ignored "-Wunused-parameter"
 
-typedef struct
+typedef struct s_edit Edit;
+struct s_edit
 {
 	Length start;
 	Length old_end;
 	Length new_end;
-} Edit;
+};
 
 #define TS_MAX_INLINE_TREE_LENGTH UINT8_MAX
-#define TS_MAX_TREE_POOL_SIZE 32
+#define TS_MAX_TREE_POOL_SIZE 0
 
 // ExternalScannerState
 
 void ts_external_scanner_state_init(ExternalScannerState *self, const t_u8 *data, t_u32 length)
 {
 	self->length = length;
-	if (length > sizeof(self->short_data))
-	{
-		self->long_data = mem_alloc(length);
-		memcpy(self->long_data, data, length);
-	}
-	else
-	{
-		memcpy(self->short_data, data, length);
-	}
+	self->long_data = mem_alloc(length);
+	memcpy(self->long_data, data, length);
 }
 
 ExternalScannerState ts_external_scanner_state_copy(const ExternalScannerState *self)
 {
 	ExternalScannerState result = *self;
-	if (self->length > sizeof(self->short_data))
-	{
-		result.long_data = mem_alloc(self->length);
-		memcpy(result.long_data, self->long_data, self->length);
-	}
+	result.long_data = mem_alloc(self->length);
+	memcpy(result.long_data, self->long_data, self->length);
 	return result;
 }
 
 void ts_external_scanner_state_delete(ExternalScannerState *self)
 {
-	if (self->length > sizeof(self->short_data))
-	{
-		mem_free(self->long_data);
-	}
+	mem_free(self->long_data);
 }
 
 const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *self)
@@ -140,12 +128,12 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 	}
 }
 
-static SubtreeHeapData *ts_subtree_pool_allocate()
+/*R static R*/ SubtreeHeapData *ts_subtree_pool_allocate()
 {
 	return mem_alloc(sizeof(SubtreeHeapData));
 }
 
-// static void ts_subtree_pool_free(SubtreeHeapData *tree)
+// /*R static R*/ void ts_subtree_pool_free(SubtreeHeapData *tree)
 //{
 //	mem_free(tree);
 // }
@@ -239,7 +227,7 @@ MutableSubtree ts_subtree_make_mut(Subtree self)
 }
 
 /*
-static void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLanguage *language, MutableSubtreeArray *stack)
+static  void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLanguage *language, MutableSubtreeArray *stack)
 {
 	t_u32 initial_stack_size = stack->size;
 
@@ -530,7 +518,7 @@ void ts_subtree_release(Subtree self)
 {
 	t_usize	 i;
 	Subtree *children;
-	if (self.ptr->ref_count != 0 && --(*(t_u32 *)(&self.ptr->ref_count)) == 0)
+	if (self.ptr->ref_count > 0 && --(*(t_u32 *)(&self.ptr->ref_count)) == 0)
 	{
 
 		if (self.ptr->child_count > 0)
@@ -545,9 +533,7 @@ void ts_subtree_release(Subtree self)
 		{
 
 			if (self.ptr->has_external_tokens)
-			{
 				ts_external_scanner_state_delete((void *)&self.ptr->external_scanner_state);
-			}
 			mem_free((void *)self.ptr);
 		}
 	}
@@ -629,135 +615,9 @@ int ts_subtree_compare(Subtree left, Subtree right)
 	return 0;
 }
 
-static inline void ts_subtree_set_has_changes(MutableSubtree *self)
+/*R static inline R*/ void ts_subtree_set_has_changes(MutableSubtree *self)
 {
 	self->ptr->has_changes = true;
-}
-
-Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit)
-{
-	typedef struct
-	{
-		Subtree *tree;
-		Edit	 edit;
-	} EditEntry;
-
-	Array(EditEntry) stack = array_new();
-	array_push(&stack, ((EditEntry){
-						   .tree = &self,
-						   .edit =
-							   (Edit){
-								   .start = {input_edit->start_byte, input_edit->start_point},
-								   .old_end = {input_edit->old_end_byte, input_edit->old_end_point},
-								   .new_end = {input_edit->new_end_byte, input_edit->new_end_point},
-							   },
-					   }));
-
-	while (stack.size)
-	{
-		EditEntry entry = array_pop(&stack);
-		Edit	  edit = entry.edit;
-		bool	  is_noop = edit.old_end.bytes == edit.start.bytes && edit.new_end.bytes == edit.start.bytes;
-		bool	  is_pure_insertion = edit.old_end.bytes == edit.start.bytes;
-		bool	  invalidate_first_row = ts_subtree_depends_on_column(*entry.tree);
-
-		Length size = ts_subtree_size(*entry.tree);
-		Length padding = ts_subtree_padding(*entry.tree);
-		Length total_size = length_add(padding, size);
-		t_u32  lookahead_bytes = ts_subtree_lookahead_bytes(*entry.tree);
-		t_u32  end_byte = total_size.bytes + lookahead_bytes;
-		if (edit.start.bytes > end_byte || (is_noop && edit.start.bytes == end_byte))
-			continue;
-
-		// If the edit is entirely within the space before this subtree, then shift this
-		// subtree over according to the edit without changing its size.
-		if (edit.old_end.bytes <= padding.bytes)
-		{
-			padding = length_add(edit.new_end, length_sub(padding, edit.old_end));
-		}
-
-		// If the edit starts in the space before this subtree and extends into this subtree,
-		// shrink the subtree's content to compensate for the change in the space before it.
-		else if (edit.start.bytes < padding.bytes)
-		{
-			size = length_saturating_sub(size, length_sub(edit.old_end, padding));
-			padding = edit.new_end;
-		}
-
-		// If the edit is a pure insertion right at the start of the subtree,
-		// shift the subtree over according to the insertion.
-		else if (edit.start.bytes == padding.bytes && is_pure_insertion)
-		{
-			padding = edit.new_end;
-		}
-
-		// If the edit is within this subtree, resize the subtree to reflect the edit.
-		else if (edit.start.bytes < total_size.bytes || (edit.start.bytes == total_size.bytes && is_pure_insertion))
-		{
-			size = length_add(length_sub(edit.new_end, padding), length_saturating_sub(total_size, edit.old_end));
-		}
-
-		MutableSubtree result = ts_subtree_make_mut(*entry.tree);
-
-		result.ptr->padding = padding;
-		result.ptr->size = size;
-
-		ts_subtree_set_has_changes(&result);
-		*entry.tree = ts_subtree_from_mut(result);
-
-		Length child_left, child_right = length_zero();
-		for (t_u32 i = 0, n = ts_subtree_child_count(*entry.tree); i < n; i++)
-		{
-			Subtree *child = &ts_subtree_children(*entry.tree)[i];
-			Length	 child_size = ts_subtree_total_size(*child);
-			child_left = child_right;
-			child_right = length_add(child_left, child_size);
-
-			// If this child ends before the edit, it is not affected.
-			if (child_right.bytes + ts_subtree_lookahead_bytes(*child) < edit.start.bytes)
-				continue;
-
-			// Keep editing child nodes until a node is reached that starts after the edit.
-			// Also, if this node's validity depends on its column position, then continue
-			// invaliditing child nodes until reaching a line break.
-			if (((child_left.bytes > edit.old_end.bytes) || (child_left.bytes == edit.old_end.bytes && child_size.bytes > 0 && i > 0)) &&
-				(!invalidate_first_row || child_left.extent.row > entry.tree->ptr->padding.extent.row))
-			{
-				break;
-			}
-
-			// Transform edit into the child's coordinate space.
-			Edit child_edit = {
-				.start = length_saturating_sub(edit.start, child_left),
-				.old_end = length_saturating_sub(edit.old_end, child_left),
-				.new_end = length_saturating_sub(edit.new_end, child_left),
-			};
-
-			// Interpret all inserted text as applying to the *first* child that touches the edit.
-			// Subsequent children are only never have any text inserted into them; they are only
-			// shrunk to compensate for the edit.
-			if (child_right.bytes > edit.start.bytes || (child_right.bytes == edit.start.bytes && is_pure_insertion))
-			{
-				edit.new_end = edit.start;
-			}
-
-			// Children that occur before the edit are not reshaped by the edit.
-			else
-			{
-				child_edit.old_end = child_edit.start;
-				child_edit.new_end = child_edit.start;
-			}
-
-			// Queue processing of this child's subtree.
-			array_push(&stack, ((EditEntry){
-								   .tree = child,
-								   .edit = child_edit,
-							   }));
-		}
-	}
-
-	array_delete(&stack);
-	return self;
 }
 
 Subtree ts_subtree_last_external_token(Subtree tree)
@@ -783,13 +643,9 @@ const ExternalScannerState *ts_subtree_external_scanner_state(Subtree self)
 {
 	static const ExternalScannerState empty_state = {{.short_data = {0}}, .length = 0};
 	if (self.ptr && self.ptr->has_external_tokens && self.ptr->child_count == 0)
-	{
 		return &self.ptr->external_scanner_state;
-	}
 	else
-	{
 		return &empty_state;
-	}
 }
 
 bool ts_subtree_external_scanner_state_eq(Subtree self, Subtree other)

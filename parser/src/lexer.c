@@ -1,11 +1,9 @@
 #include "parser/lexer.h"
-#include "parser/length.h"
-#include "parser/input.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
+#include "parser/input.h"
+#include "parser/length.h"
 #include <string.h>
-
-#define LOG(...)
 
 static const t_i32 BYTE_ORDER_MARK = 0xFEFF;
 
@@ -25,7 +23,7 @@ static const TSRange DEFAULT_RANGE = {.start_point =
 // Check if the lexer has reached EOF. This state is stored
 // by setting the lexer's `current_included_range_index` such that
 // it has consumed all of its available ranges.
-static bool ts_lexer__eof(const TSLexer *_self)
+/*R static R*/ bool ts_lexer__eof(const TSLexer *_self)
 {
 	Lexer *self = (Lexer *)_self;
 	return self->current_included_range_index == self->included_range_count;
@@ -33,7 +31,7 @@ static bool ts_lexer__eof(const TSLexer *_self)
 
 // Clear the currently stored chunk of source code, because the lexer's
 // position has changed.
-static void ts_lexer__clear_chunk(Lexer *self)
+/*R static R*/ void ts_lexer__clear_chunk(Lexer *self)
 {
 	self->chunk = NULL;
 	self->chunk_size = 0;
@@ -42,7 +40,7 @@ static void ts_lexer__clear_chunk(Lexer *self)
 
 // Call the lexer's input callback to obtain a new chunk of source code
 // for the current position.
-static void ts_lexer__get_chunk(Lexer *self)
+/*R static R*/ void ts_lexer__get_chunk(Lexer *self)
 {
 	self->chunk_start = self->current_position.bytes;
 	self->chunk = self->input.read(self->input.payload, self->current_position.bytes, self->current_position.extent, &self->chunk_size);
@@ -56,7 +54,7 @@ static void ts_lexer__get_chunk(Lexer *self)
 // Decode the next unicode character in the current chunk of source code.
 // This assumes that the lexer has already retrieved a chunk of source
 // code that spans the current position.
-static void ts_lexer__get_lookahead(Lexer *self)
+/*R static R*/ void ts_lexer__get_lookahead(Lexer *self)
 {
 	t_u32 position_in_chunk = self->current_position.bytes - self->chunk_start;
 	t_u32 size = self->chunk_size - position_in_chunk;
@@ -89,7 +87,7 @@ static void ts_lexer__get_lookahead(Lexer *self)
 	}
 }
 
-static void ts_lexer_goto(Lexer *self, Length position)
+/*R static R*/ void ts_lexer_goto(Lexer *self, Length position)
 {
 	self->current_position = position;
 
@@ -145,7 +143,7 @@ static void ts_lexer_goto(Lexer *self, Length position)
 }
 
 // Intended to be called only from functions that control logging.
-static void ts_lexer__do_advance(Lexer *self, bool skip)
+/*R static R*/ void ts_lexer__do_advance(Lexer *self, bool skip)
 {
 	if (self->lookahead_size)
 	{
@@ -204,27 +202,17 @@ static void ts_lexer__do_advance(Lexer *self, bool skip)
 
 // Advance to the next character in the source code, retrieving a new
 // chunk of source code if needed.
-static void ts_lexer__advance(TSLexer *_self, bool skip)
+/*R static R*/ void ts_lexer__advance(TSLexer *_self, bool skip)
 {
 	Lexer *self = (Lexer *)_self;
 	if (!self->chunk)
 		return;
-
-	if (skip)
-	{
-		LOG("skip", self->data.lookahead)
-	}
-	else
-	{
-		LOG("consume", self->data.lookahead)
-	}
-
 	ts_lexer__do_advance(self, skip);
 }
 
 // Mark that a token match has completed. This can be called multiple
 // times if a longer match is found later.
-static void ts_lexer__mark_end(TSLexer *_self)
+/*R static R*/ void ts_lexer__mark_end(TSLexer *_self)
 {
 	Lexer *self = (Lexer *)_self;
 	if (!ts_lexer__eof(&self->data))
@@ -246,7 +234,7 @@ static void ts_lexer__mark_end(TSLexer *_self)
 	self->token_end_position = self->current_position;
 }
 
-static t_u32 ts_lexer__get_column(TSLexer *_self)
+/*R static R*/ t_u32 ts_lexer__get_column(TSLexer *_self)
 {
 	Lexer *self = (Lexer *)_self;
 
@@ -280,7 +268,7 @@ static t_u32 ts_lexer__get_column(TSLexer *_self)
 // Is the lexer at a boundary between two disjoint included ranges of
 // source code? This is exposed as an API because some languages' external
 // scanners need to perform custom actions at these boundaries.
-static bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
+/*R static R*/ bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
 {
 	const Lexer *self = (const Lexer *)_self;
 	if (self->current_included_range_index < self->included_range_count)
@@ -438,5 +426,3 @@ TSRange *ts_lexer_included_ranges(const Lexer *self, t_u32 *count)
 	*count = self->included_range_count;
 	return self->included_ranges;
 }
-
-#undef LOG

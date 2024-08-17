@@ -57,22 +57,22 @@ typedef struct Scanner
 	Array(Heredoc) heredocs;
 } Scanner;
 
-static inline void advance(TSLexer *lexer)
+/*R static inline R*/ void advance(TSLexer *lexer)
 {
 	lexer->advance(lexer, false);
 }
 
-static inline void skip(TSLexer *lexer)
+/*R static inline R*/ void skip(TSLexer *lexer)
 {
 	lexer->advance(lexer, true);
 }
 
-static inline bool in_error_recovery(const bool *valid_symbols)
+/*R static inline R*/ bool in_error_recovery(const bool *valid_symbols)
 {
 	return valid_symbols[ERROR_RECOVERY];
 }
 
-static inline void reset_string(String *string)
+/*R static inline R*/ void reset_string(String *string)
 {
 	if (string->size > 0)
 	{
@@ -81,7 +81,7 @@ static inline void reset_string(String *string)
 	}
 }
 
-static inline void reset_heredoc(Heredoc *heredoc)
+/*R static inline R*/ void reset_heredoc(Heredoc *heredoc)
 {
 	heredoc->is_raw = false;
 	heredoc->started = false;
@@ -89,7 +89,7 @@ static inline void reset_heredoc(Heredoc *heredoc)
 	reset_string(&heredoc->delimiter);
 }
 
-static inline void reset(Scanner *scanner)
+/*R static inline R*/ void reset(Scanner *scanner)
 {
 	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
 	{
@@ -129,7 +129,7 @@ static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
 	return size;
 }
 
-static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
+/*R static R*/ void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
 {
 	if (length == 0)
 	{
@@ -181,7 +181,7 @@ static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
  * POSIX-mandated substitution, and assumes the default value for
  * IFS.
  */
-static bool advance_word(TSLexer *lexer, String *unquoted_word)
+/*R static R*/ bool advance_word(TSLexer *lexer, String *unquoted_word)
 {
 	bool  empty = true;
 	t_i32 quote = 0;
@@ -213,7 +213,7 @@ static bool advance_word(TSLexer *lexer, String *unquoted_word)
 	return !empty;
 }
 
-static inline bool scan_bare_dollar(TSLexer *lexer)
+/*R static inline R*/ bool scan_bare_dollar(TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
 		skip(lexer);
@@ -229,7 +229,7 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 	return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
+/*R static R*/ bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
 {
 	while (iswspace(lexer->lookahead))
 	{
@@ -248,7 +248,7 @@ static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
 	return found_delimiter;
 }
 
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
+/*R static R*/ bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
 {
 	reset_string(&heredoc->current_leading_word);
 	// Scan the first 'n' characters on this line, to see if they match the
@@ -268,7 +268,7 @@ static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
 	return heredoc->delimiter.size == 0 ? false : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
 }
 
-static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
+/*R static R*/ bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
 {
 	bool	 did_advance = false;
 	Heredoc *heredoc = array_back(&scanner->heredocs);
@@ -394,7 +394,7 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 	}
 }
 
-static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
+/*R static R*/ bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 {
 	if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols))
 	{

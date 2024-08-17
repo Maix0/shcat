@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/08/14 19:09:04 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/17 23:40:03 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,8 @@ CFLAGS_ADDITIONAL	+= -O0 -Wno-cpp
 CFLAGS_ADDITIONAL	+= -gcolumn-info -g3
 CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
 #CFLAGS_ADDITIONAL 	+= -O2
-#CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols.count.log
+# CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols_count.log
+#CFLAGS_ADDITIONAL	+= -fuse-ld=lld -Wl,--verbose -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--print-gc-sections -Wl,-Map=output.map
 
 
 export CFLAGS_ADDITIONAL
