@@ -1,17 +1,17 @@
 
 #include "parser/stack.h"
+#include "me/mem/mem.h"
+#include "me/types.h"
 #include "parser/array.h"
 #include "parser/language.h"
 #include "parser/length.h"
 #include "parser/subtree.h"
-#include "me/mem/mem.h"
-#include "me/types.h"
 #include <assert.h>
 #include <stdio.h>
 
-#define MAX_LINK_COUNT 8
-#define MAX_NODE_POOL_SIZE 50
-#define MAX_ITERATOR_COUNT 64
+#define MAX_LINK_COUNT 1
+#define MAX_NODE_POOL_SIZE 0
+#define MAX_ITERATOR_COUNT 0
 
 typedef struct StackNode StackNode;
 
@@ -24,14 +24,14 @@ typedef struct StackLink
 
 struct StackNode
 {
-	TSStateId		   state;
-	Length			   position;
-	StackLink		   links[MAX_LINK_COUNT];
-	t_u16 link_count;
-	t_u32			   ref_count;
-	t_u32		   error_cost;
-	t_u32		   node_count;
-	int				   dynamic_precedence;
+	TSStateId state;
+	Length	  position;
+	StackLink links[MAX_LINK_COUNT];
+	t_u16	  link_count;
+	t_u32	  ref_count;
+	t_u32	  error_cost;
+	t_u32	  node_count;
+	int		  dynamic_precedence;
 };
 
 typedef struct StackIterator
@@ -55,7 +55,7 @@ typedef struct StackHead
 {
 	StackNode	 *node;
 	StackSummary *summary;
-	t_u32	  node_count_at_last_error;
+	t_u32		  node_count_at_last_error;
 	Subtree		  last_external_token;
 	Subtree		  lookahead_when_paused;
 	StackStatus	  status;
@@ -105,23 +105,16 @@ recur:
 		{
 			StackLink link = self->links[i];
 			if (link.subtree.ptr)
-				ts_subtree_release(subtree_pool, link.subtree);
+				ts_subtree_release(/*subtree_pool, */ link.subtree);
 			stack_node_release(link.node, pool, subtree_pool);
 		}
 		StackLink link = self->links[0];
 		if (link.subtree.ptr)
-			ts_subtree_release(subtree_pool, link.subtree);
+			ts_subtree_release(/*subtree_pool, */ link.subtree);
 		first_predecessor = self->links[0].node;
 	}
 
-	if (pool->size < MAX_NODE_POOL_SIZE)
-	{
-		array_push(pool, self);
-	}
-	else
-	{
-		mem_free(self);
-	}
+	mem_free(self);
 
 	if (first_predecessor)
 	{
@@ -222,7 +215,7 @@ static void stack_node_add_link(StackNode *self, StackLink link, SubtreePool *su
 				if (ts_subtree_dynamic_precedence(link.subtree) > ts_subtree_dynamic_precedence(existing_link->subtree))
 				{
 					ts_subtree_retain(link.subtree);
-					ts_subtree_release(subtree_pool, existing_link->subtree);
+					ts_subtree_release(/*subtree_pool, */ existing_link->subtree);
 					existing_link->subtree = link.subtree;
 					self->dynamic_precedence = link.node->dynamic_precedence + ts_subtree_dynamic_precedence(link.subtree);
 				}
@@ -256,7 +249,7 @@ static void stack_node_add_link(StackNode *self, StackLink link, SubtreePool *su
 
 	stack_node_retain(link.node);
 	t_u32 node_count = link.node->node_count;
-	int		 dynamic_precedence = link.node->dynamic_precedence;
+	int	  dynamic_precedence = link.node->dynamic_precedence;
 	self->links[self->link_count++] = link;
 
 	if (link.subtree.ptr)
@@ -278,11 +271,11 @@ static void stack_head_delete(StackHead *self, StackNodeArray *pool, SubtreePool
 	{
 		if (self->last_external_token.ptr)
 		{
-			ts_subtree_release(subtree_pool, self->last_external_token);
+			ts_subtree_release(/*subtree_pool, */ self->last_external_token);
 		}
 		if (self->lookahead_when_paused.ptr)
 		{
-			ts_subtree_release(subtree_pool, self->lookahead_when_paused);
+			ts_subtree_release(/*subtree_pool, */ self->lookahead_when_paused);
 		}
 		if (self->summary)
 		{
@@ -375,7 +368,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version, StackCallb
 			{
 				if (!should_pop)
 				{
-					ts_subtree_array_delete(self->subtree_pool, &iterator->subtrees);
+					ts_subtree_array_delete(/*self->subtree_pool, */&iterator->subtrees);
 				}
 				array_erase(&self->iterators, i);
 				i--, size--;
@@ -434,7 +427,9 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version, StackCallb
 
 Stack *ts_stack_new(SubtreePool *subtree_pool)
 {
-	Stack *self = mem_alloc_array(1, sizeof(Stack));
+	Stack *self;
+
+	self = mem_alloc(sizeof(*self));
 
 	array_init(&self->heads);
 	array_init(&self->slices);
@@ -443,7 +438,7 @@ Stack *ts_stack_new(SubtreePool *subtree_pool)
 	array_reserve(&self->heads, 4);
 	array_reserve(&self->slices, 4);
 	array_reserve(&self->iterators, 4);
-	array_reserve(&self->node_pool, MAX_NODE_POOL_SIZE);
+	self->node_pool = (StackNodeArray)array_new();
 
 	self->subtree_pool = subtree_pool;
 	self->base_node = stack_node_new(NULL, NULL_SUBTREE, false, 1, &self->node_pool);
@@ -500,14 +495,14 @@ void ts_stack_set_last_external_token(Stack *self, StackVersion version, Subtree
 	if (token.ptr)
 		ts_subtree_retain(token);
 	if (head->last_external_token.ptr)
-		ts_subtree_release(self->subtree_pool, head->last_external_token);
+		ts_subtree_release(/*self->subtree_pool, */ head->last_external_token);
 	head->last_external_token = token;
 }
 
 t_u32 ts_stack_error_cost(const Stack *self, StackVersion version)
 {
 	StackHead *head = array_get(&self->heads, version);
-	t_u32   result = head->node->error_cost;
+	t_u32	   result = head->node->error_cost;
 	if (head->status == StackStatusPaused || (head->node->state == ERROR_STATE && !head->node->links[0].subtree.ptr))
 	{
 		result += ERROR_COST_PER_RECOVERY;
@@ -639,14 +634,14 @@ StackSliceArray ts_stack_pop_all(Stack *self, StackVersion version)
 typedef struct SummarizeStackSession
 {
 	StackSummary *summary;
-	t_u32	  max_depth;
+	t_u32		  max_depth;
 } SummarizeStackSession;
 
 StackAction summarize_stack_callback(void *payload, const StackIterator *iterator)
 {
 	SummarizeStackSession *session = payload;
 	TSStateId			   state = iterator->node->state;
-	t_u32			   depth = iterator->subtree_count;
+	t_u32				   depth = iterator->subtree_count;
 	if (depth > session->max_depth)
 		return StackActionStop;
 	for (t_u32 i = session->summary->size - 1; i + 1 > 0; i--)

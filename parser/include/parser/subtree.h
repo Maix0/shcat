@@ -145,28 +145,28 @@ bool		ts_external_scanner_state_eq(const ExternalScannerState *self, const t_u8 
 void		ts_external_scanner_state_delete(ExternalScannerState *self);
 
 void ts_subtree_array_copy(SubtreeArray, SubtreeArray *);
-void ts_subtree_array_clear(SubtreePool *, SubtreeArray *);
-void ts_subtree_array_delete(SubtreePool *, SubtreeArray *);
+void ts_subtree_array_clear(/*SubtreePool *,*/ SubtreeArray *);
+void ts_subtree_array_delete(/*SubtreePool *,*/ SubtreeArray *);
 void ts_subtree_array_remove_trailing_extras(SubtreeArray *, SubtreeArray *);
 void ts_subtree_array_reverse(SubtreeArray *);
 
 SubtreePool ts_subtree_pool_new(t_u32 capacity);
 void		ts_subtree_pool_delete(SubtreePool *);
 
-Subtree		   ts_subtree_new_leaf(SubtreePool *, TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
-Subtree		   ts_subtree_new_error(SubtreePool *, t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
+Subtree		   ts_subtree_new_leaf(/*SubtreePool *,*/ TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
+Subtree		   ts_subtree_new_error(/*SubtreePool *,*/ t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
 MutableSubtree ts_subtree_new_node(TSSymbol, SubtreeArray *, t_u32, const TSLanguage *);
 Subtree		   ts_subtree_new_error_node(SubtreeArray *, bool, const TSLanguage *);
-Subtree		   ts_subtree_new_missing_leaf(SubtreePool *, TSSymbol, Length, t_u32, const TSLanguage *);
-MutableSubtree ts_subtree_make_mut(SubtreePool *, Subtree);
+Subtree		   ts_subtree_new_missing_leaf(/*SubtreePool *,*/ TSSymbol, Length, t_u32, const TSLanguage *);
+MutableSubtree ts_subtree_make_mut(/*SubtreePool *,*/ Subtree);
 void		   ts_subtree_retain(Subtree);
-void		   ts_subtree_release(SubtreePool *, Subtree);
-int			   ts_subtree_compare(Subtree, Subtree, SubtreePool *);
+void		   ts_subtree_release(/*SubtreePool *,*/ Subtree);
+int			   ts_subtree_compare(Subtree, Subtree/*, SubtreePool **/);
 void		   ts_subtree_set_symbol(MutableSubtree *, TSSymbol, const TSLanguage *);
 void		   ts_subtree_summarize(MutableSubtree, const Subtree *, t_u32, const TSLanguage *);
 void		   ts_subtree_summarize_children(MutableSubtree, const TSLanguage *);
-void		   ts_subtree_balance(Subtree, SubtreePool *, const TSLanguage *);
-Subtree		   ts_subtree_edit(Subtree, const TSInputEdit *edit, SubtreePool *);
+void		   ts_subtree_balance(Subtree, /*SubtreePool *,*/ const TSLanguage *);
+Subtree		   ts_subtree_edit(Subtree, const TSInputEdit *edit/*, SubtreePool **/);
 char		  *ts_subtree_string(Subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
 void		   ts_subtree_print_dot_graph(Subtree, const TSLanguage *, FILE *);
 Subtree		   ts_subtree_last_external_token(Subtree);

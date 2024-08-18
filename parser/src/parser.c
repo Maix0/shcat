@@ -1,5 +1,7 @@
 #define _POSIX_C_SOURCE 200112L
 
+#include "me/mem/mem.h"
+#include "me/types.h"
 #include "parser/api.h"
 #include "parser/array.h"
 #include "parser/language.h"
@@ -9,8 +11,6 @@
 #include "parser/stack.h"
 #include "parser/subtree.h"
 #include "parser/tree.h"
-#include "me/mem/mem.h"
-#include "me/types.h"
 #include <assert.h>
 #include <stdio.h>
 
@@ -163,7 +163,7 @@ static bool ts_parser__breakdown_top_of_stack(TSParser *self, StackVersion versi
 				ts_stack_push(self->stack, slice.version, tree, false, state);
 			}
 
-			ts_subtree_release(&self->tree_pool, parent);
+			ts_subtree_release(/*&self->tree_pool,*/ parent);
 			array_delete(&slice.subtrees);
 
 			LOG("breakdown_top_of_stack tree:%s", TREE_NAME(parent));
@@ -487,7 +487,8 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 		Length padding = length_sub(error_start_position, start_position);
 		Length size = length_sub(error_end_position, error_start_position);
 		t_u32  lookahead_bytes = lookahead_end_byte - error_end_position.bytes;
-		result = ts_subtree_new_error(&self->tree_pool, first_error_character, padding, size, lookahead_bytes, parse_state, self->language);
+		result =
+			ts_subtree_new_error(/*&self->tree_pool, */ first_error_character, padding, size, lookahead_bytes, parse_state, self->language);
 	}
 	else
 	{
@@ -516,7 +517,7 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 			}
 		}
 
-		result = ts_subtree_new_leaf(&self->tree_pool, symbol, padding, size, lookahead_bytes, parse_state, found_external_token,
+		result = ts_subtree_new_leaf(/*&self->tree_pool,*/ symbol, padding, size, lookahead_bytes, parse_state, found_external_token,
 									 called_get_column, is_keyword, self->language);
 
 		if (found_external_token)
@@ -556,9 +557,9 @@ static void ts_parser__set_cached_token(TSParser *self, t_u32 byte_index, Subtre
 	if (last_external_token.ptr)
 		ts_subtree_retain(last_external_token);
 	if (cache->token.ptr)
-		ts_subtree_release(&self->tree_pool, cache->token);
+		ts_subtree_release(/*&self->tree_pool, */ cache->token);
 	if (cache->last_external_token.ptr)
-		ts_subtree_release(&self->tree_pool, cache->last_external_token);
+		ts_subtree_release(/*&self->tree_pool, */ cache->last_external_token);
 	cache->token = token;
 	cache->byte_index = byte_index;
 	cache->last_external_token = last_external_token;
@@ -570,6 +571,7 @@ static void ts_parser__set_cached_token(TSParser *self, t_u32 byte_index, Subtre
 // and finally, as a default, by a recursive comparison of the trees' symbols.
 static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right)
 {
+	(void)(self);
 	if (!left.ptr)
 		return true;
 	if (!right.ptr)
@@ -604,7 +606,7 @@ static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right)
 	if (ts_subtree_error_cost(left) > 0)
 		return true;
 
-	int comparison = ts_subtree_compare(left, right, &self->tree_pool);
+	int comparison = ts_subtree_compare(left, right /* , &self->tree_pool*/);
 	switch (comparison)
 	{
 	case -1:
@@ -641,7 +643,7 @@ static void ts_parser__shift(TSParser *self, StackVersion version, TSStateId sta
 	Subtree subtree_to_push = lookahead;
 	if (extra != ts_subtree_extra(lookahead) && is_leaf)
 	{
-		MutableSubtree result = ts_subtree_make_mut(&self->tree_pool, lookahead);
+		MutableSubtree result = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 		ts_subtree_set_extra(&result, extra);
 		subtree_to_push = ts_subtree_from_mut(result);
 	}
@@ -677,14 +679,14 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version, TSSy
 		if (slice_version > MAX_VERSION_COUNT + MAX_VERSION_COUNT_OVERFLOW)
 		{
 			ts_stack_remove_version(self->stack, slice_version);
-			ts_subtree_array_delete(&self->tree_pool, &slice.subtrees);
+			ts_subtree_array_delete(/*&self->tree_pool,*/ &slice.subtrees);
 			removed_version_count++;
 			while (i + 1 < pop.size)
 			{
 				StackSlice next_slice = pop.contents[i + 1];
 				if (next_slice.version != slice.version)
 					break;
-				ts_subtree_array_delete(&self->tree_pool, &next_slice.subtrees);
+				ts_subtree_array_delete(/*&self->tree_pool,*/ &next_slice.subtrees);
 				i++;
 			}
 			continue;
@@ -714,15 +716,15 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version, TSSy
 
 			if (ts_parser__select_children(self, ts_subtree_from_mut(parent), &next_slice_children))
 			{
-				ts_subtree_array_clear(&self->tree_pool, &self->trailing_extras);
-				ts_subtree_release(&self->tree_pool, ts_subtree_from_mut(parent));
+				ts_subtree_array_clear(/*&self->tree_pool,*/ &self->trailing_extras);
+				ts_subtree_release(/*&self->tree_pool,*/ ts_subtree_from_mut(parent));
 				array_swap(&self->trailing_extras, &self->trailing_extras2);
 				parent = ts_subtree_new_node(symbol, &next_slice_children, production_id, self->language);
 			}
 			else
 			{
 				array_clear(&self->trailing_extras2);
-				ts_subtree_array_delete(&self->tree_pool, &next_slice.subtrees);
+				ts_subtree_array_delete(/*&self->tree_pool,*/ &next_slice.subtrees);
 			}
 		}
 
@@ -792,7 +794,7 @@ static void ts_parser__accept(TSParser *self, StackVersion version, Subtree look
 				}
 				array_splice(&trees, j, 1, child_count, children);
 				root = ts_subtree_from_mut(ts_subtree_new_node(ts_subtree_symbol(tree), &trees, tree.ptr->production_id, self->language));
-				ts_subtree_release(&self->tree_pool, tree);
+				ts_subtree_release(/*&self->tree_pool, */ tree);
 				break;
 			}
 		}
@@ -804,12 +806,12 @@ static void ts_parser__accept(TSParser *self, StackVersion version, Subtree look
 		{
 			if (ts_parser__select_tree(self, self->finished_tree, root))
 			{
-				ts_subtree_release(&self->tree_pool, self->finished_tree);
+				ts_subtree_release(/*&self->tree_pool,*/ self->finished_tree);
 				self->finished_tree = root;
 			}
 			else
 			{
-				ts_subtree_release(&self->tree_pool, root);
+				ts_subtree_release(/*&self->tree_pool,*/ root);
 			}
 		}
 		else
@@ -938,7 +940,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, t_
 
 		if (slice.version == previous_version)
 		{
-			ts_subtree_array_delete(&self->tree_pool, &slice.subtrees);
+			ts_subtree_array_delete(/*&self->tree_pool,*/ &slice.subtrees);
 			array_erase(&pop, i--);
 			continue;
 		}
@@ -946,7 +948,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, t_
 		if (ts_stack_state(self->stack, slice.version) != goal_state)
 		{
 			ts_stack_halt(self->stack, slice.version);
-			ts_subtree_array_delete(&self->tree_pool, &slice.subtrees);
+			ts_subtree_array_delete(/*&self->tree_pool,*/ &slice.subtrees);
 			array_erase(&pop, i--);
 			continue;
 		}
@@ -965,7 +967,7 @@ static bool ts_parser__recover_to_state(TSParser *self, StackVersion version, t_
 					ts_subtree_retain(slice.subtrees.contents[j]);
 				}
 			}
-			ts_subtree_array_delete(&self->tree_pool, &error_trees);
+			ts_subtree_array_delete(/*&self->tree_pool,*/ &error_trees);
 		}
 
 		ts_subtree_array_remove_trailing_extras(&slice.subtrees, &self->trailing_extras);
@@ -1080,14 +1082,14 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 	if (did_recover && ts_stack_version_count(self->stack) > MAX_VERSION_COUNT)
 	{
 		ts_stack_halt(self->stack, version);
-		ts_subtree_release(&self->tree_pool, lookahead);
+		ts_subtree_release(/*&self->tree_pool,*/ lookahead);
 		return;
 	}
 
 	if (did_recover && ts_subtree_has_external_scanner_state_change(lookahead))
 	{
 		ts_stack_halt(self->stack, version);
-		ts_subtree_release(&self->tree_pool, lookahead);
+		ts_subtree_release(/*&self->tree_pool,*/ lookahead);
 		return;
 	}
 
@@ -1109,7 +1111,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 	if (ts_parser__better_version_exists(self, version, false, new_cost))
 	{
 		ts_stack_halt(self->stack, version);
-		ts_subtree_release(&self->tree_pool, lookahead);
+		ts_subtree_release(/*&self->tree_pool,*/ lookahead);
 		return;
 	}
 
@@ -1119,7 +1121,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 	const TSParseAction *actions = ts_language_actions(self->language, 1, ts_subtree_symbol(lookahead), &n);
 	if (n > 0 && actions[n - 1].type == TSParseActionTypeShift && actions[n - 1].shift.extra)
 	{
-		MutableSubtree mutable_lookahead = ts_subtree_make_mut(&self->tree_pool, lookahead);
+		MutableSubtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 		ts_subtree_set_extra(&mutable_lookahead, true);
 		lookahead = ts_subtree_from_mut(mutable_lookahead);
 	}
@@ -1146,7 +1148,7 @@ static void ts_parser__recover(TSParser *self, StackVersion version, Subtree loo
 		{
 			for (t_u32 i = 1; i < pop.size; i++)
 			{
-				ts_subtree_array_delete(&self->tree_pool, &pop.contents[i].subtrees);
+				ts_subtree_array_delete(/*&self->tree_pool,*/ &pop.contents[i].subtrees);
 			}
 			while (ts_stack_version_count(self->stack) > pop.contents[0].version + 1)
 			{
@@ -1206,7 +1208,7 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version, Subtre
 
 					StackVersion version_with_missing_tree = ts_stack_copy_version(self->stack, v);
 					Subtree		 missing_tree =
-						ts_subtree_new_missing_leaf(&self->tree_pool, missing_symbol, padding, lookahead_bytes, self->language);
+						ts_subtree_new_missing_leaf(/*&self->tree_pool,*/ missing_symbol, padding, lookahead_bytes, self->language);
 					ts_stack_push(self->stack, version_with_missing_tree, missing_tree, false, state_after_missing_symbol);
 
 					if (ts_parser__do_all_potential_reductions(self, version_with_missing_tree, ts_subtree_leaf_symbol(lookahead)))
@@ -1296,7 +1298,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 		{
 			if (lookahead.ptr)
 			{
-				ts_subtree_release(&self->tree_pool, lookahead);
+				ts_subtree_release(/*&self->tree_pool,*/ lookahead);
 			}
 			return false;
 		}
@@ -1412,7 +1414,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 			{
 				LOG("switch from_keyword:%s, to_word_token:%s", TREE_NAME(lookahead), SYM_NAME(self->language->keyword_capture_token));
 
-				MutableSubtree mutable_lookahead = ts_subtree_make_mut(&self->tree_pool, lookahead);
+				MutableSubtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 				ts_subtree_set_symbol(&mutable_lookahead, self->language->keyword_capture_token, self->language);
 				lookahead = ts_subtree_from_mut(mutable_lookahead);
 				continue;
@@ -1436,7 +1438,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 		if (ts_parser__breakdown_top_of_stack(self, version))
 		{
 			state = ts_stack_state(self->stack, version);
-			ts_subtree_release(&self->tree_pool, lookahead);
+			ts_subtree_release(/*&self->tree_pool,*/ lookahead);
 			needs_lex = true;
 			continue;
 		}
@@ -1612,7 +1614,7 @@ void ts_parser_delete(TSParser *self)
 	}
 	if (self->old_tree.ptr)
 	{
-		ts_subtree_release(&self->tree_pool, self->old_tree);
+		ts_subtree_release(/*&self->tree_pool,*/ self->old_tree);
 		self->old_tree = NULL_SUBTREE;
 	}
 	ts_lexer_delete(&self->lexer);
@@ -1650,7 +1652,7 @@ void ts_parser_reset(TSParser *self)
 	ts_parser__external_scanner_destroy(self);
 	if (self->old_tree.ptr)
 	{
-		ts_subtree_release(&self->tree_pool, self->old_tree);
+		ts_subtree_release(/*&self->tree_pool,*/ self->old_tree);
 		self->old_tree = NULL_SUBTREE;
 	}
 
@@ -1659,7 +1661,7 @@ void ts_parser_reset(TSParser *self)
 	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	if (self->finished_tree.ptr)
 	{
-		ts_subtree_release(&self->tree_pool, self->finished_tree);
+		ts_subtree_release(/*&self->tree_pool,*/ self->finished_tree);
 		self->finished_tree = NULL_SUBTREE;
 	}
 	self->accept_count = 0;
@@ -1738,7 +1740,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
 	} while (version_count != 0);
 
 	assert(self->finished_tree.ptr);
-	ts_subtree_balance(self->finished_tree, &self->tree_pool, self->language);
+	ts_subtree_balance(self->finished_tree, /*&self->tree_pool,*/ self->language);
 	LOG("done");
 	LOG_TREE(self->finished_tree);
 

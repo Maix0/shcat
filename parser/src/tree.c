@@ -1,13 +1,12 @@
 #define _POSIX_C_SOURCE 200112L
 
-
-#include "me/types.h"
 #include "parser/tree.h"
+#include "me/types.h"
+#include "parser/api.h"
 #include "parser/array.h"
 #include "parser/length.h"
-#include "parser/subtree.h"
-#include "parser/api.h"
 #include "parser/point.h"
+#include "parser/subtree.h"
 
 TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *included_ranges, t_u32 included_range_count)
 {
@@ -32,7 +31,7 @@ void ts_tree_delete(TSTree *self)
 		return;
 
 	SubtreePool pool = ts_subtree_pool_new(0);
-	ts_subtree_release(&pool, self->root);
+	ts_subtree_release(/*&pool,*/ self->root);
 	ts_subtree_pool_delete(&pool);
 	ts_language_delete(self->language);
 	mem_free(self->included_ranges);
@@ -96,7 +95,7 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
 	}
 
 	SubtreePool pool = ts_subtree_pool_new(0);
-	self->root = ts_subtree_edit(self->root, edit, &pool);
+	self->root = ts_subtree_edit(self->root, edit /*, &pool*/);
 	ts_subtree_pool_delete(&pool);
 }
 
