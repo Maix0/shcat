@@ -29,7 +29,7 @@ typedef Array(StackSummaryEntry) StackSummary;
 typedef void (*StackIterateCallback)(void *, TSStateId, t_u32);
 
 // Create a stack.
-Stack *ts_stack_new(SubtreePool *);
+Stack *ts_stack_new(/*SubtreePool **/);
 
 // Release the memory reserved for a given stack.
 void ts_stack_delete(Stack *);

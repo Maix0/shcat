@@ -30,9 +30,9 @@ void ts_tree_delete(TSTree *self)
 	if (!self)
 		return;
 
-	SubtreePool pool = ts_subtree_pool_new(0);
+	/* SubtreePool pool = ts_subtree_pool_new(0); */
 	ts_subtree_release(/*&pool,*/ self->root);
-	ts_subtree_pool_delete(&pool);
+	/* ts_subtree_pool_delete(&pool); */
 	ts_language_delete(self->language);
 	mem_free(self->included_ranges);
 	mem_free(self);
@@ -94,9 +94,9 @@ void ts_tree_edit(TSTree *self, const TSInputEdit *edit)
 		}
 	}
 
-	SubtreePool pool = ts_subtree_pool_new(0);
+	// SubtreePool pool = ts_subtree_pool_new(0);
 	self->root = ts_subtree_edit(self->root, edit /*, &pool*/);
-	ts_subtree_pool_delete(&pool);
+	// ts_subtree_pool_delete(&pool);
 }
 
 TSRange *ts_tree_included_ranges(const TSTree *self, t_u32 *length)

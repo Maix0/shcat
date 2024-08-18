@@ -137,7 +137,7 @@ typedef struct SubtreePool
 {
 	MutableSubtreeArray free_trees;
 	MutableSubtreeArray tree_stack;
-} SubtreePool;
+} SubtreePool_;
 
 void		ts_external_scanner_state_init(ExternalScannerState *, const t_u8 *, t_u32);
 const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *);
@@ -150,8 +150,8 @@ void ts_subtree_array_delete(/*SubtreePool *,*/ SubtreeArray *);
 void ts_subtree_array_remove_trailing_extras(SubtreeArray *, SubtreeArray *);
 void ts_subtree_array_reverse(SubtreeArray *);
 
-SubtreePool ts_subtree_pool_new(t_u32 capacity);
-void		ts_subtree_pool_delete(SubtreePool *);
+// SubtreePool ts_subtree_pool_new(t_u32 capacity);
+// void		ts_subtree_pool_delete(SubtreePool *);
 
 Subtree		   ts_subtree_new_leaf(/*SubtreePool *,*/ TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
 Subtree		   ts_subtree_new_error(/*SubtreePool *,*/ t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);

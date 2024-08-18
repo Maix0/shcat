@@ -40,7 +40,7 @@ struct TSParser
 {
 	Lexer				   lexer;
 	Stack				  *stack;
-	SubtreePool			   tree_pool;
+	/* SubtreePool			   tree_pool; */
 	const TSLanguage	  *language;
 	ReduceActionSet		   reduce_actions;
 	Subtree				   finished_tree;
@@ -1587,8 +1587,8 @@ TSParser *ts_parser_new(void)
 	ts_lexer_init(&self->lexer);
 	array_init(&self->reduce_actions);
 	array_reserve(&self->reduce_actions, 4);
-	self->tree_pool = ts_subtree_pool_new(32);
-	self->stack = ts_stack_new(&self->tree_pool);
+	/* self->tree_pool = ts_subtree_pool_new(32); */
+	self->stack = ts_stack_new(/*&self->tree_pool*/);
 	self->finished_tree = NULL_SUBTREE;
 	self->cancellation_flag = NULL;
 	self->language = NULL;
@@ -1619,7 +1619,7 @@ void ts_parser_delete(TSParser *self)
 	}
 	ts_lexer_delete(&self->lexer);
 	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
-	ts_subtree_pool_delete(&self->tree_pool);
+	/* ts_subtree_pool_delete(&self->tree_pool); */
 	array_delete(&self->trailing_extras);
 	array_delete(&self->trailing_extras2);
 	array_delete(&self->scratch_trees);

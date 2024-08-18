@@ -138,25 +138,25 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 
 // SubtreePool
 
-SubtreePool ts_subtree_pool_new(t_u32 capacity)
-{
-	SubtreePool self = {array_new(), array_new()};
-	array_reserve(&self.free_trees, capacity);
-	return self;
-}
-
-void ts_subtree_pool_delete(SubtreePool *self)
-{
-	if (self->free_trees.contents)
-	{
-		for (t_u32 i = 0; i < self->free_trees.size; i++)
-			mem_free(self->free_trees.contents[i].ptr);
-		array_delete(&self->free_trees);
-	}
-	if (self->tree_stack.contents)
-		array_delete(&self->tree_stack);
-}
-
+/* SubtreePool ts_subtree_pool_new(t_u32 capacity) */
+/* { */
+/* 	SubtreePool self = {array_new(), array_new()}; */
+/* 	array_reserve(&self.free_trees, capacity); */
+/* 	return self; */
+/* } */
+/**/
+/* void ts_subtree_pool_delete(SubtreePool *self) */
+/* { */
+/* 	if (self->free_trees.contents) */
+/* 	{ */
+/* 		for (t_u32 i = 0; i < self->free_trees.size; i++) */
+/* 			mem_free(self->free_trees.contents[i].ptr); */
+/* 		array_delete(&self->free_trees); */
+/* 	} */
+/* 	if (self->tree_stack.contents) */
+/* 		array_delete(&self->tree_stack); */
+/* } */
+/**/
 // Subtree
 
 static inline bool ts_subtree_can_inline(Length padding, Length size, t_u32 lookahead_bytes)
