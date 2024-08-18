@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/18 21:51:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:54:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@
 #include "me/string/string.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
-
-struct s_print_export_state
-{
-	t_state				 *state;
-	t_builtin_spawn_info *info;
-};
 
 struct s_assign_export_state
 {
@@ -50,25 +44,6 @@ static void _assign_export(t_usize idx, t_str *arg, void *vctx)
 		ctx->err = ERROR;
 }
 
-t_error _print_export(t_usize _idx, const t_str *key, t_str *value, void *vctx)
-{
-	const struct s_print_export_state *ctx = vctx;
-	t_str							  *val;
-	t_str							   true_val;
-
-	(void)(_idx);
-	val = hmap_env_get(ctx->state->tmp_var, (t_str *)key);
-	if (val == NULL)
-		val = value;
-	if (val == NULL)
-		return (NO_ERROR);
-	true_val = *val;
-	if (true_val == NULL)
-		true_val = "";
-	me_printf_fd(ctx->info->stdout, "export %s='%s'\n", *key, true_val);
-	return (NO_ERROR);
-}
-
 static t_error _append_key_to_vec(t_usize _idx, const t_str *key, t_str *value, void *vec)
 {
 	(void)(value);
@@ -79,7 +54,7 @@ static t_error _append_key_to_vec(t_usize _idx, const t_str *key, t_str *value, 
 	return (NO_ERROR);
 }
 
-bool _sort_str(t_str *_lhs, t_str *_rhs)
+static bool _sort_str(t_str *_lhs, t_str *_rhs)
 {
 	t_str lhs;
 	t_str rhs;
@@ -100,7 +75,7 @@ bool _sort_str(t_str *_lhs, t_str *_rhs)
 	return (*lhs < *rhs);
 }
 
-t_error handle_quotes(t_str raw, t_string *out)
+static t_error handle_quotes(t_str raw, t_string *out)
 {
 	t_usize	 i;
 	t_string ret;
@@ -112,7 +87,7 @@ t_error handle_quotes(t_str raw, t_string *out)
 	while (raw[i] != '\0')
 	{
 		if (raw[i] == '\'')
-			printf("Pushing stuff\n"), string_push(&ret, "'\"'\"'");
+			string_push(&ret, "'\"'\"'");
 		else
 			string_push_char(&ret, raw[i]);
 		i++;
