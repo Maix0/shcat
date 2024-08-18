@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/15 14:01:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/18 18:06:32 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/hashmap/hashmap_env.h"
 #include "me/printf/printf.h"
 #include "me/str/str.h"
+#include "me/string/string.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 
@@ -22,12 +23,14 @@ struct s_print_export_state
 	t_state				 *state;
 	t_builtin_spawn_info *info;
 };
+
 struct s_assign_export_state
 {
 	t_state				 *state;
 	t_builtin_spawn_info *info;
 	t_error				  err;
 };
+
 static void _assign_export(t_usize idx, t_str *arg, void *vctx)
 {
 	struct s_assign_export_state *ctx;
@@ -97,6 +100,28 @@ bool _sort_str(t_str *_lhs, t_str *_rhs)
 	return (*lhs < *rhs);
 }
 
+t_error handle_quotes(t_str raw, t_string *out)
+{
+	t_usize		i;
+	t_string	ret;
+
+	i = 0;
+	if (!raw)
+		return (ERROR);
+	ret = string_new(16);
+	string_push_char(&ret, '\'');
+	while (raw[i] != '\0')
+	{
+		if (raw[i] == '\'')
+			 string_push(&ret, "'\"'\"'");
+		else 
+			 string_push_char(&ret, raw[i]);
+		i++;
+	}
+	string_push_char(&ret, '\'');
+	return (*out = ret, NO_ERROR);
+}
+
 t_error _print_export_env(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	t_vec_str keys;
@@ -134,7 +159,7 @@ t_error _print_export_env(t_state *state, t_builtin_spawn_info info, t_i32 *exit
 	}
 	vec_str_free(keys_uniq);
 	*exit_code = 0;
-return (NO_ERROR);
+	return (NO_ERROR);
 }
 
 t_error builtin_export(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
