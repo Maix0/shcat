@@ -1,11 +1,11 @@
 #ifndef SUBTREE_H
 #define SUBTREE_H
 
+#include "me/types.h"
 #include "parser/api.h"
 #include "parser/array.h"
 #include "parser/length.h"
 #include "parser/parser.h"
-#include "me/types.h"
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -47,7 +47,7 @@ typedef struct ExternalScannerState ExternalScannerState;
 // Because of alignment, for any valid pointer this will be 0, giving
 // us the opportunity to make use of this bit to signify whether to use
 // the pointer or the inline struct.
-typedef struct SubtreeInlineData SubtreeInlineData;
+typedef struct SubtreeInlineData SubtreeInlineData_;
 
 struct SubtreeInlineData
 {
@@ -122,14 +122,12 @@ typedef struct SubtreeHeapData
 
 // The fundamental building block of a syntax tree.
 typedef union Subtree {
-	SubtreeInlineData	   data;
 	const SubtreeHeapData *ptr;
 } Subtree;
 
 // Like Subtree, but mutable.
 typedef union MutableSubtree {
-	SubtreeInlineData data;
-	SubtreeHeapData	 *ptr;
+	SubtreeHeapData *ptr;
 } MutableSubtree;
 
 typedef Array(Subtree) SubtreeArray;
@@ -177,39 +175,39 @@ bool						ts_subtree_external_scanner_state_eq(Subtree, Subtree);
 
 static inline TSSymbol ts_subtree_symbol(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.symbol : (self).ptr->symbol);
+	return ((self).ptr->symbol);
 }
 static inline bool ts_subtree_visible(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.visible : (self).ptr->visible);
+	return ((self).ptr->visible);
 }
 static inline bool ts_subtree_named(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.named : (self).ptr->named);
+	return ((self).ptr->named);
 }
 static inline bool ts_subtree_extra(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.extra : (self).ptr->extra);
+	return ((self).ptr->extra);
 }
 static inline bool ts_subtree_has_changes(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.has_changes : (self).ptr->has_changes);
+	return ((self).ptr->has_changes);
 }
 static inline bool ts_subtree_missing(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.is_missing : (self).ptr->is_missing);
+	return ((self).ptr->is_missing);
 }
 static inline bool ts_subtree_is_keyword(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.is_keyword : (self).ptr->is_keyword);
+	return ((self).ptr->is_keyword);
 }
 static inline TSStateId ts_subtree_parse_state(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.parse_state : (self).ptr->parse_state);
+	return ((self).ptr->parse_state);
 }
 static inline t_u32 ts_subtree_lookahead_bytes(Subtree self)
 {
-	return ((self).data.is_inline ? (self).data.lookahead_bytes : (self).ptr->lookahead_bytes);
+	return ((self).ptr->lookahead_bytes);
 }
 
 // Get the size needed to store a heap-allocated subtree with the given
@@ -221,20 +219,15 @@ static inline size_t ts_subtree_alloc_size(t_u32 child_count)
 
 // Get a subtree's children, which are allocated immediately before the
 // tree's own heap data.
-#define ts_subtree_children(self) ((self).data.is_inline ? NULL : (Subtree *)((self).ptr) - (self).ptr->child_count)
+#define ts_subtree_children(self) ((Subtree *)((self).ptr) - (self).ptr->child_count)
 
 static inline void ts_subtree_set_extra(MutableSubtree *self, bool is_extra)
 {
-	if (self->data.is_inline)
-		self->data.extra = is_extra;
-	else
-		self->ptr->extra = is_extra;
+	self->ptr->extra = is_extra;
 }
 
 static inline TSSymbol ts_subtree_leaf_symbol(Subtree self)
 {
-	if (self.data.is_inline)
-		return self.data.symbol;
 	if (self.ptr->child_count == 0)
 		return self.ptr->symbol;
 	return self.ptr->first_leaf.symbol;
@@ -242,8 +235,6 @@ static inline TSSymbol ts_subtree_leaf_symbol(Subtree self)
 
 static inline TSStateId ts_subtree_leaf_parse_state(Subtree self)
 {
-	if (self.data.is_inline)
-		return self.data.parse_state;
 	if (self.ptr->child_count == 0)
 		return self.ptr->parse_state;
 	return self.ptr->first_leaf.parse_state;
@@ -251,18 +242,12 @@ static inline TSStateId ts_subtree_leaf_parse_state(Subtree self)
 
 static inline Length ts_subtree_padding(Subtree self)
 {
-	if (self.data.is_inline)
-		return ((Length){self.data.padding_bytes, {self.data.padding_rows, self.data.padding_columns}});
-	else
-		return self.ptr->padding;
+	return self.ptr->padding;
 }
 
 static inline Length ts_subtree_size(Subtree self)
 {
-	if (self.data.is_inline)
-		return ((Length){self.data.size_bytes, {0, self.data.size_bytes}});
-	else
-		return self.ptr->size;
+	return self.ptr->size;
 }
 
 static inline Length ts_subtree_total_size(Subtree self)
@@ -277,22 +262,22 @@ static inline t_u32 ts_subtree_total_bytes(Subtree self)
 
 static inline t_u32 ts_subtree_child_count(Subtree self)
 {
-	return (self.data.is_inline ? 0 : self.ptr->child_count);
+	return (self.ptr->child_count);
 }
 
 static inline t_u32 ts_subtree_repeat_depth(Subtree self)
 {
-	return (self.data.is_inline ? 0 : self.ptr->repeat_depth);
+	return (self.ptr->repeat_depth);
 }
 
 static inline t_u32 ts_subtree_is_repetition(Subtree self)
 {
-	return (self.data.is_inline ? 0 : !self.ptr->named && !self.ptr->visible && self.ptr->child_count != 0);
+	return (!self.ptr->named && !self.ptr->visible && self.ptr->child_count != 0);
 }
 
 static inline t_u32 ts_subtree_visible_descendant_count(Subtree self)
 {
-	return ((self.data.is_inline || self.ptr->child_count == 0) ? 0 : self.ptr->visible_descendant_count);
+	return ((self.ptr->child_count == 0) ? 0 : self.ptr->visible_descendant_count);
 }
 
 static inline t_u32 ts_subtree_visible_child_count(Subtree self)
@@ -308,12 +293,12 @@ static inline t_u32 ts_subtree_error_cost(Subtree self)
 	if (ts_subtree_missing(self))
 		return (ERROR_COST_PER_MISSING_TREE + ERROR_COST_PER_RECOVERY);
 	else
-		return (self.data.is_inline ? 0 : self.ptr->error_cost);
+		return (self.ptr->error_cost);
 }
 
 static inline t_i32 ts_subtree_dynamic_precedence(Subtree self)
 {
-	return ((self.data.is_inline || self.ptr->child_count == 0) ? 0 : self.ptr->dynamic_precedence);
+	return ((self.ptr->child_count == 0) ? 0 : self.ptr->dynamic_precedence);
 }
 
 static inline t_u16 ts_subtree_production_id(Subtree self)
@@ -326,32 +311,32 @@ static inline t_u16 ts_subtree_production_id(Subtree self)
 
 static inline bool ts_subtree_fragile_left(Subtree self)
 {
-	return (self.data.is_inline ? false : self.ptr->fragile_left);
+	return (self.ptr->fragile_left);
 }
 
 static inline bool ts_subtree_fragile_right(Subtree self)
 {
-	return (self.data.is_inline ? false : self.ptr->fragile_right);
+	return (self.ptr->fragile_right);
 }
 
 static inline bool ts_subtree_has_external_tokens(Subtree self)
 {
-	return (self.data.is_inline ? false : self.ptr->has_external_tokens);
+	return (self.ptr->has_external_tokens);
 }
 
 static inline bool ts_subtree_has_external_scanner_state_change(Subtree self)
 {
-	return (self.data.is_inline ? false : self.ptr->has_external_scanner_state_change);
+	return (self.ptr->has_external_scanner_state_change);
 }
 
 static inline bool ts_subtree_depends_on_column(Subtree self)
 {
-	return (self.data.is_inline ? false : self.ptr->depends_on_column);
+	return (self.ptr->depends_on_column);
 }
 
 static inline bool ts_subtree_is_fragile(Subtree self)
 {
-	return (self.data.is_inline ? false : (self.ptr->fragile_left || self.ptr->fragile_right));
+	return ((self.ptr->fragile_left || self.ptr->fragile_right));
 }
 
 static inline bool ts_subtree_is_error(Subtree self)
@@ -368,7 +353,7 @@ static inline Subtree ts_subtree_from_mut(MutableSubtree self)
 {
 	Subtree result;
 
-	result.data = self.data;
+	result.ptr = self.ptr;
 	return (result);
 }
 
@@ -376,7 +361,7 @@ static inline MutableSubtree ts_subtree_to_mut_unsafe(Subtree self)
 {
 	MutableSubtree result;
 
-	result.data = self.data;
+	result.ptr = (void *)self.ptr;
 	return (result);
 }
 

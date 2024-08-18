@@ -784,7 +784,6 @@ static void ts_parser__accept(TSParser *self, StackVersion version, Subtree look
 			Subtree tree = trees.contents[j];
 			if (!ts_subtree_extra(tree))
 			{
-				assert(!tree.data.is_inline);
 				t_u32		   child_count = ts_subtree_child_count(tree);
 				const Subtree *children = ts_subtree_children(tree);
 				for (t_u32 k = 0; k < child_count; k++)
