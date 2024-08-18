@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/18 18:06:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/18 21:51:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,23 +102,21 @@ bool _sort_str(t_str *_lhs, t_str *_rhs)
 
 t_error handle_quotes(t_str raw, t_string *out)
 {
-	t_usize		i;
-	t_string	ret;
+	t_usize	 i;
+	t_string ret;
 
 	i = 0;
 	if (!raw)
 		return (ERROR);
 	ret = string_new(16);
-	string_push_char(&ret, '\'');
 	while (raw[i] != '\0')
 	{
 		if (raw[i] == '\'')
-			 string_push(&ret, "'\"'\"'");
-		else 
-			 string_push_char(&ret, raw[i]);
+			printf("Pushing stuff\n"), string_push(&ret, "'\"'\"'");
+		else
+			string_push_char(&ret, raw[i]);
 		i++;
 	}
-	string_push_char(&ret, '\'');
 	return (*out = ret, NO_ERROR);
 }
 
@@ -127,7 +125,7 @@ t_error _print_export_env(t_state *state, t_builtin_spawn_info info, t_i32 *exit
 	t_vec_str keys;
 	t_vec_str keys_uniq;
 	t_usize	  i;
-	t_str	  *value;
+	t_str	 *value;
 
 	keys = vec_str_new(16, NULL);
 	hmap_env_iter(state->env, _append_key_to_vec, &keys);
@@ -152,9 +150,19 @@ t_error _print_export_env(t_state *state, t_builtin_spawn_info info, t_i32 *exit
 		value = hmap_env_get(state->tmp_var, &keys_uniq.buffer[i]);
 		if (value == NULL)
 			value = hmap_env_get(state->env, &keys_uniq.buffer[i]);
-		if (*value == NULL)
-			me_printf_fd(info.stdout, "export %s=''\n", keys_uniq.buffer[i]);
-		me_printf_fd(info.stdout, "export %s='%s'\n", keys_uniq.buffer[i], *value);
+		if (value == NULL || *value == NULL)
+		{
+			me_printf_fd(info.stdout, "export %s\n", keys_uniq.buffer[i]);
+		}
+		else
+		{
+			t_string buf;
+			if (!handle_quotes(*value, &buf))
+			{
+				me_printf_fd(info.stdout, "export %s='%s'\n", keys_uniq.buffer[i], buf.buf);
+				string_free(buf);
+			}
+		}
 		i++;
 	}
 	vec_str_free(keys_uniq);
