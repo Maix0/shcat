@@ -27,25 +27,16 @@ static const t_u32 MAX_VERSION_COUNT_OVERFLOW = 4;
 static const t_u32 MAX_SUMMARY_DEPTH = 1;
 static const t_u32 MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
 
-typedef struct TokenCache
-{
-	Subtree token;
-	Subtree last_external_token;
-	t_u32	byte_index;
-} TokenCache;
-
 struct TSParser
 {
-	Lexer  lexer;
-	Stack *stack;
-	/* SubtreePool			   tree_pool; */
+	Lexer				   lexer;
+	Stack				  *stack;
 	const TSLanguage	  *language;
 	ReduceActionSet		   reduce_actions;
 	Subtree				   finished_tree;
 	SubtreeArray		   trailing_extras;
 	SubtreeArray		   trailing_extras2;
 	SubtreeArray		   scratch_trees;
-	TokenCache			   token_cache;
 	void				  *external_scanner_payload;
 	t_u32				   accept_count;
 	t_u32				   operation_count;
@@ -1506,7 +1497,6 @@ TSParser *ts_parser_new(void)
 	self->has_scanner_error = false;
 	self->external_scanner_payload = NULL;
 	self->operation_count = 0;
-	self->old_tree = NULL_SUBTREE;
 	self->included_range_difference_index = 0;
 	return self;
 }
@@ -1521,11 +1511,6 @@ void ts_parser_delete(TSParser *self)
 	if (self->reduce_actions.contents)
 	{
 		array_delete(&self->reduce_actions);
-	}
-	if (self->old_tree.ptr)
-	{
-		ts_subtree_release(/*&self->tree_pool,*/ self->old_tree);
-		self->old_tree = NULL_SUBTREE;
 	}
 	ts_lexer_delete(&self->lexer);
 	/* ts_subtree_pool_delete(&self->tree_pool); */
@@ -1559,12 +1544,6 @@ bool ts_parser_set_language(TSParser *self, const TSLanguage *language)
 void ts_parser_reset(TSParser *self)
 {
 	ts_parser__external_scanner_destroy(self);
-	if (self->old_tree.ptr)
-	{
-		ts_subtree_release(/*&self->tree_pool,*/ self->old_tree);
-		self->old_tree = NULL_SUBTREE;
-	}
-
 	ts_lexer_reset(&self->lexer, length_zero());
 	ts_stack_clear(self->stack);
 	if (self->finished_tree.ptr)
@@ -1576,9 +1555,8 @@ void ts_parser_reset(TSParser *self)
 	self->has_scanner_error = false;
 }
 
-TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input)
+TSTree *ts_parser_parse(TSParser *self, TSInput input)
 {
-	(void)(old_tree);
 	TSTree *result = NULL;
 	if (!self->language || !input.read)
 		return NULL;
@@ -1660,20 +1638,19 @@ exit:
 	return result;
 }
 
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length)
+TSTree *ts_parser_parse_string(TSParser *self, t_const_str string, t_u32 length)
 {
-	return ts_parser_parse_string_encoding(self, old_tree, string, length, TSInputEncodingUTF8);
+	return ts_parser_parse_string_encoding(self, string, length, TSInputEncodingUTF8);
 }
 
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length, TSInputEncoding encoding)
+TSTree *ts_parser_parse_string_encoding(TSParser *self, t_const_str string, t_u32 length, TSInputEncoding encoding)
 {
 	TSStringInput input = {(const t_u8 *)string, length};
-	return ts_parser_parse(self, old_tree,
-						   (TSInput){
-							   &input,
-							   ts_string_input_read,
-							   encoding,
-						   });
+	return ts_parser_parse(self, (TSInput){
+									 &input,
+									 ts_string_input_read,
+									 encoding,
+								 });
 }
 
 #undef LOG

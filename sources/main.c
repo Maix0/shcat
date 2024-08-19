@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/12 16:58:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:22:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ t_node parse_str(t_state *state)
 	t_node		  ret;
 	t_ast_node	  out;
 
-	tree = ts_parser_parse_string(state->parser, NULL, state->str_input, str_len(state->str_input));
+	tree = ts_parser_parse_string(state->parser, state->str_input, str_len(state->str_input));
 	node = ts_tree_root_node(tree);
 	if (ast_from_node(node, state->str_input, &out))
 		(state->ast = NULL, printf("Error when building node\n"));

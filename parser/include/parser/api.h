@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 13:54:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/22 13:55:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:21:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@ const TSRange *ts_parser_included_ranges(const TSParser *self, t_u32 *count);
  * [`encoding`]: TSInput::encoding
  * [`bytes_read`]: TSInput::read
  */
-TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input);
+TSTree *ts_parser_parse(TSParser *self, TSInput input);
 
 /**
  * Use the parser to parse some source code stored in one contiguous buffer.
@@ -293,7 +293,7 @@ TSTree *ts_parser_parse(TSParser *self, const TSTree *old_tree, TSInput input);
  * above. The second two parameters indicate the location of the buffer and its
  * length in bytes.
  */
-TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length);
+TSTree *ts_parser_parse_string(TSParser *self, t_const_str string, t_u32 length);
 
 /**
  * Use the parser to parse some source code stored in one contiguous buffer with
@@ -301,7 +301,7 @@ TSTree *ts_parser_parse_string(TSParser *self, const TSTree *old_tree, t_const_s
  * [`ts_parser_parse_string`] method above. The final parameter indicates whether
  * the text is encoded as UTF8 or UTF16.
  */
-TSTree *ts_parser_parse_string_encoding(TSParser *self, const TSTree *old_tree, t_const_str string, t_u32 length, TSInputEncoding encoding);
+TSTree *ts_parser_parse_string_encoding(TSParser *self, t_const_str string, t_u32 length, TSInputEncoding encoding);
 
 /**
  * Instruct the parser to start the next parse from the beginning.

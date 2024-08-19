@@ -1,7 +1,7 @@
 #include "parser/language.h"
+#include "me/types.h"
 #include "parser/api.h"
 #include "parser/parser.h"
-#include "me/types.h"
 #include <assert.h>
 #include <string.h>
 
@@ -216,31 +216,8 @@ bool ts_language_has_reduce_action(const TSLanguage *self, TSStateId state, TSSy
 // the given symbol.
 t_u16 ts_language_lookup(const TSLanguage *self, TSStateId state, TSSymbol symbol)
 {
-	t_u32		 index;
-	const t_u16 *data;
-	t_u16		 group_count;
-	t_u16		 section_value;
-	t_u16		 symbol_count;
-	t_u32		 i;
-	t_u32		 j;
-
 	if (state >= self->large_state_count)
-	{
-		index = self->small_parse_table_map[state - self->large_state_count];
-		data = &self->small_parse_table[index];
-		group_count = *(data++);
-		i = 0;
-		while (i++ < group_count)
-		{
-			section_value = *(data++);
-			symbol_count = *(data++);
-			j = 0;
-			while (j++ < symbol_count)
-				if (*(data++) == symbol)
-					return (section_value);
-		}
-		return (0);
-	}
+		return (me_abort("we got a small parse table, which isn't supported"), -1);
 	else
 		return (self->parse_table[state * self->symbol_count + symbol]);
 }

@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/08/17 23:30:58 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/19 14:31:41 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,7 +82,9 @@ $(NAME): $(LIBS_FILES)
 	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -o $(NAME) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
 
-lib$(ANAME).a: $(OBJ)
+lib$(ANAME).a: $(BUILD_DIR)/lib$(ANAME).a
+
+$(BUILD_DIR)/lib$(ANAME).a: $(OBJ)
 	@ar rcs $(BUILD_DIR)/lib$(ANAME).a $(OBJ)
 
 
