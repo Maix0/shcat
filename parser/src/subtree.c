@@ -26,51 +26,31 @@ typedef struct
 void ts_external_scanner_state_init(ExternalScannerState *self, const t_u8 *data, t_u32 length)
 {
 	self->length = length;
-	if (length > sizeof(self->short_data))
-	{
-		self->long_data = mem_alloc(length);
-		memcpy(self->long_data, data, length);
-	}
-	else
-	{
-		memcpy(self->short_data, data, length);
-	}
+	self->long_data = mem_alloc(length);
+	mem_copy(self->long_data, data, length);
 }
 
 ExternalScannerState ts_external_scanner_state_copy(const ExternalScannerState *self)
 {
 	ExternalScannerState result = *self;
-	if (self->length > sizeof(self->short_data))
-	{
-		result.long_data = mem_alloc(self->length);
-		memcpy(result.long_data, self->long_data, self->length);
-	}
+	result.long_data = mem_alloc(self->length);
+	mem_copy(result.long_data, self->long_data, self->length);
 	return result;
 }
 
 void ts_external_scanner_state_delete(ExternalScannerState *self)
 {
-	if (self->length > sizeof(self->short_data))
-	{
-		mem_free(self->long_data);
-	}
+	mem_free(self->long_data);
 }
 
 const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *self)
 {
-	if (self->length > sizeof(self->short_data))
-	{
-		return (const t_u8 *)self->long_data;
-	}
-	else
-	{
-		return (const t_u8 *)self->short_data;
-	}
+	return (const t_u8 *)self->long_data;
 }
 
 bool ts_external_scanner_state_eq(const ExternalScannerState *self, const t_u8 *buffer, t_u32 length)
 {
-	return self->length == length && memcmp(ts_external_scanner_state_data(self), buffer, length) == 0;
+	return self->length == length && mem_compare(ts_external_scanner_state_data(self), buffer, length);
 }
 
 // SubtreeArray
@@ -83,7 +63,7 @@ void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
 	if (self.capacity > 0)
 	{
 		dest->contents = mem_alloc_array(self.capacity, sizeof(Subtree));
-		memcpy(dest->contents, self.contents, self.size * sizeof(Subtree));
+		mem_copy(dest->contents, self.contents, self.size * sizeof(Subtree));
 		for (t_u32 i = 0; i < self.size; i++)
 		{
 			ts_subtree_retain(dest->contents[i]);
@@ -159,12 +139,6 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 /**/
 // Subtree
 
-static inline bool ts_subtree_can_inline(Length padding, Length size, t_u32 lookahead_bytes)
-{
-	return padding.bytes < TS_MAX_INLINE_TREE_LENGTH && padding.extent.row < 16 && padding.extent.column < TS_MAX_INLINE_TREE_LENGTH &&
-		   size.extent.row == 0 && size.extent.column < TS_MAX_INLINE_TREE_LENGTH && lookahead_bytes < 16;
-}
-
 Subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId parse_state,
 							bool has_external_tokens, bool depends_on_column, bool is_keyword, const TSLanguage *language)
 // Subtree ts_subtree_new_leaf(SubtreePool *pool, TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId
@@ -228,7 +202,7 @@ MutableSubtree ts_subtree_clone(Subtree self)
 	size_t	 alloc_size = ts_subtree_alloc_size(self.ptr->child_count);
 	Subtree *new_children = mem_alloc(alloc_size);
 	Subtree *old_children = ts_subtree_children(self);
-	memcpy(new_children, old_children, alloc_size);
+	mem_copy(new_children, old_children, alloc_size);
 	SubtreeHeapData *result = (SubtreeHeapData *)&new_children[self.ptr->child_count];
 	if (self.ptr->child_count > 0)
 	{
@@ -994,7 +968,7 @@ void ts_subtree_print_dot_graph(Subtree self, const TSLanguage *language, FILE *
 
 const ExternalScannerState *ts_subtree_external_scanner_state(Subtree self)
 {
-	static const ExternalScannerState empty_state = {{.short_data = {0}}, .length = 0};
+	static const ExternalScannerState empty_state = {{NULL}, .length = 0};
 	if (self.ptr && self.ptr->has_external_tokens && self.ptr->child_count == 0)
 	{
 		return &self.ptr->external_scanner_state;

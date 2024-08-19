@@ -181,7 +181,7 @@ static inline void _array__assign(Array *self, const Array *other, size_t elemen
 {
 	_array__reserve(self, element_size, other->size);
 	self->size = other->size;
-	memcpy(self->contents, other->contents, self->size * element_size);
+	mem_copy(self->contents, other->contents, self->size * element_size);
 }
 
 /// This is not what you're looking for, see `array_swap`.
@@ -226,7 +226,7 @@ static inline void _array__splice(Array *self, size_t element_size, t_u32 index,
 	{
 		if (elements)
 		{
-			memcpy((contents + index * element_size), elements, new_count * element_size);
+			mem_copy((contents + index * element_size), elements, new_count * element_size);
 		}
 		else
 		{

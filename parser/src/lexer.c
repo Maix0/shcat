@@ -1,8 +1,8 @@
 #include "parser/lexer.h"
-#include "parser/length.h"
-#include "parser/input.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
+#include "parser/input.h"
+#include "parser/length.h"
 #include <string.h>
 
 #define LOG(...)
@@ -427,7 +427,7 @@ bool ts_lexer_set_included_ranges(Lexer *self, const TSRange *ranges, t_u32 coun
 
 	size_t size = count * sizeof(TSRange);
 	self->included_ranges = mem_realloc(self->included_ranges, size);
-	memcpy(self->included_ranges, ranges, size);
+	mem_copy(self->included_ranges, ranges, size);
 	self->included_range_count = count;
 	ts_lexer_goto(self, self->current_position);
 	return true;
@@ -438,5 +438,3 @@ TSRange *ts_lexer_included_ranges(const Lexer *self, t_u32 *count)
 	*count = self->included_range_count;
 	return self->included_ranges;
 }
-
-#undef LOG

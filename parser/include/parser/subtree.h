@@ -19,7 +19,6 @@ struct ExternalScannerState
 {
 	union {
 		char *long_data;
-		char  short_data[24];
 	};
 	t_u32 length;
 };
@@ -36,37 +35,6 @@ struct ExternalScannerState
 // separately on the heap.
 typedef struct ExternalScannerState ExternalScannerState;
 
-// A compact representation of a subtree.
-//
-// This representation is used for small leaf nodes that are not
-// errors, and were not created by an external scanner.
-//
-// The idea behind the layout of this struct is that the `is_inline`
-// bit will fall exactly into the same location as the least significant
-// bit of the pointer in `Subtree` or `MutableSubtree`, respectively.
-// Because of alignment, for any valid pointer this will be 0, giving
-// us the opportunity to make use of this bit to signify whether to use
-// the pointer or the inline struct.
-typedef struct SubtreeInlineData SubtreeInlineData_;
-
-struct SubtreeInlineData
-{
-	bool  is_inline : 1;
-	bool  visible : 1;
-	bool  named : 1;
-	bool  extra : 1;
-	bool  has_changes : 1;
-	bool  is_missing : 1;
-	bool  is_keyword : 1;
-	t_u8  symbol;
-	t_u16 parse_state;
-	t_u8  padding_columns;
-	t_u8  padding_rows : 4;
-	t_u8  lookahead_bytes : 4;
-	t_u8  padding_bytes;
-	t_u8  size_bytes;
-};
-
 // A heap-allocated representation of a subtree.
 //
 // This representation is used for parent nodes, external tokens,
@@ -74,14 +42,14 @@ struct SubtreeInlineData
 // the inline representation.
 typedef struct SubtreeHeapData
 {
-	volatile t_u32 ref_count;
-	Length		   padding;
-	Length		   size;
-	t_u32		   lookahead_bytes;
-	t_u32		   error_cost;
-	t_u32		   child_count;
-	TSSymbol	   symbol;
-	TSStateId	   parse_state;
+	t_u32	  ref_count;
+	Length	  padding;
+	Length	  size;
+	t_u32	  lookahead_bytes;
+	t_u32	  error_cost;
+	t_u32	  child_count;
+	TSSymbol  symbol;
+	TSStateId parse_state;
 
 	bool visible : 1;
 	bool named : 1;
@@ -161,12 +129,12 @@ Subtree		   ts_subtree_new_missing_leaf(/*SubtreePool *,*/ TSSymbol, Length, t_u
 MutableSubtree ts_subtree_make_mut(/*SubtreePool *,*/ Subtree);
 void		   ts_subtree_retain(Subtree);
 void		   ts_subtree_release(/*SubtreePool *,*/ Subtree);
-int			   ts_subtree_compare(Subtree, Subtree/*, SubtreePool **/);
+int			   ts_subtree_compare(Subtree, Subtree /*, SubtreePool **/);
 void		   ts_subtree_set_symbol(MutableSubtree *, TSSymbol, const TSLanguage *);
 void		   ts_subtree_summarize(MutableSubtree, const Subtree *, t_u32, const TSLanguage *);
 void		   ts_subtree_summarize_children(MutableSubtree, const TSLanguage *);
 void		   ts_subtree_balance(Subtree, /*SubtreePool *,*/ const TSLanguage *);
-Subtree		   ts_subtree_edit(Subtree, const TSInputEdit *edit/*, SubtreePool **/);
+Subtree		   ts_subtree_edit(Subtree, const TSInputEdit *edit /*, SubtreePool **/);
 char		  *ts_subtree_string(Subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
 void		   ts_subtree_print_dot_graph(Subtree, const TSLanguage *, FILE *);
 Subtree		   ts_subtree_last_external_token(Subtree);
@@ -270,22 +238,9 @@ static inline t_u32 ts_subtree_repeat_depth(Subtree self)
 	return (self.ptr->repeat_depth);
 }
 
-static inline t_u32 ts_subtree_is_repetition(Subtree self)
-{
-	return (!self.ptr->named && !self.ptr->visible && self.ptr->child_count != 0);
-}
-
 static inline t_u32 ts_subtree_visible_descendant_count(Subtree self)
 {
 	return ((self.ptr->child_count == 0) ? 0 : self.ptr->visible_descendant_count);
-}
-
-static inline t_u32 ts_subtree_visible_child_count(Subtree self)
-{
-	if (ts_subtree_child_count(self) > 0)
-		return (self.ptr->visible_child_count);
-	else
-		return 0;
 }
 
 static inline t_u32 ts_subtree_error_cost(Subtree self)
@@ -299,14 +254,6 @@ static inline t_u32 ts_subtree_error_cost(Subtree self)
 static inline t_i32 ts_subtree_dynamic_precedence(Subtree self)
 {
 	return ((self.ptr->child_count == 0) ? 0 : self.ptr->dynamic_precedence);
-}
-
-static inline t_u16 ts_subtree_production_id(Subtree self)
-{
-	if (ts_subtree_child_count(self) > 0)
-		return (self.ptr->production_id);
-	else
-		return (0);
 }
 
 static inline bool ts_subtree_fragile_left(Subtree self)
@@ -332,11 +279,6 @@ static inline bool ts_subtree_has_external_scanner_state_change(Subtree self)
 static inline bool ts_subtree_depends_on_column(Subtree self)
 {
 	return (self.ptr->depends_on_column);
-}
-
-static inline bool ts_subtree_is_fragile(Subtree self)
-{
-	return ((self.ptr->fragile_left || self.ptr->fragile_right));
 }
 
 static inline bool ts_subtree_is_error(Subtree self)

@@ -14,7 +14,7 @@ TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *inc
 	result->root = root;
 	result->language = ts_language_copy(language);
 	result->included_ranges = mem_alloc_array(included_range_count, sizeof(TSRange));
-	memcpy(result->included_ranges, included_ranges, included_range_count * sizeof(TSRange));
+	mem_copy(result->included_ranges, included_ranges, included_range_count * sizeof(TSRange));
 	result->included_range_count = included_range_count;
 	return result;
 }
@@ -103,6 +103,6 @@ TSRange *ts_tree_included_ranges(const TSTree *self, t_u32 *length)
 {
 	*length = self->included_range_count;
 	TSRange *ranges = mem_alloc_array(self->included_range_count, sizeof(TSRange));
-	memcpy(ranges, self->included_ranges, self->included_range_count * sizeof(TSRange));
+	mem_copy(ranges, self->included_ranges, self->included_range_count * sizeof(TSRange));
 	return ranges;
 }

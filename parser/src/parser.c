@@ -20,14 +20,12 @@
 #define LOG_TREE(...)
 
 #define SYM_NAME(symbol) ts_language_symbol_name(self->language, symbol)
-
 #define TREE_NAME(tree) SYM_NAME(ts_subtree_symbol(tree))
 
 static const t_u32 MAX_VERSION_COUNT = 6;
 static const t_u32 MAX_VERSION_COUNT_OVERFLOW = 4;
-static const t_u32 MAX_SUMMARY_DEPTH = 16;
+static const t_u32 MAX_SUMMARY_DEPTH = 1;
 static const t_u32 MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
-static const t_u32 OP_COUNT_PER_TIMEOUT_CHECK = 100;
 
 typedef struct TokenCache
 {
@@ -38,8 +36,8 @@ typedef struct TokenCache
 
 struct TSParser
 {
-	Lexer				   lexer;
-	Stack				  *stack;
+	Lexer  lexer;
+	Stack *stack;
 	/* SubtreePool			   tree_pool; */
 	const TSLanguage	  *language;
 	ReduceActionSet		   reduce_actions;
@@ -340,34 +338,6 @@ static bool ts_parser__external_scanner_scan(TSParser *self, TSStateId external_
 	return self->language->external_scanner.scan(self->external_scanner_payload, &self->lexer.data, valid_external_tokens);
 }
 
-static bool ts_parser__can_reuse_first_leaf(TSParser *self, TSStateId state, Subtree tree, TableEntry *table_entry)
-{
-	TSLexMode current_lex_mode = self->language->lex_modes[state];
-	TSSymbol  leaf_symbol = ts_subtree_leaf_symbol(tree);
-	TSStateId leaf_state = ts_subtree_leaf_parse_state(tree);
-	TSLexMode leaf_lex_mode = self->language->lex_modes[leaf_state];
-
-	// At the end of a non-terminal extra node, the lexer normally returns
-	// NULL, which indicates that the parser should look for a reduce action
-	// at symbol `0`. Avoid reusing tokens in this situation to ensure that
-	// the same thing happens when incrementally reparsing.
-	if (current_lex_mode.lex_state == (t_u16)(-1))
-		return false;
-
-	// If the token was created in a state with the same set of lookaheads, it is reusable.
-	if (table_entry->action_count > 0 && memcmp(&leaf_lex_mode, &current_lex_mode, sizeof(TSLexMode)) == 0 &&
-		(leaf_symbol != self->language->keyword_capture_token || (!ts_subtree_is_keyword(tree) && ts_subtree_parse_state(tree) == state)))
-		return true;
-
-	// Empty tokens are not reusable in states with different lookaheads.
-	if (ts_subtree_size(tree).bytes == 0 && leaf_symbol != ts_builtin_sym_end)
-		return false;
-
-	// If the current state allows external tokens or other tokens that conflict with this
-	// token, this token is not reusable.
-	return current_lex_mode.external_lex_state == 0 && table_entry->is_reusable;
-}
-
 static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId parse_state)
 {
 	TSLexMode lex_mode = self->language->lex_modes[parse_state];
@@ -530,39 +500,6 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 
 	LOG_LOOKAHEAD(SYM_NAME(ts_subtree_symbol(result)), ts_subtree_total_size(result).bytes);
 	return result;
-}
-
-static Subtree ts_parser__get_cached_token(TSParser *self, TSStateId state, size_t position, Subtree last_external_token,
-										   TableEntry *table_entry)
-{
-	TokenCache *cache = &self->token_cache;
-	if (cache->token.ptr && cache->byte_index == position &&
-		ts_subtree_external_scanner_state_eq(cache->last_external_token, last_external_token))
-	{
-		ts_language_table_entry(self->language, state, ts_subtree_symbol(cache->token), table_entry);
-		if (ts_parser__can_reuse_first_leaf(self, state, cache->token, table_entry))
-		{
-			ts_subtree_retain(cache->token);
-			return cache->token;
-		}
-	}
-	return NULL_SUBTREE;
-}
-
-static void ts_parser__set_cached_token(TSParser *self, t_u32 byte_index, Subtree last_external_token, Subtree token)
-{
-	TokenCache *cache = &self->token_cache;
-	if (token.ptr)
-		ts_subtree_retain(token);
-	if (last_external_token.ptr)
-		ts_subtree_retain(last_external_token);
-	if (cache->token.ptr)
-		ts_subtree_release(/*&self->tree_pool, */ cache->token);
-	if (cache->last_external_token.ptr)
-		ts_subtree_release(/*&self->tree_pool, */ cache->last_external_token);
-	cache->token = token;
-	cache->byte_index = byte_index;
-	cache->last_external_token = last_external_token;
 }
 
 // Determine if a given tree should be replaced by an alternative tree.
@@ -1249,20 +1186,11 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 {
 	(void)(allow_node_reuse);
 	TSStateId state = ts_stack_state(self->stack, version);
-	t_u32	  position = ts_stack_position(self->stack, version).bytes;
-	Subtree	  last_external_token = ts_stack_last_external_token(self->stack, version);
 
 	Subtree	   lookahead = NULL_SUBTREE;
 	TableEntry table_entry = {.action_count = 0};
 
-	// If no node from the previous syntax tree could be reused, then try to
-	// reuse the token previously returned by the lexer.
-	if (!lookahead.ptr)
-	{
-		lookahead = ts_parser__get_cached_token(self, state, position, last_external_token, &table_entry);
-	}
-
-	bool needs_lex = !lookahead.ptr;
+	bool needs_lex = true;
 	for (;;)
 	{
 		// Otherwise, re-run the lexer.
@@ -1275,7 +1203,6 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 
 			if (lookahead.ptr)
 			{
-				ts_parser__set_cached_token(self, position, last_external_token, lookahead);
 				ts_language_table_entry(self->language, state, ts_subtree_symbol(lookahead), &table_entry);
 			}
 
@@ -1287,22 +1214,6 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 				ts_language_table_entry(self->language, state, ts_builtin_sym_end, &table_entry);
 			}
 		}
-
-		// If a cancellation flag or a timeout was provided, then check every
-		// time a fixed number of parse actions has been processed.
-		if (++self->operation_count == OP_COUNT_PER_TIMEOUT_CHECK)
-		{
-			self->operation_count = 0;
-		}
-		if (self->operation_count == 0 && ((self->cancellation_flag && *self->cancellation_flag)))
-		{
-			if (lookahead.ptr)
-			{
-				ts_subtree_release(/*&self->tree_pool,*/ lookahead);
-			}
-			return false;
-		}
-
 		// Process each parse action for the current lookahead token in
 		// the current state. If there are multiple actions, then this is
 		// an ambiguous state. REDUCE actions always create a new stack
@@ -1597,7 +1508,6 @@ TSParser *ts_parser_new(void)
 	self->operation_count = 0;
 	self->old_tree = NULL_SUBTREE;
 	self->included_range_difference_index = 0;
-	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	return self;
 }
 
@@ -1618,7 +1528,6 @@ void ts_parser_delete(TSParser *self)
 		self->old_tree = NULL_SUBTREE;
 	}
 	ts_lexer_delete(&self->lexer);
-	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	/* ts_subtree_pool_delete(&self->tree_pool); */
 	array_delete(&self->trailing_extras);
 	array_delete(&self->trailing_extras2);
@@ -1658,7 +1567,6 @@ void ts_parser_reset(TSParser *self)
 
 	ts_lexer_reset(&self->lexer, length_zero());
 	ts_stack_clear(self->stack);
-	ts_parser__set_cached_token(self, 0, NULL_SUBTREE, NULL_SUBTREE);
 	if (self->finished_tree.ptr)
 	{
 		ts_subtree_release(/*&self->tree_pool,*/ self->finished_tree);

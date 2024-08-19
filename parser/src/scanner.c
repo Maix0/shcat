@@ -118,11 +118,11 @@ static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
 		buffer[size++] = (char)heredoc->started;
 		buffer[size++] = (char)heredoc->allows_indent;
 
-		memcpy(&buffer[size], &heredoc->delimiter.size, sizeof(t_u32));
+		mem_copy(&buffer[size], &heredoc->delimiter.size, sizeof(t_u32));
 		size += sizeof(t_u32);
 		if (heredoc->delimiter.size > 0)
 		{
-			memcpy(&buffer[size], heredoc->delimiter.contents, heredoc->delimiter.size);
+			mem_copy(&buffer[size], heredoc->delimiter.contents, heredoc->delimiter.size);
 			size += heredoc->delimiter.size;
 		}
 	}
@@ -160,13 +160,13 @@ static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
 			heredoc->started = buffer[size++];
 			heredoc->allows_indent = buffer[size++];
 
-			memcpy(&heredoc->delimiter.size, &buffer[size], sizeof(t_u32));
+			mem_copy(&heredoc->delimiter.size, &buffer[size], sizeof(t_u32));
 			size += sizeof(t_u32);
 			array_reserve(&heredoc->delimiter, heredoc->delimiter.size);
 
 			if (heredoc->delimiter.size > 0)
 			{
-				memcpy(heredoc->delimiter.contents, &buffer[size], heredoc->delimiter.size);
+				mem_copy(heredoc->delimiter.contents, &buffer[size], heredoc->delimiter.size);
 				size += heredoc->delimiter.size;
 			}
 		}
