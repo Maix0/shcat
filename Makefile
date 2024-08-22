@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/08/19 14:00:31 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/08/22 16:39:40 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,13 +48,14 @@ endif
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL	+= -O0 
-CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits
+CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits -Wno-unused-command-line-argument
 CFLAGS_ADDITIONAL	+= -gcolumn-info -g3
 CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
 CFLAGS_ADDITIONAL	+= '-Dinline=' -Wno-unused-function
+CFLAGS_ADDITIONAL	+= '-Dstatic=' -Wno-unused-function
 #CFLAGS_ADDITIONAL 	+= -O2
 # CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols_count.log
-CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O0
+CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3 -Wl,--allow-multiple-definition
 
 export CFLAGS_ADDITIONAL
 export CC

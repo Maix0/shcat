@@ -6,7 +6,7 @@
 /*   By: maix <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 17:38:21 by maix              #+#    #+#             */
-/*   Updated: 2024/07/10 17:45:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:29:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#ifdef static
+#undef static
+#endif
 
 static t_static_buffer	*get_next_line_buffer(int fd)
 {

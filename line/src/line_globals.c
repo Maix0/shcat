@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:47:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 15:56:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:26:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #include "line/_line_internal.h"
 #include "line/_line_structs.h"
 #include "me/mem/mem.h"
+
+
+#ifdef static
+# undef static
+#endif
 
 t_const_str	get_unfinished_str(void)
 {

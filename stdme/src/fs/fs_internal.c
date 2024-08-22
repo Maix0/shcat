@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 15:18:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:23:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
+
+#ifdef static
+# undef static
+#endif
 
 t_fd_array	*get_fd_arrays(void)
 {

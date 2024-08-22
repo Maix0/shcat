@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 16:27:28 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 16:28:03 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/22 16:23:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
+
+#ifdef static
+# undef static
+#endif
 
 t_fd	*get_stdin(void)
 {

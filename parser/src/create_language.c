@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/04 14:12:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:25:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #include "../static/headers/symbols.h"
 #include "parser/parser.h"
 #include "me/types.h"
+
+
+#ifdef static
+# undef static
+#endif
 
 // bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);
 // bool	 lex_normal_main(TSLexer *lexer, TSStateId state);

@@ -34,24 +34,27 @@ struct StackNode
 	int		  dynamic_precedence;
 };
 
-typedef struct StackIterator
+typedef struct StackIterator StackIterator;
+struct StackIterator
 {
 	StackNode	*node;
 	SubtreeArray subtrees;
 	t_u32		 subtree_count;
 	bool		 is_pending;
-} StackIterator;
+};
 
 typedef Array(StackNode *) StackNodeArray;
 
-typedef enum StackStatus
+typedef enum StackStatus StackStatus;
+enum StackStatus
 {
 	StackStatusActive,
 	StackStatusPaused,
 	StackStatusHalted,
-} StackStatus;
+};
 
-typedef struct StackHead
+typedef struct StackHead StackHead;
+struct StackHead
 {
 	StackNode	 *node;
 	StackSummary *summary;
@@ -59,16 +62,14 @@ typedef struct StackHead
 	Subtree		  last_external_token;
 	Subtree		  lookahead_when_paused;
 	StackStatus	  status;
-} StackHead;
+};
 
 struct Stack
 {
 	Array(StackHead) heads;
 	StackSliceArray slices;
 	Array(StackIterator) iterators;
-	StackNodeArray node_pool;
-	StackNode	  *base_node;
-	/* SubtreePool	  *subtree_pool; */
+	StackNode *base_node;
 };
 
 typedef t_u32 StackAction;
@@ -90,7 +91,7 @@ static void stack_node_retain(StackNode *self)
 	assert(self->ref_count != 0);
 }
 
-static void stack_node_release(StackNode *self /*, StackNodeArray *pool */ /* , SubtreePool *subtree_pool */)
+static void stack_node_release(StackNode *self)
 {
 recur:
 	assert(self->ref_count != 0);
@@ -104,13 +105,13 @@ recur:
 		for (t_u32 i = self->link_count - 1; i > 0; i--)
 		{
 			StackLink link = self->links[i];
-			if (link.subtree.ptr)
-				ts_subtree_release(/*subtree_pool, */ link.subtree);
-			stack_node_release(link.node /*, pool*/ /* , subtree_pool */);
+			if (link.subtree)
+				ts_subtree_release(link.subtree);
+			stack_node_release(link.node);
 		}
 		StackLink link = self->links[0];
-		if (link.subtree.ptr)
-			ts_subtree_release(/*subtree_pool, */ link.subtree);
+		if (link.subtree)
+			ts_subtree_release(link.subtree);
 		first_predecessor = self->links[0].node;
 	}
 
@@ -140,9 +141,9 @@ static t_u32 stack__subtree_node_count(Subtree subtree)
 	return count;
 }
 
-static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree, bool is_pending, TSStateId state /*, StackNodeArray *pool */)
+static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree, bool is_pending, TSStateId state)
 {
-	StackNode *node = /* pool->size > 0 ? array_pop(pool) : */ mem_alloc(sizeof(StackNode));
+	StackNode *node = mem_alloc(sizeof(StackNode));
 	*node = (StackNode){.ref_count = 1, .link_count = 0, .state = state};
 
 	if (previous_node)
@@ -159,7 +160,7 @@ static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree, bool
 		node->dynamic_precedence = previous_node->dynamic_precedence;
 		node->node_count = previous_node->node_count;
 
-		if (subtree.ptr)
+		if (subtree)
 		{
 			node->error_cost += ts_subtree_error_cost(subtree);
 			node->position = length_add(node->position, ts_subtree_total_size(subtree));
@@ -178,9 +179,9 @@ static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree, bool
 
 static bool stack__subtree_is_equivalent(Subtree left, Subtree right)
 {
-	if (left.ptr == right.ptr)
+	if (left == right)
 		return true;
-	if (!left.ptr || !right.ptr)
+	if (!left || !right)
 		return false;
 
 	// Symbols must match
@@ -196,7 +197,7 @@ static bool stack__subtree_is_equivalent(Subtree left, Subtree right)
 			ts_subtree_extra(left) == ts_subtree_extra(right) && ts_subtree_external_scanner_state_eq(left, right));
 }
 
-static void stack_node_add_link(StackNode *self, StackLink link /* , SubtreePool *subtree_pool */)
+static void stack_node_add_link(StackNode *self, StackLink link)
 {
 	if (link.node == self)
 		return;
@@ -228,10 +229,10 @@ static void stack_node_add_link(StackNode *self, StackLink link /* , SubtreePool
 			{
 				for (int j = 0; j < link.node->link_count; j++)
 				{
-					stack_node_add_link(existing_link->node, link.node->links[j] /* , subtree_pool */);
+					stack_node_add_link(existing_link->node, link.node->links[j]);
 				}
 				t_i32 dynamic_precedence = link.node->dynamic_precedence;
-				if (link.subtree.ptr)
+				if (link.subtree)
 				{
 					dynamic_precedence += ts_subtree_dynamic_precedence(link.subtree);
 				}
@@ -252,7 +253,7 @@ static void stack_node_add_link(StackNode *self, StackLink link /* , SubtreePool
 	int	  dynamic_precedence = link.node->dynamic_precedence;
 	self->links[self->link_count++] = link;
 
-	if (link.subtree.ptr)
+	if (link.subtree)
 	{
 		ts_subtree_retain(link.subtree);
 		node_count += stack__subtree_node_count(link.subtree);
@@ -265,24 +266,24 @@ static void stack_node_add_link(StackNode *self, StackLink link /* , SubtreePool
 		self->dynamic_precedence = dynamic_precedence;
 }
 
-static void stack_head_delete(StackHead *self /*, StackNodeArray *pool */ /* , SubtreePool *subtree_pool */)
+static void stack_head_delete(StackHead *self)
 {
 	if (self->node)
 	{
-		if (self->last_external_token.ptr)
+		if (self->last_external_token)
 		{
-			ts_subtree_release(/*subtree_pool, */ self->last_external_token);
+			ts_subtree_release(self->last_external_token);
 		}
-		if (self->lookahead_when_paused.ptr)
+		if (self->lookahead_when_paused)
 		{
-			ts_subtree_release(/*subtree_pool, */ self->lookahead_when_paused);
+			ts_subtree_release(self->lookahead_when_paused);
 		}
 		if (self->summary)
 		{
 			array_delete(self->summary);
 			mem_free(self->summary);
 		}
-		stack_node_release(self->node /* , pool */ /* , subtree_pool */);
+		stack_node_release(self->node);
 	}
 }
 
@@ -297,7 +298,7 @@ static StackVersion ts_stack__add_version(Stack *self, StackVersion original_ver
 	};
 	array_push(&self->heads, head);
 	stack_node_retain(node);
-	if (head.last_external_token.ptr)
+	if (head.last_external_token)
 		ts_subtree_retain(head.last_external_token);
 	return (StackVersion)(self->heads.size - 1);
 }
@@ -368,7 +369,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version, StackCallb
 			{
 				if (!should_pop)
 				{
-					ts_subtree_array_delete(/*self->subtree_pool, */ &iterator->subtrees);
+					ts_subtree_array_delete(&iterator->subtrees);
 				}
 				array_erase(&self->iterators, i);
 				i--, size--;
@@ -396,7 +397,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version, StackCallb
 				}
 
 				next_iterator->node = link.node;
-				if (link.subtree.ptr)
+				if (link.subtree)
 				{
 					if (include_subtrees)
 					{
@@ -425,7 +426,7 @@ static StackSliceArray stack__iter(Stack *self, StackVersion version, StackCallb
 	return self->slices;
 }
 
-Stack *ts_stack_new(/* SubtreePool *subtree_pool */)
+Stack *ts_stack_new(void)
 {
 	Stack *self;
 
@@ -434,14 +435,12 @@ Stack *ts_stack_new(/* SubtreePool *subtree_pool */)
 	array_init(&self->heads);
 	array_init(&self->slices);
 	array_init(&self->iterators);
-	array_init(&self->node_pool);
 	array_reserve(&self->heads, 4);
 	array_reserve(&self->slices, 4);
 	array_reserve(&self->iterators, 4);
-	self->node_pool = (StackNodeArray)array_new();
 
 	/* self->subtree_pool = subtree_pool; */
-	self->base_node = stack_node_new(NULL, NULL_SUBTREE, false, 1 /* , &self->node_pool */);
+	self->base_node = stack_node_new(NULL, NULL_SUBTREE, false, 1);
 	ts_stack_clear(self);
 
 	return self;
@@ -453,18 +452,12 @@ void ts_stack_delete(Stack *self)
 		array_delete(&self->slices);
 	if (self->iterators.contents)
 		array_delete(&self->iterators);
-	stack_node_release(self->base_node /* , &self->node_pool */ /* , self->subtree_pool */);
+	stack_node_release(self->base_node);
 	for (t_u32 i = 0; i < self->heads.size; i++)
 	{
-		stack_head_delete(&self->heads.contents[i] /* , &self->node_pool */ /* , self->subtree_pool */);
+		stack_head_delete(&self->heads.contents[i]);
 	}
 	array_clear(&self->heads);
-	if (self->node_pool.contents)
-	{
-		for (t_u32 i = 0; i < self->node_pool.size; i++)
-			mem_free(self->node_pool.contents[i]);
-		array_delete(&self->node_pool);
-	}
 	array_delete(&self->heads);
 	mem_free(self);
 }
@@ -492,9 +485,9 @@ Subtree ts_stack_last_external_token(const Stack *self, StackVersion version)
 void ts_stack_set_last_external_token(Stack *self, StackVersion version, Subtree token)
 {
 	StackHead *head = array_get(&self->heads, version);
-	if (token.ptr)
+	if (token)
 		ts_subtree_retain(token);
-	if (head->last_external_token.ptr)
+	if (head->last_external_token)
 		ts_subtree_release(/*self->subtree_pool, */ head->last_external_token);
 	head->last_external_token = token;
 }
@@ -503,7 +496,7 @@ t_u32 ts_stack_error_cost(const Stack *self, StackVersion version)
 {
 	StackHead *head = array_get(&self->heads, version);
 	t_u32	   result = head->node->error_cost;
-	if (head->status == StackStatusPaused || (head->node->state == ERROR_STATE && !head->node->links[0].subtree.ptr))
+	if (head->status == StackStatusPaused || (head->node->state == ERROR_STATE && !head->node->links[0].subtree))
 	{
 		result += ERROR_COST_PER_RECOVERY;
 	}
@@ -523,8 +516,8 @@ t_u32 ts_stack_node_count_since_error(const Stack *self, StackVersion version)
 void ts_stack_push(Stack *self, StackVersion version, Subtree subtree, bool pending, TSStateId state)
 {
 	StackHead *head = array_get(&self->heads, version);
-	StackNode *new_node = stack_node_new(head->node, subtree, pending, state /* , &self->node_pool */);
-	if (!subtree.ptr)
+	StackNode *new_node = stack_node_new(head->node, subtree, pending, state);
+	if (!subtree)
 		head->node_count_at_last_error = new_node->node_count;
 	head->node = new_node;
 }
@@ -604,7 +597,7 @@ SubtreeArray ts_stack_pop_error(Stack *self, StackVersion version)
 	StackNode *node = array_get(&self->heads, version)->node;
 	for (t_u32 i = 0; i < node->link_count; i++)
 	{
-		if (node->links[i].subtree.ptr && ts_subtree_is_error(node->links[i].subtree))
+		if (node->links[i].subtree && ts_subtree_is_error(node->links[i].subtree))
 		{
 			bool			found_error = false;
 			StackSliceArray pop = stack__iter(self, version, pop_error_callback, &found_error, 1);
@@ -695,7 +688,7 @@ bool ts_stack_has_advanced_since_error(const Stack *self, StackVersion version)
 		if (node->link_count > 0)
 		{
 			Subtree subtree = node->links[0].subtree;
-			if (subtree.ptr)
+			if (subtree)
 			{
 				if (ts_subtree_total_bytes(subtree) > 0)
 				{
@@ -715,7 +708,7 @@ bool ts_stack_has_advanced_since_error(const Stack *self, StackVersion version)
 
 void ts_stack_remove_version(Stack *self, StackVersion version)
 {
-	stack_head_delete(array_get(&self->heads, version) /* , &self->node_pool  */ /* , self->subtree_pool */);
+	stack_head_delete(array_get(&self->heads, version));
 	array_erase(&self->heads, version);
 }
 
@@ -732,7 +725,7 @@ void ts_stack_renumber_version(Stack *self, StackVersion v1, StackVersion v2)
 		source_head->summary = target_head->summary;
 		target_head->summary = NULL;
 	}
-	stack_head_delete(target_head /* , &self->node_pool  */ /* , self->subtree_pool */);
+	stack_head_delete(target_head);
 	*target_head = *source_head;
 	array_erase(&self->heads, v1);
 }
@@ -750,7 +743,7 @@ StackVersion ts_stack_copy_version(Stack *self, StackVersion version)
 	array_push(&self->heads, self->heads.contents[version]);
 	StackHead *head = array_back(&self->heads);
 	stack_node_retain(head->node);
-	if (head->last_external_token.ptr)
+	if (head->last_external_token)
 		ts_subtree_retain(head->last_external_token);
 	head->summary = NULL;
 	return self->heads.size - 1;
@@ -764,7 +757,7 @@ bool ts_stack_merge(Stack *self, StackVersion version1, StackVersion version2)
 	StackHead *head2 = &self->heads.contents[version2];
 	for (t_u32 i = 0; i < head2->node->link_count; i++)
 	{
-		stack_node_add_link(head1->node, head2->node->links[i] /* , self->subtree_pool */);
+		stack_node_add_link(head1->node, head2->node->links[i]);
 	}
 	if (head1->node->state == ERROR_STATE)
 	{
@@ -826,7 +819,7 @@ void ts_stack_clear(Stack *self)
 	stack_node_retain(self->base_node);
 	for (t_u32 i = 0; i < self->heads.size; i++)
 	{
-		stack_head_delete(&self->heads.contents[i] /* , &self->node_pool */ /* , self->subtree_pool */);
+		stack_head_delete(&self->heads.contents[i]);
 	}
 	array_clear(&self->heads);
 	array_push(&self->heads, ((StackHead){

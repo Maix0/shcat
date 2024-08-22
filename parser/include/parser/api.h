@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 13:54:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/19 14:21:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 15:22:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,16 +113,19 @@ typedef struct TSInputEdit
 
 typedef struct TSNode
 {
-	t_u32		  context[4];
+	t_u32		  start_byte;
+	t_u32		  start_row;
+	t_u32		  start_col;
+	t_u32		  alias;
 	const void	 *id;
 	const TSTree *tree;
 } TSNode;
 
-typedef TSNode t_parse_node;
-typedef TSSymbol t_symbol;
-typedef TSParser t_first_parser;
+typedef TSNode	   t_parse_node;
+typedef TSSymbol   t_symbol;
+typedef TSParser   t_first_parser;
 typedef TSLanguage t_language;
-typedef TSTree t_first_tree;
+typedef TSTree	   t_first_tree;
 
 typedef struct TSTreeCursor
 {

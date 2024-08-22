@@ -235,7 +235,7 @@ static ErrorStatus ts_parser__version_status(TSParser *self, StackVersion versio
 
 static bool ts_parser__better_version_exists(TSParser *self, StackVersion version, bool is_in_error, t_u32 cost)
 {
-	if (self->finished_tree.ptr && ts_subtree_error_cost(self->finished_tree) <= cost)
+	if (self->finished_tree && ts_subtree_error_cost(self->finished_tree) <= cost)
 	{
 		return true;
 	}
@@ -314,10 +314,10 @@ static void ts_parser__external_scanner_deserialize(TSParser *self, Subtree exte
 {
 	const t_u8 *data = NULL;
 	t_u32		length = 0;
-	if (external_token.ptr)
+	if (external_token)
 	{
-		data = ts_external_scanner_state_data(&external_token.ptr->external_scanner_state);
-		length = external_token.ptr->external_scanner_state.length;
+		data = ts_external_scanner_state_data(&external_token->external_scanner_state);
+		length = external_token->external_scanner_state.length;
 	}
 
 	self->language->external_scanner.deserialize(self->external_scanner_payload, data, length);
@@ -484,8 +484,8 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 		if (found_external_token)
 		{
 			MutableSubtree mut_result = ts_subtree_to_mut_unsafe(result);
-			ts_external_scanner_state_init(&mut_result.ptr->external_scanner_state, self->lexer.debug_buffer, external_scanner_state_len);
-			mut_result.ptr->has_external_scanner_state_change = external_scanner_state_changed;
+			ts_external_scanner_state_init(&mut_result->external_scanner_state, self->lexer.debug_buffer, external_scanner_state_len);
+			mut_result->has_external_scanner_state_change = external_scanner_state_changed;
 		}
 	}
 
@@ -500,9 +500,9 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 static bool ts_parser__select_tree(TSParser *self, Subtree left, Subtree right)
 {
 	(void)(self);
-	if (!left.ptr)
+	if (!left)
 		return true;
-	if (!right.ptr)
+	if (!right)
 		return false;
 
 	if (ts_subtree_error_cost(right) < ts_subtree_error_cost(left))
@@ -660,19 +660,19 @@ static StackVersion ts_parser__reduce(TSParser *self, StackVersion version, TSSy
 		TSStateId next_state = ts_language_next_state(self->language, state, symbol);
 		if (end_of_non_terminal_extra && next_state == state)
 		{
-			parent.ptr->extra = true;
+			parent->extra = true;
 		}
 		if (is_fragile || pop.size > 1 || initial_version_count > 1)
 		{
-			parent.ptr->fragile_left = true;
-			parent.ptr->fragile_right = true;
-			parent.ptr->parse_state = TS_TREE_STATE_NONE;
+			parent->fragile_left = true;
+			parent->fragile_right = true;
+			parent->parse_state = TS_TREE_STATE_NONE;
 		}
 		else
 		{
-			parent.ptr->parse_state = state;
+			parent->parse_state = state;
 		}
-		parent.ptr->dynamic_precedence += dynamic_precedence;
+		parent->dynamic_precedence += dynamic_precedence;
 
 		// Push the parent node onto the stack, along with any extra tokens that
 		// were previously on top of the stack.
@@ -721,16 +721,16 @@ static void ts_parser__accept(TSParser *self, StackVersion version, Subtree look
 					ts_subtree_retain(children[k]);
 				}
 				array_splice(&trees, j, 1, child_count, children);
-				root = ts_subtree_from_mut(ts_subtree_new_node(ts_subtree_symbol(tree), &trees, tree.ptr->production_id, self->language));
+				root = ts_subtree_from_mut(ts_subtree_new_node(ts_subtree_symbol(tree), &trees, tree->production_id, self->language));
 				ts_subtree_release(/*&self->tree_pool, */ tree);
 				break;
 			}
 		}
 
-		assert(root.ptr);
+		assert(root);
 		self->accept_count++;
 
-		if (self->finished_tree.ptr)
+		if (self->finished_tree)
 		{
 			if (ts_parser__select_tree(self, self->finished_tree, root))
 			{
@@ -1192,7 +1192,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 			if (self->has_scanner_error)
 				return false;
 
-			if (lookahead.ptr)
+			if (lookahead)
 			{
 				ts_language_table_entry(self->language, state, ts_subtree_symbol(lookahead), &table_entry);
 			}
@@ -1245,7 +1245,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 
 			case TSParseActionTypeReduce: {
 				bool is_fragile = table_entry.action_count > 1;
-				bool end_of_non_terminal_extra = lookahead.ptr == NULL;
+				bool end_of_non_terminal_extra = lookahead == NULL;
 				LOG("reduce sym:%s, child_count:%u", SYM_NAME(action.reduce.symbol), action.reduce.child_count);
 				StackVersion reduction_version =
 					ts_parser__reduce(self, version, action.reduce.symbol, action.reduce.child_count, action.reduce.dynamic_precedence,
@@ -1285,7 +1285,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 			// regardless of the lookahead node. After performing that reduction,
 			// (and completing the non-terminal extra rule) run the lexer again based
 			// on the current parse state.
-			if (!lookahead.ptr)
+			if (!lookahead)
 			{
 				needs_lex = true;
 			}
@@ -1299,7 +1299,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 
 		// A non-terminal extra rule was reduced and merged into an existing
 		// stack version. This version can be discarded.
-		if (!lookahead.ptr)
+		if (!lookahead)
 		{
 			ts_stack_halt(self->stack, version);
 			return true;
@@ -1546,7 +1546,7 @@ void ts_parser_reset(TSParser *self)
 	ts_parser__external_scanner_destroy(self);
 	ts_lexer_reset(&self->lexer, length_zero());
 	ts_stack_clear(self->stack);
-	if (self->finished_tree.ptr)
+	if (self->finished_tree)
 	{
 		ts_subtree_release(/*&self->tree_pool,*/ self->finished_tree);
 		self->finished_tree = NULL_SUBTREE;
@@ -1617,7 +1617,7 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 		// then terminate parsing. Clear the parse stack to remove any extra references to subtrees
 		// within the finished tree, ensuring that these subtrees can be safely mutated in-place
 		// for rebalancing.
-		if (self->finished_tree.ptr && ts_subtree_error_cost(self->finished_tree) < min_error_cost)
+		if (self->finished_tree && ts_subtree_error_cost(self->finished_tree) < min_error_cost)
 		{
 			ts_stack_clear(self->stack);
 			break;
@@ -1625,7 +1625,7 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 
 	} while (version_count != 0);
 
-	assert(self->finished_tree.ptr);
+	assert(self->finished_tree);
 	ts_subtree_balance(self->finished_tree, /*&self->tree_pool,*/ self->language);
 	LOG("done");
 	LOG_TREE(self->finished_tree);

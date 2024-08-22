@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 18:26:27 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 17:48:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:23:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include "aq/melloc.h"
 #include "me/types.h"
 #include <stdio.h>
+
+#ifdef static
+# undef static
+#endif
 
 t_allocator	*global_allocator(void)
 {

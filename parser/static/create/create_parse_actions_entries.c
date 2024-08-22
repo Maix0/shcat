@@ -6,13 +6,18 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:25:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../types/type_parse_actions_entries.h"
 #include "../types/type_parse_actions_entries.h"
 #include "../parse_actions_entries/parse_actions_entries.h"
+
+
+#ifdef static
+# undef static
+#endif
 
 t_parse_actions_entries_array	*create_parse_actions_entries(void)
 {

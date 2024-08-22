@@ -6,12 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:25:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../types/type_unique_symbols_map.h"
 #include "../unique_symbols_map/unique_symbols_map.h"
+
+
+#ifdef static
+# undef static
+#endif
 
 t_unique_symbols_map_array	*create_unique_symbols_map(void)
 {

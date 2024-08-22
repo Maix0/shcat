@@ -6,12 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:25:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../types/type_field_map_slices.h"
 #include "../field_map_slices/field_map_slices.h"
+
+#ifdef static
+# undef static
+#endif
+
 
 t_field_map_slices_array	*create_field_map_slices(void)
 {

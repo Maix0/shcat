@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 18:07:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/08 19:37:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:23:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef static
+# undef static
+#endif
 
 t_matcher_list	*get_matchers(void)
 {
