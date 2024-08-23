@@ -5,16 +5,6 @@
 #include <assert.h>
 #include <string.h>
 
-const TSLanguage *ts_language_copy(const TSLanguage *self)
-{
-	return (self);
-}
-
-void ts_language_delete(const TSLanguage *self)
-{
-	(void)(self);
-}
-
 t_u32 ts_language_symbol_count(const TSLanguage *self)
 {
 	return (self->symbol_count + self->alias_count);

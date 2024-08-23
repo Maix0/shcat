@@ -1528,16 +1528,7 @@ const TSLanguage *ts_parser_language(const TSParser *self)
 bool ts_parser_set_language(TSParser *self, const TSLanguage *language)
 {
 	ts_parser_reset(self);
-	ts_language_delete(self->language);
-	self->language = NULL;
-
-	if (language)
-	{
-		if (language->version > TREE_SITTER_LANGUAGE_VERSION || language->version < TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION)
-			return false;
-	}
-
-	self->language = ts_language_copy(language);
+	self->language = language;
 	return true;
 }
 
@@ -1548,7 +1539,7 @@ void ts_parser_reset(TSParser *self)
 	ts_stack_clear(self->stack);
 	if (self->finished_tree)
 	{
-		ts_subtree_release(/*&self->tree_pool,*/ self->finished_tree);
+		ts_subtree_release(self->finished_tree);
 		self->finished_tree = NULL_SUBTREE;
 	}
 	self->accept_count = 0;

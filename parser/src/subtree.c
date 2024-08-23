@@ -71,18 +71,18 @@ void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
 	}
 }
 
-void ts_subtree_array_clear(/*SubtreePool *pool, */ SubtreeArray *self)
+void ts_subtree_array_clear( SubtreeArray *self)
 {
 	for (t_u32 i = 0; i < self->size; i++)
 	{
-		ts_subtree_release(/*pool,*/ self->contents[i]);
+		ts_subtree_release( self->contents[i]);
 	}
 	array_clear(self);
 }
 
-void ts_subtree_array_delete(/*SubtreePool *pool,*/ SubtreeArray *self)
+void ts_subtree_array_delete( SubtreeArray *self)
 {
-	ts_subtree_array_clear(/*pool, */ self);
+	ts_subtree_array_clear( self);
 	array_delete(self);
 }
 
@@ -116,39 +116,14 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 	}
 }
 
-// SubtreePool
-
-/* SubtreePool ts_subtree_pool_new(t_u32 capacity) */
-/* { */
-/* 	SubtreePool self = {array_new(), array_new()}; */
-/* 	array_reserve(&self.free_trees, capacity); */
-/* 	return self; */
-/* } */
-/**/
-/* void ts_subtree_pool_delete(SubtreePool *self) */
-/* { */
-/* 	if (self->free_trees.contents) */
-/* 	{ */
-/* 		for (t_u32 i = 0; i < self->free_trees.size; i++) */
-/* 			mem_free(self->free_trees.contents[i]); */
-/* 		array_delete(&self->free_trees); */
-/* 	} */
-/* 	if (self->tree_stack.contents) */
-/* 		array_delete(&self->tree_stack); */
-/* } */
-/**/
-// Subtree
 
 Subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId parse_state,
 							bool has_external_tokens, bool depends_on_column, bool is_keyword, const TSLanguage *language)
-// Subtree ts_subtree_new_leaf(SubtreePool *pool, TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId
-// parse_state, 							bool has_external_tokens, bool depends_on_column, bool is_keyword, const TSLanguage *language)
 {
 	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
 	bool			 extra = symbol == ts_builtin_sym_end;
 
 	{
-		//--REMOVE-- (void)pool;
 		SubtreeHeapData *data = mem_alloc(sizeof(*data));
 		*data = (SubtreeHeapData){.ref_count = 1,
 								  .padding = padding,
@@ -184,11 +159,11 @@ void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol, const TSLangua
 	}
 }
 
-Subtree ts_subtree_new_error(/*SubtreePool *pool,*/ t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned,
+Subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned,
 							 TSStateId parse_state, const TSLanguage *language)
 {
 	Subtree result =
-		ts_subtree_new_leaf(/*pool,*/ ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
+		ts_subtree_new_leaf(ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
 	SubtreeHeapData *data = (SubtreeHeapData *)result;
 	data->fragile_left = true;
 	data->fragile_right = true;
@@ -224,12 +199,12 @@ MutableSubtree ts_subtree_clone(Subtree self)
 // This takes ownership of the subtree. If the subtree has only one owner,
 // this will directly convert it into a mutable version. Otherwise, it will
 // perform a copy.
-MutableSubtree ts_subtree_make_mut(/*SubtreePool *pool,*/ Subtree self)
+MutableSubtree ts_subtree_make_mut( Subtree self)
 {
 	if (self->ref_count == 1)
 		return ts_subtree_to_mut_unsafe(self);
 	MutableSubtree result = ts_subtree_clone(self);
-	ts_subtree_release(/*pool, */ self);
+	ts_subtree_release( self);
 	return result;
 }
 
@@ -271,9 +246,7 @@ static void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLangu
 }
 
 void ts_subtree_balance(Subtree self, const TSLanguage *language)
-// void ts_subtree_balance(Subtree self, SubtreePool *pool, const TSLanguage *language)
 {
-	//--REMOVE-- (void)pool;
 
 	MutableSubtreeArray balance_stack = array_new();
 	array_clear(&balance_stack);
@@ -509,10 +482,10 @@ Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra, const TSLa
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_missing_leaf(/*SubtreePool *pool,*/ TSSymbol symbol, Length padding, t_u32 lookahead_bytes,
+Subtree ts_subtree_new_missing_leaf( TSSymbol symbol, Length padding, t_u32 lookahead_bytes,
 									const TSLanguage *language)
 {
-	Subtree result = ts_subtree_new_leaf(/*pool, */ symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
+	Subtree result = ts_subtree_new_leaf(symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
 	((SubtreeHeapData *)result)->is_missing = true;
 	return result;
 }
@@ -525,9 +498,7 @@ void ts_subtree_retain(Subtree self)
 }
 
 void ts_subtree_release(Subtree self)
-// void ts_subtree_release(SubtreePool *pool, Subtree self)
 {
-	//--REMOVE-- (void)(pool);
 	MutableSubtreeArray to_free;
 
 	to_free = (MutableSubtreeArray)array_new();
@@ -568,11 +539,9 @@ void ts_subtree_release(Subtree self)
 }
 
 int ts_subtree_compare(Subtree left, Subtree right)
-// int ts_subtree_compare(Subtree left, Subtree right, SubtreePool *pool)
 {
 	MutableSubtreeArray compare_stack = array_new();
 
-	//--REMOVE-- (void)(pool);
 	array_push(&compare_stack, ts_subtree_to_mut_unsafe(left));
 	array_push(&compare_stack, ts_subtree_to_mut_unsafe(right));
 
@@ -608,139 +577,6 @@ int ts_subtree_compare(Subtree left, Subtree right)
 
 	array_delete(&compare_stack);
 	return 0;
-}
-
-static inline void ts_subtree_set_has_changes(MutableSubtree *self)
-{
-	(*self)->has_changes = true;
-}
-
-Subtree ts_subtree_edit(Subtree self, const TSInputEdit *input_edit /*, SubtreePool *pool*/)
-{
-	typedef struct
-	{
-		Subtree *tree;
-		Edit	 edit;
-	} EditEntry;
-
-	Array(EditEntry) stack = array_new();
-	array_push(&stack, ((EditEntry){
-						   .tree = &self,
-						   .edit =
-							   (Edit){
-								   .start = {input_edit->start_byte, input_edit->start_point},
-								   .old_end = {input_edit->old_end_byte, input_edit->old_end_point},
-								   .new_end = {input_edit->new_end_byte, input_edit->new_end_point},
-							   },
-					   }));
-
-	while (stack.size)
-	{
-		EditEntry entry = array_pop(&stack);
-		Edit	  edit = entry.edit;
-		bool	  is_noop = edit.old_end.bytes == edit.start.bytes && edit.new_end.bytes == edit.start.bytes;
-		bool	  is_pure_insertion = edit.old_end.bytes == edit.start.bytes;
-		bool	  invalidate_first_row = ts_subtree_depends_on_column(*entry.tree);
-
-		Length size = ts_subtree_size(*entry.tree);
-		Length padding = ts_subtree_padding(*entry.tree);
-		Length total_size = length_add(padding, size);
-		t_u32  lookahead_bytes = ts_subtree_lookahead_bytes(*entry.tree);
-		t_u32  end_byte = total_size.bytes + lookahead_bytes;
-		if (edit.start.bytes > end_byte || (is_noop && edit.start.bytes == end_byte))
-			continue;
-
-		// If the edit is entirely within the space before this subtree, then shift this
-		// subtree over according to the edit without changing its size.
-		if (edit.old_end.bytes <= padding.bytes)
-		{
-			padding = length_add(edit.new_end, length_sub(padding, edit.old_end));
-		}
-
-		// If the edit starts in the space before this subtree and extends into this subtree,
-		// shrink the subtree's content to compensate for the change in the space before it.
-		else if (edit.start.bytes < padding.bytes)
-		{
-			size = length_saturating_sub(size, length_sub(edit.old_end, padding));
-			padding = edit.new_end;
-		}
-
-		// If the edit is a pure insertion right at the start of the subtree,
-		// shift the subtree over according to the insertion.
-		else if (edit.start.bytes == padding.bytes && is_pure_insertion)
-		{
-			padding = edit.new_end;
-		}
-
-		// If the edit is within this subtree, resize the subtree to reflect the edit.
-		else if (edit.start.bytes < total_size.bytes || (edit.start.bytes == total_size.bytes && is_pure_insertion))
-		{
-			size = length_add(length_sub(edit.new_end, padding), length_saturating_sub(total_size, edit.old_end));
-		}
-
-		MutableSubtree result = ts_subtree_make_mut(/* pool, */ *entry.tree);
-
-		{
-			result->padding = padding;
-			result->size = size;
-		}
-
-		ts_subtree_set_has_changes(&result);
-		*entry.tree = ts_subtree_from_mut(result);
-
-		Length child_left, child_right = length_zero();
-		for (t_u32 i = 0, n = ts_subtree_child_count(*entry.tree); i < n; i++)
-		{
-			Subtree *child = &ts_subtree_children(*entry.tree)[i];
-			Length	 child_size = ts_subtree_total_size(*child);
-			child_left = child_right;
-			child_right = length_add(child_left, child_size);
-
-			// If this child ends before the edit, it is not affected.
-			if (child_right.bytes + ts_subtree_lookahead_bytes(*child) < edit.start.bytes)
-				continue;
-
-			// Keep editing child nodes until a node is reached that starts after the edit.
-			// Also, if this node's validity depends on its column position, then continue
-			// invaliditing child nodes until reaching a line break.
-			if (((child_left.bytes > edit.old_end.bytes) || (child_left.bytes == edit.old_end.bytes && child_size.bytes > 0 && i > 0)) &&
-				(!invalidate_first_row || child_left.extent.row > (*entry.tree)->padding.extent.row))
-			{
-				break;
-			}
-
-			// Transform edit into the child's coordinate space.
-			Edit child_edit = {
-				.start = length_saturating_sub(edit.start, child_left),
-				.old_end = length_saturating_sub(edit.old_end, child_left),
-				.new_end = length_saturating_sub(edit.new_end, child_left),
-			};
-
-			// Interpret all inserted text as applying to the *first* child that touches the edit.
-			// Subsequent children are only never have any text inserted into them; they are only
-			// shrunk to compensate for the edit.
-			if (child_right.bytes > edit.start.bytes || (child_right.bytes == edit.start.bytes && is_pure_insertion))
-			{
-				edit.new_end = edit.start;
-			}
-
-			// Children that occur before the edit are not reshaped by the edit.
-			else
-			{
-				child_edit.old_end = child_edit.start;
-				child_edit.new_end = child_edit.start;
-			}
-
-			// Queue processing of this child's subtree.
-			array_push(&stack, ((EditEntry){
-								   .tree = child,
-								   .edit = child_edit,
-							   }));
-		}
-	}
-
-	array_delete(&stack);
-	return self;
 }
 
 Subtree ts_subtree_last_external_token(Subtree tree)
