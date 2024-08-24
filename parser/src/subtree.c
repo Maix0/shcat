@@ -1,57 +1,16 @@
 #include <assert.h>
-#include <ctype.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include "parser/array.h"
+#include "parser/external_scanner_state.h"
 #include "parser/language.h"
 #include "parser/length.h"
 #include "parser/subtree.h"
 
-typedef struct
-{
-	Length start;
-	Length old_end;
-	Length new_end;
-} Edit;
-
 #define TS_MAX_INLINE_TREE_LENGTH 0
 #define TS_MAX_TREE_POOL_SIZE 0
-
-// ExternalScannerState
-
-void ts_external_scanner_state_init(ExternalScannerState *self, const t_u8 *data, t_u32 length)
-{
-	self->length = length;
-	self->long_data = mem_alloc(length);
-	mem_copy(self->long_data, data, length);
-}
-
-ExternalScannerState ts_external_scanner_state_copy(const ExternalScannerState *self)
-{
-	ExternalScannerState result = *self;
-	result.long_data = mem_alloc(self->length);
-	mem_copy(result.long_data, self->long_data, self->length);
-	return result;
-}
-
-void ts_external_scanner_state_delete(ExternalScannerState *self)
-{
-	mem_free(self->long_data);
-}
-
-const t_u8 *ts_external_scanner_state_data(const ExternalScannerState *self)
-{
-	return (const t_u8 *)self->long_data;
-}
-
-bool ts_external_scanner_state_eq(const ExternalScannerState *self, const t_u8 *buffer, t_u32 length)
-{
-	return self->length == length && mem_compare(ts_external_scanner_state_data(self), buffer, length);
-}
 
 // SubtreeArray
 
@@ -71,18 +30,18 @@ void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
 	}
 }
 
-void ts_subtree_array_clear( SubtreeArray *self)
+void ts_subtree_array_clear(SubtreeArray *self)
 {
 	for (t_u32 i = 0; i < self->size; i++)
 	{
-		ts_subtree_release( self->contents[i]);
+		ts_subtree_release(self->contents[i]);
 	}
 	array_clear(self);
 }
 
-void ts_subtree_array_delete( SubtreeArray *self)
+void ts_subtree_array_delete(SubtreeArray *self)
 {
-	ts_subtree_array_clear( self);
+	ts_subtree_array_clear(self);
 	array_delete(self);
 }
 
@@ -115,7 +74,6 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 		self->contents[reverse_index] = swap;
 	}
 }
-
 
 Subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId parse_state,
 							bool has_external_tokens, bool depends_on_column, bool is_keyword, const TSLanguage *language)
@@ -159,11 +117,10 @@ void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol, const TSLangua
 	}
 }
 
-Subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned,
-							 TSStateId parse_state, const TSLanguage *language)
+Subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned, TSStateId parse_state,
+							 const TSLanguage *language)
 {
-	Subtree result =
-		ts_subtree_new_leaf(ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
+	Subtree result = ts_subtree_new_leaf(ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
 	SubtreeHeapData *data = (SubtreeHeapData *)result;
 	data->fragile_left = true;
 	data->fragile_right = true;
@@ -199,12 +156,12 @@ MutableSubtree ts_subtree_clone(Subtree self)
 // This takes ownership of the subtree. If the subtree has only one owner,
 // this will directly convert it into a mutable version. Otherwise, it will
 // perform a copy.
-MutableSubtree ts_subtree_make_mut( Subtree self)
+MutableSubtree ts_subtree_make_mut(Subtree self)
 {
 	if (self->ref_count == 1)
 		return ts_subtree_to_mut_unsafe(self);
 	MutableSubtree result = ts_subtree_clone(self);
-	ts_subtree_release( self);
+	ts_subtree_release(self);
 	return result;
 }
 
@@ -399,8 +356,8 @@ void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *langua
 
 	if (self->symbol == ts_builtin_sym_error || self->symbol == ts_builtin_sym_error_repeat)
 	{
-		self->error_cost += ERROR_COST_PER_RECOVERY + ERROR_COST_PER_SKIPPED_CHAR * self->size.bytes +
-								ERROR_COST_PER_SKIPPED_LINE * self->size.extent.row;
+		self->error_cost +=
+			ERROR_COST_PER_RECOVERY + ERROR_COST_PER_SKIPPED_CHAR * self->size.bytes + ERROR_COST_PER_SKIPPED_LINE * self->size.extent.row;
 	}
 
 	if (self->child_count > 0)
@@ -482,8 +439,7 @@ Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra, const TSLa
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_missing_leaf( TSSymbol symbol, Length padding, t_u32 lookahead_bytes,
-									const TSLanguage *language)
+Subtree ts_subtree_new_missing_leaf(TSSymbol symbol, Length padding, t_u32 lookahead_bytes, const TSLanguage *language)
 {
 	Subtree result = ts_subtree_new_leaf(symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
 	((SubtreeHeapData *)result)->is_missing = true;
@@ -596,31 +552,4 @@ Subtree ts_subtree_last_external_token(Subtree tree)
 		}
 	}
 	return tree;
-}
-
-const ExternalScannerState *ts_subtree_external_scanner_state(Subtree self)
-{
-	#ifdef static
-	#undef static
-	#define __REAPPLY_STATIC
-	#endif
-	static const ExternalScannerState empty_state = {{NULL}, .length = 0};
-	#ifdef __REAPPLY_STATIC
-	#define static 
-	#endif
-	if (self && self->has_external_tokens && self->child_count == 0)
-	{
-		return &self->external_scanner_state;
-	}
-	else
-	{
-		return &empty_state;
-	}
-}
-
-bool ts_subtree_external_scanner_state_eq(Subtree self, Subtree other)
-{
-	const ExternalScannerState *state_self = ts_subtree_external_scanner_state(self);
-	const ExternalScannerState *state_other = ts_subtree_external_scanner_state(other);
-	return ts_external_scanner_state_eq(state_self, ts_external_scanner_state_data(state_other), state_other->length);
 }

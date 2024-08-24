@@ -4,6 +4,7 @@
 #include "me/types.h"
 #include "parser/api.h"
 #include "parser/array.h"
+#include "parser/external_scanner_state.h"
 #include "parser/length.h"
 #include "parser/parser.h"
 #include <limits.h>
@@ -14,26 +15,6 @@
 #define TS_PTR_SIZE 64
 #define TS_TREE_STATE_NONE USHRT_MAX
 #define NULL_SUBTREE ((Subtree)NULL)
-
-struct ExternalScannerState
-{
-	union {
-		char *long_data;
-	};
-	t_u32 length;
-};
-
-// The serialized state of an external scanner.
-//
-// Every time an external token subtree is created after a call to an
-// external scanner, the scanner's `serialize` function is called to
-// retrieve a serialized copy of its state. The bytes are then copied
-// onto the subtree itself so that the scanner's state can later be
-// restored using its `deserialize` function.
-//
-// Small byte arrays are stored inline, and long ones are allocated
-// separately on the heap.
-typedef struct ExternalScannerState ExternalScannerState;
 
 // A heap-allocated representation of a subtree.
 //

@@ -1,5 +1,6 @@
 SRC_FILES =                                                                   \
 create_language                                                               \
+external_scanner_state                                                        \
 input                                                                         \
 language                                                                      \
 length                                                                        \

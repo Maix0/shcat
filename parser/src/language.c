@@ -208,8 +208,7 @@ t_u16 ts_language_lookup(const TSLanguage *self, TSStateId state, TSSymbol symbo
 {
 	if (state >= self->large_state_count)
 		return (me_abort("we got a small parse table, which isn't supported"), -1);
-	else
-		return (self->parse_table[state * self->symbol_count + symbol]);
+	return (self->parse_table[state * self->symbol_count + symbol]);
 }
 
 bool ts_language_has_actions(const TSLanguage *self, TSStateId state, TSSymbol symbol)

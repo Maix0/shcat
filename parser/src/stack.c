@@ -146,7 +146,7 @@ static StackNode *stack_node_new(StackNode *previous_node, Subtree subtree, bool
 	StackNode *node = mem_alloc(sizeof(StackNode));
 	*node = (StackNode){.ref_count = 1, .link_count = 0, .state = state};
 
-	if (previous_node)
+	if (previous_node != NULL)
 	{
 		node->link_count = 1;
 		node->links[0] = (StackLink){
@@ -439,7 +439,6 @@ Stack *ts_stack_new(void)
 	array_reserve(&self->slices, 4);
 	array_reserve(&self->iterators, 4);
 
-	/* self->subtree_pool = subtree_pool; */
 	self->base_node = stack_node_new(NULL, NULL_SUBTREE, false, 1);
 	ts_stack_clear(self);
 
@@ -488,7 +487,7 @@ void ts_stack_set_last_external_token(Stack *self, StackVersion version, Subtree
 	if (token)
 		ts_subtree_retain(token);
 	if (head->last_external_token)
-		ts_subtree_release(/*self->subtree_pool, */ head->last_external_token);
+		ts_subtree_release( head->last_external_token);
 	head->last_external_token = token;
 }
 
