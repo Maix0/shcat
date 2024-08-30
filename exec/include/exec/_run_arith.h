@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/27 21:13:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/14 16:38:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/30 19:29:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,9 @@ t_ast_node	_arith_literal_to_ast_node(t_ast_arithmetic_literal *self);
 t_ast_node	_arith_postfix_to_ast_node(t_ast_arithmetic_postfix *self);
 t_ast_node	_arith_ternary_to_ast_node(t_ast_arithmetic_ternary *self);
 t_ast_node	_arith_unary_to_ast_node(t_ast_arithmetic_unary *self);
+
+t_error		_unary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out);
+t_error		_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out);
+t_error		_postfix_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out);
 
 #endif

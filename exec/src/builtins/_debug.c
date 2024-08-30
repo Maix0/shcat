@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/30 16:51:53 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/30 19:17:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-/*#define DEBUG_USAGE\*/
-/*	"Usage:\n"\*/
-/*	" - print_fd: print the opened file descritors informations"*/
+#define USG "Usage:\n - print_fd: print the opened file descritors informations"
 
 static t_error	_debug_fd(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
@@ -50,7 +48,7 @@ t_error	builtin_debug_(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	if (info.args.len != 2)
-		return (me_printf_fd(info.stdout, DEBUG_USAGE), *exit_code = 1, ERROR);
+		return (me_printf_fd(info.stdout, USG), *exit_code = 1, ERROR);
 	if (str_compare(info.args.buffer[1], "print_fd"))
 		return (_debug_fd(state, info, exit_code));
 	*exit_code = 2;

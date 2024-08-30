@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/30 16:59:21 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/30 19:25:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,9 @@
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 
-struct s_assign_export_state
-{
-	t_state					*state;
-	t_builtin_spawn_info	*info;
-	t_error					err;
-};
+t_error	_append_key_to_vec(t_usize _, const t_str *key, t_str *v, void *vec);
+bool	_sort_str(t_str *_lhs, t_str *_rhs);
+t_error	get_uniq_keys(t_state *state, t_vec_str *out);
 
 static void	_assign_export(t_usize idx, t_str *arg, void *vctx)
 {
@@ -42,38 +39,6 @@ static void	_assign_export(t_usize idx, t_str *arg, void *vctx)
 	value = str_substring(first_eq, 1, ~0llu);
 	if (hmap_env_insert(ctx->state->env, key, value))
 		ctx->err = ERROR;
-}
-
-static t_error	_append_key_to_vec(\
-	t_usize _idx, const t_str *key, t_str *value, void *vec)
-{
-	(void)(value);
-	(void)(_idx);
-	if (key == NULL || *key == NULL)
-		return (NO_ERROR);
-	vec_str_push(vec, *key);
-	return (NO_ERROR);
-}
-
-static bool	_sort_str(t_str *_lhs, t_str *_rhs)
-{
-	t_str	lhs;
-	t_str	rhs;
-
-	if (_lhs == NULL && _rhs != NULL)
-		return (true);
-	if (_lhs != NULL && _rhs == NULL)
-		return (true);
-	if (_lhs == NULL && _rhs == NULL)
-		return (false);
-	lhs = *_lhs;
-	rhs = *_rhs;
-	while (*lhs && *lhs == *rhs)
-	{
-		lhs++;
-		rhs++;
-	}
-	return (*lhs < *rhs);
 }
 
 static t_error	handle_quotes(t_str raw, t_string *out)
@@ -99,51 +64,30 @@ static t_error	handle_quotes(t_str raw, t_string *out)
 t_error	_print_export_env(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	t_vec_str	keys;
-	t_vec_str	keys_uniq;
+	t_vec_str	uniq;
 	t_usize		i;
 	t_str		*value;
 	t_string	buf;
 
-	keys = vec_str_new(16, NULL);
-	hmap_env_iter(state->env, _append_key_to_vec, &keys);
-	hmap_env_iter(state->tmp_var, _append_key_to_vec, &keys);
-	keys_uniq = vec_str_new(keys.len, NULL);
+	if (get_uniq_keys(state, &uniq))
+		return (ERROR);
 	i = 0;
-	if (keys.len == 0)
-		return (NO_ERROR);
-	vec_str_sort(&keys, _sort_str);
-	while (i < keys.len)
+	while (i < uniq.len)
 	{
-		while (i < keys.len - 1 && \
-			str_compare(keys.buffer[i], keys.buffer[i + 1]))
-			i++;
-		vec_str_push(&keys_uniq, keys.buffer[i]);
-		i++;
-	}
-	vec_str_free(keys);
-	i = 0;
-	while (i < keys_uniq.len)
-	{
-		value = hmap_env_get(state->tmp_var, &keys_uniq.buffer[i]);
+		value = hmap_env_get(state->tmp_var, &uniq.buffer[i]);
 		if (value == NULL)
-			value = hmap_env_get(state->env, &keys_uniq.buffer[i]);
+			value = hmap_env_get(state->env, &uniq.buffer[i]);
 		if (value == NULL || *value == NULL)
-			me_printf_fd(info.stdout, "export %s\n", keys_uniq.buffer[i]);
+			me_printf_fd(info.stdout, "export %s\n", uniq.buffer[i]);
 		else
 		{
 			if (!handle_quotes(*value, &buf))
-			{
-				me_printf_fd(\
-				info.stdout, "export %s='%s'\n", keys_uniq.buffer[i], buf.buf);
-				string_free(buf);
-			}
+				(me_printf_fd(\
+info.stdout, "export %s='%s'\n", uniq.buffer[i], buf.buf), string_free(buf));
 		}
 		i++;
 	}
-	vec_str_free(keys_uniq);
-	*exit_code = 0;
-	return (NO_ERROR);
+	return (vec_str_free(uniq), *exit_code = 0, NO_ERROR);
 }
 
 t_error	builtin_export(\
