@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 13:54:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/22 15:22:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:46:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,56 +316,6 @@ TSTree *ts_parser_parse_string_encoding(TSParser *self, t_const_str string, t_u3
  * call [`ts_parser_reset`] first.
  */
 void ts_parser_reset(TSParser *self);
-
-/**
- * Set the maximum duration in microseconds that parsing should be allowed to
- * take before halting.
- *
- * If parsing takes longer than this, it will halt early, returning NULL.
- * See [`ts_parser_parse`] for more information.
- */
-void ts_parser_set_timeout_micros(TSParser *self, t_u64 timeout_micros);
-
-/**
- * Get the duration in microseconds that parsing is allowed to take.
- */
-t_u64 ts_parser_timeout_micros(const TSParser *self);
-
-/**
- * Set the parser's current cancellation flag pointer.
- *
- * If a non-null pointer is assigned, then the parser will periodically read
- * from this pointer during parsing. If it reads a non-zero value, it will
- * halt early, returning NULL. See [`ts_parser_parse`] for more information.
- */
-void ts_parser_set_cancellation_flag(TSParser *self, const size_t *flag);
-
-/**
- * Get the parser's current cancellation flag pointer.
- */
-const size_t *ts_parser_cancellation_flag(const TSParser *self);
-
-/**
- * Set the logger that a parser should use during parsing.
- *
- * The parser does not take ownership over the logger payload. If a logger was
- * previously assigned, the caller is responsible for releasing any memory
- * owned by the previous logger.
- */
-void ts_parser_set_logger(TSParser *self, TSLogger logger);
-
-/**
- * Get the parser's current logger.
- */
-TSLogger ts_parser_logger(const TSParser *self);
-
-/**
- * Set the file descriptor to which the parser should write debugging graphs
- * during parsing. The graphs are formatted in the DOT language. You may want
- * to pipe these graphs directly to a `dot(1)` process in order to generate
- * SVG output. You can turn off this logging by passing a negative number.
- */
-void ts_parser_print_dot_graphs(TSParser *self, int fd);
 
 /******************/
 /* Section - Tree */
