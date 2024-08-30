@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:15:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:53:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-t_error builtin_echo__(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
+t_error	builtin_echo__(\
+	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	t_usize	 i;
-	bool	 print_line;
-	t_string s;
+	t_usize		i;
+	bool		print_line;
+	t_string	s;
 
 	(void)(state);
 	print_line = true;

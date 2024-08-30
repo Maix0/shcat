@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:15:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:52:42 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,11 @@
 #include "me/types.h"
 #include "unistd.h"
 
-t_error builtin_cd____(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
+t_error	builtin_cd____(\
+	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	const t_str key = "HOME";
-	t_str	   *home;
+	const t_str	key = "HOME";
+	t_str		*home;
 	t_str		path;
 
 	(void)(state);
@@ -37,6 +38,7 @@ t_error builtin_cd____(t_state *state, t_builtin_spawn_info info, t_i32 *exit_co
 	else
 		path = info.args.buffer[1];
 	if (chdir(path) == -1)
-		return (*exit_code = 2, me_printf_fd(info.stderr, "cd: Unable to change directory\n"), NO_ERROR);
+		return (*exit_code = 2, me_printf_fd(\
+			info.stderr, "cd: Unable to change directory\n"), NO_ERROR);
 	return (*exit_code = 0, NO_ERROR);
 }

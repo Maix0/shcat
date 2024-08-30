@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:14:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 16:51:53 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,32 +17,37 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
-#define DEBUG_USAGE                                                                                                                        \
-	"Usage:\n"                                                                                                                             \
-	" - print_fd: print the opened file descritors informations"
+/*#define DEBUG_USAGE\*/
+/*	"Usage:\n"\*/
+/*	" - print_fd: print the opened file descritors informations"*/
 
-static t_error _debug_fd(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
+static t_error	_debug_fd(\
+	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
-	const t_fd_array *fds = get_fd_arrays();
-	t_usize			  i;
+	const t_fd_array	*fds = get_fd_arrays();
+	t_usize				i;
 
 	(void)(state);
 	i = 0;
 	while (i < FILE_SLOT_LEN)
 	{
 		if (fds->storage[i].ty == SLOT_FD)
-			me_printf_fd(info.stderr, "  FD[%i] => %s\n", fds->storage[i].slot.fd.fd, fds->storage[i].slot.fd.name);
+			me_printf_fd(info.stderr, "  FD[%i] => %s\n", \
+				fds->storage[i].slot.fd.fd, fds->storage[i].slot.fd.name);
 		if (fds->storage[i].ty == SLOT_FILE)
-			me_printf_fd(info.stderr, "FILE[%p] => %s\n", fds->storage[i].slot.file.ptr, fds->storage[i].slot.file.name);
+			me_printf_fd(info.stderr, "FILE[%p] => %s\n", \
+				fds->storage[i].slot.file.ptr, fds->storage[i].slot.file.name);
 		if (fds->storage[i].ty == SLOT_DIR)
-			me_printf_fd(info.stderr, " DIR[%p] => %s\n", fds->storage[i].slot.dir.ptr, fds->storage[i].slot.dir.name);
+			me_printf_fd(info.stderr, " DIR[%p] => %s\n", \
+				fds->storage[i].slot.dir.ptr, fds->storage[i].slot.dir.name);
 		i++;
 	}
 	*exit_code = 0;
 	return (NO_ERROR);
 }
 
-t_error builtin_debug_(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
+t_error	builtin_debug_(\
+	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	if (info.args.len != 2)
 		return (me_printf_fd(info.stdout, DEBUG_USAGE), *exit_code = 1, ERROR);
