@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   _builtins_func.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/30 19:12:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/30 19:13:26 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/08/30 19:05:24 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/08/30 19:13:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#ifndef _BUILTINS_FUNC_H
+# define _BUILTINS_FUNC_H
 
-# include "exec/_builtins.h"
-# include "exec/_builtins_func.h"
+# include "me/types.h"
 
-#endif /* BUILTINS_H */
+typedef t_error	((*t_builtin_func)(t_state *state, \
+				t_builtin_spawn_info info, t_i32 *exit_code));
+
+#endif /* _BUILTIN_FUNC_H */
