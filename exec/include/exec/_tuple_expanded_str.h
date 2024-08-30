@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 15:45:08 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/05 15:13:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 18:22:13 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 typedef struct s_expandable_str	t_expandable_str;
 
-struct s_expandable_str {
+struct s_expandable_str
+{
 	t_str	value;
 	bool	do_expand;
 };

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 16:42:10 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/08/30 18:22:17 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ struct s_builtin_spawn_info
 	t_fd		*stderr;
 };
 
-typedef t_error	(*t_builtin_func)(\
-	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
+typedef t_error	(*t_builtin_func)\
+		(t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);
 
 t_error			builtin_cd____(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code);

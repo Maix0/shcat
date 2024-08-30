@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/14 18:16:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/30 18:05:23 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,11 @@ struct s_list_result
 typedef struct s_subshell_result	t_subshell_result;
 struct s_subshell_result
 {
-	t_pid pid;
-	int	  exit;
-	t_fd *stdin;
-	t_fd *stdout;
-	t_fd *stderr;
+	t_pid	pid;
+	int		exit;
+	t_fd	*stdin;
+	t_fd	*stdout;
+	t_fd	*stderr;
 };
 
 t_error	run_arithmetic_expansion(\
@@ -102,7 +102,7 @@ t_error	run_pipeline(\
 t_error	run_list(\
 	t_ast_list *list, t_state *state, t_list_result *out);
 t_error	run_subshell(\
-	t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pipe,\
+	t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pipe, \
 	t_subshell_result *out);
 t_error	run_case_(\
 	t_ast_case *case_, t_state *state, void *out);
