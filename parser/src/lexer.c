@@ -245,19 +245,6 @@ static t_u32 ts_lexer__get_column(TSLexer *_self)
 // Is the lexer at a boundary between two disjoint included ranges of
 // source code? This is exposed as an API because some languages' external
 // scanners need to perform custom actions at these boundaries.
-static bool ts_lexer__is_at_included_range_start(const TSLexer *_self)
-{
-	const Lexer *self = (const Lexer *)_self;
-	if (self->current_included_range_index < self->included_range_count)
-	{
-		TSRange *current_range = &self->included_ranges[self->current_included_range_index];
-		return self->current_position.bytes == current_range->start_byte;
-	}
-	else
-	{
-		return false;
-	}
-}
 static const TSRange DEFAULT_RANGE = {.start_point =
 										  {
 											  .row = 0,
