@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 18:06:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:06:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:23:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,16 @@ void	ts_lexer__mark_end(TSLexer *_self);
 void	ts_lexer_advance_to_end(Lexer *self);
 void	ts_lexer_goto(Lexer *self, Length position);
 
+bool	ts_lexer__do_advance_loop(Lexer *self, const TSRange **current_range);
+void	ts_lexer__do_advance_after_loop(Lexer *self, bool skip,
+			const TSRange *cur);
+
 // Intended to be called only from functions that control logging.
-void ts_lexer__do_advance(Lexer *self, bool skip)
+void	ts_lexer__do_advance(Lexer *self, bool skip)
 {
+	const TSRange	*cur = \
+		&self->included_ranges[self->current_included_range_index];
+
 	if (self->lookahead_size)
 	{
 		self->current_position.bytes += self->lookahead_size;
@@ -35,42 +42,58 @@ void ts_lexer__do_advance(Lexer *self, bool skip)
 			self->current_position.extent.column = 0;
 		}
 		else
-		{
 			self->current_position.extent.column += self->lookahead_size;
-		}
 	}
+	while (self->current_position.bytes >= cur->end_byte
+		|| cur->end_byte == cur->start_byte)
+		if (ts_lexer__do_advance_loop(self, &cur))
+			break ;
+	ts_lexer__do_advance_after_loop(self, skip, cur);
+}
 
-	const TSRange *current_range = &self->included_ranges[self->current_included_range_index];
-	while (self->current_position.bytes >= current_range->end_byte || current_range->end_byte == current_range->start_byte)
+// Advance to the next character in the source code, retrieving a new
+// chunk of source code if needed.
+void	ts_lexer__advance(TSLexer *_self, bool skip)
+{
+	Lexer	*self;
+
+	self = (Lexer *)_self;
+	if (!self->chunk)
+		return ;
+	ts_lexer__do_advance(self, skip);
+}
+
+bool	ts_lexer__do_advance_loop(Lexer *self, const TSRange **current_range)
+{
+	if (self->current_included_range_index < self->included_range_count)
+		self->current_included_range_index++;
+	if (self->current_included_range_index < self->included_range_count)
 	{
-		if (self->current_included_range_index < self->included_range_count)
-		{
-			self->current_included_range_index++;
-		}
-		if (self->current_included_range_index < self->included_range_count)
-		{
-			current_range++;
-			self->current_position = (Length){
-				current_range->start_byte,
-				current_range->start_point,
-			};
-		}
-		else
-		{
-			current_range = NULL;
-			break;
-		}
+		(*current_range)++;
+		self->current_position = (Length){
+			(*current_range)->start_byte,
+			(*current_range)->start_point,
+		};
 	}
+	else
+	{
+		(*current_range) = NULL;
+		return (true);
+	}
+	return (false);
+}
 
+void	ts_lexer__do_advance_after_loop(Lexer *self, bool skip,
+		const TSRange *cur)
+{
 	if (skip)
 		self->token_start_position = self->current_position;
-
-	if (current_range)
+	if (cur)
 	{
-		if (self->current_position.bytes < self->chunk_start || self->current_position.bytes >= self->chunk_start + self->chunk_size)
-		{
+		if (self->current_position.bytes < self->chunk_start
+			|| self->current_position.bytes >= self->chunk_start
+			+ self->chunk_size)
 			ts_lexer__get_chunk(self);
-		}
 		ts_lexer__get_lookahead(self);
 	}
 	else
@@ -79,14 +102,4 @@ void ts_lexer__do_advance(Lexer *self, bool skip)
 		self->data.lookahead = '\0';
 		self->lookahead_size = 1;
 	}
-}
-
-// Advance to the next character in the source code, retrieving a new
-// chunk of source code if needed.
-void ts_lexer__advance(TSLexer *_self, bool skip)
-{
-	Lexer *self = (Lexer *)_self;
-	if (!self->chunk)
-		return;
-	ts_lexer__do_advance(self, skip);
 }

@@ -14,22 +14,22 @@
 #include "parser/input.h"
 #include "parser/lexer.h"
 
-bool  ts_lexer__eof(const TSLexer *_self);
-t_u32 ts_lexer__get_column(TSLexer *_self);
-void  ts_lexer__advance(TSLexer *_self, bool skip);
-void  ts_lexer__do_advance(Lexer *self, bool skip);
-void  ts_lexer__clear_chunk(Lexer *self);
-void  ts_lexer__get_chunk(Lexer *self);
-void  ts_lexer__get_lookahead(Lexer *self);
-void  ts_lexer__mark_end(TSLexer *_self);
-void  ts_lexer_advance_to_end(Lexer *self);
-void  ts_lexer_goto(Lexer *self, Length position);
+bool	ts_lexer__eof(const TSLexer *_self);
+t_u32	ts_lexer__get_column(TSLexer *_self);
+void	ts_lexer__advance(TSLexer *_self, bool skip);
+void	ts_lexer__do_advance(Lexer *self, bool skip);
+void	ts_lexer__clear_chunk(Lexer *self);
+void	ts_lexer__get_chunk(Lexer *self);
+void	ts_lexer__get_lookahead(Lexer *self);
+void	ts_lexer__mark_end(TSLexer *_self);
+void	ts_lexer_advance_to_end(Lexer *self);
+void	ts_lexer_goto(Lexer *self, Length position);
 
-void ts_lexer__get_lookahead(Lexer *self)
+void	ts_lexer__get_lookahead(Lexer *self)
 {
 	t_u32		position_in_chunk;
 	t_u32		size;
-	const t_u8 *chunk;
+	const t_u8	*chunk;
 
 	position_in_chunk = self->current_position.bytes - self->chunk_start;
 	size = self->chunk_size - position_in_chunk;
@@ -37,7 +37,7 @@ void ts_lexer__get_lookahead(Lexer *self)
 	{
 		self->lookahead_size = 1;
 		self->data.lookahead = '\0';
-		return;
+		return ;
 	}
 	chunk = (const t_u8 *)self->chunk + position_in_chunk;
 	self->lookahead_size = ts_decode_ascii(chunk, size, &self->data.lookahead);
