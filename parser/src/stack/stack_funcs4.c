@@ -28,7 +28,7 @@ Length	ts_stack_position(const t_stack *self, t_stack_version version)
 	return (array_get(&self->heads, version)->node->position);
 }
 
-Subtree	ts_stack_last_external_token(const t_stack *self,
+t_subtree	ts_stack_last_external_token(const t_stack *self,
 		t_stack_version version)
 {
 	return (array_get(&self->heads, version)->last_external_token);

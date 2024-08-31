@@ -56,7 +56,7 @@ void	ts_stack_halt(t_stack *self, t_stack_version version)
 }
 
 void	ts_stack_pause(t_stack *self, t_stack_version version,
-		Subtree lookahead)
+		t_subtree lookahead)
 {
 	t_stack_head	*head;
 

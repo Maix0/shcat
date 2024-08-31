@@ -51,7 +51,7 @@ bool	ts_stack_has_advanced_since_error(const t_stack *self,
 {
 	const t_stack_head	*head = array_get(&self->heads, version);
 	const t_stack_node	*node = head->node;
-	Subtree				subtree;
+	t_subtree				subtree;
 
 	if (node->error_cost == 0)
 		return (true);

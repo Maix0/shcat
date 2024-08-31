@@ -70,7 +70,7 @@ void	stack_node_release(t_stack_node *self)
 // Count intermediate error nodes even though they are not visible,
 // because a stack version's node count is used to check whether it
 // has made any progress since the last time it encountered an error.
-t_u32	stack__subtree_node_count(Subtree subtree)
+t_u32	stack__subtree_node_count(t_subtree subtree)
 {
 	t_u32	count;
 
@@ -83,7 +83,7 @@ t_u32	stack__subtree_node_count(Subtree subtree)
 }
 
 t_stack_node	*stack_node_new(t_stack_node *previous_node,
-		Subtree subtree, bool is_pending, TSStateId state)
+		t_subtree subtree, bool is_pending, TSStateId state)
 {
 	t_stack_node	*node;
 

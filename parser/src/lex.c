@@ -5,7 +5,7 @@
 bool ts_lex(t_lexer *lexer, t_state_id state)
 {
 	START_LEXER();
-	eof = lexer->eof(lexer);
+	eof = lexer->data.eof((void *)lexer);
 	switch (state)
 	{
 	case 0:
@@ -3460,7 +3460,7 @@ bool ts_lex(t_lexer *lexer, t_state_id state)
 bool ts_lex_keywords(t_lexer *lexer, t_state_id state)
 {
 	START_LEXER();
-	eof = lexer->eof(lexer);
+	eof = lexer->data.eof((void *)lexer);
 	switch (state)
 	{
 	case 0:

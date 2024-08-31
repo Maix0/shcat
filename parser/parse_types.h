@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/11 18:50:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:41:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef TSSymbolMetadata   t_symbol_metadata;
 typedef TSSymbol		   t_symbol;
 typedef TSStateId		   t_state_id;
 typedef TSFieldId		   t_field_id;
-typedef TSLexer			   t_lexer;
+typedef TSLexer			   t_lexer_funcs;
 typedef TSFieldMapSlice	   t_field_map_slice;
 typedef TSFieldMapEntry	   t_field_map_entry;
 typedef TSParseActionEntry t_parse_action_entry;
@@ -53,7 +53,7 @@ typedef struct s_lexer_state	t_lexer_state;
 # define inline __inline__
 #endif
 
-static inline bool lex_skip(t_state_id state_value, t_lexer *lexer, t_lexer_state *s)
+static inline bool lex_skip(t_state_id state_value, t_lexer_funcs *lexer, t_lexer_state *s)
 {
 	(void)(lexer);
 	s->skip = true;
@@ -61,14 +61,14 @@ static inline bool lex_skip(t_state_id state_value, t_lexer *lexer, t_lexer_stat
 	return (true);
 };
 
-static inline bool lex_advance(t_state_id state_value, t_lexer *lexer, t_lexer_state *s)
+static inline bool lex_advance(t_state_id state_value, t_lexer_funcs *lexer, t_lexer_state *s)
 {
 	(void)(lexer);
 	s->state = state_value;
 	return (true);
 };
 
-static inline bool lex_accept_token(t_symbol symbol_value, t_lexer *lexer, t_lexer_state *s)
+static inline bool lex_accept_token(t_symbol symbol_value, t_lexer_funcs *lexer, t_lexer_state *s)
 {
 	s->result = true;
 	lexer->result_symbol = symbol_value;
@@ -76,7 +76,7 @@ static inline bool lex_accept_token(t_symbol symbol_value, t_lexer *lexer, t_lex
 	return (true);
 };
 
-static inline bool lex_end_state(t_lexer *lexer, t_lexer_state *s)
+static inline bool lex_end_state(t_lexer_funcs *lexer, t_lexer_state *s)
 {
 	(void)(lexer);
 	(void)(s);
@@ -180,7 +180,7 @@ static inline bool set_contains(t_char_range *ranges, t_u32 len, int32_t lookahe
 };
 */
 
-static inline bool advance_map_inner(t_u32 *map, t_u32 elems, t_lexer *l, t_lexer_state *s)
+static inline bool advance_map_inner(t_u32 *map, t_u32 elems, t_lexer_funcs *l, t_lexer_state *s)
 {
 	t_u32 i;
 

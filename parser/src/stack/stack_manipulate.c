@@ -13,7 +13,7 @@
 #include "parser/_inner/stack.h"
 #include "parser/language.h"
 
-void	ts_stack_push(t_stack *self, t_stack_version version, Subtree subtree,
+void	ts_stack_push(t_stack *self, t_stack_version version, t_subtree subtree,
 		bool pending, TSStateId state)
 {
 	t_stack_head	*head;

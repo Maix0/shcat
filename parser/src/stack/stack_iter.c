@@ -46,7 +46,7 @@ t_stack_slice_array	stack__iter(t_stack *self, t_stack_version version,
 	{
 		include_subtrees = true;
 		array_reserve(&new_iterator.subtrees,
-			(t_u32)ts_subtree_alloc_size(goal_subtree_count) / sizeof(Subtree));
+			(t_u32)ts_subtree_alloc_size(goal_subtree_count) / sizeof(t_subtree));
 	}
 	array_push(&self->iterators, new_iterator);
 	while (self->iterators.size > 0)

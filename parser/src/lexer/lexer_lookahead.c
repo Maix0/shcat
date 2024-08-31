@@ -17,15 +17,15 @@
 bool	ts_lexer__eof(const TSLexer *_self);
 t_u32	ts_lexer__get_column(TSLexer *_self);
 void	ts_lexer__advance(TSLexer *_self, bool skip);
-void	ts_lexer__do_advance(Lexer *self, bool skip);
-void	ts_lexer__clear_chunk(Lexer *self);
-void	ts_lexer__get_chunk(Lexer *self);
-void	ts_lexer__get_lookahead(Lexer *self);
+void	ts_lexer__do_advance(t_lexer *self, bool skip);
+void	ts_lexer__clear_chunk(t_lexer *self);
+void	ts_lexer__get_chunk(t_lexer *self);
+void	ts_lexer__get_lookahead(t_lexer *self);
 void	ts_lexer__mark_end(TSLexer *_self);
-void	ts_lexer_advance_to_end(Lexer *self);
-void	ts_lexer_goto(Lexer *self, Length position);
+void	ts_lexer_advance_to_end(t_lexer *self);
+void	ts_lexer_goto(t_lexer *self, Length position);
 
-void	ts_lexer__get_lookahead(Lexer *self)
+void	ts_lexer__get_lookahead(t_lexer *self)
 {
 	t_u32		position_in_chunk;
 	t_u32		size;

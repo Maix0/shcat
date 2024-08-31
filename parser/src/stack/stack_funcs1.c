@@ -28,10 +28,10 @@ bool	ts_stack_is_paused(const t_stack *self, t_stack_version version)
 	return (array_get(&self->heads, version)->status == SStatusPaused);
 }
 
-Subtree	ts_stack_resume(t_stack *self, t_stack_version version)
+t_subtree	ts_stack_resume(t_stack *self, t_stack_version version)
 {
 	t_stack_head	*head;
-	Subtree			result;
+	t_subtree			result;
 
 	head = array_get(&self->heads, version);
 	assert(head->status == SStatusPaused);

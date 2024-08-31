@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 18:08:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:25:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:39:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@
 bool	ts_lexer__eof(const TSLexer *_self);
 t_u32	ts_lexer__get_column(TSLexer *_self);
 void	ts_lexer__advance(TSLexer *_self, bool skip);
-void	ts_lexer__do_advance(Lexer *self, bool skip);
-void	ts_lexer__clear_chunk(Lexer *self);
-void	ts_lexer__get_chunk(Lexer *self);
-void	ts_lexer__get_lookahead(Lexer *self);
+void	ts_lexer__do_advance(t_lexer *self, bool skip);
+void	ts_lexer__clear_chunk(t_lexer *self);
+void	ts_lexer__get_chunk(t_lexer *self);
+void	ts_lexer__get_lookahead(t_lexer *self);
 void	ts_lexer__mark_end(TSLexer *_self);
-void	ts_lexer_advance_to_end(Lexer *self);
-void	ts_lexer_goto(Lexer *self, Length position);
+void	ts_lexer_advance_to_end(t_lexer *self);
+void	ts_lexer_goto(t_lexer *self, Length position);
 
-void	ts_lexer_goto_inside_loop(Lexer *self, bool *found_included_range,
+void	ts_lexer_goto_inside_loop(t_lexer *self, bool *found_included_range,
 			TSRange *included_range, t_usize i);
-void	ts_lexer_goto_after_loop(Lexer *self, bool found_included_range);
+void	ts_lexer_goto_after_loop(t_lexer *self, bool found_included_range);
 
-void	ts_lexer_goto(Lexer *self, Length position)
+void	ts_lexer_goto(t_lexer *self, Length position)
 {
 	bool	found_included_range;
 	TSRange	*included_range;
@@ -53,7 +53,7 @@ void	ts_lexer_goto(Lexer *self, Length position)
 	ts_lexer_goto_after_loop(self, found_included_range);
 }
 
-void	ts_lexer_goto_inside_loop(Lexer *self, bool *found_included_range,
+void	ts_lexer_goto_inside_loop(t_lexer *self, bool *found_included_range,
 		TSRange *included_range, t_usize i)
 {
 	if (included_range->start_byte >= self->current_position.bytes)
@@ -67,7 +67,7 @@ void	ts_lexer_goto_inside_loop(Lexer *self, bool *found_included_range,
 	*found_included_range = true;
 }
 
-void	ts_lexer_goto_after_loop(Lexer *self, bool found_included_range)
+void	ts_lexer_goto_after_loop(t_lexer *self, bool found_included_range)
 {
 	TSRange	*last_included_range;
 

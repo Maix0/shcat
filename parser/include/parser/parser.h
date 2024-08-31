@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 12:03:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:45:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ typedef struct TSSymbolMetadata
 	bool supertype;
 } TSSymbolMetadata;
 
-typedef struct TSLexer TSLexer;
+typedef struct s_lexer_functions TSLexer;
 
-struct TSLexer
+struct s_lexer_functions
 {
 	t_i32	 lookahead;
 	TSSymbol result_symbol;
@@ -184,10 +184,10 @@ static inline bool set_contains(TSCharacterRange *ranges, t_u32 len, t_i32 looka
 	t_i32 lookahead;                                                                                                                       \
 	goto start;                                                                                                                            \
 next_state:                                                                                                                                \
-	lexer->advance(lexer, skip);                                                                                                           \
+	lexer->data.advance((void *)lexer, skip);                                                                                                           \
 start:                                                                                                                                     \
 	skip = false;                                                                                                                          \
-	lookahead = lexer->lookahead;
+	lookahead = lexer->data.lookahead;
 
 #define ADVANCE(state_value)                                                                                                               \
 	{                                                                                                                                      \
@@ -217,8 +217,8 @@ start:                                                                          
 
 #define ACCEPT_TOKEN(symbol_value)                                                                                                         \
 	result = true;                                                                                                                         \
-	lexer->result_symbol = symbol_value;                                                                                                   \
-	lexer->mark_end(lexer);
+	lexer->data.result_symbol = symbol_value;                                                                                                   \
+	lexer->data.mark_end((void *)lexer);
 
 #define END_STATE() return result;
 

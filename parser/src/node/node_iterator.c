@@ -16,7 +16,7 @@
 
 NodeChildIterator	ts_node_iterate_children(const TSNode *node)
 {
-	Subtree			subtree;
+	t_subtree			subtree;
 	const TSSymbol	*alias_sequence;
 
 	subtree = ts_node__subtree(*node);
@@ -42,7 +42,7 @@ bool	ts_node_child_iterator_done(NodeChildIterator *self)
 
 bool	ts_node_child_iterator_next(NodeChildIterator *self, TSNode *result)
 {
-	const Subtree	*child;
+	const t_subtree	*child;
 	TSSymbol		alias_symbol;
 
 	if (!self->parent || ts_node_child_iterator_done(self))

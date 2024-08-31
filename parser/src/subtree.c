@@ -21,8 +21,8 @@ void ts_subtree_array_copy(SubtreeArray self, SubtreeArray *dest)
 	dest->contents = self.contents;
 	if (self.capacity > 0)
 	{
-		dest->contents = mem_alloc_array(self.capacity, sizeof(Subtree));
-		mem_copy(dest->contents, self.contents, self.size * sizeof(Subtree));
+		dest->contents = mem_alloc_array(self.capacity, sizeof(t_subtree));
+		mem_copy(dest->contents, self.contents, self.size * sizeof(t_subtree));
 		for (t_u32 i = 0; i < self.size; i++)
 		{
 			ts_subtree_retain(dest->contents[i]);
@@ -50,7 +50,7 @@ void ts_subtree_array_remove_trailing_extras(SubtreeArray *self, SubtreeArray *d
 	array_clear(destination);
 	while (self->size > 0)
 	{
-		Subtree last = self->contents[self->size - 1];
+		t_subtree last = self->contents[self->size - 1];
 		if (ts_subtree_extra(last))
 		{
 			self->size--;
@@ -69,21 +69,21 @@ void ts_subtree_array_reverse(SubtreeArray *self)
 	for (t_u32 i = 0, limit = self->size / 2; i < limit; i++)
 	{
 		size_t	reverse_index = self->size - 1 - i;
-		Subtree swap = self->contents[i];
+		t_subtree swap = self->contents[i];
 		self->contents[i] = self->contents[reverse_index];
 		self->contents[reverse_index] = swap;
 	}
 }
 
-Subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId parse_state,
+t_subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 lookahead_bytes, TSStateId parse_state,
 							bool has_external_tokens, bool depends_on_column, bool is_keyword, const TSLanguage *language)
 {
 	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
 	bool			 extra = symbol == ts_builtin_sym_end;
 
 	{
-		SubtreeHeapData *data = mem_alloc(sizeof(*data));
-		*data = (SubtreeHeapData){.ref_count = 1,
+		t_subtree_data *data = mem_alloc(sizeof(*data));
+		*data = (t_subtree_data){.ref_count = 1,
 								  .padding = padding,
 								  .size = size,
 								  .lookahead_bytes = lookahead_bytes,
@@ -103,11 +103,11 @@ Subtree ts_subtree_new_leaf(TSSymbol symbol, Length padding, Length size, t_u32 
 								  .is_missing = false,
 								  .is_keyword = is_keyword,
 								  {{.first_leaf = {.symbol = 0, .parse_state = 0}}}};
-		return (Subtree)data;
+		return (t_subtree)data;
 	}
 }
 
-void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol, const TSLanguage *language)
+void ts_subtree_set_symbol(t_mut_subtree *self, TSSymbol symbol, const TSLanguage *language)
 {
 	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
 	{
@@ -117,11 +117,11 @@ void ts_subtree_set_symbol(MutableSubtree *self, TSSymbol symbol, const TSLangua
 	}
 }
 
-Subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned, TSStateId parse_state,
+t_subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, t_u32 bytes_scanned, TSStateId parse_state,
 							 const TSLanguage *language)
 {
-	Subtree result = ts_subtree_new_leaf(ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
-	SubtreeHeapData *data = (SubtreeHeapData *)result;
+	t_subtree result = ts_subtree_new_leaf(ts_builtin_sym_error, padding, size, bytes_scanned, parse_state, false, false, false, language);
+	t_subtree_data *data = (t_subtree_data *)result;
 	data->fragile_left = true;
 	data->fragile_right = true;
 	data->lookahead_char = lookahead_char;
@@ -129,13 +129,13 @@ Subtree ts_subtree_new_error(t_i32 lookahead_char, Length padding, Length size, 
 }
 
 // Clone a subtree.
-MutableSubtree ts_subtree_clone(Subtree self)
+t_mut_subtree ts_subtree_clone(t_subtree self)
 {
 	size_t	 alloc_size = ts_subtree_alloc_size(self->child_count);
-	Subtree *new_children = mem_alloc(alloc_size);
-	Subtree *old_children = ts_subtree_children(self);
+	t_subtree *new_children = mem_alloc(alloc_size);
+	t_subtree *old_children = ts_subtree_children(self);
 	mem_copy(new_children, old_children, alloc_size);
-	SubtreeHeapData *result = (SubtreeHeapData *)&new_children[self->child_count];
+	t_subtree_data *result = (t_subtree_data *)&new_children[self->child_count];
 	if (self->child_count > 0)
 	{
 		for (t_u32 i = 0; i < self->child_count; i++)
@@ -148,7 +148,7 @@ MutableSubtree ts_subtree_clone(Subtree self)
 		result->external_scanner_state = ts_external_scanner_state_copy(&self->external_scanner_state);
 	}
 	result->ref_count = 1;
-	return (MutableSubtree)result;
+	return (t_mut_subtree)result;
 }
 
 // Get mutable version of a subtree.
@@ -156,31 +156,31 @@ MutableSubtree ts_subtree_clone(Subtree self)
 // This takes ownership of the subtree. If the subtree has only one owner,
 // this will directly convert it into a mutable version. Otherwise, it will
 // perform a copy.
-MutableSubtree ts_subtree_make_mut(Subtree self)
+t_mut_subtree ts_subtree_make_mut(t_subtree self)
 {
 	if (self->ref_count == 1)
 		return ts_subtree_to_mut_unsafe(self);
-	MutableSubtree result = ts_subtree_clone(self);
+	t_mut_subtree result = ts_subtree_clone(self);
 	ts_subtree_release(self);
 	return result;
 }
 
-static void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLanguage *language, MutableSubtreeArray *stack)
+static void ts_subtree__compress(t_mut_subtree self, t_u32 count, const TSLanguage *language, MutableSubtreeArray *stack)
 {
 	t_u32 initial_stack_size = stack->size;
 
-	MutableSubtree tree = self;
+	t_mut_subtree tree = self;
 	TSSymbol	   symbol = tree->symbol;
 	for (t_u32 i = 0; i < count; i++)
 	{
 		if (tree->ref_count > 1 || tree->child_count < 2)
 			break;
 
-		MutableSubtree child = ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
+		t_mut_subtree child = ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
 		if (child->child_count < 2 || child->ref_count > 1 || child->symbol != symbol)
 			break;
 
-		MutableSubtree grandchild = ts_subtree_to_mut_unsafe(ts_subtree_children(child)[0]);
+		t_mut_subtree grandchild = ts_subtree_to_mut_unsafe(ts_subtree_children(child)[0]);
 		if (grandchild->child_count < 2 || grandchild->ref_count > 1 || grandchild->symbol != symbol)
 			break;
 
@@ -194,15 +194,15 @@ static void ts_subtree__compress(MutableSubtree self, t_u32 count, const TSLangu
 	while (stack->size > initial_stack_size)
 	{
 		tree = array_pop(stack);
-		MutableSubtree child = ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
-		MutableSubtree grandchild = ts_subtree_to_mut_unsafe(ts_subtree_children(child)[child->child_count - 1]);
+		t_mut_subtree child = ts_subtree_to_mut_unsafe(ts_subtree_children(tree)[0]);
+		t_mut_subtree grandchild = ts_subtree_to_mut_unsafe(ts_subtree_children(child)[child->child_count - 1]);
 		ts_subtree_summarize_children(grandchild, language);
 		ts_subtree_summarize_children(child, language);
 		ts_subtree_summarize_children(tree, language);
 	}
 }
 
-void ts_subtree_balance(Subtree self, const TSLanguage *language)
+void ts_subtree_balance(t_subtree self, const TSLanguage *language)
 {
 
 	MutableSubtreeArray balance_stack = array_new();
@@ -215,12 +215,12 @@ void ts_subtree_balance(Subtree self, const TSLanguage *language)
 
 	while (balance_stack.size > 0)
 	{
-		MutableSubtree tree = array_pop(&balance_stack);
+		t_mut_subtree tree = array_pop(&balance_stack);
 
 		if (tree->repeat_depth > 0)
 		{
-			Subtree child1 = ts_subtree_children(tree)[0];
-			Subtree child2 = ts_subtree_children(tree)[tree->child_count - 1];
+			t_subtree child1 = ts_subtree_children(tree)[0];
+			t_subtree child2 = ts_subtree_children(tree)[tree->child_count - 1];
 			long	repeat_delta = (long)ts_subtree_repeat_depth(child1) - (long)ts_subtree_repeat_depth(child2);
 			if (repeat_delta > 0)
 			{
@@ -235,7 +235,7 @@ void ts_subtree_balance(Subtree self, const TSLanguage *language)
 
 		for (t_u32 i = 0; i < tree->child_count; i++)
 		{
-			Subtree child = ts_subtree_children(tree)[i];
+			t_subtree child = ts_subtree_children(tree)[i];
 			if (ts_subtree_child_count(child) > 0 && child->ref_count == 1)
 			{
 				array_push(&balance_stack, ts_subtree_to_mut_unsafe(child));
@@ -246,7 +246,7 @@ void ts_subtree_balance(Subtree self, const TSLanguage *language)
 }
 
 // Assign all of the node's properties that depend on its children.
-void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *language)
+void ts_subtree_summarize_children(t_mut_subtree self, const TSLanguage *language)
 {
 	self->named_child_count = 0;
 	self->visible_child_count = 0;
@@ -262,10 +262,10 @@ void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *langua
 	const TSSymbol *alias_sequence = ts_language_alias_sequence(language, self->production_id);
 	t_u32			lookahead_end_byte = 0;
 
-	const Subtree *children = ts_subtree_children(self);
+	const t_subtree *children = ts_subtree_children(self);
 	for (t_u32 i = 0; i < self->child_count; i++)
 	{
-		Subtree child = children[i];
+		t_subtree child = children[i];
 
 		if (self->size.extent.row == 0 && ts_subtree_depends_on_column(child))
 		{
@@ -362,8 +362,8 @@ void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *langua
 
 	if (self->child_count > 0)
 	{
-		Subtree first_child = children[0];
-		Subtree last_child = children[self->child_count - 1];
+		t_subtree first_child = children[0];
+		t_subtree last_child = children[self->child_count - 1];
 
 		self->first_leaf.symbol = ts_subtree_leaf_symbol(first_child);
 		self->first_leaf.parse_state = ts_subtree_leaf_parse_state(first_child);
@@ -390,21 +390,21 @@ void ts_subtree_summarize_children(MutableSubtree self, const TSLanguage *langua
 // Create a new parent node with the given children.
 //
 // This takes ownership of the children array.
-MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, t_u32 production_id, const TSLanguage *language)
+t_mut_subtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, t_u32 production_id, const TSLanguage *language)
 {
 	TSSymbolMetadata metadata = ts_language_symbol_metadata(language, symbol);
 	bool			 fragile = symbol == ts_builtin_sym_error || symbol == ts_builtin_sym_error_repeat;
 
 	// Allocate the node's data at the end of the array of children.
 	size_t new_byte_size = ts_subtree_alloc_size(children->size);
-	if (children->capacity * sizeof(Subtree) < new_byte_size)
+	if (children->capacity * sizeof(t_subtree) < new_byte_size)
 	{
 		children->contents = mem_realloc(children->contents, new_byte_size);
-		children->capacity = (t_u32)(new_byte_size / sizeof(Subtree));
+		children->capacity = (t_u32)(new_byte_size / sizeof(t_subtree));
 	}
-	SubtreeHeapData *data = (SubtreeHeapData *)&children->contents[children->size];
+	t_subtree_data *data = (t_subtree_data *)&children->contents[children->size];
 
-	*data = (SubtreeHeapData){.ref_count = 1,
+	*data = (t_subtree_data){.ref_count = 1,
 							  .symbol = symbol,
 							  .child_count = children->size,
 							  .visible = metadata.visible,
@@ -419,7 +419,7 @@ MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, t_u3
 								  .production_id = production_id,
 								  .first_leaf = {.symbol = 0, .parse_state = 0},
 							  }}};
-	MutableSubtree result = data;
+	t_mut_subtree result = data;
 	ts_subtree_summarize_children(result, language);
 	return result;
 }
@@ -428,9 +428,9 @@ MutableSubtree ts_subtree_new_node(TSSymbol symbol, SubtreeArray *children, t_u3
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra, const TSLanguage *language)
+t_subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra, const TSLanguage *language)
 {
-	MutableSubtree result = ts_subtree_new_node(ts_builtin_sym_error, children, 0, language);
+	t_mut_subtree result = ts_subtree_new_node(ts_builtin_sym_error, children, 0, language);
 	result->extra = extra;
 	return ts_subtree_from_mut(result);
 }
@@ -439,21 +439,21 @@ Subtree ts_subtree_new_error_node(SubtreeArray *children, bool extra, const TSLa
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-Subtree ts_subtree_new_missing_leaf(TSSymbol symbol, Length padding, t_u32 lookahead_bytes, const TSLanguage *language)
+t_subtree ts_subtree_new_missing_leaf(TSSymbol symbol, Length padding, t_u32 lookahead_bytes, const TSLanguage *language)
 {
-	Subtree result = ts_subtree_new_leaf(symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
-	((SubtreeHeapData *)result)->is_missing = true;
+	t_subtree result = ts_subtree_new_leaf(symbol, padding, length_zero(), lookahead_bytes, 0, false, false, false, language);
+	((t_subtree_data *)result)->is_missing = true;
 	return result;
 }
 
-void ts_subtree_retain(Subtree self)
+void ts_subtree_retain(t_subtree self)
 {
 	assert(self->ref_count > 0);
 	(*(t_u32 *)(&self->ref_count))++;
 	assert(self->ref_count != 0);
 }
 
-void ts_subtree_release(Subtree self)
+void ts_subtree_release(t_subtree self)
 {
 	MutableSubtreeArray to_free;
 
@@ -469,13 +469,13 @@ void ts_subtree_release(Subtree self)
 
 	while (to_free.size > 0)
 	{
-		MutableSubtree tree = array_pop(&to_free);
+		t_mut_subtree tree = array_pop(&to_free);
 		if (tree->child_count > 0)
 		{
-			Subtree *children = ts_subtree_children(tree);
+			t_subtree *children = ts_subtree_children(tree);
 			for (t_u32 i = 0; i < tree->child_count; i++)
 			{
-				Subtree child = children[i];
+				t_subtree child = children[i];
 				assert(child->ref_count > 0);
 				if (--(*(t_u32 *)(&child->ref_count)) == 0)
 				{
@@ -494,7 +494,7 @@ void ts_subtree_release(Subtree self)
 	array_delete(&to_free);
 }
 
-int ts_subtree_compare(Subtree left, Subtree right)
+int ts_subtree_compare(t_subtree left, t_subtree right)
 {
 	MutableSubtreeArray compare_stack = array_new();
 
@@ -524,8 +524,8 @@ int ts_subtree_compare(Subtree left, Subtree right)
 
 		for (t_u32 i = ts_subtree_child_count(left); i > 0; i--)
 		{
-			Subtree left_child = ts_subtree_children(left)[i - 1];
-			Subtree right_child = ts_subtree_children(right)[i - 1];
+			t_subtree left_child = ts_subtree_children(left)[i - 1];
+			t_subtree right_child = ts_subtree_children(right)[i - 1];
 			array_push(&compare_stack, ts_subtree_to_mut_unsafe(left_child));
 			array_push(&compare_stack, ts_subtree_to_mut_unsafe(right_child));
 		}
@@ -535,7 +535,7 @@ int ts_subtree_compare(Subtree left, Subtree right)
 	return 0;
 }
 
-Subtree ts_subtree_last_external_token(Subtree tree)
+t_subtree ts_subtree_last_external_token(t_subtree tree)
 {
 	if (!ts_subtree_has_external_tokens(tree))
 		return NULL;
@@ -543,7 +543,7 @@ Subtree ts_subtree_last_external_token(Subtree tree)
 	{
 		for (t_u32 i = tree->child_count - 1; i + 1 > 0; i--)
 		{
-			Subtree child = ts_subtree_children(tree)[i];
+			t_subtree child = ts_subtree_children(tree)[i];
 			if (ts_subtree_has_external_tokens(child))
 			{
 				tree = child;

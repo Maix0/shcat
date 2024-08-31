@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 12:03:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:30:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 #include "parser/api.h"
 #include "me/types.h"
 
-struct Length
+struct s_length
 {
 	t_u32	bytes;
 	TSPoint extent;
 };
 
-typedef struct Length Length;
+typedef struct s_length Length;
 
 static const Length LENGTH_UNDEFINED = {0, {0, 1}};
 static const Length LENGTH_MAX = {UINT32_MAX, {UINT32_MAX, UINT32_MAX}};

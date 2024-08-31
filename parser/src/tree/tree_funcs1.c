@@ -14,7 +14,7 @@
 #include "parser/subtree.h"
 #include "parser/tree.h"
 
-TSTree	*ts_tree_new(Subtree root, const TSLanguage *language)
+TSTree	*ts_tree_new(t_subtree root, const TSLanguage *language)
 {
 	TSTree	*result;
 

@@ -13,7 +13,7 @@
 #include "parser/stack.h"
 #include "parser/_inner/stack.h"
 
-bool	stack__subtree_is_equivalent(Subtree left, Subtree right)
+bool	stack__subtree_is_equivalent(t_subtree left, t_subtree right)
 {
 	if (left == right)
 		return (true);
@@ -97,7 +97,7 @@ t_stack_version original_version, t_stack_node *node, SubtreeArray *subtrees)
 }
 
 void	ts_stack_set_last_external_token(t_stack *self, t_stack_version version,
-		Subtree token)
+		t_subtree token)
 {
 	t_stack_head	*head;
 

@@ -14,7 +14,7 @@
 
 t_u32	ts_node_child_count(TSNode self)
 {
-	Subtree	tree;
+	t_subtree	tree;
 
 	tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)
@@ -25,7 +25,7 @@ t_u32	ts_node_child_count(TSNode self)
 
 t_u32	ts_node_named_child_count(TSNode self)
 {
-	Subtree	tree;
+	t_subtree	tree;
 
 	tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)

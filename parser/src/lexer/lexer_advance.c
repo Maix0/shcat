@@ -16,19 +16,19 @@
 bool	ts_lexer__eof(const TSLexer *_self);
 t_u32	ts_lexer__get_column(TSLexer *_self);
 void	ts_lexer__advance(TSLexer *_self, bool skip);
-void	ts_lexer__clear_chunk(Lexer *self);
-void	ts_lexer__get_chunk(Lexer *self);
-void	ts_lexer__get_lookahead(Lexer *self);
+void	ts_lexer__clear_chunk(t_lexer *self);
+void	ts_lexer__get_chunk(t_lexer *self);
+void	ts_lexer__get_lookahead(t_lexer *self);
 void	ts_lexer__mark_end(TSLexer *_self);
-void	ts_lexer_advance_to_end(Lexer *self);
-void	ts_lexer_goto(Lexer *self, Length position);
+void	ts_lexer_advance_to_end(t_lexer *self);
+void	ts_lexer_goto(t_lexer *self, Length position);
 
-bool	ts_lexer__do_advance_loop(Lexer *self, const TSRange **current_range);
-void	ts_lexer__do_advance_after_loop(Lexer *self, bool skip,
+bool	ts_lexer__do_advance_loop(t_lexer *self, const TSRange **current_range);
+void	ts_lexer__do_advance_after_loop(t_lexer *self, bool skip,
 			const TSRange *cur);
 
 // Intended to be called only from functions that control logging.
-void	ts_lexer__do_advance(Lexer *self, bool skip)
+void	ts_lexer__do_advance(t_lexer *self, bool skip)
 {
 	const TSRange	*cur = \
 		&self->included_ranges[self->current_included_range_index];
@@ -55,15 +55,15 @@ void	ts_lexer__do_advance(Lexer *self, bool skip)
 // chunk of source code if needed.
 void	ts_lexer__advance(TSLexer *_self, bool skip)
 {
-	Lexer	*self;
+	t_lexer	*self;
 
-	self = (Lexer *)_self;
+	self = (t_lexer *)_self;
 	if (!self->chunk)
 		return ;
 	ts_lexer__do_advance(self, skip);
 }
 
-bool	ts_lexer__do_advance_loop(Lexer *self, const TSRange **current_range)
+bool	ts_lexer__do_advance_loop(t_lexer *self, const TSRange **current_range)
 {
 	if (self->current_included_range_index < self->included_range_count)
 		self->current_included_range_index++;
@@ -83,7 +83,7 @@ bool	ts_lexer__do_advance_loop(Lexer *self, const TSRange **current_range)
 	return (false);
 }
 
-void	ts_lexer__do_advance_after_loop(Lexer *self, bool skip,
+void	ts_lexer__do_advance_after_loop(t_lexer *self, bool skip,
 		const TSRange *cur)
 {
 	if (skip)

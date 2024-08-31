@@ -34,7 +34,7 @@ t_u32	ts_node__alias(const TSNode *self)
 	return (self->alias);
 }
 
-Subtree	ts_node__subtree(TSNode self)
+t_subtree	ts_node__subtree(TSNode self)
 {
-	return (*(const Subtree *)self.id);
+	return (*(const t_subtree *)self.id);
 }

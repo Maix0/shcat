@@ -14,7 +14,7 @@
 #include "parser/length.h"
 #include "parser/subtree.h"
 
-TSNode	ts_node_new(const TSTree *tree, const Subtree *subtree, \
+TSNode	ts_node_new(const TSTree *tree, const t_subtree *subtree, \
 		Length position, TSSymbol alias)
 {
 	return ((TSNode){

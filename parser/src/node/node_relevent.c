@@ -17,7 +17,7 @@
 bool	ts_node__is_relevant(TSNode self, bool include_anonymous)
 {
 	TSSymbol	alias;
-	Subtree		tree;
+	t_subtree		tree;
 
 	tree = ts_node__subtree(self);
 	if (include_anonymous)
@@ -31,7 +31,7 @@ bool	ts_node__is_relevant(TSNode self, bool include_anonymous)
 
 t_u32	ts_node__relevant_child_count(TSNode self, bool include_anonymous)
 {
-	Subtree	tree;
+	t_subtree	tree;
 
 	tree = ts_node__subtree(self);
 	if (ts_subtree_child_count(tree) > 0)

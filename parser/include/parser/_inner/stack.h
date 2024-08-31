@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:37:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 16:53:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:36:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef t_stack_action						(*t_stack_callback)(void *,
 struct										s_stack_link
 {
 	t_stack_node							*node;
-	Subtree									subtree;
+	t_subtree								subtree;
 	bool									is_pending;
 };
 
@@ -71,8 +71,8 @@ struct										s_stack_head
 	t_stack_node							*node;
 	t_stack_summary							*summary;
 	t_u32									node_count_at_last_error;
-	Subtree									last_external_token;
-	Subtree									lookahead_when_paused;
+	t_subtree									last_external_token;
+	t_subtree									lookahead_when_paused;
 	t_stack_status							status;
 };
 
@@ -97,11 +97,11 @@ struct										s_summarize_stack_session
 	t_u32									max_depth;
 };
 
-bool	stack__subtree_is_equivalent(Subtree left, Subtree right);
-t_stack_node *stack_node_new(t_stack_node *previous_node, Subtree subtree, bool is_pending, TSStateId state);
+bool	stack__subtree_is_equivalent(t_subtree left, t_subtree right);
+t_stack_node *stack_node_new(t_stack_node *previous_node, t_subtree subtree, bool is_pending, TSStateId state);
 t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_callback callback, void *payload, int goal_subtree_count);
 t_stack_version ts_stack__add_version(t_stack *self, t_stack_version original_version, t_stack_node *node);
-t_u32 stack__subtree_node_count(Subtree subtree);
+t_u32 stack__subtree_node_count(t_subtree subtree);
 void stack_head_delete(t_stack_head *self);
 void stack_node_add_link(t_stack_node *self, t_stack_link link);
 void stack_node_release(t_stack_node *self);

@@ -13,7 +13,7 @@
 #include "parser/external_scanner_state.h"
 #include "parser/subtree.h"
 
-void	ts_external_scanner_state_init(ExternalScannerState *self,
+void	ts_external_scanner_state_init(t_external_scanner_state *self,
 		const t_u8 *data, t_u32 length)
 {
 	self->length = length;
@@ -21,10 +21,10 @@ void	ts_external_scanner_state_init(ExternalScannerState *self,
 	mem_copy(self->long_data, data, length);
 }
 
-ExternalScannerState	ts_external_scanner_state_copy(\
-									const ExternalScannerState *self)
+t_external_scanner_state	ts_external_scanner_state_copy(\
+									const t_external_scanner_state *self)
 {
-	ExternalScannerState	result;
+	t_external_scanner_state	result;
 
 	result = *self;
 	result.long_data = mem_alloc(self->length);
@@ -32,17 +32,17 @@ ExternalScannerState	ts_external_scanner_state_copy(\
 	return (result);
 }
 
-void	ts_external_scanner_state_delete(ExternalScannerState *self)
+void	ts_external_scanner_state_delete(t_external_scanner_state *self)
 {
 	mem_free(self->long_data);
 }
 
-const t_u8	*ts_external_scanner_state_data(const ExternalScannerState *self)
+const t_u8	*ts_external_scanner_state_data(const t_external_scanner_state *self)
 {
 	return ((const t_u8 *)self->long_data);
 }
 
-bool	ts_external_scanner_state_eq(const ExternalScannerState *self,
+bool	ts_external_scanner_state_eq(const t_external_scanner_state *self,
 		const t_u8 *buffer, t_u32 length)
 {
 	return (self->length == length
