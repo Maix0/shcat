@@ -63,7 +63,7 @@ static inline NodeChildIterator ts_node_iterate_children(const TSNode *node)
 	Subtree subtree = ts_node__subtree(*node);
 	if (ts_subtree_child_count(subtree) == 0)
 	{
-		return (NodeChildIterator){NULL_SUBTREE, node->tree, length_zero(), 0, 0, NULL};
+		return (NodeChildIterator){NULL, node->tree, length_zero(), 0, 0, NULL};
 	}
 	const TSSymbol *alias_sequence = ts_language_alias_sequence(node->tree->language, subtree->production_id);
 	return (NodeChildIterator){

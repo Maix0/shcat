@@ -538,7 +538,7 @@ int ts_subtree_compare(Subtree left, Subtree right)
 Subtree ts_subtree_last_external_token(Subtree tree)
 {
 	if (!ts_subtree_has_external_tokens(tree))
-		return NULL_SUBTREE;
+		return NULL;
 	while (tree->child_count > 0)
 	{
 		for (t_u32 i = tree->child_count - 1; i + 1 > 0; i--)

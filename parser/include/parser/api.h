@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 13:54:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/30 19:46:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 12:10:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ typedef struct TSInput
 {
 	void *payload;
 	const t_u8 *(*read)(void *payload, t_u32 byte_index, TSPoint position, t_u32 *bytes_read);
-	TSInputEncoding encoding;
 } TSInput;
 
 typedef enum TSLogType

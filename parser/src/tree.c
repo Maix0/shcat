@@ -3,18 +3,14 @@
 #include "parser/tree.h"
 #include "me/types.h"
 #include "parser/api.h"
-#include "parser/array.h"
 #include "parser/length.h"
-#include "parser/point.h"
 #include "parser/subtree.h"
 
-TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *included_ranges, t_u32 included_range_count)
+TSTree *ts_tree_new(Subtree root, const TSLanguage *language)
 {
-	(void)(included_ranges);
-	(void)(included_range_count);
-	TSTree *result = mem_alloc(sizeof(TSTree));
+	TSTree *result;
+	result = mem_alloc(sizeof(*result));
 	result->root = root;
-	result->included_ranges = NULL;
 	result->language = language;
 	return result;
 }
@@ -22,7 +18,7 @@ TSTree *ts_tree_new(Subtree root, const TSLanguage *language, const TSRange *inc
 TSTree *ts_tree_copy(const TSTree *self)
 {
 	ts_subtree_retain(self->root);
-	return ts_tree_new(self->root, self->language, self->included_ranges, self->included_range_count);
+	return ts_tree_new(self->root, self->language);
 }
 
 void ts_tree_delete(TSTree *self)

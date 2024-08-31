@@ -19,6 +19,10 @@ static const t_u32 MAX_VERSION_COUNT_OVERFLOW = 1;
 static const t_u32 MAX_SUMMARY_DEPTH = 1;
 static const t_u32 MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
 
+typedef struct s_error_status	t_error_status;
+typedef enum e_error_comparison t_error_comparison;
+typedef struct s_string_input	t_string_input;
+
 struct TSParser
 {
 	Lexer			  lexer;
@@ -32,12 +36,10 @@ struct TSParser
 	void			 *external_scanner_payload;
 	t_u32			  accept_count;
 	t_u32			  operation_count;
-	t_u32			  included_range_difference_index;
 	bool			  has_scanner_error;
 };
 
-typedef struct ErrorStatus ErrorStatus;
-struct ErrorStatus
+struct s_error_status
 {
 	t_u32 cost;
 	t_u32 node_count;
@@ -45,40 +47,39 @@ struct ErrorStatus
 	bool  is_in_error;
 };
 
-typedef enum ErrorComparison ErrorComparison;
-enum ErrorComparison
+enum e_error_comparison
 {
 
-	ErrorComparisonTakeLeft,
-	ErrorComparisonPreferLeft,
-	ErrorComparisonNone,
-	ErrorComparisonPreferRight,
-	ErrorComparisonTakeRight,
+	ECTakeLeft,
+	ECPreferLeft,
+	ECNone,
+	ECPreferRight,
+	ECTakeRight,
 };
 
-typedef struct TSStringInput
+struct s_string_input
 {
 	const t_u8 *string;
 	t_u32		length;
-} TSStringInput;
+};
 
 // StringInput
 
 static const t_u8 *ts_string_input_read(void *_self, t_u32 byte, TSPoint point, t_u32 *length)
 {
-	TSStringInput *self;
+	t_string_input *self;
 
 	(void)point;
-	self = (TSStringInput *)_self;
+	self = (t_string_input *)_self;
 	if (byte >= self->length)
 	{
 		*length = 0;
-		return (const t_u8 *)"";
+		return ((const t_u8 *)"");
 	}
 	else
 	{
 		*length = self->length - byte;
-		return self->string + byte;
+		return (self->string + byte);
 	}
 }
 
@@ -134,18 +135,18 @@ static bool ts_parser__breakdown_top_of_stack(TSParser *self, StackVersion versi
 	return did_break_down;
 }
 
-static ErrorComparison ts_parser__compare_versions(TSParser *self, ErrorStatus a, ErrorStatus b)
+static t_error_comparison ts_parser__compare_versions(TSParser *self, t_error_status a, t_error_status b)
 {
 	(void)self;
 	if (!a.is_in_error && b.is_in_error)
 	{
 		if (a.cost < b.cost)
 		{
-			return ErrorComparisonTakeLeft;
+			return ECTakeLeft;
 		}
 		else
 		{
-			return ErrorComparisonPreferLeft;
+			return ECPreferLeft;
 		}
 	}
 
@@ -153,11 +154,11 @@ static ErrorComparison ts_parser__compare_versions(TSParser *self, ErrorStatus a
 	{
 		if (b.cost < a.cost)
 		{
-			return ErrorComparisonTakeRight;
+			return ECTakeRight;
 		}
 		else
 		{
-			return ErrorComparisonPreferRight;
+			return ECPreferRight;
 		}
 	}
 
@@ -165,11 +166,11 @@ static ErrorComparison ts_parser__compare_versions(TSParser *self, ErrorStatus a
 	{
 		if ((b.cost - a.cost) * (1 + a.node_count) > MAX_COST_DIFFERENCE)
 		{
-			return ErrorComparisonTakeLeft;
+			return ECTakeLeft;
 		}
 		else
 		{
-			return ErrorComparisonPreferLeft;
+			return ECPreferLeft;
 		}
 	}
 
@@ -177,31 +178,31 @@ static ErrorComparison ts_parser__compare_versions(TSParser *self, ErrorStatus a
 	{
 		if ((a.cost - b.cost) * (1 + b.node_count) > MAX_COST_DIFFERENCE)
 		{
-			return ErrorComparisonTakeRight;
+			return ECTakeRight;
 		}
 		else
 		{
-			return ErrorComparisonPreferRight;
+			return ECPreferRight;
 		}
 	}
 
 	if (a.dynamic_precedence > b.dynamic_precedence)
-		return ErrorComparisonPreferLeft;
+		return ECPreferLeft;
 	if (b.dynamic_precedence > a.dynamic_precedence)
-		return ErrorComparisonPreferRight;
-	return ErrorComparisonNone;
+		return ECPreferRight;
+	return ECNone;
 }
 
-static ErrorStatus ts_parser__version_status(TSParser *self, StackVersion version)
+static t_error_status ts_parser__version_status(TSParser *self, StackVersion version)
 {
 	t_u32 cost = ts_stack_error_cost(self->stack, version);
 	bool  is_paused = ts_stack_is_paused(self->stack, version);
 	if (is_paused)
 		cost += ERROR_COST_PER_SKIPPED_TREE;
-	return (ErrorStatus){.cost = cost,
-						 .node_count = ts_stack_node_count_since_error(self->stack, version),
-						 .dynamic_precedence = ts_stack_dynamic_precedence(self->stack, version),
-						 .is_in_error = is_paused || ts_stack_state(self->stack, version) == ERROR_STATE};
+	return (t_error_status){.cost = cost,
+							.node_count = ts_stack_node_count_since_error(self->stack, version),
+							.dynamic_precedence = ts_stack_dynamic_precedence(self->stack, version),
+							.is_in_error = is_paused || ts_stack_state(self->stack, version) == ERROR_STATE};
 }
 
 static bool ts_parser__better_version_exists(TSParser *self, StackVersion version, bool is_in_error, t_u32 cost)
@@ -211,8 +212,8 @@ static bool ts_parser__better_version_exists(TSParser *self, StackVersion versio
 		return true;
 	}
 
-	Length		position = ts_stack_position(self->stack, version);
-	ErrorStatus status = {
+	Length		   position = ts_stack_position(self->stack, version);
+	t_error_status status = {
 		.cost = cost,
 		.is_in_error = is_in_error,
 		.dynamic_precedence = ts_stack_dynamic_precedence(self->stack, version),
@@ -223,12 +224,12 @@ static bool ts_parser__better_version_exists(TSParser *self, StackVersion versio
 	{
 		if (i == version || !ts_stack_is_active(self->stack, i) || ts_stack_position(self->stack, i).bytes < position.bytes)
 			continue;
-		ErrorStatus status_i = ts_parser__version_status(self, i);
+		t_error_status status_i = ts_parser__version_status(self, i);
 		switch (ts_parser__compare_versions(self, status, status_i))
 		{
-		case ErrorComparisonTakeRight:
+		case ECTakeRight:
 			return true;
-		case ErrorComparisonPreferRight:
+		case ECPreferRight:
 			if (ts_stack_can_merge(self->stack, i, version))
 				return true;
 			break;
@@ -305,7 +306,7 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 {
 	TSLexMode lex_mode = self->language->lex_modes[parse_state];
 	if (lex_mode.lex_state == (t_u16)-1)
-		return NULL_SUBTREE;
+		return NULL;
 
 	const Length  start_position = ts_stack_position(self->stack, version);
 	const Subtree external_token = ts_stack_last_external_token(self->stack, version);
@@ -333,7 +334,7 @@ static Subtree ts_parser__lex(TSParser *self, StackVersion version, TSStateId pa
 			ts_parser__external_scanner_deserialize(self, external_token);
 			found_token = ts_parser__external_scanner_scan(self, lex_mode.external_lex_state);
 			if (self->has_scanner_error)
-				return NULL_SUBTREE;
+				return NULL;
 			ts_lexer_finish(&self->lexer, &lookahead_end_byte);
 
 			if (found_token)
@@ -660,7 +661,7 @@ static void ts_parser__accept(TSParser *self, StackVersion version, Subtree look
 	{
 		SubtreeArray trees = pop.contents[i].subtrees;
 
-		Subtree root = NULL_SUBTREE;
+		Subtree root = NULL;
 		for (t_u32 j = trees.size - 1; j + 1 > 0; j--)
 		{
 			Subtree tree = trees.contents[j];
@@ -1096,7 +1097,7 @@ static void ts_parser__handle_error(TSParser *self, StackVersion version, Subtre
 			}
 		}
 
-		ts_stack_push(self->stack, v, NULL_SUBTREE, false, ERROR_STATE);
+		ts_stack_push(self->stack, v, NULL, false, ERROR_STATE);
 		v = (v == version) ? previous_version_count : v + 1;
 	}
 
@@ -1122,7 +1123,7 @@ static bool ts_parser__advance(TSParser *self, StackVersion version, bool allow_
 	(void)(allow_node_reuse);
 	TSStateId state = ts_stack_state(self->stack, version);
 
-	Subtree	   lookahead = NULL_SUBTREE;
+	Subtree	   lookahead = NULL;
 	TableEntry table_entry = {.action_count = 0};
 
 	bool needs_lex = true;
@@ -1301,7 +1302,7 @@ static t_u32 ts_parser__condense_stack(TSParser *self)
 
 		// Keep track of the minimum error cost of any stack version so
 		// that it can be returned.
-		ErrorStatus status_i = ts_parser__version_status(self, i);
+		t_error_status status_i = ts_parser__version_status(self, i);
 		if (!status_i.is_in_error && status_i.cost < min_error_cost)
 		{
 			min_error_cost = status_i.cost;
@@ -1312,18 +1313,18 @@ static t_u32 ts_parser__condense_stack(TSParser *self)
 		// are ordered from most promising to least promising.
 		for (StackVersion j = 0; j < i; j++)
 		{
-			ErrorStatus status_j = ts_parser__version_status(self, j);
+			t_error_status status_j = ts_parser__version_status(self, j);
 
 			switch (ts_parser__compare_versions(self, status_j, status_i))
 			{
-			case ErrorComparisonTakeLeft:
+			case ECTakeLeft:
 				ts_stack_remove_version(self->stack, i);
 				i--;
 				j = i;
 				break;
 
-			case ErrorComparisonPreferLeft:
-			case ErrorComparisonNone:
+			case ECPreferLeft:
+			case ECNone:
 				if (ts_stack_merge(self->stack, j, i))
 				{
 					i--;
@@ -1331,7 +1332,7 @@ static t_u32 ts_parser__condense_stack(TSParser *self)
 				}
 				break;
 
-			case ErrorComparisonPreferRight:
+			case ECPreferRight:
 				if (ts_stack_merge(self->stack, j, i))
 				{
 					i--;
@@ -1343,7 +1344,7 @@ static t_u32 ts_parser__condense_stack(TSParser *self)
 				}
 				break;
 
-			case ErrorComparisonTakeRight:
+			case ECTakeRight:
 				ts_stack_remove_version(self->stack, j);
 				i--;
 				j--;
@@ -1407,12 +1408,11 @@ TSParser *ts_parser_new(void)
 	array_init(&self->reduce_actions);
 	array_reserve(&self->reduce_actions, 4);
 	self->stack = ts_stack_new();
-	self->finished_tree = NULL_SUBTREE;
+	self->finished_tree = NULL;
 	self->language = NULL;
 	self->has_scanner_error = false;
 	self->external_scanner_payload = NULL;
 	self->operation_count = 0;
-	self->included_range_difference_index = 0;
 	return self;
 }
 
@@ -1453,7 +1453,7 @@ void ts_parser_reset(TSParser *self)
 	if (self->finished_tree)
 	{
 		ts_subtree_release(self->finished_tree);
-		self->finished_tree = NULL_SUBTREE;
+		self->finished_tree = NULL;
 	}
 	self->accept_count = 0;
 	self->has_scanner_error = false;
@@ -1466,18 +1466,23 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 		return NULL;
 
 	ts_lexer_set_input(&self->lexer, input);
-	self->included_range_difference_index = 0;
+	// self->included_range_difference_index = 0;
 
 	if (!ts_parser_has_outstanding_parse(self))
 	{
 		ts_parser__external_scanner_create(self);
 		if (self->has_scanner_error)
-			goto exit;
+		{
+			ts_parser_reset(self);
+			return result;
+		}
 	}
 
 	self->operation_count = 0;
 
-	t_u32 position = 0, last_position = 0, version_count = 0;
+	t_u32 position = 0;
+	t_u32 last_position = 0;
+	t_u32 version_count = 0;
 	do
 	{
 		for (StackVersion version = 0; version_count = ts_stack_version_count(self->stack), version < version_count; version++)
@@ -1488,7 +1493,10 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 				if (!ts_parser__advance(self, version, allow_node_reuse))
 				{
 					if (self->has_scanner_error)
-						goto exit;
+					{
+						ts_parser_reset(self);
+						return result;
+					}
 					return NULL;
 				}
 				position = ts_stack_position(self->stack, version).bytes;
@@ -1516,27 +1524,20 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 
 	} while (version_count != 0);
 
-	assert(self->finished_tree);
+	if (self->finished_tree == NULL)
+		me_abort("self->finished_tree == NULL");
 	ts_subtree_balance(self->finished_tree, self->language);
-	result = ts_tree_new(self->finished_tree, self->language, self->lexer.included_ranges, self->lexer.included_range_count);
-	self->finished_tree = NULL_SUBTREE;
-
-exit:
+	result = ts_tree_new(self->finished_tree, self->language);
+	self->finished_tree = NULL;
 	ts_parser_reset(self);
 	return result;
 }
 
 TSTree *ts_parser_parse_string(TSParser *self, t_const_str string, t_u32 length)
 {
-	return ts_parser_parse_string_encoding(self, string, length, TSInputEncodingUTF8);
-}
-
-TSTree *ts_parser_parse_string_encoding(TSParser *self, t_const_str string, t_u32 length, TSInputEncoding encoding)
-{
-	TSStringInput input = {(const t_u8 *)string, length};
+	t_string_input input = {(const t_u8 *)string, length};
 	return ts_parser_parse(self, (TSInput){
 									 &input,
 									 ts_string_input_read,
-									 encoding,
 								 });
 }

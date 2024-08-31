@@ -294,7 +294,7 @@ static StackVersion ts_stack__add_version(Stack *self, StackVersion original_ver
 		.node_count_at_last_error = self->heads.contents[original_version].node_count_at_last_error,
 		.last_external_token = self->heads.contents[original_version].last_external_token,
 		.status = StackStatusActive,
-		.lookahead_when_paused = NULL_SUBTREE,
+		.lookahead_when_paused = NULL,
 	};
 	array_push(&self->heads, head);
 	stack_node_retain(node);
@@ -439,7 +439,7 @@ Stack *ts_stack_new(void)
 	array_reserve(&self->slices, 4);
 	array_reserve(&self->iterators, 4);
 
-	self->base_node = stack_node_new(NULL, NULL_SUBTREE, false, 1);
+	self->base_node = stack_node_new(NULL, NULL, false, 1);
 	ts_stack_clear(self);
 
 	return self;
@@ -809,7 +809,7 @@ Subtree ts_stack_resume(Stack *self, StackVersion version)
 	assert(head->status == StackStatusPaused);
 	Subtree result = head->lookahead_when_paused;
 	head->status = StackStatusActive;
-	head->lookahead_when_paused = NULL_SUBTREE;
+	head->lookahead_when_paused = NULL;
 	return result;
 }
 
@@ -824,8 +824,8 @@ void ts_stack_clear(Stack *self)
 	array_push(&self->heads, ((StackHead){
 								 .node = self->base_node,
 								 .status = StackStatusActive,
-								 .last_external_token = NULL_SUBTREE,
-								 .lookahead_when_paused = NULL_SUBTREE,
+								 .last_external_token = NULL,
+								 .lookahead_when_paused = NULL,
 							 }));
 }
 
