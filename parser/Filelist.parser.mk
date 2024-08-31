@@ -1,9 +1,11 @@
 SRC_FILES =                                                                   \
 create_language                                                               \
 external_scanner_state                                                        \
+external_scanner_state2                                                       \
 input                                                                         \
 language                                                                      \
-length                                                                        \
+length/length_funcs1                                                          \
+length/length_funcs2                                                          \
 lex                                                                           \
 lexer                                                                         \
 node/node_child                                                               \
@@ -34,7 +36,8 @@ stack/stack_node                                                              \
 stack/stack_summary                                                           \
 stack/stack_version                                                           \
 subtree                                                                       \
-tree                                                                          \
+tree/tree_funcs1                                                              \
+tree/tree_funcs2                                                              \
 
 GEN_FILES =                                                                   \
                                                                               \

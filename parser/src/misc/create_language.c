@@ -6,47 +6,42 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 16:13:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/22 16:25:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:36:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../static/headers/constants.h"
 #include "../static/headers/symbols.h"
-#include "parser/parser.h"
 #include "me/types.h"
+#include "parser/parser.h"
 
+// bool		lex_keywords_main(TSLexer *lexer, TSStateId state);
+// bool		lex_normal_main(TSLexer *lexer, TSStateId state);
+bool	tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, \
+										const bool *ret);
+void	*create_external_scanner_states(void);
+void	*create_field_names(void);
+void	*create_symbols_names(void);
+void	*create_field_map_entries(void);
+void	*create_field_map_slices(void);
+void	*create_lex_modes(void);
+void	*create_parse_actions_entries(void);
+void	*create_primary_state_ids(void);
+void	*create_alias_sequences(void);
+void	*create_external_scanner_symbol_map(void);
+void	*create_non_terminal_alias_map(void);
+void	*create_unique_symbols_map(void);
+void	*create_symbols_metadata(void);
+void	*create_parse_table(void);
+bool	ts_lex_keywords(TSLexer *lexer, TSStateId state);
+bool	ts_lex(TSLexer *lexer, TSStateId state);
+t_u32	tree_sitter_sh_external_scanner_serialize(void *ctx, t_u8 *state);
+void	tree_sitter_sh_external_scanner_deserialize(void *ctx, \
+			const t_u8 *state, t_u32 val);
+void	tree_sitter_sh_external_scanner_destroy(void *ctx);
+void	*tree_sitter_sh_external_scanner_create(void);
 
-#ifdef static
-# undef static
-#endif
-
-// bool	 lex_keywords_main(TSLexer *lexer, TSStateId state);
-// bool	 lex_normal_main(TSLexer *lexer, TSStateId state);
-bool  tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, const bool *ret);
-void *create_external_scanner_states(void);
-void *create_field_names(void);
-void *create_symbols_names(void);
-void *create_field_map_entries(void);
-void *create_field_map_slices(void);
-void *create_lex_modes(void);
-void *create_parse_actions_entries(void);
-void *create_primary_state_ids(void);
-void *create_alias_sequences(void);
-void *create_external_scanner_symbol_map(void);
-void *create_non_terminal_alias_map(void);
-void *create_unique_symbols_map(void);
-void *create_symbols_metadata(void);
-void *create_parse_table(void);
-/* void *create_small_parse_table(void); */
-/* void *create_small_parse_table_map(void); */
-bool  ts_lex_keywords(TSLexer *lexer, TSStateId state);
-bool  ts_lex(TSLexer *lexer, TSStateId state);
-t_u32 tree_sitter_sh_external_scanner_serialize(void *ctx, t_u8 *state);
-void  tree_sitter_sh_external_scanner_deserialize(void *ctx, const t_u8 *state, t_u32 val);
-void  tree_sitter_sh_external_scanner_destroy(void *ctx);
-void *tree_sitter_sh_external_scanner_create(void);
-
-static struct ExternalScannerDefinition init_scanner(void)
+static struct ExternalScannerDefinition	init_scanner(void)
 {
 	return ((struct ExternalScannerDefinition){
 		create_external_scanner_states(),
@@ -59,9 +54,9 @@ static struct ExternalScannerDefinition init_scanner(void)
 	});
 }
 
-static void init_language(TSLanguage *language)
+static void	init_language(TSLanguage *language)
 {
-	static uint32_t	empty_map[] = {0, 0 ,0};
+	static uint32_t	empty_map[] = {0, 0, 0};
 
 	language->parse_table = create_parse_table();
 	language->small_parse_table = (void *)empty_map;
@@ -83,10 +78,10 @@ static void init_language(TSLanguage *language)
 	language->external_scanner = init_scanner();
 }
 
-const TSLanguage *tree_sitter_sh(void)
+const TSLanguage	*tree_sitter_sh(void)
 {
-	static bool		  init = false;
-	static TSLanguage language = {
+	static bool			init = false;
+	static TSLanguage	language = {
 		.version = LANGUAGE_VERSION,
 		.symbol_count = SYMBOL_COUNT,
 		.alias_count = ALIAS_COUNT,
