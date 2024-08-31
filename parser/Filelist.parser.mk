@@ -16,7 +16,8 @@ node/node_getter_funcs3                                                       \
 node/node_iterator                                                            \
 node/node_relevent                                                            \
 parser                                                                        \
-point                                                                         \
+point/point_funcs1                                                            \
+point/point_funcs2                                                            \
 reduce_action                                                                 \
 scanner                                                                       \
 stack/stack_add_link                                                          \
