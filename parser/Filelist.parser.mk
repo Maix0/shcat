@@ -11,6 +11,8 @@ node/node_child_inner                                                         \
 node/node_constructor                                                         \
 node/node_fields                                                              \
 node/node_getter_funcs1                                                       \
+node/node_getter_funcs2                                                       \
+node/node_getter_funcs3                                                       \
 node/node_iterator                                                            \
 node/node_relevent                                                            \
 parser                                                                        \
