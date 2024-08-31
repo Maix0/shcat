@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:47:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:48:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:10:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ TSFieldId	ts_language_field_id_for_name(const TSLanguage *self,
 {
 	t_u16		count;
 	TSSymbol	i;
-	bool		res;
 
 	count = (t_u16)ts_language_field_count(self);
 	i = 1;
