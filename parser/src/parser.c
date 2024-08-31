@@ -26,7 +26,7 @@ typedef struct s_string_input	t_string_input;
 struct TSParser
 {
 	Lexer			  lexer;
-	Stack			 *stack;
+	t_stack			 *stack;
 	const TSLanguage *language;
 	ReduceActionSet	  reduce_actions;
 	Subtree			  finished_tree;
