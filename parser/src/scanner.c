@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scanner.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/01 14:17:17 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/01 14:22:35 by maiboyer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "me/char/char.h"
+#include "me/types.h"
 #include "parser/array.h"
 #include "parser/parser.h"
-#include "me/types.h"
 #include <assert.h>
 #include <string.h>
-#include <wctype.h>
 
 enum TokenType
 {
@@ -31,31 +43,29 @@ enum TokenType
 
 typedef Array(char) String;
 
-typedef struct Heredoc
+typedef struct s_heredoc t_heredoc;
+struct s_heredoc
 {
 	bool   is_raw;
 	bool   started;
 	bool   allows_indent;
 	String delimiter;
 	String current_leading_word;
-} Heredoc;
-
-#define heredoc_new()                                                                                                                      \
-	{                                                                                                                                      \
-		.is_raw = false,                                                                                                                   \
-		.started = false,                                                                                                                  \
-		.allows_indent = false,                                                                                                            \
-		.delimiter = array_new(),                                                                                                          \
-		.current_leading_word = array_new(),                                                                                               \
-	};
-
-typedef struct Scanner
+};
+typedef struct s_scanner t_scanner;
+struct s_scanner
 {
 	t_u8 last_glob_paren_depth;
 	bool ext_was_in_double_quote;
 	bool ext_saw_outside_quote;
-	Array(Heredoc) heredocs;
-} Scanner;
+	Array(t_heredoc) heredocs;
+};
+
+t_heredoc heredoc_new(void)
+{
+	return ((t_heredoc){
+		.is_raw = false, .started = false, .allows_indent = false, .delimiter = array_new(), .current_leading_word = array_new()});
+}
 
 static inline void advance(TSLexer *lexer)
 {
@@ -81,7 +91,7 @@ static inline void reset_string(String *string)
 	}
 }
 
-static inline void reset_heredoc(Heredoc *heredoc)
+static inline void reset_heredoc(t_heredoc *heredoc)
 {
 	heredoc->is_raw = false;
 	heredoc->started = false;
@@ -89,30 +99,30 @@ static inline void reset_heredoc(Heredoc *heredoc)
 	reset_string(&heredoc->delimiter);
 }
 
-static inline void reset(Scanner *scanner)
+static inline void reset(t_scanner *scanner)
 {
 	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
-	{
 		reset_heredoc(array_get(&scanner->heredocs, i));
-	}
 }
 
-static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
+static t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
 {
-	t_u32 size = 0;
+	t_u32	   size;
+	t_usize	   i;
+	t_heredoc *heredoc;
 
+	size = 0;
 	buffer[size++] = (char)scanner->last_glob_paren_depth;
 	buffer[size++] = (char)scanner->ext_was_in_double_quote;
 	buffer[size++] = (char)scanner->ext_saw_outside_quote;
 	buffer[size++] = (char)scanner->heredocs.size;
 
-	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
+	i = 0;
+	while (i < scanner->heredocs.size)
 	{
-		Heredoc *heredoc = array_get(&scanner->heredocs, i);
+		heredoc = array_get(&scanner->heredocs, i);
 		if (heredoc->delimiter.size + 3 + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
-		{
-			return 0;
-		}
+			return (0);
 
 		buffer[size++] = (char)heredoc->is_raw;
 		buffer[size++] = (char)heredoc->started;
@@ -125,16 +135,15 @@ static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
 			mem_copy(&buffer[size], heredoc->delimiter.contents, heredoc->delimiter.size);
 			size += heredoc->delimiter.size;
 		}
+		i++;
 	}
 	return size;
 }
 
-static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
+static void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
 {
 	if (length == 0)
-	{
 		reset(scanner);
-	}
 	else
 	{
 		t_u32 size = 0;
@@ -144,14 +153,14 @@ static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
 		t_u32 heredoc_count = (t_u8)buffer[size++];
 		for (t_u32 i = 0; i < heredoc_count; i++)
 		{
-			Heredoc *heredoc = NULL;
+			t_heredoc *heredoc = NULL;
 			if (i < scanner->heredocs.size)
 			{
 				heredoc = array_get(&scanner->heredocs, i);
 			}
 			else
 			{
-				Heredoc new_heredoc = heredoc_new();
+				t_heredoc new_heredoc = heredoc_new();
 				array_push(&scanner->heredocs, new_heredoc);
 				heredoc = array_back(&scanner->heredocs);
 			}
@@ -193,7 +202,7 @@ static bool advance_word(TSLexer *lexer, String *unquoted_word)
 	}
 
 	while (lexer->lookahead &&
-		   !(quote ? lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n' : iswspace(lexer->lookahead)))
+		   !(quote ? lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n' : me_isspace(lexer->lookahead)))
 	{
 		if (lexer->lookahead == '\\')
 		{
@@ -215,7 +224,7 @@ static bool advance_word(TSLexer *lexer, String *unquoted_word)
 
 static inline bool scan_bare_dollar(TSLexer *lexer)
 {
-	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
+	while (me_isspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
 		skip(lexer);
 
 	if (lexer->lookahead == '$')
@@ -223,15 +232,15 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 		advance(lexer);
 		lexer->result_symbol = BARE_DOLLAR;
 		lexer->mark_end(lexer);
-		return (iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == '\"');
+		return (me_isspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == '\"');
 	}
 
 	return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
+static bool scan_heredoc_start(t_heredoc *heredoc, TSLexer *lexer)
 {
-	while (iswspace(lexer->lookahead))
+	while (me_isspace(lexer->lookahead))
 	{
 		skip(lexer);
 	}
@@ -248,12 +257,12 @@ static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
 	return found_delimiter;
 }
 
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
+static bool scan_heredoc_end_identifier(t_heredoc *heredoc, TSLexer *lexer)
 {
+	t_i32 size;
+	
+	size = 0;
 	reset_string(&heredoc->current_leading_word);
-	// Scan the first 'n' characters on this line, to see if they match the
-	// heredoc delimiter
-	t_i32 size = 0;
 	if (heredoc->delimiter.size > 0)
 	{
 		while (lexer->lookahead != '\0' && lexer->lookahead != '\n' && (t_i32)*array_get(&heredoc->delimiter, size) == lexer->lookahead &&
@@ -268,10 +277,10 @@ static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
 	return heredoc->delimiter.size == 0 ? false : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
 }
 
-static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
+static bool scan_heredoc_content(t_scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
 {
-	bool	 did_advance = false;
-	Heredoc *heredoc = array_back(&scanner->heredocs);
+	bool	   did_advance = false;
+	t_heredoc *heredoc = array_back(&scanner->heredocs);
 
 	for (;;)
 	{
@@ -307,7 +316,7 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 				lexer->result_symbol = middle_type;
 				heredoc->started = true;
 				advance(lexer);
-				if (iswalpha(lexer->lookahead) || lexer->lookahead == '{' || lexer->lookahead == '(')
+				if (me_isalpha(lexer->lookahead) || lexer->lookahead == '{' || lexer->lookahead == '(')
 				{
 					return true;
 				}
@@ -334,10 +343,8 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 			did_advance = true;
 			if (heredoc->allows_indent)
 			{
-				while (iswspace(lexer->lookahead))
-				{
+				while (me_isspace(lexer->lookahead))
 					advance(lexer);
-				}
 			}
 			lexer->result_symbol = heredoc->started ? middle_type : end_type;
 			lexer->mark_end(lexer);
@@ -357,7 +364,7 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 			{
 				// an alternative is to check the starting column of the
 				// heredoc body and track that statefully
-				while (iswspace(lexer->lookahead))
+				while (me_isspace(lexer->lookahead))
 				{
 					if (did_advance)
 					{
@@ -394,11 +401,11 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 	}
 }
 
-static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
+static bool scan(t_scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 {
 	if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols))
 	{
-		if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' ||
+		if (!(lexer->lookahead == 0 || me_isspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' ||
 			  lexer->lookahead == ')' || lexer->lookahead == '(' || lexer->lookahead == ';' || lexer->lookahead == '&' ||
 			  lexer->lookahead == '|' || lexer->lookahead == '{' || lexer->lookahead == '}'))
 		{
@@ -422,7 +429,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				{
 					advance(lexer);
 				}
-				return iswspace(lexer->lookahead) || lexer->eof(lexer);
+				return me_isspace(lexer->lookahead) || lexer->eof(lexer);
 			}
 			// strings w/ expansions that contains escaped quotes or
 			// backslashes need this to return a concat
@@ -468,7 +475,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 
 	if (valid_symbols[EMPTY_VALUE])
 	{
-		if (iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == ';' || lexer->lookahead == '&')
+		if (me_isspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == ';' || lexer->lookahead == '&')
 		{
 			lexer->result_symbol = EMPTY_VALUE;
 			return true;
@@ -483,7 +490,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 
 	if (valid_symbols[HEREDOC_END] && scanner->heredocs.size > 0)
 	{
-		Heredoc *heredoc = array_back(&scanner->heredocs);
+		t_heredoc *heredoc = array_back(&scanner->heredocs);
 		if (scan_heredoc_end_identifier(heredoc, lexer))
 		{
 			array_delete(&heredoc->current_leading_word);
@@ -561,7 +568,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 			{
 				return false;
 			}
-			if (valid_symbols[EXTGLOB_PATTERN] && iswspace(lexer->lookahead))
+			if (valid_symbols[EXTGLOB_PATTERN] && me_isspace(lexer->lookahead))
 			{
 				lexer->mark_end(lexer);
 				lexer->result_symbol = EXTGLOB_PATTERN;
@@ -578,7 +585,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				if (lexer->lookahead == '-')
 				{
 					advance(lexer);
-					Heredoc heredoc = heredoc_new();
+					t_heredoc heredoc = heredoc_new();
 					heredoc.allows_indent = true;
 					array_push(&scanner->heredocs, heredoc);
 					lexer->result_symbol = HEREDOC_ARROW_DASH;
@@ -589,7 +596,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				// }
 				else
 				{
-					Heredoc heredoc = heredoc_new();
+					t_heredoc heredoc = heredoc_new();
 					array_push(&scanner->heredocs, heredoc);
 					lexer->result_symbol = HEREDOC_ARROW;
 				}
@@ -599,11 +606,9 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 
 		bool is_number = true;
-		if (iswdigit(lexer->lookahead))
-		{
+		if (me_isdigit(lexer->lookahead))
 			advance(lexer);
-		}
-		else if (iswalpha(lexer->lookahead) || lexer->lookahead == '_')
+		else if (me_isalpha(lexer->lookahead) || lexer->lookahead == '_')
 		{
 			is_number = false;
 			advance(lexer);
@@ -627,11 +632,11 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 
 		for (;;)
 		{
-			if (iswdigit(lexer->lookahead))
+			if (me_isdigit(lexer->lookahead))
 			{
 				advance(lexer);
 			}
-			else if (iswalpha(lexer->lookahead) || lexer->lookahead == '_')
+			else if (me_isalpha(lexer->lookahead) || lexer->lookahead == '_')
 			{
 				is_number = false;
 				advance(lexer);
@@ -682,7 +687,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				lexer->mark_end(lexer);
 				advance(lexer);
 				lexer->result_symbol = VARIABLE_NAME;
-				return iswalpha(lexer->lookahead);
+				return me_isalpha(lexer->lookahead);
 			}
 		}
 
@@ -698,7 +703,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 	{
 		if (valid_symbols[REGEX])
 		{
-			while (iswspace(lexer->lookahead))
+			while (me_isspace(lexer->lookahead))
 			{
 				skip(lexer);
 			}
@@ -797,7 +802,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				{
 					if (valid_symbols[REGEX])
 					{
-						bool was_space = !state.in_single_quote && iswspace(lexer->lookahead);
+						bool was_space = !state.in_single_quote && me_isspace(lexer->lookahead);
 						advance(lexer);
 						state.advanced_once = true;
 						if (!was_space || state.paren_depth > 0)
@@ -821,19 +826,19 @@ extglob_pattern:
 	if (valid_symbols[EXTGLOB_PATTERN] && !in_error_recovery(valid_symbols))
 	{
 		// first skip ws, then check for ? * + @ !
-		while (iswspace(lexer->lookahead))
+		while (me_isspace(lexer->lookahead))
 		{
 			skip(lexer);
 		}
 
 		if (lexer->lookahead == '?' || lexer->lookahead == '*' || lexer->lookahead == '+' || lexer->lookahead == '@' ||
 			lexer->lookahead == '!' || lexer->lookahead == '-' || lexer->lookahead == ')' || lexer->lookahead == '\\' ||
-			lexer->lookahead == '.' || lexer->lookahead == '[' || (iswalpha(lexer->lookahead)))
+			lexer->lookahead == '.' || lexer->lookahead == '[' || (me_isalpha(lexer->lookahead)))
 		{
 			if (lexer->lookahead == '\\')
 			{
 				advance(lexer);
-				if ((iswspace(lexer->lookahead) || lexer->lookahead == '"') && lexer->lookahead != '\r' && lexer->lookahead != '\n')
+				if ((me_isspace(lexer->lookahead) || lexer->lookahead == '"') && lexer->lookahead != '\r' && lexer->lookahead != '\n')
 				{
 					advance(lexer);
 				}
@@ -848,14 +853,14 @@ extglob_pattern:
 				lexer->mark_end(lexer);
 				advance(lexer);
 
-				if (iswspace(lexer->lookahead))
+				if (me_isspace(lexer->lookahead))
 				{
 					return false;
 				}
 			}
 
 			lexer->mark_end(lexer);
-			bool was_non_alpha = !iswalpha(lexer->lookahead);
+			bool was_non_alpha = !me_isalpha(lexer->lookahead);
 			if (lexer->lookahead != '[')
 			{
 				// no esac
@@ -872,7 +877,7 @@ extglob_pattern:
 							if (lexer->lookahead == 'c')
 							{
 								advance(lexer);
-								if (iswspace(lexer->lookahead))
+								if (me_isspace(lexer->lookahead))
 								{
 									return false;
 								}
@@ -891,7 +896,7 @@ extglob_pattern:
 			{
 				lexer->mark_end(lexer);
 				advance(lexer);
-				while (iswalnum(lexer->lookahead))
+				while (me_isalnum(lexer->lookahead))
 				{
 					advance(lexer);
 				}
@@ -908,14 +913,14 @@ extglob_pattern:
 			{
 				lexer->mark_end(lexer);
 				advance(lexer);
-				if (iswspace(lexer->lookahead))
+				if (me_isspace(lexer->lookahead))
 				{
 					lexer->result_symbol = EXTGLOB_PATTERN;
 					return was_non_alpha;
 				}
 			}
 
-			if (iswspace(lexer->lookahead))
+			if (me_isspace(lexer->lookahead))
 			{
 				lexer->mark_end(lexer);
 				lexer->result_symbol = EXTGLOB_PATTERN;
@@ -942,7 +947,7 @@ extglob_pattern:
 				return true;
 			}
 
-			if (!iswalnum(lexer->lookahead) && lexer->lookahead != '(' && lexer->lookahead != '"' && lexer->lookahead != '[' &&
+			if (!me_isalnum(lexer->lookahead) && lexer->lookahead != '(' && lexer->lookahead != '"' && lexer->lookahead != '[' &&
 				lexer->lookahead != '?' && lexer->lookahead != '/' && lexer->lookahead != '\\' && lexer->lookahead != '_' &&
 				lexer->lookahead != '*')
 			{
@@ -1010,11 +1015,11 @@ extglob_pattern:
 
 				if (!state.done)
 				{
-					bool was_space = iswspace(lexer->lookahead);
+					bool was_space = me_isspace(lexer->lookahead);
 					if (lexer->lookahead == '$')
 					{
 						lexer->mark_end(lexer);
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
+						if (!me_isalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
 						{
 							state.saw_non_alphadot = true;
 						}
@@ -1042,19 +1047,19 @@ extglob_pattern:
 					}
 					if (lexer->lookahead == '\\')
 					{
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
+						if (!me_isalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
 						{
 							state.saw_non_alphadot = true;
 						}
 						advance(lexer);
-						if (iswspace(lexer->lookahead) || lexer->lookahead == '"')
+						if (me_isspace(lexer->lookahead) || lexer->lookahead == '"')
 						{
 							advance(lexer);
 						}
 					}
 					else
 					{
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
+						if (!me_isalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
 						{
 							state.saw_non_alphadot = true;
 						}
@@ -1089,7 +1094,7 @@ expansion_word:
 			{
 				lexer->mark_end(lexer);
 				advance(lexer);
-				if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || iswalnum(lexer->lookahead))
+				if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || me_isalnum(lexer->lookahead))
 				{
 					lexer->result_symbol = EXPANSION_WORD;
 					return advanced_once;
@@ -1118,7 +1123,7 @@ expansion_word:
 					{
 						lexer->mark_end(lexer);
 						advance(lexer);
-						if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || iswalnum(lexer->lookahead))
+						if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || me_isalnum(lexer->lookahead))
 						{
 							lexer->result_symbol = EXPANSION_WORD;
 							return advanced_once;
@@ -1127,8 +1132,8 @@ expansion_word:
 					}
 					else
 					{
-						advanced_once = advanced_once || !iswspace(lexer->lookahead);
-						advance_once_space = advance_once_space || iswspace(lexer->lookahead);
+						advanced_once = advanced_once || !me_isspace(lexer->lookahead);
+						advance_once_space = advance_once_space || me_isspace(lexer->lookahead);
 						advance(lexer);
 					}
 				}
@@ -1149,8 +1154,8 @@ expansion_word:
 				return false;
 			if (lexer->eof(lexer))
 				return false;
-			advanced_once = advanced_once || !iswspace(lexer->lookahead);
-			advance_once_space = advance_once_space || iswspace(lexer->lookahead);
+			advanced_once = advanced_once || !me_isspace(lexer->lookahead);
+			advance_once_space = advance_once_space || me_isspace(lexer->lookahead);
 			advance(lexer);
 		}
 	}
@@ -1161,35 +1166,35 @@ brace_start:
 
 void *tree_sitter_sh_external_scanner_create()
 {
-	Scanner *scanner = mem_alloc(sizeof(Scanner));
+	t_scanner *scanner = mem_alloc(sizeof(t_scanner));
 	array_init(&scanner->heredocs);
 	return scanner;
 }
 
 bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	return scan(scanner, lexer, valid_symbols);
 }
 
 t_u32 tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	return serialize(scanner, state);
 }
 
 void tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	deserialize(scanner, state, length);
 }
 
 void tree_sitter_sh_external_scanner_destroy(void *payload)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	for (size_t i = 0; i < scanner->heredocs.size; i++)
 	{
-		Heredoc *heredoc = array_get(&scanner->heredocs, i);
+		t_heredoc *heredoc = array_get(&scanner->heredocs, i);
 		array_delete(&heredoc->current_leading_word);
 		array_delete(&heredoc->delimiter);
 	}
