@@ -33,7 +33,10 @@ parser                                                                        \
 point/point_funcs1                                                            \
 point/point_funcs2                                                            \
 scanner                                                                       \
+scanner/advance_words                                                         \
 scanner/deserialize                                                           \
+scanner/heredoc                                                               \
+scanner/heredoc_functions                                                     \
 scanner/serialize                                                             \
 stack/stack_add_link                                                          \
 stack/stack_funcs1                                                            \

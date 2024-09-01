@@ -120,4 +120,14 @@ void	vec_heredoc_sort(t_vec_heredoc		  *vec, t_vec_heredoc_sort_fn is_sorted);
 /// @return true if the operation failed, false otherwise
 t_error vec_heredoc_back(t_vec_heredoc *vec, t_heredoc **out);
 
+/// @brief Get a pointer to the i'th element, or NULL otherwise
+/// @param vec The vec_heredoc to get the element from
+/// @return A pointer to the element or NULL
+t_heredoc *vec_heredoc_get(t_vec_heredoc *vec, t_usize i);
+
+/// @brief Get a pointer to the last element, or NULL otherwise
+/// @param vec The vec_heredoc to get the element from
+/// @return A pointer to the last element or NULL
+t_heredoc *vec_heredoc_last(t_vec_heredoc *vec);
+
 #endif

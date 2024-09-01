@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_heredoc.h"
 #include <stdlib.h>

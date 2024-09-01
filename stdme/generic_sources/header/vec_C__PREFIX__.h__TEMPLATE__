@@ -120,4 +120,14 @@ void	vec_C__PREFIX___sort(t_vec_C__PREFIX__		  *vec, t_vec_C__PREFIX___sort_fn i
 /// @return true if the operation failed, false otherwise
 t_error vec_C__PREFIX___back(t_vec_C__PREFIX__ *vec, C__TYPENAME__ **out);
 
+/// @brief Get a pointer to the i'th element, or NULL otherwise
+/// @param vec The vec_C__PREFIX__ to get the element from
+/// @return A pointer to the element or NULL
+C__TYPENAME__ *vec_C__PREFIX___get(t_vec_C__PREFIX__ *vec, t_usize i);
+
+/// @brief Get a pointer to the last element, or NULL otherwise
+/// @param vec The vec_C__PREFIX__ to get the element from
+/// @return A pointer to the last element or NULL
+C__TYPENAME__ *vec_C__PREFIX___last(t_vec_C__PREFIX__ *vec);
+
 #endif

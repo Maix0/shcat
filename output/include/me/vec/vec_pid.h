@@ -120,4 +120,14 @@ void	vec_pid_sort(t_vec_pid		  *vec, t_vec_pid_sort_fn is_sorted);
 /// @return true if the operation failed, false otherwise
 t_error vec_pid_back(t_vec_pid *vec, t_pid **out);
 
+/// @brief Get a pointer to the i'th element, or NULL otherwise
+/// @param vec The vec_pid to get the element from
+/// @return A pointer to the element or NULL
+t_pid *vec_pid_get(t_vec_pid *vec, t_usize i);
+
+/// @brief Get a pointer to the last element, or NULL otherwise
+/// @param vec The vec_pid to get the element from
+/// @return A pointer to the last element or NULL
+t_pid *vec_pid_last(t_vec_pid *vec);
+
 #endif

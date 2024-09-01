@@ -1,0 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vec_C__PREFIX__.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/30 17:59:28 by maiboyer          #+#    #+#             */
+/*   Updated: 2023/12/30 17:59:28 by maiboyer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "me/mem/mem.h"
+#include "me/types.h"
+#include "me/vec/vec_C__PREFIX__.h"
+#include <stdlib.h>
+
+C__TYPENAME__ *vec_C__PREFIX___get(t_vec_C__PREFIX__ *vec, t_usize i)
+{
+	if (vec->len >= i)
+		return (NULL);
+	return (&vec->buffer[i]);
+}
+
+C__TYPENAME__ *vec_C__PREFIX___last(t_vec_C__PREFIX__ *vec)
+{
+	if (vec->len == 0)
+		return (NULL);
+	return (&vec->buffer[vec->len - 1]);
+}

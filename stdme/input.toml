@@ -5,6 +5,7 @@ sources = [
 	"generic_sources/src/vec/C__PREFIX___sort.c__TEMPLATE__",
 	"generic_sources/src/vec/C__PREFIX___functions2.c__TEMPLATE__",
 	"generic_sources/src/vec/C__PREFIX___functions3.c__TEMPLATE__",
+	"generic_sources/src/vec/C__PREFIX___functions4.c__TEMPLATE__",
 ]
 replace.C__TYPENAME__ = "type"
 replace.C__TYPEHEADER__ = "header_include"

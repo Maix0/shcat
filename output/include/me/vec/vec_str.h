@@ -120,4 +120,14 @@ void	vec_str_sort(t_vec_str		  *vec, t_vec_str_sort_fn is_sorted);
 /// @return true if the operation failed, false otherwise
 t_error vec_str_back(t_vec_str *vec, t_str **out);
 
+/// @brief Get a pointer to the i'th element, or NULL otherwise
+/// @param vec The vec_str to get the element from
+/// @return A pointer to the element or NULL
+t_str *vec_str_get(t_vec_str *vec, t_usize i);
+
+/// @brief Get a pointer to the last element, or NULL otherwise
+/// @param vec The vec_str to get the element from
+/// @return A pointer to the last element or NULL
+t_str *vec_str_last(t_vec_str *vec);
+
 #endif

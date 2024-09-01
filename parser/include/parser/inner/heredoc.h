@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 15:06:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 15:08:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/01 19:01:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ static inline void reset_heredoc(t_heredoc *heredoc)
 	heredoc->started = false;
 	heredoc->allows_indent = false;
 	string_clear(&heredoc->delimiter);
+}
+
+static inline void heredoc_free(t_heredoc heredoc)
+{
+	string_free(heredoc.delimiter);
+	string_free(heredoc.current_leading_word);
 }
 
 #endif /* HEREDOC_TYPE_H */

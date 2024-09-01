@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 15:06:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 15:08:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/01 19:40:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/mem/mem.h"
 #include "me/types.h"
+#include "me/vec/vec_heredoc.h"
 #include "parser/inner/heredoc.h"
 #include "parser/inner/scanner.h"
-#include "parser/array.h"
-#include "parser/parser.h"
 
 void reset(t_scanner *);
 
@@ -39,12 +39,12 @@ void tree_sitter_sh_external_scanner_deserialize(t_scanner *scanner, const t_u8 
 		while (i < heredoc_count)
 		{
 			heredoc = NULL;
-			if (i < scanner->heredocs.size)
-				heredoc = array_get(&scanner->heredocs, i);
+			if (i < scanner->heredocs.len)
+				heredoc = vec_heredoc_get(&scanner->heredocs, i);
 			else
 			{
-				array_push(&scanner->heredocs, heredoc_new());
-				heredoc = array_back(&scanner->heredocs);
+				vec_heredoc_push(&scanner->heredocs, heredoc_new());
+				heredoc = vec_heredoc_last(&scanner->heredocs);
 			}
 
 			heredoc->is_raw = buffer[size++];
