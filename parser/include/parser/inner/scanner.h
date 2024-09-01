@@ -50,6 +50,8 @@ struct s_heredoc_scan_state
 	bool			  return_value;
 };
 
+typedef bool (*t_heredoc_content_func)(struct s_heredoc_scan_state	*state);
+
 bool advance_word(TSLexer *lexer, t_string *unquoted_word);
 
 #endif

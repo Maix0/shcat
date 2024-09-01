@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 19:28:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 19:30:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/01 20:10:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,26 @@
 #include "me/types.h"
 #include "parser/parser.h"
 
-bool advance_word(TSLexer *lexer, t_string *unquoted_word)
+void	advance_word_inner(TSLexer *lexer, bool *empty, t_i32 *quote)
 {
-	bool  empty;
-	t_i32 quote;
-
-	empty = true;
-	quote = 0;
+	*empty = true;
+	*quote = 0;
 	if (lexer->lookahead == '\'' || lexer->lookahead == '"')
 	{
-		quote = lexer->lookahead;
+		*quote = lexer->lookahead;
 		lexer->advance(lexer, false);
 	}
-	while (lexer->lookahead && !((quote && (lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n')) ||
-								 (!quote && (me_isspace(lexer->lookahead)))))
+}
+
+bool	advance_word(TSLexer *lexer, t_string *unquoted_word)
+{
+	bool	empty;
+	t_i32	quote;
+
+	advance_word_inner(lexer, &empty, &quote);
+	while (lexer->lookahead && !((quote && (lexer->lookahead == quote
+					|| lexer->lookahead == '\r' || lexer->lookahead == '\n'))
+			|| (!quote && (me_isspace(lexer->lookahead)))))
 	{
 		if (lexer->lookahead == '\\')
 		{

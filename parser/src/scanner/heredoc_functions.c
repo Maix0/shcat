@@ -18,9 +18,9 @@
 #include "parser/inner/scanner.h"
 #include "parser/parser.h"
 
-bool scan_heredoc_end_identifier(t_heredoc *heredoc, TSLexer *lexer);
+bool	scan_heredoc_end_identifier(t_heredoc *heredoc, TSLexer *lexer);
 
-bool scan_heredoc_content_nullbyte(struct s_heredoc_scan_state *state)
+bool	scan_heredoc_content_nullbyte(struct s_heredoc_scan_state *state)
 {
 	if (state->lexer->eof(state->lexer) && state->did_advance)
 	{
@@ -31,7 +31,7 @@ bool scan_heredoc_content_nullbyte(struct s_heredoc_scan_state *state)
 	return (state->return_value = false, true);
 }
 
-bool scan_heredoc_content_backslash(struct s_heredoc_scan_state *state)
+bool	scan_heredoc_content_backslash(struct s_heredoc_scan_state *state)
 {
 	state->did_advance = true;
 	state->lexer->advance(state->lexer, false);
@@ -39,7 +39,7 @@ bool scan_heredoc_content_backslash(struct s_heredoc_scan_state *state)
 	return (false);
 }
 
-bool scan_heredoc_content_dollar(struct s_heredoc_scan_state *state)
+bool	scan_heredoc_content_dollar(struct s_heredoc_scan_state *state)
 {
 	if (state->heredoc->is_raw)
 	{
@@ -52,10 +52,12 @@ bool scan_heredoc_content_dollar(struct s_heredoc_scan_state *state)
 		state->lexer->result_symbol = state->middle_type;
 		state->heredoc->started = true;
 		state->lexer->advance(state->lexer, false);
-		if (me_isalpha(state->lexer->lookahead) || state->lexer->lookahead == '{' || state->lexer->lookahead == '(')
+		if (me_isalpha(state->lexer->lookahead)
+			|| state->lexer->lookahead == '{' || state->lexer->lookahead == '(')
 			return (state->return_value = true, true);
 	}
-	if (state->middle_type == HEREDOC_BODY_BEGINNING && state->lexer->get_column(state->lexer) == 0)
+	if (state->middle_type == HEREDOC_BODY_BEGINNING
+		&& state->lexer->get_column(state->lexer) == 0)
 	{
 		state->lexer->result_symbol = state->middle_type;
 		state->heredoc->started = true;
@@ -64,7 +66,7 @@ bool scan_heredoc_content_dollar(struct s_heredoc_scan_state *state)
 	return (state->return_value = false, true);
 }
 
-bool scan_heredoc_content_newline(struct s_heredoc_scan_state *state)
+bool	scan_heredoc_content_newline(struct s_heredoc_scan_state *state)
 {
 	if (!state->did_advance)
 		state->lexer->advance(state->lexer, true);
@@ -89,7 +91,7 @@ bool scan_heredoc_content_newline(struct s_heredoc_scan_state *state)
 	return (false);
 }
 
-bool scan_heredoc_content_other(struct s_heredoc_scan_state *state)
+bool	scan_heredoc_content_other(struct s_heredoc_scan_state *state)
 {
 	if (state->lexer->get_column(state->lexer) == 0)
 	{
