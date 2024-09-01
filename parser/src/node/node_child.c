@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/_inner/node.h"
+#include "parser/inner/node.h"
 
 t_u32	ts_node_child_count(TSNode self)
 {

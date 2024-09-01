@@ -6,20 +6,19 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 14:17:17 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 15:11:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/01 18:50:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/char/char.h"
 #include "me/str/str.h"
 #include "me/string/string.h"
+#include "parser/inner/heredoc.h"
+#include "parser/inner/scanner.h"
 #include "me/types.h"
-#include "parser/_inner/heredoc_type.h"
 #include "parser/array.h"
 #include "parser/parser.h"
 #include <assert.h>
-#include <stdio.h>
-#include <string.h>
 
 enum e_token_type
 {
@@ -45,16 +44,6 @@ enum e_token_type
 	ERROR_RECOVERY,
 };
 
-typedef struct s_scanner t_scanner;
-
-struct s_scanner
-{
-	t_u8 last_glob_paren_depth;
-	bool ext_was_in_double_quote;
-	bool ext_saw_outside_quote;
-	Array(t_heredoc) heredocs;
-};
-
 void advance(TSLexer *lexer)
 {
 	lexer->advance(lexer, false);
@@ -67,7 +56,7 @@ void skip(TSLexer *lexer)
 
 bool in_error_recovery(const bool *valid_symbols)
 {
-	return valid_symbols[ERROR_RECOVERY];
+	return (valid_symbols[ERROR_RECOVERY]);
 }
 
 void reset(t_scanner *scanner)
@@ -77,89 +66,6 @@ void reset(t_scanner *scanner)
 	i = 0;
 	while (i < scanner->heredocs.size)
 		reset_heredoc(array_get(&scanner->heredocs, i++));
-}
-
-t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
-{
-	t_u32	   size;
-	t_usize	   i;
-	t_heredoc *heredoc;
-
-	size = 0;
-	buffer[size++] = (char)scanner->last_glob_paren_depth;
-	buffer[size++] = (char)scanner->ext_was_in_double_quote;
-	buffer[size++] = (char)scanner->ext_saw_outside_quote;
-	buffer[size++] = (char)scanner->heredocs.size;
-	i = 0;
-	while (i < scanner->heredocs.size)
-	{
-		heredoc = array_get(&scanner->heredocs, i);
-		if (heredoc->delimiter.len + 1 + sizeof(t_usize) + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
-			return (0);
-		buffer[size++] = (char)heredoc->is_raw;
-		buffer[size++] = (char)heredoc->started;
-		buffer[size++] = (char)heredoc->allows_indent;
-		heredoc->delimiter.len++;
-		mem_copy(&buffer[size], &heredoc->delimiter.len, sizeof(t_usize));
-		size += sizeof(t_usize);
-		if (heredoc->delimiter.len > 0)
-		{
-			mem_copy(&buffer[size], heredoc->delimiter.buf, heredoc->delimiter.len);
-			size += heredoc->delimiter.len;
-		}
-		heredoc->delimiter.len--;
-		i++;
-	}
-	return (size);
-}
-
-void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
-{
-	t_usize	   delim_size;
-	t_u32	   size;
-	t_u32	   heredoc_count;
-	t_heredoc *heredoc;
-	t_usize	   i;
-
-	if (length == 0)
-		reset(scanner);
-	else
-	{
-		size = 0;
-		scanner->last_glob_paren_depth = buffer[size++];
-		scanner->ext_was_in_double_quote = buffer[size++];
-		scanner->ext_saw_outside_quote = buffer[size++];
-		heredoc_count = (t_u8)buffer[size++];
-		i = 0;
-		while (i < heredoc_count)
-		{
-			heredoc = NULL;
-			if (i < scanner->heredocs.size)
-				heredoc = array_get(&scanner->heredocs, i);
-			else
-			{
-				array_push(&scanner->heredocs, heredoc_new());
-				heredoc = array_back(&scanner->heredocs);
-			}
-
-			heredoc->is_raw = buffer[size++];
-			heredoc->started = buffer[size++];
-			heredoc->allows_indent = buffer[size++];
-
-			mem_copy(&delim_size, &buffer[size], sizeof(t_usize));
-			size += sizeof(t_usize);
-			string_reserve(&heredoc->delimiter, delim_size + 1);
-			heredoc->delimiter.len = delim_size - 1;
-			if (delim_size > 0)
-			{
-				mem_copy(heredoc->delimiter.buf, &buffer[size], delim_size);
-				size += delim_size;
-			}
-			i++;
-		}
-		if (size != length)
-			me_abort("size != length");
-	}
 }
 
 /**
@@ -1095,7 +1001,7 @@ void *tree_sitter_sh_external_scanner_create()
 
 	scanner = mem_alloc(sizeof(*scanner));
 	array_init(&scanner->heredocs);
-	return scanner;
+	return (scanner);
 }
 
 bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols)
@@ -1103,23 +1009,7 @@ bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const b
 	t_scanner *scanner;
 
 	scanner = (t_scanner *)payload;
-	return scan(scanner, lexer, valid_symbols);
-}
-
-t_u32 tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
-{
-	t_scanner *scanner;
-
-	scanner = (t_scanner *)payload;
-	return (serialize(scanner, state));
-}
-
-void tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
-{
-	t_scanner *scanner;
-
-	scanner = (t_scanner *)payload;
-	deserialize(scanner, state, length);
+	return (scan(scanner, lexer, valid_symbols));
 }
 
 void tree_sitter_sh_external_scanner_destroy(void *payload)

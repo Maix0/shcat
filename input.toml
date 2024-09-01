@@ -81,3 +81,11 @@ replace.C__TYPENAME__ = "t_pid"
 replace.C__TYPEHEADER__ = '#include "me/os/os.h"'
 replace.C__PREFIX__ = "pid"
 replace.C__PREFIXUP__ = "PID"
+
+[[create.vec]]
+sources_output = "src/vec/C__PREFIX__/"
+headers_output = "include/me/vec/"
+replace.C__TYPENAME__ = "t_heredoc"
+replace.C__TYPEHEADER__ = '#include "parser/inner/heredoc.h"'
+replace.C__PREFIX__ = "heredoc"
+replace.C__PREFIXUP__ = "HEREDOC"

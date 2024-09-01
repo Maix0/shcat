@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 #include "parser/stack.h"
 
 t_stack_slice_array	stack__iter(t_stack *self, t_stack_version version,

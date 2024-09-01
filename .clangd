@@ -22,6 +22,7 @@ CompileFlags: # Tweak the parse settings
     - "-I/home/nixos/shcat/stdme/output/include/"
     - "-I/home/nixos/shcat/stdme/generic_sources/header/"
     - "-I/home/nixos/shcat/includes/"
+    - "-I/home/nixos/shcat/parser/include"
     - "-I/home/nixos/shcat/output/include/"
     - "-I/home/nixos/shcat/generic_sources/header/"
     - "-I/home/nixos/shcat/exec/src/arith/"

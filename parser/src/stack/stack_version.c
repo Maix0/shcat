@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser/stack.h"
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 
 void	ts_stack_remove_version(t_stack *self, t_stack_version version)
 {

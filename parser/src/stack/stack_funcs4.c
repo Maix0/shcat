@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser/stack.h"
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 
 t_u32	ts_stack_version_count(const t_stack *self)
 {

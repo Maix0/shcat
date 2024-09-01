@@ -12,7 +12,7 @@
 
 #include "me/types.h"
 #include "parser/stack.h"
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 
 bool	ts_stack_merge(t_stack *self, t_stack_version version1,
 		t_stack_version version2)

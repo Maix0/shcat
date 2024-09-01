@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 #include "parser/language.h"
 #include "parser/stack.h"
 

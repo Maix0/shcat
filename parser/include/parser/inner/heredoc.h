@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_type.h                                     :+:      :+:    :+:   */
+/*   heredoc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEREDOC_TYPE_H
-#define HEREDOC_TYPE_H
+#ifndef HEREDOC_H
+#define HEREDOC_H
 
 #include "me/string/string.h"
-#include "me/types.h"
 
 typedef struct s_heredoc t_heredoc;
 

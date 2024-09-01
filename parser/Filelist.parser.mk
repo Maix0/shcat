@@ -33,6 +33,8 @@ parser                                                                        \
 point/point_funcs1                                                            \
 point/point_funcs2                                                            \
 scanner                                                                       \
+scanner/deserialize                                                           \
+scanner/serialize                                                             \
 stack/stack_add_link                                                          \
 stack/stack_funcs1                                                            \
 stack/stack_funcs2                                                            \

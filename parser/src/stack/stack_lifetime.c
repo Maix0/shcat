@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 #include "parser/stack.h"
 
 t_stack	*ts_stack_new(void)

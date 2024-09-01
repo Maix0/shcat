@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser/stack.h"
-#include "parser/_inner/stack.h"
+#include "parser/inner/stack.h"
 
 // In general,
 // we preserve ambiguities until they are removed from the stack

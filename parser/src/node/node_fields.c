@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/_inner/node.h"
+#include "parser/inner/node.h"
 #include "parser/api.h"
 #include "parser/language.h"
 #include "parser/tree.h"
