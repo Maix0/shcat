@@ -6,13 +6,12 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 17:56:29 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/30 17:58:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/02 13:45:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec/_run_arith.h"
 #include "me/types.h"
-#include "me/convert/str_to_numbers.h"
 
 /// ADD OPERATOR STUFF
 t_error	_binary_get_op(t_ast_arithmetic_operator op, t_arith_op_func *out)

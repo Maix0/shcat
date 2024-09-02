@@ -37,6 +37,8 @@ scanner/advance_words                                                         \
 scanner/deserialize                                                           \
 scanner/heredoc                                                               \
 scanner/heredoc_functions                                                     \
+scanner/lifetime                                                              \
+scanner/scan_dollar                                                           \
 scanner/serialize                                                             \
 stack/stack_add_link                                                          \
 stack/stack_funcs1                                                            \

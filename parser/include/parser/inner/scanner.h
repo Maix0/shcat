@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scanner.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/02 13:22:04 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/02 13:27:44 by maiboyer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SCANNER_H
 #define SCANNER_H
 
@@ -50,8 +62,14 @@ struct s_heredoc_scan_state
 	bool			  return_value;
 };
 
-typedef bool (*t_heredoc_content_func)(struct s_heredoc_scan_state	*state);
+typedef bool (*t_heredoc_content_func)(struct s_heredoc_scan_state *state);
 
 bool advance_word(TSLexer *lexer, t_string *unquoted_word);
+bool scan(t_scanner *scanner, TSLexer *lexer, const bool *valid_symbols);
+bool scan_bare_dollar(TSLexer *lexer);
+bool scan_heredoc_content(t_scanner *scanner, TSLexer *lexer, enum e_token_type middle_type, enum e_token_type end_type);
+bool scan_heredoc_end_identifier(t_heredoc *heredoc, TSLexer *lexer);
+bool scan_heredoc_start(t_heredoc *heredoc, TSLexer *lexer);
+void reset(t_scanner *scanner);
 
 #endif

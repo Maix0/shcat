@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/14 18:30:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 13:44:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ t_error _handle_no_operator(t_ast_expansion *self, t_state *state, t_expansion_r
 	if (val == NULL)
 		return (value->exists = false, NO_ERROR);
 	value->exists = true;
-	value->value = *val;
+	value->value = str_clone(*val);
 	return (NO_ERROR);
 };
 
@@ -306,10 +306,17 @@ t_error _ast_get_str__expansion(t_ast_node elem, t_word_iterator *state, t_vec_e
 
 t_error _ast_get_str__arimethic_expansion(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
 {
+	t_str out_str;
+	t_i64 out_num;
+
 	if (elem == NULL || state == NULL || out == NULL || elem->kind != AST_ARITHMETIC_EXPANSION)
 		return (ERROR);
-	// vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = str_clone(exp_out.value)});
-	return (ERROR);
+	if (run_arithmetic_expansion(&elem->data.arithmetic_expansion, state->state, &out_num))
+		return (ERROR);
+	if (i64_to_str(out_num, &out_str))
+		return (ERROR);
+	vec_estr_push(out, (t_expandable_str){.do_expand = state->res.kind == AST_WORD_NO_QUOTE, .value = out_str});
+	return (NO_ERROR);
 }
 
 t_error _ast_get_str__command_substitution(t_ast_node elem, t_word_iterator *state, t_vec_estr *out)
