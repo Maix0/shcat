@@ -106,7 +106,7 @@ t_stack_slice_array	stack__iter(t_stack *self, t_stack_version version,
 					if (include_subtrees)
 					{
 						array_push(&next_iterator->subtrees, link.subtree);
-						ts_subtree_retain(link.subtree);
+						(link.subtree->ref_count++);
 					}
 					if (!ts_subtree_extra(link.subtree))
 					{

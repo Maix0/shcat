@@ -39,7 +39,7 @@ void	stack_node_add_link(t_stack_node *self, t_stack_link link)
 				if (ts_subtree_dynamic_precedence(\
 		link.subtree) > ts_subtree_dynamic_precedence(existing_link->subtree))
 				{
-					ts_subtree_retain(link.subtree);
+					(link.subtree->ref_count++);
 					ts_subtree_release(existing_link->subtree);
 					existing_link->subtree = link.subtree;
 					self->dynamic_precedence = link.node->dynamic_precedence
@@ -74,7 +74,7 @@ void	stack_node_add_link(t_stack_node *self, t_stack_link link)
 	self->links[self->link_count++] = link;
 	if (link.subtree)
 	{
-		ts_subtree_retain(link.subtree);
+		(link.subtree->ref_count++);
 		node_count += stack__subtree_node_count(link.subtree);
 		dynamic_precedence += ts_subtree_dynamic_precedence(link.subtree);
 	}

@@ -60,7 +60,7 @@ t_stack_version	ts_stack_copy_version(t_stack *self, t_stack_version version)
 	head = array_back(&self->heads);
 	stack_node_retain(head->node);
 	if (head->last_external_token)
-		ts_subtree_retain(head->last_external_token);
+		(head->last_external_token->ref_count++);
 	head->summary = NULL;
 	return (self->heads.size - 1);
 }

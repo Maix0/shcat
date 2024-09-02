@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 13:56:34 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:34:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:14:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ struct s_external_scanner_state
 };
 typedef struct s_external_scanner_state t_external_scanner_state;
 typedef struct s_subtree_data		t_subtree_data;
-typedef const t_subtree_data	   *t_subtree;
+typedef t_subtree_data	   *t_subtree;
 
 void						ts_external_scanner_state_init(t_external_scanner_state *self, const t_u8 *data, t_u32 length);
 t_external_scanner_state		ts_external_scanner_state_copy(const t_external_scanner_state *self);

@@ -26,7 +26,7 @@ TSTree	*ts_tree_new(t_subtree root, const TSLanguage *language)
 
 TSTree	*ts_tree_copy(const TSTree *self)
 {
-	ts_subtree_retain(self->root);
+	(self->root->ref_count++);
 	return (ts_tree_new(self->root, self->language));
 }
 

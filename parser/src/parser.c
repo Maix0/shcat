@@ -117,7 +117,7 @@ static bool ts_parser__breakdown_top_of_stack(TSParser *self, t_stack_version ve
 					state = ts_language_next_state(self->language, state, ts_subtree_symbol(child));
 				}
 
-				ts_subtree_retain(child);
+				(child->ref_count++);
 				ts_stack_push(self->stack, slice.version, child, pending, state);
 			}
 
@@ -447,7 +447,7 @@ static t_subtree ts_parser__lex(TSParser *self, t_stack_version version, TSState
 
 		if (found_external_token)
 		{
-			t_mut_subtree mut_result = ts_subtree_to_mut_unsafe(result);
+			t_subtree mut_result = (result);
 			ts_external_scanner_state_init(&mut_result->external_scanner_state, self->lexer.debug_buffer, external_scanner_state_len);
 			mut_result->has_external_scanner_state_change = external_scanner_state_changed;
 		}
@@ -513,9 +513,9 @@ static bool ts_parser__select_children(TSParser *self, t_subtree left, const Sub
 	// not perform any allocation except for possibly growing the array to make
 	// room for its own heap data. The scratch tree is never explicitly released,
 	// so the same 'scratch trees' array can be reused again later.
-	t_mut_subtree scratch_tree = ts_subtree_new_node(ts_subtree_symbol(left), &self->scratch_trees, 0, self->language);
+	t_subtree scratch_tree = ts_subtree_new_node(ts_subtree_symbol(left), &self->scratch_trees, 0, self->language);
 
-	return ts_parser__select_tree(self, left, ts_subtree_from_mut(scratch_tree));
+	return ts_parser__select_tree(self, left, (scratch_tree));
 }
 
 static void ts_parser__shift(TSParser *self, t_stack_version version, TSStateId state, t_subtree lookahead, bool extra)
@@ -524,9 +524,9 @@ static void ts_parser__shift(TSParser *self, t_stack_version version, TSStateId 
 	t_subtree subtree_to_push = lookahead;
 	if (extra != ts_subtree_extra(lookahead) && is_leaf)
 	{
-		t_mut_subtree result = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
+		t_subtree result = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 		ts_subtree_set_extra(&result, extra);
-		subtree_to_push = ts_subtree_from_mut(result);
+		subtree_to_push = (result);
 	}
 
 	ts_stack_push(self->stack, version, subtree_to_push, !is_leaf, state);
@@ -579,7 +579,7 @@ static t_stack_version ts_parser__reduce(TSParser *self, t_stack_version version
 		SubtreeArray children = slice.subtrees;
 		ts_subtree_array_remove_trailing_extras(&children, &self->trailing_extras);
 
-		t_mut_subtree parent = ts_subtree_new_node(symbol, &children, production_id, self->language);
+		t_subtree parent = ts_subtree_new_node(symbol, &children, production_id, self->language);
 
 		// This pop operation may have caused multiple stack versions to collapse
 		// into one, because they all diverged from a common state. In that case,
@@ -595,10 +595,10 @@ static t_stack_version ts_parser__reduce(TSParser *self, t_stack_version version
 			SubtreeArray next_slice_children = next_slice.subtrees;
 			ts_subtree_array_remove_trailing_extras(&next_slice_children, &self->trailing_extras2);
 
-			if (ts_parser__select_children(self, ts_subtree_from_mut(parent), &next_slice_children))
+			if (ts_parser__select_children(self, (parent), &next_slice_children))
 			{
 				ts_subtree_array_clear(/*&self->tree_pool,*/ &self->trailing_extras);
-				ts_subtree_release(/*&self->tree_pool,*/ ts_subtree_from_mut(parent));
+				ts_subtree_release(/*&self->tree_pool,*/ (parent));
 				array_swap(&self->trailing_extras, &self->trailing_extras2);
 				parent = ts_subtree_new_node(symbol, &next_slice_children, production_id, self->language);
 			}
@@ -629,7 +629,7 @@ static t_stack_version ts_parser__reduce(TSParser *self, t_stack_version version
 
 		// Push the parent node onto the stack, along with any extra tokens that
 		// were previously on top of the stack.
-		ts_stack_push(self->stack, slice_version, ts_subtree_from_mut(parent), false, next_state);
+		ts_stack_push(self->stack, slice_version, (parent), false, next_state);
 		for (t_u32 j = 0; j < self->trailing_extras.size; j++)
 		{
 			ts_stack_push(self->stack, slice_version, self->trailing_extras.contents[j], false, next_state);
@@ -671,10 +671,10 @@ static void ts_parser__accept(TSParser *self, t_stack_version version, t_subtree
 				const t_subtree *children = ts_subtree_children(tree);
 				for (t_u32 k = 0; k < child_count; k++)
 				{
-					ts_subtree_retain(children[k]);
+					(children[k]->ref_count++);
 				}
 				array_splice(&trees, j, 1, child_count, children);
-				root = ts_subtree_from_mut(ts_subtree_new_node(ts_subtree_symbol(tree), &trees, tree->production_id, self->language));
+				root = (ts_subtree_new_node(ts_subtree_symbol(tree), &trees, tree->production_id, self->language));
 				ts_subtree_release(/*&self->tree_pool, */ tree);
 				break;
 			}
@@ -845,7 +845,7 @@ static bool ts_parser__recover_to_state(TSParser *self, t_stack_version version,
 				array_splice(&slice.subtrees, 0, 0, error_child_count, ts_subtree_children(error_tree));
 				for (t_u32 j = 0; j < error_child_count; j++)
 				{
-					ts_subtree_retain(slice.subtrees.contents[j]);
+					(slice.subtrees.contents[j]->ref_count++);
 				}
 			}
 			ts_subtree_array_delete(/*&self->tree_pool,*/ &error_trees);
@@ -999,16 +999,16 @@ static void ts_parser__recover(TSParser *self, t_stack_version version, t_subtre
 	const TSParseAction *actions = ts_language_actions(self->language, 1, ts_subtree_symbol(lookahead), &n);
 	if (n > 0 && actions[n - 1].type == TSParseActionTypeShift && actions[n - 1].shift.extra)
 	{
-		t_mut_subtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
+		t_subtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 		ts_subtree_set_extra(&mutable_lookahead, true);
-		lookahead = ts_subtree_from_mut(mutable_lookahead);
+		lookahead = (mutable_lookahead);
 	}
 
 	// Wrap the lookahead token in an ERROR.
 	SubtreeArray children = array_new();
 	array_reserve(&children, 1);
 	array_push(&children, lookahead);
-	t_mut_subtree error_repeat = ts_subtree_new_node(ts_builtin_sym_error_repeat, &children, 0, self->language);
+	t_subtree error_repeat = ts_subtree_new_node(ts_builtin_sym_error_repeat, &children, 0, self->language);
 
 	// If other tokens have already been skipped, so there is already an ERROR at the top of the
 	// stack, then pop that ERROR off the stack and wrap the two ERRORs together into one larger
@@ -1034,12 +1034,12 @@ static void ts_parser__recover(TSParser *self, t_stack_version version, t_subtre
 		}
 
 		ts_stack_renumber_version(self->stack, pop.contents[0].version, version);
-		array_push(&pop.contents[0].subtrees, ts_subtree_from_mut(error_repeat));
+		array_push(&pop.contents[0].subtrees, (error_repeat));
 		error_repeat = ts_subtree_new_node(ts_builtin_sym_error_repeat, &pop.contents[0].subtrees, 0, self->language);
 	}
 
 	// Push the new ERROR onto the stack.
-	ts_stack_push(self->stack, version, ts_subtree_from_mut(error_repeat), false, ERROR_STATE);
+	ts_stack_push(self->stack, version, (error_repeat), false, ERROR_STATE);
 	if (ts_subtree_has_external_tokens(lookahead))
 	{
 		ts_stack_set_last_external_token(self->stack, version, ts_subtree_last_external_token(lookahead));
@@ -1248,9 +1248,9 @@ static bool ts_parser__advance(TSParser *self, t_stack_version version, bool all
 			ts_language_table_entry(self->language, state, self->language->keyword_capture_token, &table_entry);
 			if (table_entry.action_count > 0)
 			{
-				t_mut_subtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
+				t_subtree mutable_lookahead = ts_subtree_make_mut(/*&self->tree_pool,*/ lookahead);
 				ts_subtree_set_symbol(&mutable_lookahead, self->language->keyword_capture_token, self->language);
-				lookahead = ts_subtree_from_mut(mutable_lookahead);
+				lookahead = (mutable_lookahead);
 				continue;
 			}
 		}

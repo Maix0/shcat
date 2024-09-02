@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:37:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:32:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,9 @@ struct s_subtree_data
 };
 
 // The fundamental building block of a syntax tree.
-typedef const t_subtree_data *t_subtree;
-
-// Like t_subtree, but mutable.
-typedef t_subtree_data *t_mut_subtree;
+typedef t_subtree_data *t_subtree;
 
 typedef Array(t_subtree) SubtreeArray;
-typedef Array(t_mut_subtree) MutableSubtreeArray;
 
 void		ts_external_scanner_state_init(t_external_scanner_state *, const t_u8 *, t_u32);
 const t_u8 *ts_external_scanner_state_data(const t_external_scanner_state *);
@@ -105,23 +101,22 @@ void ts_subtree_array_reverse(SubtreeArray *);
 
 t_subtree						ts_subtree_new_leaf(TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
 t_subtree						ts_subtree_new_error(t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
-t_mut_subtree				ts_subtree_new_node(TSSymbol, SubtreeArray *, t_u32, const TSLanguage *);
+t_subtree						ts_subtree_new_node(TSSymbol, SubtreeArray *, t_u32, const TSLanguage *);
 t_subtree						ts_subtree_new_error_node(SubtreeArray *, bool, const TSLanguage *);
 t_subtree						ts_subtree_new_missing_leaf(TSSymbol, Length, t_u32, const TSLanguage *);
-t_mut_subtree				ts_subtree_make_mut(t_subtree);
-void						ts_subtree_retain(t_subtree);
-void						ts_subtree_release(t_subtree);
-int							ts_subtree_compare(t_subtree, t_subtree);
-void						ts_subtree_set_symbol(t_mut_subtree *, TSSymbol, const TSLanguage *);
-void						ts_subtree_summarize(t_mut_subtree, const t_subtree *, t_u32, const TSLanguage *);
-void						ts_subtree_summarize_children(t_mut_subtree, const TSLanguage *);
-void						ts_subtree_balance(t_subtree, const TSLanguage *);
+t_subtree						ts_subtree_make_mut(t_subtree);
+void							ts_subtree_release(t_subtree);
+int								ts_subtree_compare(t_subtree, t_subtree);
+void							ts_subtree_set_symbol(t_subtree *, TSSymbol, const TSLanguage *);
+void							ts_subtree_summarize(t_subtree, const t_subtree *, t_u32, const TSLanguage *);
+void							ts_subtree_summarize_children(t_subtree, const TSLanguage *);
+void							ts_subtree_balance(t_subtree, const TSLanguage *);
 t_subtree						ts_subtree_edit(t_subtree, const TSInputEdit *edit);
-char					   *ts_subtree_string(t_subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
-void						ts_subtree_print_dot_graph(t_subtree, const TSLanguage *, FILE *);
+char						   *ts_subtree_string(t_subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
+void							ts_subtree_print_dot_graph(t_subtree, const TSLanguage *, FILE *);
 t_subtree						ts_subtree_last_external_token(t_subtree);
 const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self);
-bool						ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
+bool							ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
 
 static inline TSSymbol ts_subtree_symbol(t_subtree self)
 {
@@ -169,9 +164,12 @@ static inline size_t ts_subtree_alloc_size(t_u32 child_count)
 
 // Get a subtree's children, which are allocated immediately before the
 // tree's own heap data.
-#define ts_subtree_children(self) ((t_subtree *)((self)) - (self)->child_count)
+static inline t_subtree *ts_subtree_children(t_subtree self)
+{
+	return ((t_subtree *)((self)) - (self)->child_count);
+}
 
-static inline void ts_subtree_set_extra(t_mut_subtree *self, bool is_extra)
+static inline void ts_subtree_set_extra(t_subtree *self, bool is_extra)
 {
 	(*self)->extra = is_extra;
 }
@@ -272,15 +270,4 @@ static inline bool ts_subtree_is_eof(t_subtree self)
 {
 	return (ts_subtree_symbol(self) == ts_builtin_sym_end);
 }
-
-static inline t_subtree ts_subtree_from_mut(t_mut_subtree self)
-{
-	return (self);
-}
-
-static inline t_mut_subtree ts_subtree_to_mut_unsafe(t_subtree self)
-{
-	return ((t_mut_subtree)self);
-}
-
 #endif // SUBTREE_H

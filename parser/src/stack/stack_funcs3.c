@@ -68,7 +68,7 @@ t_stack_version	ts_stack__add_version(t_stack *self,
 	array_push(&self->heads, head);
 	stack_node_retain(node);
 	if (head.last_external_token)
-		ts_subtree_retain(head.last_external_token);
+		(head.last_external_token->ref_count++);
 	return ((t_stack_version)(self->heads.size - 1));
 }
 
@@ -103,7 +103,7 @@ void	ts_stack_set_last_external_token(t_stack *self, t_stack_version version,
 
 	head = array_get(&self->heads, version);
 	if (token)
-		ts_subtree_retain(token);
+		(token->ref_count++);
 	if (head->last_external_token)
 		ts_subtree_release(head->last_external_token);
 	head->last_external_token = token;
