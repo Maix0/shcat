@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 15:07:10 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/14 17:28:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 11:35:32 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_negated_command(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node ret;
+	t_ast_node	ret;
 
 	(void)(out);
 	(void)(input);
@@ -39,12 +40,13 @@ t_error build_sym_negated_command(t_parse_node self, t_const_str input, t_ast_no
 	return (*out = ret, NO_ERROR);
 }
 
-t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_pipeline(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node ret;
-	t_ast_node tmp;
-	t_ast_node tmp2;
-	t_usize	   i;
+	t_ast_node	ret;
+	t_ast_node	tmp;
+	t_ast_node	tmp2;
+	t_usize		i;
 
 	(void)(out);
 	(void)(input);
@@ -58,7 +60,7 @@ t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out
 	while (i < ts_node_child_count(self))
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
-			continue;
+			continue ;
 		if (ast_from_node(ts_node_child(self, i), input, &tmp))
 			return (ast_free(ret), ERROR);
 		if (tmp->kind == AST_PIPELINE)
@@ -74,7 +76,7 @@ t_error build_sym_pipeline(t_parse_node self, t_const_str input, t_ast_node *out
 	return (*out = ret, NO_ERROR);
 }
 
-t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(out);
 	(void)(input);
@@ -87,10 +89,11 @@ t_error build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
 	return (NO_ERROR);
 }
 
-t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_variable_assignment(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node	 ret;
-	t_parse_node temp_ast;
+	t_ast_node		ret;
+	t_parse_node	temp_ast;
 
 	(void)(self);
 	(void)(input);
@@ -109,7 +112,8 @@ t_error build_sym_variable_assignment(t_parse_node self, t_const_str input, t_as
 	}
 	if (ts_node_child_count(self) > 2)
 	{
-		if (ast_from_node(ts_node_child(self, 2), input, &ret->data.variable_assignment.value))
+		if (ast_from_node(ts_node_child(\
+				self, 2), input, &ret->data.variable_assignment.value))
 			return (ast_free(ret), ERROR);
 	}
 	return (*out = ret, NO_ERROR);
