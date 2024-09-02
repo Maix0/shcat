@@ -13,12 +13,12 @@
 #include "me/vec/vec_subtree.h"
 #include "parser/subtree.h"
 
-void ts_subtree_release(t_subtree self)
+void	ts_subtree_release(t_subtree self)
 {
-	t_vec_subtree to_free;
-	t_subtree	  tree;
-	t_subtree	 *children;
-	t_usize		  i;
+	t_vec_subtree	to_free;
+	t_subtree		tree;
+	t_subtree		*children;
+	t_usize			i;
 
 	to_free = vec_subtree_new(16, NULL);
 	if (--self->ref_count == 0)
@@ -48,9 +48,9 @@ void ts_subtree_release(t_subtree self)
 	vec_subtree_free(to_free);
 }
 
-int subtree_compare_func(t_subtree left, t_subtree right)
+int	subtree_compare_func(t_subtree left, t_subtree right)
 {
-	int result;
+	int	result;
 
 	result = 0;
 	if (ts_subtree_symbol(left) < ts_subtree_symbol(right))
@@ -64,12 +64,13 @@ int subtree_compare_func(t_subtree left, t_subtree right)
 	return (result);
 }
 
-int ts_subtree_compare(t_subtree left, t_subtree right)
+int	ts_subtree_compare(t_subtree left, t_subtree right)
 {
-	t_vec_subtree cmp_stack;
-	t_i8		  result = 0;
-	t_usize		  i;
+	t_vec_subtree	cmp_stack;
+	t_i8			result;
+	t_usize			i;
 
+	result = 0;
 	cmp_stack = vec_subtree_new(16, NULL);
 	vec_subtree_push(&cmp_stack, (left));
 	vec_subtree_push(&cmp_stack, (right));
@@ -77,7 +78,6 @@ int ts_subtree_compare(t_subtree left, t_subtree right)
 	{
 		vec_subtree_pop(&cmp_stack, &left);
 		vec_subtree_pop(&cmp_stack, &right);
-
 		result = subtree_compare_func(left, right);
 		if (result != 0)
 			return (vec_subtree_free(cmp_stack), result);
@@ -92,10 +92,10 @@ int ts_subtree_compare(t_subtree left, t_subtree right)
 	return (vec_subtree_free(cmp_stack), 0);
 }
 
-t_subtree ts_subtree_last_external_token(t_subtree tree)
+t_subtree	ts_subtree_last_external_token(t_subtree tree)
 {
-	t_usize	  i;
-	t_subtree child;
+	t_usize		i;
+	t_subtree	child;
 
 	if (!ts_subtree_has_external_tokens(tree))
 		return (NULL);
@@ -108,7 +108,7 @@ t_subtree ts_subtree_last_external_token(t_subtree tree)
 			if (ts_subtree_has_external_tokens(child))
 			{
 				tree = child;
-				break;
+				break ;
 			}
 			i--;
 		}

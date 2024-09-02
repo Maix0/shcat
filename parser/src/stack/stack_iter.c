@@ -14,23 +14,24 @@
 #include "parser/inner/stack.h"
 #include "parser/stack.h"
 
-t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_callback callback, void *payload, int goal_subtree_count)
+t_stack_slice_array	stack__iter(t_stack *self, t_stack_version version,
+		t_stack_callback callback, void *payload, int goal_subtree_count)
 {
-	t_stack_head	 *head;
-	bool			  include_subtrees;
-	t_stack_iterator *iterator;
-	t_stack_node	 *node;
-	t_stack_action	  action;
-	bool			  should_pop;
-	bool			  should_stop;
-	t_vec_subtree	  subtrees;
-	t_stack_iterator *next_iterator;
-	t_stack_link	  link;
-	t_stack_iterator  current_iterator;
-	t_stack_iterator  new_iterator;
-	t_usize			  i;
-	t_usize			  j;
-	t_usize			  size;
+	t_stack_head		*head;
+	bool				include_subtrees;
+	t_stack_iterator	*iterator;
+	t_stack_node		*node;
+	t_stack_action		action;
+	bool				should_pop;
+	bool				should_stop;
+	t_vec_subtree		subtrees;
+	t_stack_iterator	*next_iterator;
+	t_stack_link		link;
+	t_stack_iterator	current_iterator;
+	t_stack_iterator	new_iterator;
+	t_usize				i;
+	t_usize				j;
+	t_usize				size;
 
 	array_clear(&self->slices);
 	array_clear(&self->iterators);
@@ -45,7 +46,8 @@ t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_
 	if (goal_subtree_count >= 0)
 	{
 		include_subtrees = true;
-		vec_subtree_reserve(&new_iterator.subtrees, ts_subtree_alloc_size(goal_subtree_count) / sizeof(t_subtree));
+		vec_subtree_reserve(&new_iterator.subtrees,
+			ts_subtree_alloc_size(goal_subtree_count) / sizeof(t_subtree));
 	}
 	array_push(&self->iterators, new_iterator);
 	while (self->iterators.size > 0)
@@ -75,7 +77,7 @@ t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_
 				i--;
 				i++;
 				size--;
-				continue;
+				continue ;
 			}
 			j = 1;
 			while (j <= node->link_count)
@@ -90,20 +92,22 @@ t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_
 					if (self->iterators.size >= MAX_ITERATOR_COUNT)
 					{
 						j++;
-						continue;
+						continue ;
 					}
 					link = node->links[j];
 					current_iterator = self->iterators.contents[i];
 					array_push(&self->iterators, current_iterator);
 					next_iterator = array_back(&self->iterators);
-					ts_subtree_array_copy(next_iterator->subtrees, &next_iterator->subtrees);
+					ts_subtree_array_copy(next_iterator->subtrees,
+						&next_iterator->subtrees);
 				}
 				next_iterator->node = link.node;
 				if (link.subtree)
 				{
 					if (include_subtrees)
 					{
-						vec_subtree_push(&next_iterator->subtrees, link.subtree);
+						vec_subtree_push(&next_iterator->subtrees,
+							link.subtree);
 						link.subtree->ref_count++;
 					}
 					if (!ts_subtree_extra(link.subtree))

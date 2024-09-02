@@ -57,8 +57,11 @@ stack/stack_manipulate3                                                       \
 stack/stack_node                                                              \
 stack/stack_summary                                                           \
 stack/stack_version                                                           \
-subtree                                                                       \
-subtree/subtree_funcs1                                                        \
+subtree/subtree_funcs                                                         \
+subtree/subtree_helper                                                        \
+subtree/subtree_new                                                           \
+subtree/subtree_summarize                                                     \
+subtree/subtree_vec_helper                                                    \
 tree/tree_funcs1                                                              \
 tree/tree_funcs2                                                              \
 
