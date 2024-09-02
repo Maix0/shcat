@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:50:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 16:51:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:20:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ t_stack_action	summarize_stack_callback(void *payload,
 	i = session->summary->size - 1;
 	while (i + 1 > 0)
 	{
+		if (session->summary->contents == NULL)
+			return (SActionNone);
 		entry = session->summary->contents[i--];
 		if (entry.depth < depth)
 			break ;
