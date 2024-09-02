@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 15:06:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 19:28:24 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:06:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ t_error	serialize_heredocs(t_scanner *scanner, t_u8 *buffer, t_u32 *size,
 	t_heredoc	*heredoc;
 
 	heredoc = vec_heredoc_get(&scanner->heredocs, i);
+	if (heredoc == NULL)
+		return (ERROR);
 	if (heredoc->delimiter.len + 1 + sizeof(t_usize)
 		+ (*size) >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
 		return (ERROR);
