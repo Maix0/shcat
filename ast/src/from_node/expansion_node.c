@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:26:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 18:31:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/02 17:34:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,41 @@ t_error	build_sym_simple_expansion(\
 			continue ;
 		ret->data.expansion.var_name = \
 		_extract_str(ts_node_child(self, i), input);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error	build_sym_command_substitution(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node	ret;
+	t_ast_node	tmp;
+	t_usize		i;
+
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_command_substitution)
+		return (ERROR);
+	ret = ast_alloc(AST_COMMAND_SUBSTITUTION);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
+			continue ;
+		if (ts_node_symbol(ts_node_child(self, i)) == field_term)
+		{
+			if (ret->data.command_substitution.body.len != 0)
+				ast_set_term(&ret->data.command_substitution.body.buffer[\
+				ret->data.command_substitution.body.len - 1], \
+				_select_term(ts_node_child(self, i)));
+		}
+		else
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.command_substitution.body, tmp);
+		}
 		i++;
 	}
 	return (*out = ret, NO_ERROR);

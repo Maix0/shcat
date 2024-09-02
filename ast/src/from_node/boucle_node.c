@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:43:35 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 18:44:55 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/02 17:32:38 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,49 @@ t_error	build_sym_while_statement(\
 			vec_ast_push(&ret->data.while_.condition, tmp);
 		if (ts_node_field_id_for_child(self, i) == field_body)
 			vec_ast_push(&ret->data.while_.do_, tmp);
+		i++;
+	}
+	return (*out = ret, NO_ERROR);
+}
+
+t_error	build_sym_do_group(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node				ret;
+	t_ast_node				tmp;
+	t_usize					i;
+	t_ast_terminator_kind	term;
+
+	(void)(out);
+	(void)(input);
+	(void)(self);
+	if (out == NULL)
+		return (ERROR);
+	if (ts_node_symbol(self) != sym_do_group)
+		return (ERROR);
+	ret = ast_alloc(AST_COMPOUND_STATEMENT);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
+		if (ts_node_symbol(ts_node_child(self, i)) == anon_sym_do || \
+			ts_node_symbol(ts_node_child(self, i)) == anon_sym_done)
+		{
+			i++;
+			continue ;
+		}
+		if (ts_node_field_id_for_child(self, i) == field_term && \
+			ret->data.compound_statement.body.len != 0)
+		{
+			term = _select_term(ts_node_child(self, i));
+			ast_set_term(&ret->data.compound_statement.body.buffer[\
+				ret->data.compound_statement.body.len - 1], term);
+		}
+		else
+		{
+			if (ast_from_node(ts_node_child(self, i), input, &tmp))
+				return (ast_free(ret), ERROR);
+			vec_ast_push(&ret->data.compound_statement.body, tmp);
+		}
 		i++;
 	}
 	return (*out = ret, NO_ERROR);

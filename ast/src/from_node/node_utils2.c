@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:27:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/14 17:31:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 17:04:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-void _append_redirection(t_ast_node node, t_ast_node redirection)
+void	_append_redirection(t_ast_node node, t_ast_node redirection)
 {
-	t_vec_ast *vec;
+	t_vec_ast	*vec;
 
 	vec = NULL;
-
-	if (node == NULL || redirection == NULL || !(redirection->kind == AST_FILE_REDIRECTION || redirection->kind == AST_HEREDOC_REDIRECTION))
+	if (node == NULL || redirection == NULL || \
+		!(redirection->kind == AST_FILE_REDIRECTION || \
+		redirection->kind == AST_HEREDOC_REDIRECTION))
 		return (ast_free(redirection));
 	if (node->kind == AST_CASE)
 		vec = &node->data.case_.suffixes_redirections;
@@ -35,9 +36,12 @@ void _append_redirection(t_ast_node node, t_ast_node redirection)
 	else if (node->kind == AST_COMPOUND_STATEMENT)
 		vec = &node->data.compound_statement.suffixes_redirections;
 	else if (node->kind == AST_LIST)
-		return (_append_redirection(node->data.list.right, redirection));
-	else if (node->kind == AST_PIPELINE && node->data.pipeline.statements.len != 0)
-		return (_append_redirection(node->data.pipeline.statements.buffer[node->data.pipeline.statements.len - 1], redirection));
+		return (_append_redirection(\
+		node->data.list.right, redirection));
+	else if (node->kind == AST_PIPELINE && \
+	node->data.pipeline.statements.len != 0)
+		return (_append_redirection(node->data.pipeline.statements.buffer[\
+			node->data.pipeline.statements.len - 1], redirection));
 	else if (node->kind == AST_SUBSHELL)
 		vec = &node->data.subshell.suffixes_redirections;
 	else
@@ -48,9 +52,9 @@ void _append_redirection(t_ast_node node, t_ast_node redirection)
 		(ast_free(redirection));
 }
 
-t_ast_terminator_kind _select_term(t_parse_node node)
+t_ast_terminator_kind	_select_term(t_parse_node node)
 {
-	t_symbol symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node_grammar_symbol(ts_node_child(node, 0));
 	if (symbol == anon_sym_SEMI)
@@ -61,10 +65,10 @@ t_ast_terminator_kind _select_term(t_parse_node node)
 	return (AST_TERM_NONE);
 }
 
-t_str _extract_str(t_parse_node self, t_const_str input)
+t_str	_extract_str(t_parse_node self, t_const_str input)
 {
-	t_usize start;
-	t_usize end;
+	t_usize	start;
+	t_usize	end;
 	t_str	result;
 
 	start = ts_node_start_byte(self);
