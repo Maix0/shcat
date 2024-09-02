@@ -73,7 +73,7 @@ t_stack_version	ts_stack__add_version(t_stack *self,
 }
 
 void	ts_stack__add_slice(t_stack *self, \
-t_stack_version original_version, t_stack_node *node, SubtreeArray *subtrees)
+t_stack_version original_version, t_stack_node *node, t_vec_subtree *subtrees)
 {
 	t_u32			i;
 	t_stack_version	version;

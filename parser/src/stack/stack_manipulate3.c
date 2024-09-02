@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:00:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:00:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:53:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ t_stack_action	pop_error_callback(void *payload,
 {
 	bool	*found_error;
 
-	if (iterator->subtrees.size > 0)
+	if (iterator->subtrees.len > 0)
 	{
 		found_error = payload;
 		if (!*found_error
-			&& ts_subtree_is_error(iterator->subtrees.contents[0]))
+			&& ts_subtree_is_error(iterator->subtrees.buffer[0]))
 		{
 			*found_error = true;
 			return (SActionPop | SActionStop);
@@ -34,7 +34,7 @@ t_stack_action	pop_error_callback(void *payload,
 		return (SActionNone);
 }
 
-SubtreeArray	ts_stack_pop_error(t_stack *self, t_stack_version version)
+t_vec_subtree	ts_stack_pop_error(t_stack *self, t_stack_version version)
 {
 	t_stack_node		*node;
 	bool				found_error;
@@ -62,7 +62,7 @@ SubtreeArray	ts_stack_pop_error(t_stack *self, t_stack_version version)
 		}
 		i++;
 	}
-	return ((SubtreeArray){.size = 0});
+	return ((t_vec_subtree){NULL, 0, 0, NULL});
 }
 
 t_stack_action	pop_all_callback(void *payload,

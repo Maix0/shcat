@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 12:03:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 21:15:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,7 @@
 #define array_init(self) ((self)->size = 0, (self)->capacity = 0, (self)->contents = NULL)
 
 /// Create an empty array.
-#define array_new()                                                                                                                        \
-	{                                                                                                                                      \
-		NULL, 0, 0                                                                                                                         \
-	}
+#define array_new() {NULL, 0, 0}
 
 /// Get a pointer to the element at a given `index` in the array.
 #define array_get(self, _index) (assert((t_u32)(_index) < (self)->size), &(self)->contents[_index])
@@ -127,7 +124,7 @@
 #define array_insert_sorted_with(self, compare, value)                                                                                     \
 	do                                                                                                                                     \
 	{                                                                                                                                      \
-		t_u32 _index, _exists;                                                                                                          \
+		t_u32 _index, _exists;                                                                                                             \
 		array_search_sorted_with(self, compare, &(value), &_index, &_exists);                                                              \
 		if (!_exists)                                                                                                                      \
 			array_insert(self, _index, value);                                                                                             \
@@ -140,7 +137,7 @@
 #define array_insert_sorted_by(self, field, value)                                                                                         \
 	do                                                                                                                                     \
 	{                                                                                                                                      \
-		t_u32 _index, _exists;                                                                                                          \
+		t_u32 _index, _exists;                                                                                                             \
 		array_search_sorted_by(self, field, (value)field, &_index, &_exists);                                                              \
 		if (!_exists)                                                                                                                      \
 			array_insert(self, _index, value);                                                                                             \
@@ -222,28 +219,24 @@ static inline void _array__grow(Array *self, t_u32 count, size_t element_size)
 /// This is not what you're looking for, see `array_splice`.
 static inline void _array__splice(Array *self, size_t element_size, t_u32 index, t_u32 old_count, t_u32 new_count, const void *elements)
 {
-	t_u32 new_size = self->size + new_count - old_count;
-	t_u32 old_end = index + old_count;
-	t_u32 new_end = index + new_count;
-	assert(old_end <= self->size);
+	char *contents;
+	t_u32 new_size;
+	t_u32 old_end;
+	t_u32 new_end;
 
+	new_size = self->size + new_count - old_count;
+	old_end = index + old_count;
+	new_end = index + new_count;
 	_array__reserve(self, element_size, new_size);
-
-	char *contents = (char *)self->contents;
+	contents = (char *)self->contents;
 	if (self->size > old_end)
-	{
-		memmove(contents + new_end * element_size, contents + old_end * element_size, (self->size - old_end) * element_size);
-	}
+		mem_move(contents + new_end * element_size, contents + old_end * element_size, (self->size - old_end) * element_size);
 	if (new_count > 0)
 	{
 		if (elements)
-		{
 			mem_copy((contents + index * element_size), elements, new_count * element_size);
-		}
 		else
-		{
-			memset((contents + index * element_size), 0, new_count * element_size);
-		}
+			mem_set_zero((contents + index * element_size), new_count * element_size);
 	}
 	self->size += new_count - old_count;
 }

@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree.h                                             :+:      :+:    :+:   */
+/*   length_inner.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/31 12:03:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:18:46 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/09/02 20:03:42 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/02 20:16:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TREE_H
-#define TREE_H
+#ifndef LENGTH_INNER_H
+#define LENGTH_INNER_H
 
 #include "me/types.h"
-#include "parser/subtree.h"
+#include "parser/inner/point_inner.h"
 
-struct s_tree
+typedef struct s_length t_length;
+typedef t_length		Length;
+
+struct s_length
 {
-	t_subtree			  root;
-	const TSLanguage *language;
+	t_u32	bytes;
+	t_point extent;
 };
 
-TSTree *ts_tree_new(t_subtree root, const TSLanguage *language);
-TSNode	ts_node_new(const TSTree *, const t_subtree *, Length, TSSymbol);
-
-#endif // TREE_H
+#endif /* LENGTH_INNER_H */

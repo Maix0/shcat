@@ -28,7 +28,7 @@ typedef Array(t_stack_summary_entry) t_stack_summary;
 
 struct s_stack_slice
 {
-	SubtreeArray subtrees;
+	t_vec_subtree subtrees;
 	t_stack_version version;
 };
 
@@ -48,7 +48,7 @@ void ts_stack_set_last_external_token(t_stack *, t_stack_version, t_subtree);
 Length ts_stack_position(const t_stack *, t_stack_version);
 void ts_stack_push(t_stack *, t_stack_version, t_subtree, bool, TSStateId);
 t_stack_slice_array ts_stack_pop_count(t_stack *, t_stack_version, t_u32 count);
-SubtreeArray ts_stack_pop_error(t_stack *, t_stack_version);
+t_vec_subtree ts_stack_pop_error(t_stack *, t_stack_version);
 t_stack_slice_array ts_stack_pop_pending(t_stack *, t_stack_version);
 t_stack_slice_array ts_stack_pop_all(t_stack *, t_stack_version);
 t_u32 ts_stack_node_count_since_error(const t_stack *, t_stack_version);

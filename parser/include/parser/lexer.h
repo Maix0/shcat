@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:15 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:39:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:21:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ struct s_lexer
 	TSRange	   *included_ranges;
 	const t_u8 *chunk;
 	TSInput		input;
-	TSLogger	logger;
 	t_u32		included_range_count;
 	t_u32		current_included_range_index;
 	t_u32		chunk_start;

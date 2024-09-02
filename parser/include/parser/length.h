@@ -6,23 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:30:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:05:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LENGTH_H
 #define LENGTH_H
 
-#include "parser/api.h"
-#include "me/types.h"
-
-struct s_length
-{
-	t_u32	bytes;
-	TSPoint extent;
-};
-
-typedef struct s_length Length;
+#include "parser/inner/length_inner.h"
 
 static const Length LENGTH_UNDEFINED = {0, {0, 1}};
 static const Length LENGTH_MAX = {UINT32_MAX, {UINT32_MAX, UINT32_MAX}};

@@ -54,7 +54,7 @@ struct										s_stack_node
 struct										s_stack_iterator
 {
 	t_stack_node							*node;
-	SubtreeArray							subtrees;
+	t_vec_subtree							subtrees;
 	t_u32									subtree_count;
 	bool									is_pending;
 };
@@ -106,6 +106,6 @@ void stack_head_delete(t_stack_head *self);
 void stack_node_add_link(t_stack_node *self, t_stack_link link);
 void stack_node_release(t_stack_node *self);
 void stack_node_retain(t_stack_node *self);
-void ts_stack__add_slice(t_stack *self, t_stack_version original_version, t_stack_node *node, SubtreeArray *subtrees);
+void ts_stack__add_slice(t_stack *self, t_stack_version original_version, t_stack_node *node, t_vec_subtree *subtrees);
 
 #endif /* STACK_H */

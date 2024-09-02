@@ -22,18 +22,31 @@ typedef bool (*t_vec_C__PREFIX___sort_fn)(C__TYPENAME__ *, C__TYPENAME__ *);
 typedef void (*t_free_C__PREFIX___item)(C__TYPENAME__);
 
 /// @brief A dynamic array of C__TYPENAME__
-typedef struct s_vec_C__PREFIX__
+typedef struct s_vec_C__PREFIX__ t_vec_C__PREFIX__;
+
+struct s_vec_C__PREFIX__
 {
 	t_free_C__PREFIX___item free_func;
 	t_usize					len;
 	t_usize					capacity;
 	C__TYPENAME__		   *buffer;
-} t_vec_C__PREFIX__;
+};
+
+struct s_vec_C__PREFIX___splice_arguments
+{
+	t_usize				 index;
+	t_usize				 old_count;
+	t_usize				 new_count;
+	const C__TYPENAME__ *elements;
+};
 
 /// @brief Create a new vec_C__PREFIX__ with a given capacity
-/// @param capacity The capacity of the new vec_C__PREFIX__ (in terms of elements)
-/// @param free_function The function that will be used to free the elements of the vec_C__PREFIX__
-t_vec_C__PREFIX__ vec_C__PREFIX___new(t_usize capacity, t_free_C__PREFIX___item free_function);
+/// @param capacity The capacity of the new vec_C__PREFIX__ (in terms of
+/// elements)
+/// @param free_function The function that will be used to free the elements of
+/// the vec_C__PREFIX__
+t_vec_C__PREFIX__ vec_C__PREFIX___new(t_usize				  capacity,
+									  t_free_C__PREFIX___item free_function);
 /// @brief Push an element to the last position of the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to push the element to
 /// @param element The element to push
@@ -43,16 +56,18 @@ t_error vec_C__PREFIX___push(t_vec_C__PREFIX__ *vec, C__TYPENAME__ element);
 /// @param vec The vec_C__PREFIX__ to push the element to
 /// @param element The element to push
 /// @note This operation is O(n)
-t_error vec_C__PREFIX___push_front(t_vec_C__PREFIX__ *vec, C__TYPENAME__	  element);
+t_error vec_C__PREFIX___push_front(t_vec_C__PREFIX__ *vec,
+								   C__TYPENAME__	  element);
 
-/// @brief Get the last element from the vec_C__PREFIX__, and remove it from the vec_C__PREFIX__
+/// @brief Get the last element from the vec_C__PREFIX__, and remove it from the
+/// vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to get the element from
 /// @param[out] out The last element of the vec_C__PREFIX__
 /// @return true if the operation failed, false otherwise
 t_error vec_C__PREFIX___pop(t_vec_C__PREFIX__ *vec, C__TYPENAME__ *value);
 
-
-/// @brief Get the first element from the vec_C__PREFIX__, and remove it from the vec_C__PREFIX__
+/// @brief Get the first element from the vec_C__PREFIX__, and remove it from
+/// the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to get the element from
 /// @param[out] out The first element of the vec_C__PREFIX__
 /// @return true if the operation failed, false otherwise
@@ -61,58 +76,71 @@ t_error vec_C__PREFIX___pop_front(t_vec_C__PREFIX__ *vec, C__TYPENAME__ *value);
 
 /// @brief Free the vector and all its elements
 /// @param vec The vec_C__PREFIX__ to free
-void	vec_C__PREFIX___free(t_vec_C__PREFIX__ vec);
+void vec_C__PREFIX___free(t_vec_C__PREFIX__ vec);
 
 /// @brief Make the vec_C__PREFIX__ at least the given capacity
 /// @param vec The vec_C__PREFIX__ to reserve
 /// @param wanted_capacity The minimum capacity to reserve
 /// @return true if the operation failed, false otherwise
-t_error vec_C__PREFIX___reserve(t_vec_C__PREFIX__ *vec, t_usize wanted_capacity);
+t_error vec_C__PREFIX___reserve(t_vec_C__PREFIX__ *vec,
+								t_usize			   wanted_capacity);
 
-/// @brief Run the function and returns the index of the first element that returns true
+/// @brief Run the function and returns the index of the first element that
+/// returns true
 /// @param vec The vec_C__PREFIX__ to search in
 /// @param fn The function to run on each element
 /// @param[out] index The index of the first element that returns true
-t_error vec_C__PREFIX___find(t_vec_C__PREFIX__ *vec, bool (*fn)(const C__TYPENAME__ *), t_usize *index);
+t_error vec_C__PREFIX___find(t_vec_C__PREFIX__ *vec,
+							 bool (*fn)(const C__TYPENAME__ *), t_usize *index);
 
-
-/// @brief Run the function and returns the index of the first element that returns true, but starting at index starting_index
+/// @brief Run the function and returns the index of the first element that
+/// returns true, but starting at index starting_index
 /// @param vec The vec_C__PREFIX__ to search in
 /// @param fn The function to run on each element
 /// @param starting_index The index to start the search from
 /// @param[out] index The index of the first element that returns true
-t_error vec_C__PREFIX___find_starting(t_vec_C__PREFIX__ *vec, bool (*fn)(const C__TYPENAME__ *), t_usize starting_index, t_usize *index);
+t_error vec_C__PREFIX___find_starting(t_vec_C__PREFIX__ *vec,
+									  bool (*fn)(const C__TYPENAME__ *),
+									  t_usize starting_index, t_usize *index);
 
-/// @brief Run the function on every element of the vec_C__PREFIX__ and returns if all elements returned true
+/// @brief Run the function on every element of the vec_C__PREFIX__ and returns
+/// if all elements returned true
 /// @param vec The vec_C__PREFIX__ to search in
 /// @param fn The function to run on each element
 /// @param[out] result The result of the operation
 /// @return true if the operation failed, false otherwise
 /// @note If the vec_C__PREFIX__ is empty, result will be true
-t_error vec_C__PREFIX___all(t_vec_C__PREFIX__ *vec, bool (*fn)(const C__TYPENAME__ *), bool *result);
+t_error vec_C__PREFIX___all(t_vec_C__PREFIX__ *vec,
+							bool (*fn)(const C__TYPENAME__ *), bool *result);
 
-/// @brief Run the function on every element of the vec_C__PREFIX__ and returns if any element returned true
+/// @brief Run the function on every element of the vec_C__PREFIX__ and returns
+/// if any element returned true
 /// @param vec The vec_C__PREFIX__ to search in
 /// @param fn The function to run on each element
 /// @param[out] result The result of the operation
 /// @return true if the operation failed, false otherwise
 /// @note If the vec_C__PREFIX__ is empty, result will be false
-t_error vec_C__PREFIX___any(t_vec_C__PREFIX__ *vec, bool (*fn)(const C__TYPENAME__ *), bool *result);
+t_error vec_C__PREFIX___any(t_vec_C__PREFIX__ *vec,
+							bool (*fn)(const C__TYPENAME__ *), bool *result);
 
 /// @brief Run the function on every element of the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to iterate over
 /// @param fn The function to run on each element
 /// @param state The state to pass to the function
-void	vec_C__PREFIX___iter(t_vec_C__PREFIX__ *vec, void (*fn)(t_usize index, C__TYPENAME__ *value, void *state), void *state);
+void vec_C__PREFIX___iter(t_vec_C__PREFIX__ *vec,
+						  void (*fn)(t_usize index, C__TYPENAME__ *value,
+									 void *state),
+						  void *state);
 
 /// @brief Reverse the order of the elements in the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to reverse
-void	vec_C__PREFIX___reverse(t_vec_C__PREFIX__ *vec);
+void vec_C__PREFIX___reverse(t_vec_C__PREFIX__ *vec);
 
 /// @brief Sort the elements of the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to sort
 /// @param is_sorted The function to use to compare the elements
-void	vec_C__PREFIX___sort(t_vec_C__PREFIX__		  *vec, t_vec_C__PREFIX___sort_fn is_sorted);
+void vec_C__PREFIX___sort(t_vec_C__PREFIX__		   *vec,
+						  t_vec_C__PREFIX___sort_fn is_sorted);
 
 /// @brief Get a pointer to the last element of the vec_C__PREFIX__
 /// @param vec The vec_C__PREFIX__ to get the element from
@@ -129,5 +157,18 @@ C__TYPENAME__ *vec_C__PREFIX___get(t_vec_C__PREFIX__ *vec, t_usize i);
 /// @param vec The vec_C__PREFIX__ to get the element from
 /// @return A pointer to the last element or NULL
 C__TYPENAME__ *vec_C__PREFIX___last(t_vec_C__PREFIX__ *vec);
+
+/// @brief Perform a simple bytewise copy into the other vector
+/// @param vec The vec_C__PREFIX__ to be copied from
+/// @param dest The vec_C__PREFIX__ to be copied to
+void vec_C__PREFIX___copy_into(t_vec_C__PREFIX__ *vec, t_vec_C__PREFIX__ *dest);
+
+/// read code lol
+void vec_C__PREFIX___splice(t_vec_C__PREFIX__						 *self,
+							struct s_vec_C__PREFIX___splice_arguments args);
+
+struct s_vec_C__PREFIX___splice_arguments vec_C__PREFIX___splice_args(
+	t_usize index, t_usize old_count, t_usize new_count,
+	const C__TYPENAME__ *elements);
 
 #endif

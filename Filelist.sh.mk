@@ -36,4 +36,9 @@ src/vec/str/str_functions2                                                    \
 src/vec/str/str_functions3                                                    \
 src/vec/str/str_functions4                                                    \
 src/vec/str/str_sort                                                          \
+src/vec/subtree/subtree                                                       \
+src/vec/subtree/subtree_functions2                                            \
+src/vec/subtree/subtree_functions3                                            \
+src/vec/subtree/subtree_functions4                                            \
+src/vec/subtree/subtree_sort                                                  \
 

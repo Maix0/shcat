@@ -17,14 +17,59 @@
 
 C__TYPENAME__ *vec_C__PREFIX___get(t_vec_C__PREFIX__ *vec, t_usize i)
 {
-	if (vec->len >= i)
+	if (vec == NULL || vec->len >= i)
 		return (NULL);
 	return (&vec->buffer[i]);
 }
 
 C__TYPENAME__ *vec_C__PREFIX___last(t_vec_C__PREFIX__ *vec)
 {
-	if (vec->len == 0)
+	if (vec == NULL || vec->len == 0)
 		return (NULL);
 	return (&vec->buffer[vec->len - 1]);
+}
+
+void vec_C__PREFIX___copy_into(t_vec_C__PREFIX__ *vec, t_vec_C__PREFIX__ *dest)
+{
+	if (vec == NULL || dest == NULL)
+		return ;
+	vec_C__PREFIX___reserve(dest, vec->capacity);
+	mem_copy(dest->buffer, vec->buffer, vec->len * sizeof(C__TYPENAME__));
+}
+
+struct s_vec_C__PREFIX___splice_arguments vec_C__PREFIX___splice_args(
+	t_usize index, t_usize old_count, t_usize new_count,
+	const C__TYPENAME__ *elements)
+{
+	return ((struct s_vec_C__PREFIX___splice_arguments){index, old_count,
+														new_count, elements});
+}
+
+void vec_C__PREFIX___splice(t_vec_C__PREFIX__						 *self,
+							struct s_vec_C__PREFIX___splice_arguments args)
+{
+	C__TYPENAME__ *contents;
+	t_u32 new_size;
+	t_u32 old_end;
+	t_u32 new_end;
+
+	new_size = self->len + args.new_count - args.old_count;
+	old_end = args.index + args.old_count;
+	new_end = args.index + args.new_count;
+	vec_C__PREFIX___reserve(self, new_size);
+	contents = self->buffer;
+	if (self->len > old_end)
+		mem_move(contents + new_end,
+				 contents + old_end,
+				 (self->len - old_end) * sizeof(C__TYPENAME__));
+	if (args.new_count > 0)
+	{
+		if (args.elements)
+			mem_copy((contents + args.index * sizeof(C__TYPENAME__)),
+					 args.elements, args.new_count * sizeof(C__TYPENAME__));
+		else
+			mem_set_zero((contents + args.index * sizeof(C__TYPENAME__)),
+						 args.new_count * sizeof(C__TYPENAME__));
+	}
+	self->len += args.new_count - args.old_count;
 }

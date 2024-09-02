@@ -58,6 +58,7 @@ stack/stack_node                                                              \
 stack/stack_summary                                                           \
 stack/stack_version                                                           \
 subtree                                                                       \
+subtree/subtree_funcs1                                                        \
 tree/tree_funcs1                                                              \
 tree/tree_funcs2                                                              \
 

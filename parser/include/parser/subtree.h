@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 18:32:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:25:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,97 +23,38 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define TS_BIG_ENDIAN 0
-#define TS_PTR_SIZE 64
 #define TS_TREE_STATE_NONE USHRT_MAX
 #define NULL_SUBTREE ((t_subtree)NULL)
 
-// A heap-allocated representation of a subtree.
-//
-// This representation is used for parent nodes, external tokens,
-// errors, and other leaf nodes whose data is too large to fit into
-// the inline representation.
-typedef struct s_subtree_data t_subtree_data;
+#include "me/vec/vec_subtree.h"
+#include "parser/inner/subtree_inner.h"
 
-struct s_subtree_data
-{
-	t_u32	  ref_count;
-	Length	  padding;
-	Length	  size;
-	t_u32	  lookahead_bytes;
-	t_u32	  error_cost;
-	t_u32	  child_count;
-	TSSymbol  symbol;
-	TSStateId parse_state;
-
-	bool visible : 1;
-	bool named : 1;
-	bool extra : 1;
-	bool fragile_left : 1;
-	bool fragile_right : 1;
-	bool has_changes : 1;
-	bool has_external_tokens : 1;
-	bool has_external_scanner_state_change : 1;
-	bool depends_on_column : 1;
-	bool is_missing : 1;
-	bool is_keyword : 1;
-
-	union {
-		// Non-terminal subtrees (`child_count > 0`)
-		struct
-		{
-			t_u32 visible_child_count;
-			t_u32 named_child_count;
-			t_u32 visible_descendant_count;
-			t_i32 dynamic_precedence;
-			t_u16 repeat_depth;
-			t_u16 production_id;
-			struct
-			{
-				TSSymbol  symbol;
-				TSStateId parse_state;
-			} first_leaf;
-		};
-
-		// External terminal subtrees (`child_count == 0 && has_external_tokens`)
-		t_external_scanner_state external_scanner_state;
-
-		// Error terminal subtrees (`child_count == 0 && symbol == ts_builtin_sym_error`)
-		t_i32 lookahead_char;
-	};
-};
-
-// The fundamental building block of a syntax tree.
-typedef t_subtree_data *t_subtree;
-
-typedef Array(t_subtree) SubtreeArray;
+typedef t_vec_subtree t_vec_subtree;
 
 void		ts_external_scanner_state_init(t_external_scanner_state *, const t_u8 *, t_u32);
 const t_u8 *ts_external_scanner_state_data(const t_external_scanner_state *);
 bool		ts_external_scanner_state_eq(const t_external_scanner_state *self, const t_u8 *, t_u32);
 void		ts_external_scanner_state_delete(t_external_scanner_state *self);
 
-void ts_subtree_array_copy(SubtreeArray, SubtreeArray *);
-void ts_subtree_array_clear(SubtreeArray *);
-void ts_subtree_array_delete(SubtreeArray *);
-void ts_subtree_array_remove_trailing_extras(SubtreeArray *, SubtreeArray *);
-void ts_subtree_array_reverse(SubtreeArray *);
+void ts_subtree_array_copy(t_vec_subtree, t_vec_subtree *);
+void ts_subtree_array_clear(t_vec_subtree *);
+void ts_subtree_array_delete(t_vec_subtree *);
+void ts_subtree_array_remove_trailing_extras(t_vec_subtree *, t_vec_subtree *);
+void ts_subtree_array_reverse(t_vec_subtree *);
 
 t_subtree						ts_subtree_new_leaf(TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
 t_subtree						ts_subtree_new_error(t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
-t_subtree						ts_subtree_new_node(TSSymbol, SubtreeArray *, t_u32, const TSLanguage *);
-t_subtree						ts_subtree_new_error_node(SubtreeArray *, bool, const TSLanguage *);
+t_subtree						ts_subtree_new_node(TSSymbol, t_vec_subtree *, t_u32, const TSLanguage *);
+t_subtree						ts_subtree_new_error_node(t_vec_subtree *, bool, const TSLanguage *);
 t_subtree						ts_subtree_new_missing_leaf(TSSymbol, Length, t_u32, const TSLanguage *);
-t_subtree						ts_subtree_make_mut(t_subtree);
+t_subtree						ts_subtree_ensure_owner(t_subtree);
 void							ts_subtree_release(t_subtree);
 int								ts_subtree_compare(t_subtree, t_subtree);
 void							ts_subtree_set_symbol(t_subtree *, TSSymbol, const TSLanguage *);
 void							ts_subtree_summarize(t_subtree, const t_subtree *, t_u32, const TSLanguage *);
 void							ts_subtree_summarize_children(t_subtree, const TSLanguage *);
 void							ts_subtree_balance(t_subtree, const TSLanguage *);
-t_subtree						ts_subtree_edit(t_subtree, const TSInputEdit *edit);
 char						   *ts_subtree_string(t_subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
-void							ts_subtree_print_dot_graph(t_subtree, const TSLanguage *, FILE *);
 t_subtree						ts_subtree_last_external_token(t_subtree);
 const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self);
 bool							ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
