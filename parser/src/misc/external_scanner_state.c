@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/24 13:55:33 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:38:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:05:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void	ts_external_scanner_state_delete(t_external_scanner_state *self)
 	mem_free(self->long_data);
 }
 
-const t_u8	*ts_external_scanner_state_data(const t_external_scanner_state *self)
+const t_u8	*ts_external_scanner_state_data(\
+		const t_external_scanner_state *self)
 {
 	return ((const t_u8 *)self->long_data);
 }

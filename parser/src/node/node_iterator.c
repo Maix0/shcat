@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:14:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:28:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:07:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 NodeChildIterator	ts_node_iterate_children(const TSNode *node)
 {
-	t_subtree			subtree;
+	t_subtree		subtree;
 	const TSSymbol	*alias_sequence;
 
 	subtree = ts_node__subtree(*node);

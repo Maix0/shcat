@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:16:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:26:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:07:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 bool	ts_node__is_relevant(TSNode self, bool include_anonymous)
 {
 	TSSymbol	alias;
-	t_subtree		tree;
+	t_subtree	tree;
 
 	tree = ts_node__subtree(self);
 	if (include_anonymous)

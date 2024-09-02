@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 19:36:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/01 19:54:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:04:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,7 @@ bool	scan_heredoc_content_other(struct s_heredoc_scan_state *state)
 	if (state->lexer->get_column(state->lexer) == 0)
 	{
 		while (me_isspace(state->lexer->lookahead))
-		{
-			if (state->did_advance)
-				state->lexer->advance(state->lexer, false);
-			else
-				state->lexer->advance(state->lexer, true);
-		}
+			state->lexer->advance(state->lexer, !state->did_advance);
 		if (state->end_type != SIMPLE_HEREDOC_BODY)
 		{
 			state->lexer->result_symbol = state->middle_type;

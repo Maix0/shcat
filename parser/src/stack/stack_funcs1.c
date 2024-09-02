@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:52:03 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 16:58:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:06:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	ts_stack_is_paused(const t_stack *self, t_stack_version version)
 t_subtree	ts_stack_resume(t_stack *self, t_stack_version version)
 {
 	t_stack_head	*head;
-	t_subtree			result;
+	t_subtree		result;
 
 	head = array_get(&self->heads, version);
 	assert(head->status == SStatusPaused);

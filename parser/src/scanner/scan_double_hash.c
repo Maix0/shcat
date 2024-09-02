@@ -6,13 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 17:32:35 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 17:42:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:00:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/scanner.h"
 
-bool scan_double_hash(t_scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
+bool	scan_double_hash(\
+	t_scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 {
 	(void)(scanner);
 	if (valid_symbols[IMMEDIATE_DOUBLE_HASH] && !valid_symbols[ERROR_RECOVERY])

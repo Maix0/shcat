@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:55:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 16:56:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:06:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool	ts_stack_has_advanced_since_error(const t_stack *self,
 {
 	const t_stack_head	*head = array_get(&self->heads, version);
 	const t_stack_node	*node = head->node;
-	t_subtree				subtree;
+	t_subtree			subtree;
 
 	if (node->error_cost == 0)
 		return (true);

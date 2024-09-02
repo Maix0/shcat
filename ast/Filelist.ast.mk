@@ -1,6 +1,8 @@
 SRC_FILES =                                                                   \
+_here_doc_not_done                                                            \
+_not_done_boucle_print                                                        \
 _not_done_function                                                            \
-_not_done_print                                                               \
+_not_done_scripting_print                                                     \
 ast_alloc/ast_alloc                                                           \
 ast_alloc/ast_alloc_scripting                                                 \
 ast_free/ast_free                                                             \
@@ -10,6 +12,7 @@ from_node/artihmetic_node                                                     \
 from_node/boucle_node                                                         \
 from_node/condition_node                                                      \
 from_node/dev_node                                                            \
+from_node/exec_node                                                           \
 from_node/expansion_node                                                      \
 from_node/file_node                                                           \
 from_node/from_node                                                           \
@@ -17,6 +20,7 @@ from_node/node_utils                                                          \
 from_node/node_utils2                                                         \
 from_node/redirect_node                                                       \
 from_node/scripting_node                                                      \
+from_node/string_node                                                         \
 print_ast/ast_print                                                           \
 print_ast/ast_print_arithmetic                                                \
 print_ast/ast_print_command                                                   \

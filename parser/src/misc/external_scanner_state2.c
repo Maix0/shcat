@@ -6,14 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:37:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 17:38:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:06:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/external_scanner_state.h"
 #include "parser/subtree.h"
 
-const t_external_scanner_state	*ts_subtree_external_scanner_state(t_subtree self)
+const t_external_scanner_state	*ts_subtree_external_scanner_state(\
+		t_subtree self)
 {
 	static const t_external_scanner_state	empty_state = {NULL, .length = 0};
 
