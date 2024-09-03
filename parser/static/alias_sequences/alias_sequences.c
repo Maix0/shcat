@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_parse_table.c                               :+:      :+:    :+:   */
+/*   alias_sequences.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,51 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../types/type_parse_table.h"
-#include "../parse_table/parse_table.h"
+#include "../types/type_alias_sequences.h"
+#include "../headers/symbols.h"
+#include "../headers/external_scanner_symbol_identifiers.h"
+#include "../headers/field_identifiers.h"
 
-void	parse_table_0(t_parse_table_array *arr);
+#include "../headers/constants.h"
 
-t_parse_table_array	*create_parse_table(void)
+static const \
+t_alias_sequences_array	g_t_alias_sequences_array = {.a = {
+[6] = {
+[1] = anon_sym_AT,
+},
+[7] = {
+[0] = anon_sym_AT,
+},
+[21] = {
+[1] = sym_string_content,
+},
+[23] = {
+[0] = anon_sym_AT,
+},
+[25] = {
+[1] = anon_sym_AT,
+},
+[37] = {
+[2] = sym_string_content,
+},
+[38] = {
+[3] = sym_word,
+},
+[39] = {
+[0] = sym_regex,
+},
+[42] = {
+[1] = anon_sym_AT,
+},
+[50] = {
+[0] = sym_word,
+},
+[61] = {
+[1] = sym_word,
+},
+}};
+
+const t_alias_sequences_array	*create_alias_sequences(void)
 {
-	static t_parse_table_array	table = {};
-	static bool	init = false;
-
-	if (!init)
-	{
-		parse_table_0(&table);
-		init = true;
-	}
-	return (&table);
+	return (&g_t_alias_sequences_array);
 }
-
-/* create_parse_table.c */

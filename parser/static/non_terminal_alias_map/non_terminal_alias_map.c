@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_parse_table.c                               :+:      :+:    :+:   */
+/*   non_terminal_alias_map.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,22 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../types/type_parse_table.h"
-#include "../parse_table/parse_table.h"
+#include "../types/type_non_terminal_alias_map.h"
+#include "../headers/symbols.h"
+#include "../headers/external_scanner_symbol_identifiers.h"
+#include "../headers/field_identifiers.h"
 
-void	parse_table_0(t_parse_table_array *arr);
+#include "../headers/constants.h"
 
-t_parse_table_array	*create_parse_table(void)
+static const \
+t_non_terminal_alias_map_array	g_t_non_terminal_alias_map_array = {.a = {
+[0] = sym__word_no_brace,
+[1] = 2,
+[2] = sym__word_no_brace,
+[3] = sym_word,
+[4] = 0,
+}};
+
+const t_non_terminal_alias_map_array	*create_non_terminal_alias_map(void)
 {
-	static t_parse_table_array	table = {};
-	static bool	init = false;
-
-	if (!init)
-	{
-		parse_table_0(&table);
-		init = true;
-	}
-	return (&table);
+	return (&g_t_non_terminal_alias_map_array);
 }
-
-/* create_parse_table.c */
