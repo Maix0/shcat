@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 21:33:35 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 21:41:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/03 14:15:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@
 t_subtree	ts_subtree_new_node(TSSymbol symbol, t_vec_subtree *children,
 		t_u32 production_id, const TSLanguage *language)
 {
-	TSSymbolMetadata	metadata;
-	bool				fragile;
-	t_subtree			data;
+	TSSymbolMetadata		metadata;
+	bool					fragile;
+ 	t_subtree 				data;
 
 	metadata = ts_language_symbol_metadata(language, symbol);
 	fragile = symbol == ts_builtin_sym_error
 		|| symbol == ts_builtin_sym_error_repeat;
 	vec_subtree_reserve(children, ts_subtree_alloc_size(children->len)
 		/ sizeof(t_subtree));
-	data = (children->buffer[children->len]);
+	data = (void *)&children->buffer[children->len];
 	*data = (t_subtree_data){.ref_count = 1, .symbol = symbol, .child_count = \
 	children->len, .visible = metadata.visible, .named = metadata.named, \
 	.has_changes = false, .has_external_scanner_state_change = false, \
