@@ -25,8 +25,8 @@
 #include <assert.h>
 #include <stdio.h>
 
-static const t_u32				MAX_VERSION_COUNT = 1;
-static const t_u32				MAX_VERSION_COUNT_OVERFLOW = 1;
+static const t_u32				MAX_VERSION_COUNT = 4;
+static const t_u32				MAX_VERSION_COUNT_OVERFLOW = 6;
 static const t_u32				MAX_SUMMARY_DEPTH = 1;
 static const t_u32				MAX_COST_DIFFERENCE = 16
 					* ERROR_COST_PER_SKIPPED_TREE;
