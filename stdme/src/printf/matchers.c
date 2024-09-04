@@ -17,10 +17,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef static
-# undef static
-#endif
-
 t_matcher_list	*get_matchers(void)
 {
 	static t_matcher_list	printf_matchers = (t_matcher_list){

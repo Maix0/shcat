@@ -20,10 +20,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifdef static
-#undef static
-#endif
-
 static t_static_buffer	*get_next_line_buffer(int fd)
 {
 	t_usize					index;

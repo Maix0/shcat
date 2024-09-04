@@ -15,12 +15,19 @@
 
 # define _GNU_SOURCE
 
-# if defined(PRINT_BACKTRACE) || defined(BACKTRACE_DEEP)
+# ifdef PRINT_BACKTRACE 
 #  include <dlfcn.h>
 #  include <execinfo.h>
 #  include <link.h>
 #  include <stdio.h>
 #  include <stdlib.h>
 # endif
+# ifdef BACKTRACE_DEEP
+#  include <dlfcn.h>
+#  include <execinfo.h>
+#  include <link.h>
+#  include <stdio.h>
+#  include <stdlib.h>
+# endif 
 
 #endif /* GNU_SOURCE_H */

@@ -17,10 +17,6 @@
 #include "me/types.h"
 #include <stdio.h>
 
-#ifdef static
-# undef static
-#endif
-
 t_allocator	*global_allocator(void)
 {
 	static t_allocator	global_alloc = {};

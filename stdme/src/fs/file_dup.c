@@ -27,7 +27,8 @@ t_fd	*dup_fd(t_fd *fd)
 		return (NULL);
 	tmp = dup(fd->fd);
 	if (tmp == -1)
-		return (printf("There was an error while duping the fd %d `%s`\n", fd->fd, fd->name), NULL);
+		return (printf("There was an error while duping the "\
+	"fd %d `%s`\n", fd->fd, fd->name), NULL);
 	slot->ty = SLOT_FD;
 	slot->slot.fd.fd = tmp;
 	slot->slot.fd.perms = fd->perms;

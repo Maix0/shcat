@@ -21,10 +21,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#ifdef static
-# undef static
-#endif
-
 t_fd_array	*get_fd_arrays(void)
 {
 	static t_fd_array	val = {};

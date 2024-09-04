@@ -21,10 +21,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#ifdef static
-# undef static
-#endif
-
 t_fd	*get_stdin(void)
 {
 	t_fd				*out;

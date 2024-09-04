@@ -18,8 +18,18 @@
 # define BASE_PATH "/no_base_path_defined/"
 #endif
 
-#if defined(PRINT_BACKTRACE) || defined(BACKTRACE_DEEP)
-// #if true					// TO_REMOVE
+#ifdef PRINT_BACKTRACE
+# ifndef _PRINT_BACKTRACE
+#  define _PRINT_BACKTRACE 
+# endif
+#endif
+#ifdef BACKTRACE_DEEP
+# ifndef _PRINT_BACKTRACE
+#  define _PRINT_BACKTRACE 
+# endif
+#endif
+
+#ifdef _PRINT_BACKTRACE
 # ifndef BACKTRACE_DEEP
 #  define BACKTRACE_DEEP 256
 # endif
