@@ -52,16 +52,19 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 		(ast_free(redirection));
 }
 
+//// hello I am the SEGV police and I sized this code
+// 
+// t_symbol	symbol;
+//
+// symbol = ts_node_grammar_symbol(ts_node_child(node, 0));
+// if (symbol == anon_sym_SEMI)
+// 	return (AST_TERM_SEMI);
+// if (symbol == anon_sym_SEMI_SEMI)
+// 	return (AST_TERM_DOUBLE_SEMI);
+// printf("unknown term symbol %d\n", symbol);
 t_ast_terminator_kind	_select_term(t_parse_node node)
 {
-	t_symbol	symbol;
-
-	symbol = ts_node_grammar_symbol(ts_node_child(node, 0));
-	if (symbol == anon_sym_SEMI)
-		return (AST_TERM_SEMI);
-	if (symbol == anon_sym_SEMI_SEMI)
-		return (AST_TERM_DOUBLE_SEMI);
-	printf("unknown term symbol %d\n", symbol);
+	(void)(node);
 	return (AST_TERM_NONE);
 }
 

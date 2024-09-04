@@ -29,7 +29,7 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	t_ast_node				val;
 
 	if (node == NULL)
-		return ((void)printf("node == NULL\n"));
+		return ;
 	val = *node;
 	ptr = &void_storage;
 	if (val->kind == AST_CASE)
@@ -45,9 +45,6 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 	if (val->kind == AST_SUBSHELL)
 		ptr = &val->data.subshell.term;
 	*ptr = term;
-	if (ptr == &void_storage)
-		printf("node wasn't a term capable node\n");
-	(void)(void_storage);
 }
 
 t_error	build_sym_if_statement(\

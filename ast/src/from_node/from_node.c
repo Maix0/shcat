@@ -19,58 +19,6 @@
 #include "me/vec/vec_ast.h"
 #include "parser/api.h"
 #include <stdio.h>
-/*
-sym_arithmetic_binary_expression
-sym_arithmetic_expansion
-sym_arithmetic_literal
-sym_arithmetic_parenthesized_expression
-sym_arithmetic_postfix_expression
-sym_arithmetic_ternary_expression
-sym_arithmetic_unary_expression
-sym_case_item
-sym_case_statement
-sym_command
-sym_command_name
-sym_command_substitution
-sym_comment
-sym_compound_statement
-sym_concatenation
-sym_do_group
-sym_elif_clause
-sym_else_clause
-sym_expansion
-sym_expansion_expression
-sym_expansion_regex
-sym_extglob_pattern
-sym_file_descriptor
-sym_file_redirect
-sym_for_statement
-sym_function_definition
-sym_heredoc_body
-sym_heredoc_content
-sym_heredoc_end
-sym_heredoc_redirect
-sym_heredoc_start
-sym_if_statement
-sym_list
-sym_negated_command
-sym_number
-sym_pipeline
-sym_program
-sym_raw_string
-sym_redirected_statement
-sym_regex
-sym_simplex _expansion
-sym_simple_heredoc_body
-sym_string
-sym_string_content
-sym_subshell
-sym_variable_assignment
-sym_variable_assignments
-sym_variable_name
-sym_while_statement
-sym_word
-*/
 
 /*
 	E_OP_NONE = 0,				// ${var}
@@ -193,79 +141,6 @@ t_error	build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 	return (*out = ret, NO_ERROR);
 }
 
-/*
-alias_sym_statements
-alias_sym_terminator
-sym___error_recovery
-sym__arithmetic_expression
-sym__bare_dollar
-sym__case_item_last
-sym__comment_word
-sym__concat
-sym__concatenation_in_expansion
-sym__empty_value
-sym__expansion_body
-sym__expansion_word
-sym__extglob_blob
-sym__heredoc_body
-sym__heredoc_body_beginning
-sym__heredoc_expression
-sym__heredoc_pipeline
-sym__immediate_double_hash
-sym__simple_heredoc_body
-sym__statement_not_pipeline
-sym__statements
-sym_arithmetic_binary_expression
-sym_arithmetic_expansion
-sym_arithmetic_literal
-sym_arithmetic_parenthesized_expression
-sym_arithmetic_postfix_expression
-sym_arithmetic_ternary_expression
-sym_arithmetic_unary_expression
-sym_case_item
-sym_case_statement
-sym_command
-sym_command_name
-sym_command_substitution
-sym_comment
-sym_compound_statement
-sym_concatenation
-sym_do_group
-sym_elif_clause
-sym_else_clause
-sym_expansion
-sym_expansion_expression
-sym_expansion_regex
-sym_extglob_pattern
-sym_file_descriptor
-sym_file_redirect
-sym_for_statement
-sym_function_definition
-sym_heredoc_body
-sym_heredoc_content
-sym_heredoc_end
-sym_heredoc_redirect
-sym_heredoc_start
-sym_if_statement
-sym_list
-sym_negated_command
-sym_number
-sym_pipeline
-sym_program
-sym_raw_string
-sym_redirected_statement
-sym_regex
-sym_simple_expansion
-sym_simple_heredoc_body
-sym_string
-sym_string_content
-sym_subshell
-sym_variable_assignment
-sym_variable_assignments
-sym_variable_name
-sym_while_statement
-sym_word
-*/
 
 t_error	ast_from_node(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
@@ -321,16 +196,8 @@ t_error	ast_from_node(\
 		return (build_sym_for_statement(node, input, out));
 	if (ts_node_symbol(node) == sym_function_definition)
 		return (build_sym_function_definition(node, input, out));
-	if (ts_node_symbol(node) == sym_heredoc_body)
-		return (build_sym_heredoc_body(node, input, out));
-	if (ts_node_symbol(node) == sym_heredoc_content)
-		return (build_sym_heredoc_content(node, input, out));
-	if (ts_node_symbol(node) == sym_heredoc_end)
-		return (build_sym_heredoc_end(node, input, out));
 	if (ts_node_symbol(node) == sym_heredoc_redirect)
 		return (build_sym_heredoc_redirect(node, input, out));
-	if (ts_node_symbol(node) == sym_heredoc_start)
-		return (build_sym_heredoc_start(node, input, out));
 	if (ts_node_symbol(node) == sym_if_statement)
 		return (build_sym_if_statement(node, input, out));
 	if (ts_node_symbol(node) == sym_list)
@@ -351,8 +218,6 @@ t_error	ast_from_node(\
 		return (build_sym_regex(node, input, out));
 	if (ts_node_symbol(node) == sym_simple_expansion)
 		return (build_sym_simple_expansion(node, input, out));
-	if (ts_node_symbol(node) == sym_simple_heredoc_body)
-		return (build_sym_simple_heredoc_body(node, input, out));
 	if (ts_node_symbol(node) == sym_string)
 		return (build_sym_string(node, input, out));
 	if (ts_node_symbol(node) == sym_string_content)
