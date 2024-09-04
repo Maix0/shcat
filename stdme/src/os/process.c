@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/fs/fs.h"
 #include "me/mem/mem.h"
 #include "me/os/os.h"
 #include "me/printf/printf.h"
@@ -42,7 +43,7 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	close_fd(info.stdout.fd.fd);
 	close_fd(info.stderr.fd.fd);
 	vec_str_push(&info.arguments, NULL);
-	vec_str_push(&info.environement, NULL);
+	vec_str_push(&info.environement, NULL);	
 	execve(info.binary_path, info.arguments.buffer, info.environement.buffer);
 	return (ERROR);
 }

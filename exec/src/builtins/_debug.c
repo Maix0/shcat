@@ -19,7 +19,7 @@
 
 #define USG "Usage:\n - print_fd: print the opened file descritors informations"
 
-static t_error	_debug_fd(\
+t_error	_debug_fd(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	const t_fd_array	*fds = get_fd_arrays();
@@ -40,7 +40,8 @@ static t_error	_debug_fd(\
 				fds->storage[i].slot.dir.ptr, fds->storage[i].slot.dir.name);
 		i++;
 	}
-	*exit_code = 0;
+	if (exit_code != NULL)
+		*exit_code = 0;
 	return (NO_ERROR);
 }
 

@@ -51,9 +51,10 @@ CFLAGS_ADDITIONAL	+= -O0
 CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits -Wno-unused-command-line-argument
 CFLAGS_ADDITIONAL	+= -gcolumn-info -g3
 CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
-#CFLAGS_ADDITIONAL 	+= -O2
+# CFLAGS_ADDITIONAL	+= -O2
 # CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols_count.log
-CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3 -Wl,--allow-multiple-definition
+# CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3 -Wl,--allow-multiple
+# CFLAGS_ADDITIONAL	+= -I$(shell realpath ./includes) -I$(shell realpath ./output/include)
 
 export CFLAGS_ADDITIONAL
 export CC
