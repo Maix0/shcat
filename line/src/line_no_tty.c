@@ -32,7 +32,7 @@ bool	line_no_tty_impl(t_str *out)
 		chr = '\n';
 		if (read_fd(get_stdin(), (t_u8 *)&chr, 1, &ret))
 			return (string_free(line), *out = NULL, true);
-		if (ret == 0 || chr == '\n')
+		if (ret == 0) 
 		{
 			if (line.len == 0)
 				return (string_free(line), *out = NULL, true);

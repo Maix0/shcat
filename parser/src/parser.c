@@ -28,8 +28,7 @@
 static const t_u32				MAX_VERSION_COUNT = 4;
 static const t_u32				MAX_VERSION_COUNT_OVERFLOW = 6;
 static const t_u32				MAX_SUMMARY_DEPTH = 1;
-static const t_u32				MAX_COST_DIFFERENCE = 16
-					* ERROR_COST_PER_SKIPPED_TREE;
+static const t_u32				MAX_COST_DIFFERENCE = 16 * ERROR_COST_PER_SKIPPED_TREE;
 
 typedef struct s_error_status	t_error_status;
 typedef enum e_error_comparison	t_error_comparison;
@@ -269,16 +268,16 @@ static bool	ts_parser__better_version_exists(TSParser *self,
 	return false;
 }
 
-static bool	ts_parser__call_main_lex_fn(TSParser *self, TSLexMode lex_mode)
-{
-	return self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
-}
-
-static bool	ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode)
-{
-	(void)(lex_mode);
-	return self->language->keyword_lex_fn(&self->lexer.data, 0);
-}
+// static bool	ts_parser__call_main_lex_fn(TSParser *self, TSLexMode lex_mode)
+// {
+// 	return self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
+// }
+//
+// static bool	ts_parser__call_keyword_lex_fn(TSParser *self, TSLexMode lex_mode)
+// {
+// 	(void)(lex_mode);
+// 	return self->language->keyword_lex_fn(&self->lexer.data, 0);
+// }
 
 static void	ts_parser__external_scanner_create(TSParser *self)
 {
@@ -298,6 +297,7 @@ static void	ts_parser__external_scanner_destroy(TSParser *self)
 static t_u32	ts_parser__external_scanner_serialize(TSParser *self)
 {
 	t_u32	length;
+
 
 	length = self->language->external_scanner.serialize(self->external_scanner_payload,
 			self->lexer.debug_buffer);
@@ -319,6 +319,7 @@ static void	ts_parser__external_scanner_deserialize(TSParser *self,
 	{
 		data = ts_external_scanner_state_data(&external_token->external_scanner_state);
 		length = external_token->external_scanner_state.length;
+		printf("HERE\n");
 	}
 	self->language->external_scanner.deserialize(self->external_scanner_payload,
 		data, length);
@@ -430,7 +431,7 @@ static t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 			ts_lexer_reset(&self->lexer, current_position);
 		}
 		ts_lexer_start(&self->lexer);
-		found_token = ts_parser__call_main_lex_fn(self, lex_mode);
+		found_token = self->language->lex_fn(&self->lexer.data, lex_mode.lex_state);
 		ts_lexer_finish(&self->lexer, &lookahead_end_byte);
 		if (found_token)
 			break ;
@@ -485,7 +486,7 @@ static t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 			end_byte = self->lexer.token_end_position.bytes;
 			ts_lexer_reset(&self->lexer, self->lexer.token_start_position);
 			ts_lexer_start(&self->lexer);
-			is_keyword = ts_parser__call_keyword_lex_fn(self, lex_mode);
+			is_keyword = self->language->keyword_lex_fn(&self->lexer.data, 0);
 			if (is_keyword && self->lexer.token_end_position.bytes == end_byte
 				&& ts_language_has_actions(self->language, parse_state,
 					self->lexer.data.result_symbol))
