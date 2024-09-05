@@ -17,9 +17,9 @@
 #include "parser/subtree.h"
 #include "parser/stack.h"
 
-#define MAX_LINK_COUNT 1
-#define MAX_NODE_POOL_SIZE 0
-#define MAX_ITERATOR_COUNT 0
+#define MAX_LINK_COUNT 8
+#define MAX_NODE_POOL_SIZE 50
+#define MAX_ITERATOR_COUNT 64
 
 typedef enum e_stack_status					t_stack_status;
 typedef struct s_stack_head					t_stack_head;
