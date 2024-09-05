@@ -1,11 +1,17 @@
-#include "parser/array.h"
-#include "parser/parser.h"
+#include "me/char/char.h"
+#include "me/string/string.h"
 #include "me/types.h"
+#include "parser/array.h"
+#include "parser/lexer.h"
+#include "parser/parser.h"
 #include <assert.h>
 #include <string.h>
-#include <wctype.h>
+#include "parser/inner/heredoc.h"
 
-enum TokenType
+typedef struct s_heredoc t_heredoc;
+typedef struct s_scanner t_scanner;
+
+enum e_token_type
 {
 	HEREDOC_START,
 	SIMPLE_HEREDOC_BODY,
@@ -29,129 +35,92 @@ enum TokenType
 	ERROR_RECOVERY,
 };
 
-typedef Array(char) String;
-
-typedef struct Heredoc
-{
-	bool   is_raw;
-	bool   started;
-	bool   allows_indent;
-	String delimiter;
-	String current_leading_word;
-} Heredoc;
-
-#define heredoc_new()                                                                                                                      \
-	{                                                                                                                                      \
-		.is_raw = false,                                                                                                                   \
-		.started = false,                                                                                                                  \
-		.allows_indent = false,                                                                                                            \
-		.delimiter = array_new(),                                                                                                          \
-		.current_leading_word = array_new(),                                                                                               \
-	};
-
-typedef struct Scanner
+struct s_scanner
 {
 	t_u8 last_glob_paren_depth;
 	bool ext_was_in_double_quote;
 	bool ext_saw_outside_quote;
-	Array(Heredoc) heredocs;
-} Scanner;
+	Array(t_heredoc) heredocs;
+};
 
-static inline void advance(TSLexer *lexer)
+bool in_error_recovery(const bool *valid_symbols)
 {
-	lexer->advance(lexer, false);
+	return (valid_symbols[ERROR_RECOVERY]);
 }
 
-static inline void skip(TSLexer *lexer)
+void reset(t_scanner *scanner)
 {
-	lexer->advance(lexer, true);
+	t_u32 i;
+	i = 0;
+	while (i < scanner->heredocs.size)
+		reset_heredoc(array_get(&scanner->heredocs, i++));
 }
 
-static inline bool in_error_recovery(const bool *valid_symbols)
+t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
 {
-	return valid_symbols[ERROR_RECOVERY];
-}
+	t_u32	   size;
+	t_usize	   delimiter_size;
+	t_usize	   i;
+	t_heredoc *heredoc;
 
-static inline void reset_string(String *string)
-{
-	if (string->size > 0)
-	{
-		memset(string->contents, 0, string->size);
-		array_clear(string);
-	}
-}
-
-static inline void reset_heredoc(Heredoc *heredoc)
-{
-	heredoc->is_raw = false;
-	heredoc->started = false;
-	heredoc->allows_indent = false;
-	reset_string(&heredoc->delimiter);
-}
-
-static inline void reset(Scanner *scanner)
-{
-	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
-	{
-		reset_heredoc(array_get(&scanner->heredocs, i));
-	}
-}
-
-static t_u32 serialize(Scanner *scanner, t_u8 *buffer)
-{
-	t_u32 size = 0;
-
+	i = 0;
+	size = 0;
 	buffer[size++] = (char)scanner->last_glob_paren_depth;
 	buffer[size++] = (char)scanner->ext_was_in_double_quote;
 	buffer[size++] = (char)scanner->ext_saw_outside_quote;
 	buffer[size++] = (char)scanner->heredocs.size;
 
-	for (t_u32 i = 0; i < scanner->heredocs.size; i++)
+	while (i < scanner->heredocs.size)
 	{
-		Heredoc *heredoc = array_get(&scanner->heredocs, i);
-		if (heredoc->delimiter.size + 3 + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
-		{
-			return 0;
-		}
+		heredoc = array_get(&scanner->heredocs, i);
+		if (heredoc->delimiter.len + 3 + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
+			return (0);
 
 		buffer[size++] = (char)heredoc->is_raw;
 		buffer[size++] = (char)heredoc->started;
 		buffer[size++] = (char)heredoc->allows_indent;
 
-		memcpy(&buffer[size], &heredoc->delimiter.size, sizeof(t_u32));
-		size += sizeof(t_u32);
-		if (heredoc->delimiter.size > 0)
+		delimiter_size = heredoc->delimiter.len;
+		memcpy(&buffer[size], &delimiter_size, sizeof(t_usize));
+		size += sizeof(t_usize);
+		if (heredoc->delimiter.len > 0)
 		{
-			memcpy(&buffer[size], heredoc->delimiter.contents, heredoc->delimiter.size);
-			size += heredoc->delimiter.size;
+			memcpy(&buffer[size], heredoc->delimiter.buf, heredoc->delimiter.len);
+			size += heredoc->delimiter.len;
 		}
+		i++;
 	}
-	return size;
+	return (size);
 }
 
-static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
+void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
 {
+	t_u32	   size;
+	t_u32	   heredoc_count;
+	t_usize	   i;
+	t_usize	   delimiter_size;
+	t_heredoc *heredoc;
+	t_heredoc  new_heredoc;
+
 	if (length == 0)
-	{
 		reset(scanner);
-	}
 	else
 	{
-		t_u32 size = 0;
+		i = 0;
+		heredoc_count = 0;
+		size = 0;
 		scanner->last_glob_paren_depth = buffer[size++];
 		scanner->ext_was_in_double_quote = buffer[size++];
 		scanner->ext_saw_outside_quote = buffer[size++];
-		t_u32 heredoc_count = (t_u8)buffer[size++];
-		for (t_u32 i = 0; i < heredoc_count; i++)
+		heredoc_count = (t_u8)buffer[size++];
+		while (i < heredoc_count)
 		{
-			Heredoc *heredoc = NULL;
+			heredoc = NULL;
 			if (i < scanner->heredocs.size)
-			{
 				heredoc = array_get(&scanner->heredocs, i);
-			}
 			else
 			{
-				Heredoc new_heredoc = heredoc_new();
+				new_heredoc = heredoc_new();
 				array_push(&scanner->heredocs, new_heredoc);
 				heredoc = array_back(&scanner->heredocs);
 			}
@@ -160,15 +129,17 @@ static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
 			heredoc->started = buffer[size++];
 			heredoc->allows_indent = buffer[size++];
 
-			memcpy(&heredoc->delimiter.size, &buffer[size], sizeof(t_u32));
-			size += sizeof(t_u32);
-			array_reserve(&heredoc->delimiter, heredoc->delimiter.size);
+			memcpy(&delimiter_size, &buffer[size], sizeof(t_usize));
+			size += sizeof(t_usize);
+			heredoc->delimiter.len = delimiter_size;
+			string_reserve(&heredoc->delimiter, heredoc->delimiter.len);
 
-			if (heredoc->delimiter.size > 0)
+			if (heredoc->delimiter.len > 0)
 			{
-				memcpy(heredoc->delimiter.contents, &buffer[size], heredoc->delimiter.size);
-				size += heredoc->delimiter.size;
+				memcpy(heredoc->delimiter.buf, &buffer[size], heredoc->delimiter.len);
+				size += heredoc->delimiter.len;
 			}
+			i++;
 		}
 		assert(size == length);
 	}
@@ -181,107 +152,107 @@ static void deserialize(Scanner *scanner, const t_u8 *buffer, t_u32 length)
  * POSIX-mandated substitution, and assumes the default value for
  * IFS.
  */
-static bool advance_word(TSLexer *lexer, String *unquoted_word)
+bool advance_word(t_lexer *lexer, t_string *unquoted_word)
 {
 	bool  empty = true;
 	t_i32 quote = 0;
 
-	if (lexer->lookahead == '\'' || lexer->lookahead == '"')
+	if (lexer->data.lookahead == '\'' || lexer->data.lookahead == '"')
 	{
-		quote = lexer->lookahead;
-		advance(lexer);
+		quote = lexer->data.lookahead;
+		lexer->data.advance((void *)lexer, false);
 	}
 
-	while (lexer->lookahead &&
-		   !(quote ? lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n' : iswspace(lexer->lookahead)))
+	while (lexer->data.lookahead &&
+		   !(quote ? lexer->data.lookahead == quote || lexer->data.lookahead == '\r' || lexer->data.lookahead == '\n' : me_isspace(lexer->data.lookahead)))
 	{
-		if (lexer->lookahead == '\\')
+		if (lexer->data.lookahead == '\\')
 		{
-			advance(lexer);
-			if (!lexer->lookahead)
+			lexer->data.advance((void *)lexer, false);
+			if (!lexer->data.lookahead)
 				return false;
 		}
 		empty = false;
-		array_push(unquoted_word, lexer->lookahead);
-		advance(lexer);
+		string_push_char(unquoted_word, lexer->data.lookahead);
+		lexer->data.advance((void *)lexer, false);
 	}
-	array_push(unquoted_word, '\0');
+	string_push_char(unquoted_word, '\0');
 
-	if (quote && lexer->lookahead == quote)
-		advance(lexer);
+	if (quote && lexer->data.lookahead == quote)
+		lexer->data.advance((void *)lexer, false);
 
 	return !empty;
 }
 
-static inline bool scan_bare_dollar(TSLexer *lexer)
+bool scan_bare_dollar(t_lexer *lexer)
 {
-	while (iswspace(lexer->lookahead) && lexer->lookahead != '\n' && !lexer->eof(lexer))
-		skip(lexer);
+	while (me_isspace(lexer->data.lookahead) && lexer->data.lookahead != '\n' && !lexer->data.eof((void *)lexer))
+		lexer->data.advance((void *)lexer, true);
 
-	if (lexer->lookahead == '$')
+	if (lexer->data.lookahead == '$')
 	{
-		advance(lexer);
-		lexer->result_symbol = BARE_DOLLAR;
-		lexer->mark_end(lexer);
-		return (iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == '\"');
+		lexer->data.advance((void *)lexer, false);
+		lexer->data.result_symbol = BARE_DOLLAR;
+		lexer->data.mark_end((void *)lexer);
+		return (me_isspace(lexer->data.lookahead) || lexer->data.eof((void *)lexer) || lexer->data.lookahead == '\"');
 	}
 
 	return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
+bool scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer)
 {
-	while (iswspace(lexer->lookahead))
+	while (me_isspace(lexer->data.lookahead))
 	{
-		skip(lexer);
+		lexer->data.advance((void *)lexer, true);
 	}
 
-	lexer->result_symbol = HEREDOC_START;
-	heredoc->is_raw = lexer->lookahead == '\'' || lexer->lookahead == '"' || lexer->lookahead == '\\';
+	lexer->data.result_symbol = HEREDOC_START;
+	heredoc->is_raw = lexer->data.lookahead == '\'' || lexer->data.lookahead == '"' || lexer->data.lookahead == '\\';
 
 	bool found_delimiter = advance_word(lexer, &heredoc->delimiter);
 	if (!found_delimiter)
 	{
-		reset_string(&heredoc->delimiter);
+		string_clear(&heredoc->delimiter);
 		return false;
 	}
 	return found_delimiter;
 }
 
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
+bool scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer)
 {
-	reset_string(&heredoc->current_leading_word);
+	string_clear(&heredoc->current_leading_word);
 	// Scan the first 'n' characters on this line, to see if they match the
 	// heredoc delimiter
 	t_i32 size = 0;
-	if (heredoc->delimiter.size > 0)
+	if (heredoc->delimiter.len > 0)
 	{
-		while (lexer->lookahead != '\0' && lexer->lookahead != '\n' && (t_i32)*array_get(&heredoc->delimiter, size) == lexer->lookahead &&
-			   heredoc->current_leading_word.size < heredoc->delimiter.size)
+		while (lexer->data.lookahead != '\0' && lexer->data.lookahead != '\n' && (t_i32) * (&heredoc->delimiter.buf[size]) == lexer->data.lookahead &&
+			   heredoc->current_leading_word.len < heredoc->delimiter.len)
 		{
-			array_push(&heredoc->current_leading_word, lexer->lookahead);
-			advance(lexer);
+			string_push_char(&heredoc->current_leading_word, lexer->data.lookahead);
+			lexer->data.advance((void *)lexer, false);
 			size++;
 		}
 	}
-	array_push(&heredoc->current_leading_word, '\0');
-	return heredoc->delimiter.size == 0 ? false : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
+	string_push_char(&heredoc->current_leading_word, '\0');
+	return (heredoc->delimiter.len == 0 ? false : strcmp(heredoc->current_leading_word.buf, heredoc->delimiter.buf) == 0);
 }
 
-static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
+bool scan_heredoc_content(t_scanner *scanner, t_lexer *lexer, enum e_token_type middle_type, enum e_token_type end_type)
 {
-	bool	 did_advance = false;
-	Heredoc *heredoc = array_back(&scanner->heredocs);
+	bool	   did_advance = false;
+	t_heredoc *heredoc = array_back(&scanner->heredocs);
 
 	for (;;)
 	{
-		switch (lexer->lookahead)
+		switch (lexer->data.lookahead)
 		{
 		case '\0': {
-			if (lexer->eof(lexer) && did_advance)
+			if (lexer->data.eof((void *)lexer) && did_advance)
 			{
 				reset_heredoc(heredoc);
-				lexer->result_symbol = end_type;
+				lexer->data.result_symbol = end_type;
 				return true;
 			}
 			return false;
@@ -289,8 +260,8 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 
 		case '\\': {
 			did_advance = true;
-			advance(lexer);
-			advance(lexer);
+			lexer->data.advance((void *)lexer, false);
+			lexer->data.advance((void *)lexer, false);
 			break;
 		}
 
@@ -298,24 +269,24 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 			if (heredoc->is_raw)
 			{
 				did_advance = true;
-				advance(lexer);
+				lexer->data.advance((void *)lexer, false);
 				break;
 			}
 			if (did_advance)
 			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = middle_type;
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.result_symbol = middle_type;
 				heredoc->started = true;
-				advance(lexer);
-				if (iswalpha(lexer->lookahead) || lexer->lookahead == '{' || lexer->lookahead == '(')
+				lexer->data.advance((void *)lexer, false);
+				if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '{' || lexer->data.lookahead == '(')
 				{
 					return true;
 				}
 				break;
 			}
-			if (middle_type == HEREDOC_BODY_BEGINNING && lexer->get_column(lexer) == 0)
+			if (middle_type == HEREDOC_BODY_BEGINNING && lexer->data.get_column((void *)lexer) == 0)
 			{
-				lexer->result_symbol = middle_type;
+				lexer->data.result_symbol = middle_type;
 				heredoc->started = true;
 				return true;
 			}
@@ -325,25 +296,25 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 		case '\n': {
 			if (!did_advance)
 			{
-				skip(lexer);
+				lexer->data.advance((void *)lexer, true);
 			}
 			else
 			{
-				advance(lexer);
+				lexer->data.advance((void *)lexer, false);
 			}
 			did_advance = true;
 			if (heredoc->allows_indent)
 			{
-				while (iswspace(lexer->lookahead))
+				while (me_isspace(lexer->data.lookahead))
 				{
-					advance(lexer);
+					lexer->data.advance((void *)lexer, false);
 				}
 			}
-			lexer->result_symbol = heredoc->started ? middle_type : end_type;
-			lexer->mark_end(lexer);
+			lexer->data.result_symbol = heredoc->started ? middle_type : end_type;
+			lexer->data.mark_end((void *)lexer);
 			if (scan_heredoc_end_identifier(heredoc, lexer))
 			{
-				if (lexer->result_symbol == HEREDOC_END)
+				if (lexer->data.result_symbol == HEREDOC_END)
 				{
 					(void)array_pop(&scanner->heredocs);
 				}
@@ -353,88 +324,80 @@ static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenTyp
 		}
 
 		default: {
-			if (lexer->get_column(lexer) == 0)
+			if (lexer->data.get_column((void *)lexer) == 0)
 			{
 				// an alternative is to check the starting column of the
 				// heredoc body and track that statefully
-				while (iswspace(lexer->lookahead))
+				while (me_isspace(lexer->data.lookahead))
 				{
 					if (did_advance)
-					{
-						advance(lexer);
-					}
+						lexer->data.advance((void *)lexer, false);
 					else
-					{
-						skip(lexer);
-					}
+						lexer->data.advance((void *)lexer, true);
 				}
 				if (end_type != SIMPLE_HEREDOC_BODY)
 				{
-					lexer->result_symbol = middle_type;
+					lexer->data.result_symbol = middle_type;
 					if (scan_heredoc_end_identifier(heredoc, lexer))
-					{
 						return true;
-					}
 				}
 				if (end_type == SIMPLE_HEREDOC_BODY)
 				{
-					lexer->result_symbol = end_type;
-					lexer->mark_end(lexer);
+					lexer->data.result_symbol = end_type;
+					lexer->data.mark_end((void *)lexer);
 					if (scan_heredoc_end_identifier(heredoc, lexer))
-					{
 						return true;
-					}
 				}
 			}
 			did_advance = true;
-			advance(lexer);
+			lexer->data.advance((void *)lexer, false);
 			break;
 		}
 		}
 	}
 }
 
-static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
+bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 {
-	if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols))
+	if (valid_symbols[CONCAT] && !(valid_symbols[ERROR_RECOVERY]))
 	{
-		if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' ||
-			  lexer->lookahead == ')' || lexer->lookahead == '(' || lexer->lookahead == ';' || lexer->lookahead == '&' ||
-			  lexer->lookahead == '|' || lexer->lookahead == '{' || lexer->lookahead == '}'))
+		if (!(lexer->data.lookahead == 0 || me_isspace(lexer->data.lookahead) || lexer->data.lookahead == '>' || lexer->data.lookahead == '<' ||
+			  lexer->data.lookahead == ')' || lexer->data.lookahead == '(' || lexer->data.lookahead == ';' || lexer->data.lookahead == '&' ||
+			  lexer->data.lookahead == '|' || lexer->data.lookahead == '{' || lexer->data.lookahead == '}'))
 		{
-			lexer->result_symbol = CONCAT;
+			lexer->data.result_symbol = CONCAT;
 			// So for a`b`, we want to return a concat. We check if the
 			// 2nd backtick has whitespace after it, and if it does we
 			// return concat.
-			if (lexer->lookahead == '`')
+			if (lexer->data.lookahead == '`')
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				while (lexer->lookahead != '`' && !lexer->eof(lexer))
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				while (lexer->data.lookahead != '`' && !lexer->data.eof((void *)lexer))
 				{
-					advance(lexer);
+					lexer->data.advance((void *)lexer, false);
 				}
-				if (lexer->eof(lexer))
+				if (lexer->data.eof((void *)lexer))
 				{
 					return false;
 				}
-				if (lexer->lookahead == '`')
+				if (lexer->data.lookahead == '`')
 				{
-					advance(lexer);
+					lexer->data.advance((void *)lexer, false);
 				}
-				return iswspace(lexer->lookahead) || lexer->eof(lexer);
+				return me_isspace(lexer->data.lookahead) || lexer->data.eof((void *)lexer);
 			}
 			// strings w/ expansions that contains escaped quotes or
 			// backslashes need this to return a concat
-			if (lexer->lookahead == '\\')
+			if (lexer->data.lookahead == '\\')
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (lexer->lookahead == '"' || lexer->lookahead == '\'' || lexer->lookahead == '\\')
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				if (lexer->data.lookahead == '"' || lexer->data.lookahead == '\'' || lexer->data.lookahead == '\\')
 				{
 					return true;
 				}
-				if (lexer->eof(lexer))
+				if (lexer->data.eof((void *)lexer))
 				{
 					return false;
 				}
@@ -446,20 +409,20 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 	}
 
-	if (valid_symbols[IMMEDIATE_DOUBLE_HASH] && !in_error_recovery(valid_symbols))
+	if (valid_symbols[IMMEDIATE_DOUBLE_HASH] && !(valid_symbols[ERROR_RECOVERY]))
 	{
 		// advance two # and ensure not } after
-		if (lexer->lookahead == '#')
+		if (lexer->data.lookahead == '#')
 		{
-			lexer->mark_end(lexer);
-			advance(lexer);
-			if (lexer->lookahead == '#')
+			lexer->data.mark_end((void *)lexer);
+			lexer->data.advance((void *)lexer, false);
+			if (lexer->data.lookahead == '#')
 			{
-				advance(lexer);
-				if (lexer->lookahead != '}')
+				lexer->data.advance((void *)lexer, false);
+				if (lexer->data.lookahead != '}')
 				{
-					lexer->result_symbol = IMMEDIATE_DOUBLE_HASH;
-					lexer->mark_end(lexer);
+					lexer->data.result_symbol = IMMEDIATE_DOUBLE_HASH;
+					lexer->data.mark_end((void *)lexer);
 					return true;
 				}
 			}
@@ -468,76 +431,70 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 
 	if (valid_symbols[EMPTY_VALUE])
 	{
-		if (iswspace(lexer->lookahead) || lexer->eof(lexer) || lexer->lookahead == ';' || lexer->lookahead == '&')
+		if (me_isspace(lexer->data.lookahead) || lexer->data.eof((void *)lexer) || lexer->data.lookahead == ';' || lexer->data.lookahead == '&')
 		{
-			lexer->result_symbol = EMPTY_VALUE;
+			lexer->data.result_symbol = EMPTY_VALUE;
 			return true;
 		}
 	}
 
 	if ((valid_symbols[HEREDOC_BODY_BEGINNING] || valid_symbols[SIMPLE_HEREDOC_BODY]) && scanner->heredocs.size > 0 &&
-		!array_back(&scanner->heredocs)->started && !in_error_recovery(valid_symbols))
-	{
-		return scan_heredoc_content(scanner, lexer, HEREDOC_BODY_BEGINNING, SIMPLE_HEREDOC_BODY);
-	}
+		!array_back(&scanner->heredocs)->started && !(valid_symbols[ERROR_RECOVERY]))
+		return (scan_heredoc_content(scanner, lexer, HEREDOC_BODY_BEGINNING, SIMPLE_HEREDOC_BODY));
 
 	if (valid_symbols[HEREDOC_END] && scanner->heredocs.size > 0)
 	{
-		Heredoc *heredoc = array_back(&scanner->heredocs);
+		t_heredoc *heredoc = array_back(&scanner->heredocs);
 		if (scan_heredoc_end_identifier(heredoc, lexer))
 		{
 			array_delete(&heredoc->current_leading_word);
 			array_delete(&heredoc->delimiter);
 			(void)array_pop(&scanner->heredocs);
-			lexer->result_symbol = HEREDOC_END;
+			lexer->data.result_symbol = HEREDOC_END;
 			return true;
 		}
 	}
 
 	if (valid_symbols[HEREDOC_CONTENT] && scanner->heredocs.size > 0 && array_back(&scanner->heredocs)->started &&
-		!in_error_recovery(valid_symbols))
-	{
-		return scan_heredoc_content(scanner, lexer, HEREDOC_CONTENT, HEREDOC_END);
-	}
+		!(valid_symbols[ERROR_RECOVERY]))
+		return (scan_heredoc_content(scanner, lexer, HEREDOC_CONTENT, HEREDOC_END));
 
-	if (valid_symbols[HEREDOC_START] && !in_error_recovery(valid_symbols) && scanner->heredocs.size > 0)
-	{
-		return scan_heredoc_start(array_back(&scanner->heredocs), lexer);
-	}
+	if (valid_symbols[HEREDOC_START] && !(valid_symbols[ERROR_RECOVERY]) && scanner->heredocs.size > 0)
+		return (scan_heredoc_start(array_back(&scanner->heredocs), lexer));
 
 	if ((valid_symbols[VARIABLE_NAME] || valid_symbols[FILE_DESCRIPTOR] || valid_symbols[HEREDOC_ARROW]) &&
-		!in_error_recovery(valid_symbols))
+		!(valid_symbols[ERROR_RECOVERY]))
 	{
 		for (;;)
 		{
-			if ((lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
-				 (lexer->lookahead == '\n' && !valid_symbols[NEWLINE])) &&
+			if ((lexer->data.lookahead == ' ' || lexer->data.lookahead == '\t' || lexer->data.lookahead == '\r' ||
+				 (lexer->data.lookahead == '\n' && !valid_symbols[NEWLINE])) &&
 				!valid_symbols[EXPANSION_WORD])
 			{
-				skip(lexer);
+				lexer->data.advance((void *)lexer, true);
 			}
-			else if (lexer->lookahead == '\\')
+			else if (lexer->data.lookahead == '\\')
 			{
-				skip(lexer);
+				lexer->data.advance((void *)lexer, true);
 
-				if (lexer->eof(lexer))
+				if (lexer->data.eof((void *)lexer))
 				{
-					lexer->mark_end(lexer);
-					lexer->result_symbol = VARIABLE_NAME;
+					lexer->data.mark_end((void *)lexer);
+					lexer->data.result_symbol = VARIABLE_NAME;
 					return true;
 				}
 
-				if (lexer->lookahead == '\r')
+				if (lexer->data.lookahead == '\r')
 				{
-					skip(lexer);
+					lexer->data.advance((void *)lexer, true);
 				}
-				if (lexer->lookahead == '\n')
+				if (lexer->data.lookahead == '\n')
 				{
-					skip(lexer);
+					lexer->data.advance((void *)lexer, true);
 				}
 				else
 				{
-					if (lexer->lookahead == '\\' && valid_symbols[EXPANSION_WORD])
+					if (lexer->data.lookahead == '\\' && valid_symbols[EXPANSION_WORD])
 					{
 						goto expansion_word;
 					}
@@ -551,47 +508,47 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 
 		// no '*', '@', '?', '-', '$', '0', '_'
-		if (!valid_symbols[EXPANSION_WORD] && (lexer->lookahead == '*' || lexer->lookahead == '@' || lexer->lookahead == '?' ||
-											   lexer->lookahead == '-' || lexer->lookahead == '0' || lexer->lookahead == '_'))
+		if (!valid_symbols[EXPANSION_WORD] && (lexer->data.lookahead == '*' || lexer->data.lookahead == '@' || lexer->data.lookahead == '?' ||
+											   lexer->data.lookahead == '-' || lexer->data.lookahead == '0' || lexer->data.lookahead == '_'))
 		{
-			lexer->mark_end(lexer);
-			advance(lexer);
-			if (lexer->lookahead == '=' || lexer->lookahead == '[' || lexer->lookahead == ':' || lexer->lookahead == '-' ||
-				lexer->lookahead == '%' || lexer->lookahead == '#' || lexer->lookahead == '/')
+			lexer->data.mark_end((void *)lexer);
+			lexer->data.advance((void *)lexer, false);
+			if (lexer->data.lookahead == '=' || lexer->data.lookahead == '[' || lexer->data.lookahead == ':' || lexer->data.lookahead == '-' ||
+				lexer->data.lookahead == '%' || lexer->data.lookahead == '#' || lexer->data.lookahead == '/')
 			{
 				return false;
 			}
-			if (valid_symbols[EXTGLOB_PATTERN] && iswspace(lexer->lookahead))
+			if (valid_symbols[EXTGLOB_PATTERN] && me_isspace(lexer->data.lookahead))
 			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = EXTGLOB_PATTERN;
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.result_symbol = EXTGLOB_PATTERN;
 				return true;
 			}
 		}
 
-		if (valid_symbols[HEREDOC_ARROW] && lexer->lookahead == '<')
+		if (valid_symbols[HEREDOC_ARROW] && lexer->data.lookahead == '<')
 		{
-			advance(lexer);
-			if (lexer->lookahead == '<')
+			lexer->data.advance((void *)lexer, false);
+			if (lexer->data.lookahead == '<')
 			{
-				advance(lexer);
-				if (lexer->lookahead == '-')
+				lexer->data.advance((void *)lexer, false);
+				if (lexer->data.lookahead == '-')
 				{
-					advance(lexer);
-					Heredoc heredoc = heredoc_new();
+					lexer->data.advance((void *)lexer, false);
+					t_heredoc heredoc = heredoc_new();
 					heredoc.allows_indent = true;
 					array_push(&scanner->heredocs, heredoc);
-					lexer->result_symbol = HEREDOC_ARROW_DASH;
+					lexer->data.result_symbol = HEREDOC_ARROW_DASH;
 				}
-				// else if (lexer->lookahead == '<' || lexer->lookahead == '=')
+				// else if (lexer->data.lookahead == '<' || lexer->data.lookahead == '=')
 				// {
 				// 	return false;
 				// }
 				else
 				{
-					Heredoc heredoc = heredoc_new();
+					t_heredoc heredoc = heredoc_new();
 					array_push(&scanner->heredocs, heredoc);
-					lexer->result_symbol = HEREDOC_ARROW;
+					lexer->data.result_symbol = HEREDOC_ARROW;
 				}
 				return true;
 			}
@@ -599,18 +556,18 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 
 		bool is_number = true;
-		if (iswdigit(lexer->lookahead))
+		if (me_isdigit(lexer->data.lookahead))
 		{
-			advance(lexer);
+			lexer->data.advance((void *)lexer, false);
 		}
-		else if (iswalpha(lexer->lookahead) || lexer->lookahead == '_')
+		else if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '_')
 		{
 			is_number = false;
-			advance(lexer);
+			lexer->data.advance((void *)lexer, false);
 		}
 		else
 		{
-			if (lexer->lookahead == '{')
+			if (lexer->data.lookahead == '{')
 			{
 				goto brace_start;
 			}
@@ -627,14 +584,14 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 
 		for (;;)
 		{
-			if (iswdigit(lexer->lookahead))
+			if (me_isdigit(lexer->data.lookahead))
 			{
-				advance(lexer);
+				lexer->data.advance((void *)lexer, false);
 			}
-			else if (iswalpha(lexer->lookahead) || lexer->lookahead == '_')
+			else if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '_')
 			{
 				is_number = false;
-				advance(lexer);
+				lexer->data.advance((void *)lexer, false);
 			}
 			else
 			{
@@ -642,439 +599,437 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 			}
 		}
 
-		if (is_number && valid_symbols[FILE_DESCRIPTOR] && (lexer->lookahead == '>' || lexer->lookahead == '<'))
+		if (is_number && valid_symbols[FILE_DESCRIPTOR] && (lexer->data.lookahead == '>' || lexer->data.lookahead == '<'))
 		{
-			lexer->result_symbol = FILE_DESCRIPTOR;
+			lexer->data.result_symbol = FILE_DESCRIPTOR;
 			return true;
 		}
 
 		if (valid_symbols[VARIABLE_NAME])
 		{
-			if (lexer->lookahead == '+')
+			if (lexer->data.lookahead == '+')
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (lexer->lookahead == '=' || lexer->lookahead == ':')
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				if (lexer->data.lookahead == '=' || lexer->data.lookahead == ':')
 				{
-					lexer->result_symbol = VARIABLE_NAME;
+					lexer->data.result_symbol = VARIABLE_NAME;
 					return true;
 				}
 				return false;
 			}
-			if (lexer->lookahead == '/')
+			if (lexer->data.lookahead == '/')
 			{
 				return false;
 			}
-			if (lexer->lookahead == '=' || lexer->lookahead == '[' ||
-				(lexer->lookahead == ':' &&
+			if (lexer->data.lookahead == '=' || lexer->data.lookahead == '[' ||
+				(lexer->data.lookahead == ':' &&
 				 !valid_symbols[OPENING_PAREN]) || // TODO(amaanq): more cases for regular word chars but not variable
 												   // names for function words, only handling : for now? #235
-				lexer->lookahead == '%' ||
-				(lexer->lookahead == '#' && !is_number) || lexer->lookahead == '@' || (lexer->lookahead == '-'))
+				lexer->data.lookahead == '%' ||
+				(lexer->data.lookahead == '#' && !is_number) || lexer->data.lookahead == '@' || (lexer->data.lookahead == '-'))
 			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = VARIABLE_NAME;
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.result_symbol = VARIABLE_NAME;
 				return true;
 			}
 
-			if (lexer->lookahead == '?')
+			if (lexer->data.lookahead == '?')
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				lexer->result_symbol = VARIABLE_NAME;
-				return iswalpha(lexer->lookahead);
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				lexer->data.result_symbol = VARIABLE_NAME;
+				return me_isalpha(lexer->data.lookahead);
 			}
 		}
 
 		return false;
 	}
 
-	if (valid_symbols[BARE_DOLLAR] && !in_error_recovery(valid_symbols) && scan_bare_dollar(lexer))
-	{
-		return true;
-	}
+	if (valid_symbols[BARE_DOLLAR] && !(valid_symbols[ERROR_RECOVERY]) && scan_bare_dollar(lexer))
+		return (true);
 
-	if ((valid_symbols[REGEX]) && !in_error_recovery(valid_symbols))
-	{
-		if (valid_symbols[REGEX])
-		{
-			while (iswspace(lexer->lookahead))
-			{
-				skip(lexer);
-			}
-		}
-
-		if ((lexer->lookahead != '"' && lexer->lookahead != '\'') || ((lexer->lookahead == '$' || lexer->lookahead == '\'')) ||
-			(lexer->lookahead == '\''))
-		{
-			typedef struct
-			{
-				bool  done;
-				bool  advanced_once;
-				bool  found_non_alnumdollarunderdash;
-				bool  last_was_escape;
-				bool  in_single_quote;
-				t_u32 paren_depth;
-				t_u32 bracket_depth;
-				t_u32 brace_depth;
-			} State;
-
-			if (lexer->lookahead == '$')
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (lexer->lookahead == '(')
-				{
-					return false;
-				}
-			}
-
-			lexer->mark_end(lexer);
-
-			State state = {false, false, false, false, false, 0, 0, 0};
-			while (!state.done)
-			{
-				if (state.in_single_quote)
-				{
-					if (lexer->lookahead == '\'')
-					{
-						state.in_single_quote = false;
-						advance(lexer);
-						lexer->mark_end(lexer);
-					}
-				}
-				switch (lexer->lookahead)
-				{
-				case '\\':
-					state.last_was_escape = true;
-					break;
-				case '\0':
-					return false;
-				case '(':
-					state.paren_depth++;
-					state.last_was_escape = false;
-					break;
-				case '[':
-					state.bracket_depth++;
-					state.last_was_escape = false;
-					break;
-				case '{':
-					if (!state.last_was_escape)
-						state.brace_depth++;
-					state.last_was_escape = false;
-					break;
-				case ')':
-					if (state.paren_depth == 0)
-						state.done = true;
-					state.paren_depth--;
-					state.last_was_escape = false;
-					break;
-				case ']':
-					if (state.bracket_depth == 0)
-						state.done = true;
-					state.bracket_depth--;
-					state.last_was_escape = false;
-					break;
-				case '}':
-					if (state.brace_depth == 0)
-						state.done = true;
-					state.brace_depth--;
-					state.last_was_escape = false;
-					break;
-				case '\'':
-					// Enter or exit a single-quoted string.
-					state.in_single_quote = !state.in_single_quote;
-					advance(lexer);
-					state.advanced_once = true;
-					state.last_was_escape = false;
-					continue;
-				default:
-					state.last_was_escape = false;
-					break;
-				}
-
-				if (!state.done)
-				{
-					if (valid_symbols[REGEX])
-					{
-						bool was_space = !state.in_single_quote && iswspace(lexer->lookahead);
-						advance(lexer);
-						state.advanced_once = true;
-						if (!was_space || state.paren_depth > 0)
-						{
-							lexer->mark_end(lexer);
-						}
-					}
-				}
-			}
-
-			lexer->result_symbol = REGEX;
-			if (valid_symbols[REGEX] && !state.advanced_once)
-			{
-				return false;
-			}
-			return true;
-		}
-	}
+	// if ((valid_symbols[REGEX]) && !(valid_symbols[ERROR_RECOVERY]))
+	// {
+	// 	if (valid_symbols[REGEX])
+	// 	{
+	// 		while (me_isspace(lexer->data.lookahead))
+	// 		{
+	// 			lexer->data.advance((void *)lexer, true);
+	// 		}
+	// 	}
+	//
+	// 	if ((lexer->data.lookahead != '"' && lexer->data.lookahead != '\'') || ((lexer->data.lookahead == '$' || lexer->data.lookahead == '\'')) ||
+	// 		(lexer->data.lookahead == '\''))
+	// 	{
+	// 		typedef struct
+	// 		{
+	// 			bool  done;
+	// 			bool  advanced_once;
+	// 			bool  found_non_alnumdollarunderdash;
+	// 			bool  last_was_escape;
+	// 			bool  in_single_quote;
+	// 			t_u32 paren_depth;
+	// 			t_u32 bracket_depth;
+	// 			t_u32 brace_depth;
+	// 		} State;
+	//
+	// 		if (lexer->data.lookahead == '$')
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			if (lexer->data.lookahead == '(')
+	// 			{
+	// 				return false;
+	// 			}
+	// 		}
+	//
+	// 		lexer->data.mark_end((void *)lexer);
+	//
+	// 		State state = {false, false, false, false, false, 0, 0, 0};
+	// 		while (!state.done)
+	// 		{
+	// 			if (state.in_single_quote)
+	// 			{
+	// 				if (lexer->data.lookahead == '\'')
+	// 				{
+	// 					state.in_single_quote = false;
+	// 					lexer->data.advance((void *)lexer, false);
+	// 					lexer->data.mark_end((void *)lexer);
+	// 				}
+	// 			}
+	// 			switch (lexer->data.lookahead)
+	// 			{
+	// 			case '\\':
+	// 				state.last_was_escape = true;
+	// 				break;
+	// 			case '\0':
+	// 				return false;
+	// 			case '(':
+	// 				state.paren_depth++;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case '[':
+	// 				state.bracket_depth++;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case '{':
+	// 				if (!state.last_was_escape)
+	// 					state.brace_depth++;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case ')':
+	// 				if (state.paren_depth == 0)
+	// 					state.done = true;
+	// 				state.paren_depth--;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case ']':
+	// 				if (state.bracket_depth == 0)
+	// 					state.done = true;
+	// 				state.bracket_depth--;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case '}':
+	// 				if (state.brace_depth == 0)
+	// 					state.done = true;
+	// 				state.brace_depth--;
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			case '\'':
+	// 				// Enter or exit a single-quoted string.
+	// 				state.in_single_quote = !state.in_single_quote;
+	// 				lexer->data.advance((void *)lexer, false);
+	// 				state.advanced_once = true;
+	// 				state.last_was_escape = false;
+	// 				continue;
+	// 			default:
+	// 				state.last_was_escape = false;
+	// 				break;
+	// 			}
+	//
+	// 			if (!state.done)
+	// 			{
+	// 				if (valid_symbols[REGEX])
+	// 				{
+	// 					bool was_space = !state.in_single_quote && me_isspace(lexer->data.lookahead);
+	// 					lexer->data.advance((void *)lexer, false);
+	// 					state.advanced_once = true;
+	// 					if (!was_space || state.paren_depth > 0)
+	// 					{
+	// 						lexer->data.mark_end((void *)lexer);
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	//
+	// 		lexer->data.result_symbol = REGEX;
+	// 		if (valid_symbols[REGEX] && !state.advanced_once)
+	// 		{
+	// 			return false;
+	// 		}
+	// 		return true;
+	// 	}
+	// }
 
 extglob_pattern:
-	if (valid_symbols[EXTGLOB_PATTERN] && !in_error_recovery(valid_symbols))
-	{
-		// first skip ws, then check for ? * + @ !
-		while (iswspace(lexer->lookahead))
-		{
-			skip(lexer);
-		}
-
-		if (lexer->lookahead == '?' || lexer->lookahead == '*' || lexer->lookahead == '+' || lexer->lookahead == '@' ||
-			lexer->lookahead == '!' || lexer->lookahead == '-' || lexer->lookahead == ')' || lexer->lookahead == '\\' ||
-			lexer->lookahead == '.' || lexer->lookahead == '[' || (iswalpha(lexer->lookahead)))
-		{
-			if (lexer->lookahead == '\\')
-			{
-				advance(lexer);
-				if ((iswspace(lexer->lookahead) || lexer->lookahead == '"') && lexer->lookahead != '\r' && lexer->lookahead != '\n')
-				{
-					advance(lexer);
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			if (lexer->lookahead == ')' && scanner->last_glob_paren_depth == 0)
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-
-				if (iswspace(lexer->lookahead))
-				{
-					return false;
-				}
-			}
-
-			lexer->mark_end(lexer);
-			bool was_non_alpha = !iswalpha(lexer->lookahead);
-			if (lexer->lookahead != '[')
-			{
-				// no esac
-				if (lexer->lookahead == 'e')
-				{
-					lexer->mark_end(lexer);
-					advance(lexer);
-					if (lexer->lookahead == 's')
-					{
-						advance(lexer);
-						if (lexer->lookahead == 'a')
-						{
-							advance(lexer);
-							if (lexer->lookahead == 'c')
-							{
-								advance(lexer);
-								if (iswspace(lexer->lookahead))
-								{
-									return false;
-								}
-							}
-						}
-					}
-				}
-				else
-				{
-					advance(lexer);
-				}
-			}
-
-			// -\w is just a word, find something else special
-			if (lexer->lookahead == '-')
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				while (iswalnum(lexer->lookahead))
-				{
-					advance(lexer);
-				}
-
-				if (lexer->lookahead == ')' || lexer->lookahead == '\\' || lexer->lookahead == '.')
-				{
-					return false;
-				}
-				lexer->mark_end(lexer);
-			}
-
-			// case item -) or *)
-			if (lexer->lookahead == ')' && scanner->last_glob_paren_depth == 0)
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (iswspace(lexer->lookahead))
-				{
-					lexer->result_symbol = EXTGLOB_PATTERN;
-					return was_non_alpha;
-				}
-			}
-
-			if (iswspace(lexer->lookahead))
-			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = EXTGLOB_PATTERN;
-				scanner->last_glob_paren_depth = 0;
-				return true;
-			}
-
-			if (lexer->lookahead == '$')
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (lexer->lookahead == '{' || lexer->lookahead == '(')
-				{
-					lexer->result_symbol = EXTGLOB_PATTERN;
-					return true;
-				}
-			}
-
-			if (lexer->lookahead == '|')
-			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				lexer->result_symbol = EXTGLOB_PATTERN;
-				return true;
-			}
-
-			if (!iswalnum(lexer->lookahead) && lexer->lookahead != '(' && lexer->lookahead != '"' && lexer->lookahead != '[' &&
-				lexer->lookahead != '?' && lexer->lookahead != '/' && lexer->lookahead != '\\' && lexer->lookahead != '_' &&
-				lexer->lookahead != '*')
-			{
-				return false;
-			}
-
-			typedef struct
-			{
-				bool  done;
-				bool  saw_non_alphadot;
-				t_u32 paren_depth;
-				t_u32 bracket_depth;
-				t_u32 brace_depth;
-			} State;
-
-			State state = {false, was_non_alpha, scanner->last_glob_paren_depth, 0, 0};
-			while (!state.done)
-			{
-				switch (lexer->lookahead)
-				{
-				case '\0':
-					return false;
-				case '(':
-					state.paren_depth++;
-					break;
-				case '[':
-					state.bracket_depth++;
-					break;
-				case '{':
-					state.brace_depth++;
-					break;
-				case ')':
-					if (state.paren_depth == 0)
-					{
-						state.done = true;
-					}
-					state.paren_depth--;
-					break;
-				case ']':
-					if (state.bracket_depth == 0)
-					{
-						state.done = true;
-					}
-					state.bracket_depth--;
-					break;
-				case '}':
-					if (state.brace_depth == 0)
-					{
-						state.done = true;
-					}
-					state.brace_depth--;
-					break;
-				}
-
-				if (lexer->lookahead == '|')
-				{
-					lexer->mark_end(lexer);
-					advance(lexer);
-					if (state.paren_depth == 0 && state.bracket_depth == 0 && state.brace_depth == 0)
-					{
-						lexer->result_symbol = EXTGLOB_PATTERN;
-						return true;
-					}
-				}
-
-				if (!state.done)
-				{
-					bool was_space = iswspace(lexer->lookahead);
-					if (lexer->lookahead == '$')
-					{
-						lexer->mark_end(lexer);
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
-						{
-							state.saw_non_alphadot = true;
-						}
-						advance(lexer);
-						if (lexer->lookahead == '(' || lexer->lookahead == '{')
-						{
-							lexer->result_symbol = EXTGLOB_PATTERN;
-							scanner->last_glob_paren_depth = state.paren_depth;
-							return state.saw_non_alphadot;
-						}
-					}
-					if (was_space)
-					{
-						lexer->mark_end(lexer);
-						lexer->result_symbol = EXTGLOB_PATTERN;
-						scanner->last_glob_paren_depth = 0;
-						return state.saw_non_alphadot;
-					}
-					if (lexer->lookahead == '"')
-					{
-						lexer->mark_end(lexer);
-						lexer->result_symbol = EXTGLOB_PATTERN;
-						scanner->last_glob_paren_depth = 0;
-						return state.saw_non_alphadot;
-					}
-					if (lexer->lookahead == '\\')
-					{
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
-						{
-							state.saw_non_alphadot = true;
-						}
-						advance(lexer);
-						if (iswspace(lexer->lookahead) || lexer->lookahead == '"')
-						{
-							advance(lexer);
-						}
-					}
-					else
-					{
-						if (!iswalpha(lexer->lookahead) && lexer->lookahead != '.' && lexer->lookahead != '\\')
-						{
-							state.saw_non_alphadot = true;
-						}
-						advance(lexer);
-					}
-					if (!was_space)
-					{
-						lexer->mark_end(lexer);
-					}
-				}
-			}
-
-			lexer->result_symbol = EXTGLOB_PATTERN;
-			scanner->last_glob_paren_depth = 0;
-			return state.saw_non_alphadot;
-		}
-		scanner->last_glob_paren_depth = 0;
-
-		return false;
-	}
+	// if (valid_symbols[EXTGLOB_PATTERN] && !(valid_symbols[ERROR_RECOVERY]))
+	// {
+	// 	// first skip ws, then check for ? * + @ !
+	// 	while (me_isspace(lexer->data.lookahead))
+	// 	{
+	// 		lexer->data.advance((void *)lexer, true);
+	// 	}
+	//
+	// 	if (lexer->data.lookahead == '?' || lexer->data.lookahead == '*' || lexer->data.lookahead == '+' || lexer->data.lookahead == '@' ||
+	// 		lexer->data.lookahead == '!' || lexer->data.lookahead == '-' || lexer->data.lookahead == ')' || lexer->data.lookahead == '\\' ||
+	// 		lexer->data.lookahead == '.' || lexer->data.lookahead == '[' || (me_isalpha(lexer->data.lookahead)))
+	// 	{
+	// 		if (lexer->data.lookahead == '\\')
+	// 		{
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			if ((me_isspace(lexer->data.lookahead) || lexer->data.lookahead == '"') && lexer->data.lookahead != '\r' && lexer->data.lookahead != '\n')
+	// 			{
+	// 				lexer->data.advance((void *)lexer, false);
+	// 			}
+	// 			else
+	// 			{
+	// 				return false;
+	// 			}
+	// 		}
+	//
+	// 		if (lexer->data.lookahead == ')' && scanner->last_glob_paren_depth == 0)
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	//
+	// 			if (me_isspace(lexer->data.lookahead))
+	// 			{
+	// 				return false;
+	// 			}
+	// 		}
+	//
+	// 		lexer->data.mark_end((void *)lexer);
+	// 		bool was_non_alpha = !me_isalpha(lexer->data.lookahead);
+	// 		if (lexer->data.lookahead != '[')
+	// 		{
+	// 			// no esac
+	// 			if (lexer->data.lookahead == 'e')
+	// 			{
+	// 				lexer->data.mark_end((void *)lexer);
+	// 				lexer->data.advance((void *)lexer, false);
+	// 				if (lexer->data.lookahead == 's')
+	// 				{
+	// 					lexer->data.advance((void *)lexer, false);
+	// 					if (lexer->data.lookahead == 'a')
+	// 					{
+	// 						lexer->data.advance((void *)lexer, false);
+	// 						if (lexer->data.lookahead == 'c')
+	// 						{
+	// 							lexer->data.advance((void *)lexer, false);
+	// 							if (me_isspace(lexer->data.lookahead))
+	// 							{
+	// 								return false;
+	// 							}
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+	// 			else
+	// 			{
+	// 				lexer->data.advance((void *)lexer, false);
+	// 			}
+	// 		}
+	//
+	// 		// -\w is just a word, find something else special
+	// 		if (lexer->data.lookahead == '-')
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			while (me_isalnum(lexer->data.lookahead))
+	// 			{
+	// 				lexer->data.advance((void *)lexer, false);
+	// 			}
+	//
+	// 			if (lexer->data.lookahead == ')' || lexer->data.lookahead == '\\' || lexer->data.lookahead == '.')
+	// 			{
+	// 				return false;
+	// 			}
+	// 			lexer->data.mark_end((void *)lexer);
+	// 		}
+	//
+	// 		// case item -) or *)
+	// 		if (lexer->data.lookahead == ')' && scanner->last_glob_paren_depth == 0)
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			if (me_isspace(lexer->data.lookahead))
+	// 			{
+	// 				lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 				return was_non_alpha;
+	// 			}
+	// 		}
+	//
+	// 		if (me_isspace(lexer->data.lookahead))
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 			scanner->last_glob_paren_depth = 0;
+	// 			return true;
+	// 		}
+	//
+	// 		if (lexer->data.lookahead == '$')
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			if (lexer->data.lookahead == '{' || lexer->data.lookahead == '(')
+	// 			{
+	// 				lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 				return true;
+	// 			}
+	// 		}
+	//
+	// 		if (lexer->data.lookahead == '|')
+	// 		{
+	// 			lexer->data.mark_end((void *)lexer);
+	// 			lexer->data.advance((void *)lexer, false);
+	// 			lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 			return true;
+	// 		}
+	//
+	// 		if (!me_isalnum(lexer->data.lookahead) && lexer->data.lookahead != '(' && lexer->data.lookahead != '"' && lexer->data.lookahead != '[' &&
+	// 			lexer->data.lookahead != '?' && lexer->data.lookahead != '/' && lexer->data.lookahead != '\\' && lexer->data.lookahead != '_' &&
+	// 			lexer->data.lookahead != '*')
+	// 		{
+	// 			return false;
+	// 		}
+	//
+	// 		typedef struct
+	// 		{
+	// 			bool  done;
+	// 			bool  saw_non_alphadot;
+	// 			t_u32 paren_depth;
+	// 			t_u32 bracket_depth;
+	// 			t_u32 brace_depth;
+	// 		} State;
+	//
+	// 		State state = {false, was_non_alpha, scanner->last_glob_paren_depth, 0, 0};
+	// 		while (!state.done)
+	// 		{
+	// 			switch (lexer->data.lookahead)
+	// 			{
+	// 			case '\0':
+	// 				return false;
+	// 			case '(':
+	// 				state.paren_depth++;
+	// 				break;
+	// 			case '[':
+	// 				state.bracket_depth++;
+	// 				break;
+	// 			case '{':
+	// 				state.brace_depth++;
+	// 				break;
+	// 			case ')':
+	// 				if (state.paren_depth == 0)
+	// 				{
+	// 					state.done = true;
+	// 				}
+	// 				state.paren_depth--;
+	// 				break;
+	// 			case ']':
+	// 				if (state.bracket_depth == 0)
+	// 				{
+	// 					state.done = true;
+	// 				}
+	// 				state.bracket_depth--;
+	// 				break;
+	// 			case '}':
+	// 				if (state.brace_depth == 0)
+	// 				{
+	// 					state.done = true;
+	// 				}
+	// 				state.brace_depth--;
+	// 				break;
+	// 			}
+	//
+	// 			if (lexer->data.lookahead == '|')
+	// 			{
+	// 				lexer->data.mark_end((void *)lexer);
+	// 				lexer->data.advance((void *)lexer, false);
+	// 				if (state.paren_depth == 0 && state.bracket_depth == 0 && state.brace_depth == 0)
+	// 				{
+	// 					lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 					return true;
+	// 				}
+	// 			}
+	//
+	// 			if (!state.done)
+	// 			{
+	// 				bool was_space = me_isspace(lexer->data.lookahead);
+	// 				if (lexer->data.lookahead == '$')
+	// 				{
+	// 					lexer->data.mark_end((void *)lexer);
+	// 					if (!me_isalpha(lexer->data.lookahead) && lexer->data.lookahead != '.' && lexer->data.lookahead != '\\')
+	// 					{
+	// 						state.saw_non_alphadot = true;
+	// 					}
+	// 					lexer->data.advance((void *)lexer, false);
+	// 					if (lexer->data.lookahead == '(' || lexer->data.lookahead == '{')
+	// 					{
+	// 						lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 						scanner->last_glob_paren_depth = state.paren_depth;
+	// 						return state.saw_non_alphadot;
+	// 					}
+	// 				}
+	// 				if (was_space)
+	// 				{
+	// 					lexer->data.mark_end((void *)lexer);
+	// 					lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 					scanner->last_glob_paren_depth = 0;
+	// 					return state.saw_non_alphadot;
+	// 				}
+	// 				if (lexer->data.lookahead == '"')
+	// 				{
+	// 					lexer->data.mark_end((void *)lexer);
+	// 					lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 					scanner->last_glob_paren_depth = 0;
+	// 					return state.saw_non_alphadot;
+	// 				}
+	// 				if (lexer->data.lookahead == '\\')
+	// 				{
+	// 					if (!me_isalpha(lexer->data.lookahead) && lexer->data.lookahead != '.' && lexer->data.lookahead != '\\')
+	// 					{
+	// 						state.saw_non_alphadot = true;
+	// 					}
+	// 					lexer->data.advance((void *)lexer, false);
+	// 					if (me_isspace(lexer->data.lookahead) || lexer->data.lookahead == '"')
+	// 					{
+	// 						lexer->data.advance((void *)lexer, false);
+	// 					}
+	// 				}
+	// 				else
+	// 				{
+	// 					if (!me_isalpha(lexer->data.lookahead) && lexer->data.lookahead != '.' && lexer->data.lookahead != '\\')
+	// 					{
+	// 						state.saw_non_alphadot = true;
+	// 					}
+	// 					lexer->data.advance((void *)lexer, false);
+	// 				}
+	// 				if (!was_space)
+	// 				{
+	// 					lexer->data.mark_end((void *)lexer);
+	// 				}
+	// 			}
+	// 		}
+	//
+	// 		lexer->data.result_symbol = EXTGLOB_PATTERN;
+	// 		scanner->last_glob_paren_depth = 0;
+	// 		return state.saw_non_alphadot;
+	// 	}
+	// 	scanner->last_glob_paren_depth = 0;
+	//
+	// 	return false;
+	// }
 
 expansion_word:
 	if (valid_symbols[EXPANSION_WORD])
@@ -1083,75 +1038,75 @@ expansion_word:
 		bool advance_once_space = false;
 		for (;;)
 		{
-			if (lexer->lookahead == '\"')
+			if (lexer->data.lookahead == '\"')
 				return false;
-			if (lexer->lookahead == '$')
+			if (lexer->data.lookahead == '$')
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || iswalnum(lexer->lookahead))
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				if (lexer->data.lookahead == '{' || lexer->data.lookahead == '(' || lexer->data.lookahead == '\'' || me_isalnum(lexer->data.lookahead))
 				{
-					lexer->result_symbol = EXPANSION_WORD;
+					lexer->data.result_symbol = EXPANSION_WORD;
 					return advanced_once;
 				}
 				advanced_once = true;
 			}
 
-			if (lexer->lookahead == '}')
+			if (lexer->data.lookahead == '}')
 			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = EXPANSION_WORD;
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.result_symbol = EXPANSION_WORD;
 				return advanced_once || advance_once_space;
 			}
 
-			if (lexer->lookahead == '(' && !(advanced_once || advance_once_space))
+			if (lexer->data.lookahead == '(' && !(advanced_once || advance_once_space))
 			{
-				lexer->mark_end(lexer);
-				advance(lexer);
-				while (lexer->lookahead != ')' && !lexer->eof(lexer))
+				lexer->data.mark_end((void *)lexer);
+				lexer->data.advance((void *)lexer, false);
+				while (lexer->data.lookahead != ')' && !lexer->data.eof((void *)lexer))
 				{
 					// if we find a $( or ${ assume this is valid and is
 					// a garbage concatenation of some weird word + an
 					// expansion
 					// I wonder where this can fail
-					if (lexer->lookahead == '$')
+					if (lexer->data.lookahead == '$')
 					{
-						lexer->mark_end(lexer);
-						advance(lexer);
-						if (lexer->lookahead == '{' || lexer->lookahead == '(' || lexer->lookahead == '\'' || iswalnum(lexer->lookahead))
+						lexer->data.mark_end((void *)lexer);
+						lexer->data.advance((void *)lexer, false);
+						if (lexer->data.lookahead == '{' || lexer->data.lookahead == '(' || lexer->data.lookahead == '\'' || me_isalnum(lexer->data.lookahead))
 						{
-							lexer->result_symbol = EXPANSION_WORD;
+							lexer->data.result_symbol = EXPANSION_WORD;
 							return advanced_once;
 						}
 						advanced_once = true;
 					}
 					else
 					{
-						advanced_once = advanced_once || !iswspace(lexer->lookahead);
-						advance_once_space = advance_once_space || iswspace(lexer->lookahead);
-						advance(lexer);
+						advanced_once = advanced_once || !me_isspace(lexer->data.lookahead);
+						advance_once_space = advance_once_space || me_isspace(lexer->data.lookahead);
+						lexer->data.advance((void *)lexer, false);
 					}
 				}
-				lexer->mark_end(lexer);
-				if (lexer->lookahead == ')')
+				lexer->data.mark_end((void *)lexer);
+				if (lexer->data.lookahead == ')')
 				{
 					advanced_once = true;
-					advance(lexer);
-					lexer->mark_end(lexer);
-					if (lexer->lookahead == '}')
+					lexer->data.advance((void *)lexer, false);
+					lexer->data.mark_end((void *)lexer);
+					if (lexer->data.lookahead == '}')
 						return false;
 				}
 				else
 					return false;
 			}
 
-			if (lexer->lookahead == '\'')
+			if (lexer->data.lookahead == '\'')
 				return false;
-			if (lexer->eof(lexer))
+			if (lexer->data.eof((void *)lexer))
 				return false;
-			advanced_once = advanced_once || !iswspace(lexer->lookahead);
-			advance_once_space = advance_once_space || iswspace(lexer->lookahead);
-			advance(lexer);
+			advanced_once = advanced_once || !me_isspace(lexer->data.lookahead);
+			advance_once_space = advance_once_space || me_isspace(lexer->data.lookahead);
+			lexer->data.advance((void *)lexer, false);
 		}
 	}
 
@@ -1161,35 +1116,35 @@ brace_start:
 
 void *tree_sitter_sh_external_scanner_create()
 {
-	Scanner *scanner = mem_alloc(sizeof(Scanner));
+	t_scanner *scanner = mem_alloc(sizeof(t_scanner));
 	array_init(&scanner->heredocs);
 	return scanner;
 }
 
-bool tree_sitter_sh_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols)
+bool tree_sitter_sh_external_scanner_scan(void *payload, t_lexer *lexer, const bool *valid_symbols)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	return scan(scanner, lexer, valid_symbols);
 }
 
 t_u32 tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	return serialize(scanner, state);
 }
 
 void tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	deserialize(scanner, state, length);
 }
 
 void tree_sitter_sh_external_scanner_destroy(void *payload)
 {
-	Scanner *scanner = (Scanner *)payload;
+	t_scanner *scanner = (t_scanner *)payload;
 	for (size_t i = 0; i < scanner->heredocs.size; i++)
 	{
-		Heredoc *heredoc = array_get(&scanner->heredocs, i);
+		t_heredoc *heredoc = array_get(&scanner->heredocs, i);
 		array_delete(&heredoc->current_leading_word);
 		array_delete(&heredoc->delimiter);
 	}

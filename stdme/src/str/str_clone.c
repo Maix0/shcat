@@ -21,6 +21,8 @@ t_str	str_clone(t_const_str source)
 	t_str	res;
 	t_usize	len;
 
+	if (source == NULL)
+		return (NULL);
 	len = str_len(source) + 1;
 	res = mem_alloc_array(sizeof(*res), len);
 	if (res == NULL)

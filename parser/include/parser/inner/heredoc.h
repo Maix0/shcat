@@ -28,18 +28,20 @@ struct s_heredoc
 
 static inline t_heredoc heredoc_new(void)
 {
-	return ((t_heredoc){
+	return (t_heredoc){
 		.is_raw = false,
 		.started = false,
 		.allows_indent = false,
-		.delimiter = string_new(0),
-		.current_leading_word = string_new(0),
-	});
+		.delimiter = string_new(16),
+		.current_leading_word = string_new(16),
+	};
 }
 
 
 static inline void reset_heredoc(t_heredoc *heredoc)
 {
+	if (heredoc == NULL)
+		return;
 	heredoc->is_raw = false;
 	heredoc->started = false;
 	heredoc->allows_indent = false;
