@@ -46,6 +46,7 @@ stack/stack_manipulate3                                                       \
 stack/stack_node                                                              \
 stack/stack_summary                                                           \
 stack/stack_version                                                           \
+subtree/subtree_balance                                                       \
 subtree/subtree_funcs                                                         \
 subtree/subtree_helper                                                        \
 subtree/subtree_new                                                           \

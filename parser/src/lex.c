@@ -1,5 +1,4 @@
 #include "../static/char_set/charset_inline.h"
-#include "parser/api.h"
 #include "gmr/symbols.h"
 
 bool ts_lex(t_lexer *lexer, t_state_id state)
