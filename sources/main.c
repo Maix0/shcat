@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/19 14:22:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:46:18 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,22 @@
 #include <errno.h>
 #include <sys/types.h>
 
-t_error ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
-void	ast_print_node(t_ast_node self);
-void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
+t_error		ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
+void		ast_print_node(t_ast_node self);
+void		ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
 // cle avant le =
 // data apres le =
 
-t_language *tree_sitter_sh(void);
+t_language	*tree_sitter_sh(void);
 void		ast_free(t_ast_node node);
 
-t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *after)
+t_error	split_str_first(\
+	t_const_str s, char splitter, t_str *before, t_str *after)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (s == NULL || before == NULL || after == NULL || splitter == '\0')
 		return (ERROR);
@@ -57,9 +58,9 @@ t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *afte
 	return (NO_ERROR);
 }
 
-t_error populate_env(t_hashmap_env *env, t_str envp[])
+t_error	populate_env(t_hashmap_env *env, t_str envp[])
 {
-	t_usize i;
+	t_usize	i;
 	t_str	temp[2];
 
 	i = 0;
@@ -78,13 +79,13 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 	return (NO_ERROR);
 }
 
-void print_node_data(t_node *t, t_usize depth)
+void	print_node_data(t_node *t, t_usize depth)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	idx = 0;
 	if (t->kind == 7)
-		return;
+		return ;
 	printf("\x1b[%im[%-6s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
 	while (idx++ < depth + 1)
 		printf("\t");
@@ -94,14 +95,15 @@ void print_node_data(t_node *t, t_usize depth)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
 
-t_node parse_str(t_state *state)
+t_node	parse_str(t_state *state)
 {
-	t_first_tree *tree;
-	t_parse_node  node;
-	t_node		  ret;
-	t_ast_node	  out;
+	t_first_tree	*tree;
+	t_parse_node	node;
+	t_node			ret;
+	t_ast_node		out;
 
-	tree = ts_parser_parse_string(state->parser, state->str_input, str_len(state->str_input));
+	tree = ts_parser_parse_string(\
+		state->parser, state->str_input, str_len(state->str_input));
 	node = ts_tree_root_node(tree);
 	if (ast_from_node(node, state->str_input, &out))
 		(state->ast = NULL, printf("Error when building node\n"));
@@ -112,21 +114,22 @@ t_node parse_str(t_state *state)
 	return (ret);
 }
 
-void exec_shcat(t_state *state)
+void	exec_shcat(t_state *state)
 {
-	t_program_result prog_res;
-	/*  */
+	t_program_result	prog_res;
+
 	prog_res = (t_program_result){.exit = 0};
 	print_node_data(&state->current_node, 0);
 	free_node(state->current_node);
-	if (state->ast != NULL && run_program(&state->ast->data.program, state, &prog_res))
+	if (state->ast != NULL && run_program(\
+			&state->ast->data.program, state, &prog_res))
 		printf("Error when execting the Command \n");
 	ast_free(state->ast);
 }
 
-t_error get_user_input(t_state *state)
+t_error	get_user_input(t_state *state)
 {
-	t_line_state lstate;
+	t_line_state	lstate;
 
 	if (line_edit_start(&lstate, get_stdin(), get_stdout(), state->prompt))
 		return (ERROR);
@@ -145,7 +148,7 @@ t_error get_user_input(t_state *state)
 	return (NO_ERROR);
 }
 
-void ft_take_args(t_state *state)
+void	ft_take_args(t_state *state)
 {
 	while (true)
 	{
@@ -157,15 +160,14 @@ void ft_take_args(t_state *state)
 		line_history_add(state->str_input);
 		state->current_node = parse_str(state);
 		exec_shcat(state);
-		/* ft_exit(state, 42); */
 		mem_free(state->str_input);
 	}
 }
 
-t_first_parser *create_myparser(void)
+t_first_parser	*create_myparser(void)
 {
-	t_language	   *lang;
-	t_first_parser *parser;
+	t_language		*lang;
+	t_first_parser	*parser;
 
 	lang = tree_sitter_sh();
 	parser = ts_parser_new();
@@ -173,13 +175,12 @@ t_first_parser *create_myparser(void)
 	return (parser);
 }
 
-t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
+t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
 {
-	t_state state;
+	t_state	state;
 
 	(void)argc;
 	(void)argv;
-	(void)envp;
 	if (install_signal())
 		me_abort("Unable to install signals");
 	state = (t_state){};
