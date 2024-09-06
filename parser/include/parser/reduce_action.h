@@ -6,28 +6,21 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:31:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 17:08:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDUCE_ACTION_H
 #define REDUCE_ACTION_H
 
+#include "me/types.h"
 #include "parser/api.h"
 #include "parser/array.h"
-#include "me/types.h"
+#include "parser/inner/reduce_action_inner.h"
+#include "me/vec/vec_reduce_action.h"
 
-struct s_reduce_action
-{
-	t_u32	 count;
-	TSSymbol symbol;
-	int		 dynamic_precedence;
-	t_u16	 production_id;
-};
+typedef t_vec_reduce_action ReduceActionSet;
 
-typedef struct s_reduce_action ReduceAction;
-typedef Array(ReduceAction) ReduceActionSet;
-
-void ts_reduce_action_set_add(ReduceActionSet *self, ReduceAction new_action);
+void ts_reduce_action_set_add(ReduceActionSet *self, t_reduce_action new_action);
 
 #endif // REDUCE_ACTION_H

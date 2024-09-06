@@ -6,12 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 14:08:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/03 14:08:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 17:10:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
 #include "me/types.h"
+#include "me/vec/vec_reduce_action.h"
 #include "me/vec/vec_subtree.h"
 #include "parser/api.h"
 #include "parser/array.h"
@@ -627,18 +628,15 @@ static t_stack_version ts_parser__reduce(TSParser *self, t_stack_version version
 			ts_subtree_array_remove_trailing_extras(&next_slice_children, &self->trailing_extras2);
 			if (ts_parser__select_children(self, (parent), &next_slice_children))
 			{
-				ts_subtree_array_clear(
-					/*&self->tree_pool,*/ &self->trailing_extras);
-				ts_subtree_release(
-					/*&self->tree_pool,*/ (parent));
+				ts_subtree_array_clear(&self->trailing_extras);
+				ts_subtree_release(parent);
 				array_swap(&self->trailing_extras, &self->trailing_extras2);
 				parent = ts_subtree_new_node(symbol, &next_slice_children, production_id, self->language);
 			}
 			else
 			{
 				self->trailing_extras2.len = 0;
-				ts_subtree_array_delete(
-					/*&self->tree_pool,*/ &next_slice.subtrees);
+				ts_subtree_array_delete(&next_slice.subtrees);
 			}
 		}
 		state = ts_stack_state(self->stack, slice_version);
@@ -747,7 +745,7 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_versi
 	TSSymbol		first_symbol;
 	TSSymbol		end_symbol;
 	t_stack_version reduction_version;
-	ReduceAction	reduce_action;
+	t_reduce_action reduce_action;
 	t_u32			k;
 	TSSymbol		symbol;
 	TableEntry		entry;
@@ -774,7 +772,7 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_versi
 			continue;
 		state = ts_stack_state(self->stack, version);
 		has_shift_action = false;
-		array_clear(&self->reduce_actions);
+		self->reduce_actions.len = 0;
 		if (lookahead_symbol != 0)
 		{
 			first_symbol = lookahead_symbol;
@@ -800,7 +798,7 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_versi
 					break;
 				case TSParseActionTypeReduce:
 					if (action.reduce.child_count > 0)
-						ts_reduce_action_set_add(&self->reduce_actions, (ReduceAction){
+						ts_reduce_action_set_add(&self->reduce_actions, (t_reduce_action){
 																			.symbol = action.reduce.symbol,
 																			.count = action.reduce.child_count,
 																			.dynamic_precedence = action.reduce.dynamic_precedence,
@@ -813,9 +811,9 @@ static bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_versi
 			}
 		}
 		reduction_version = STACK_VERSION_NONE;
-		for (k = 0; k < self->reduce_actions.size; k++)
+		for (k = 0; k < self->reduce_actions.len; k++)
 		{
-			reduce_action = self->reduce_actions.contents[k];
+			reduce_action = self->reduce_actions.buffer[k];
 			reduction_version = ts_parser__reduce(self, version, reduce_action.symbol, reduce_action.count,
 												  reduce_action.dynamic_precedence, reduce_action.production_id, true, false);
 		}
@@ -1461,8 +1459,7 @@ TSParser *ts_parser_new(void)
 
 	self = mem_alloc(sizeof(*self));
 	ts_lexer_init(&self->lexer);
-	array_init(&self->reduce_actions);
-	array_reserve(&self->reduce_actions, 4);
+	self->reduce_actions = vec_reduce_action_new(4, NULL);
 	self->stack = ts_stack_new();
 	self->finished_tree = NULL;
 	self->language = NULL;
@@ -1478,10 +1475,7 @@ void ts_parser_delete(TSParser *self)
 		return;
 	ts_parser_set_language(self, NULL);
 	ts_stack_delete(self->stack);
-	if (self->reduce_actions.contents)
-	{
-		array_delete(&self->reduce_actions);
-	}
+	vec_reduce_action_free(self->reduce_actions);
 	array_delete(&self->trailing_extras);
 	array_delete(&self->trailing_extras2);
 	array_delete(&self->scratch_trees);

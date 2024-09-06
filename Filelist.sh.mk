@@ -1,8 +1,8 @@
 SRC_FILES =                                                                   \
-env                                                                           \
 _env_norm_helper                                                              \
-ft_exit                                                                       \
 _helper_main                                                                  \
+env                                                                           \
+ft_exit                                                                       \
 main                                                                          \
 node/node                                                                     \
 signal_handler                                                                \
@@ -33,6 +33,11 @@ src/vec/pid/pid_functions2                                                    \
 src/vec/pid/pid_functions3                                                    \
 src/vec/pid/pid_functions4                                                    \
 src/vec/pid/pid_sort                                                          \
+src/vec/reduce_action/reduce_action                                           \
+src/vec/reduce_action/reduce_action_functions2                                \
+src/vec/reduce_action/reduce_action_functions3                                \
+src/vec/reduce_action/reduce_action_functions4                                \
+src/vec/reduce_action/reduce_action_sort                                      \
 src/vec/str/str                                                               \
 src/vec/str/str_functions2                                                    \
 src/vec/str/str_functions3                                                    \

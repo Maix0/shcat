@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:01:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:16:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 17:00:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ struct s_subtree_data
 	TSSymbol  symbol;
 	TSStateId parse_state;
 
-	bool visible : 1;
-	bool named : 1;
-	bool extra : 1;
-	bool fragile_left : 1;
-	bool fragile_right : 1;
-	bool has_changes : 1;
-	bool has_external_tokens : 1;
-	bool has_external_scanner_state_change : 1;
-	bool depends_on_column : 1;
-	bool is_missing : 1;
-	bool is_keyword : 1;
+	bool visible;
+	bool named;
+	bool extra;
+	bool fragile_left;
+	bool fragile_right;
+	bool has_changes;
+	bool has_external_tokens;
+	bool has_external_scanner_state_change;
+	bool depends_on_column;
+	bool is_missing;
+	bool is_keyword;
 
 	union {
 		// Non-terminal subtrees (`child_count > 0`)

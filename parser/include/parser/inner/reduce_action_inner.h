@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reduce_action.c                                    :+:      :+:    :+:   */
+/*   reduce_action_inner.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/31 17:33:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/06 17:11:17 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/09/06 16:56:42 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/06 16:57:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/reduce_action.h"
-#include "me/vec/vec_reduce_action.h"
+#ifndef REDUCE_ACTION_INNER_H
+#define REDUCE_ACTION_INNER_H
 
-void	ts_reduce_action_set_add(ReduceActionSet *self, t_reduce_action new_action)
+#include "me/types.h"
+#include "parser/inner/ptypes.h"
+
+struct s_reduce_action
 {
-	t_reduce_action	action;
-	t_u32			i;
+	t_u32	 count;
+	TSSymbol symbol;
+	int		 dynamic_precedence;
+	t_u16	 production_id;
+};
+typedef struct s_reduce_action t_reduce_action;
 
-	i = 0;
-	while (i < self->len)
-	{
-		action = self->buffer[i];
-		if (action.symbol == new_action.symbol \
-			&& action.count == new_action.count)
-			return ;
-		i++;
-	}
-	vec_reduce_action_push(self, new_action);
-}
+#endif /* REDUCE_ACTION_INNER_H */
