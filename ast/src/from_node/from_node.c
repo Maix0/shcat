@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/03 15:48:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 11:02:57 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,6 @@ t_error	build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 	}
 	return (*out = ret, NO_ERROR);
 }
-
 
 t_error	ast_from_node(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
