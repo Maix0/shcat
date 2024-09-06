@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 18:36:40 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/22 15:58:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:35:30 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_node build_node(t_parse_node current, t_const_str input);
+t_node	build_node(t_parse_node current, t_const_str input);
 
-t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
+t_node	*build_childs(t_parse_node parent, t_const_str input, t_usize count)
 {
-	t_node		*ret;
-	t_usize		 idx;
-	t_parse_node child;
+	t_node			*ret;
+	t_usize			idx;
+	t_parse_node	child;
 
 	ret = mem_alloc_array(sizeof(*ret), count);
 	if (ret == NULL)
@@ -33,15 +33,16 @@ t_node *build_childs(t_parse_node parent, t_const_str input, t_usize count)
 		child = ts_node_child(parent, idx);
 		ret[idx] = build_node(child, input);
 		ret[idx].field = ts_node_field_id_for_child(parent, idx);
-		ret[idx].field_str = ts_language_field_name_for_id(ts_node_language(parent), ret[idx].field);
+		ret[idx].field_str = ts_language_field_name_for_id(\
+			ts_node_language(parent), ret[idx].field);
 		idx++;
 	}
 	return (ret);
 }
 
-t_node build_node(t_parse_node curr, t_const_str input)
+t_node	build_node(t_parse_node curr, t_const_str input)
 {
-	t_node out;
+	t_node	out;
 
 	out.kind = ts_node_symbol(curr);
 	out.kind_str = ts_language_symbol_name(ts_node_language(curr), out.kind);
@@ -59,10 +60,10 @@ t_node build_node(t_parse_node curr, t_const_str input)
 	return (out);
 }
 
-t_str node_getstr(t_node *node)
+t_str	node_getstr(t_node *node)
 {
-	t_usize start;
-	t_usize end;
+	t_usize	start;
+	t_usize	end;
 	t_str	ret;
 
 	if (node->single_str == NULL)
@@ -78,9 +79,9 @@ t_str node_getstr(t_node *node)
 	return (node->single_str);
 }
 
-void free_node(t_node self)
+void	free_node(t_node self)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (self.single_str)
 		mem_free(self.single_str);
