@@ -1,5 +1,6 @@
 SRC_FILES =                                                                   \
 env                                                                           \
+_env_norm_helper                                                              \
 ft_exit                                                                       \
 main                                                                          \
 node/node                                                                     \
