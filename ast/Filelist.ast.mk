@@ -1,8 +1,4 @@
 SRC_FILES =                                                                   \
-_here_doc_not_done                                                            \
-_not_done_boucle_print                                                        \
-_not_done_function                                                            \
-_not_done_scripting_print                                                     \
 ast_alloc/ast_alloc                                                           \
 ast_alloc/ast_alloc_scripting                                                 \
 ast_free/ast_free                                                             \
@@ -21,6 +17,10 @@ from_node/node_utils2                                                         \
 from_node/redirect_node                                                       \
 from_node/scripting_node                                                      \
 from_node/string_node                                                         \
+_here_doc                                                                     \
+_not_done_boucle_print                                                        \
+_not_done_function                                                            \
+_not_done_scripting_print                                                     \
 print_ast/ast_print                                                           \
 print_ast/ast_print_arithmetic                                                \
 print_ast/ast_print_command                                                   \

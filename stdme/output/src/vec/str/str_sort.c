@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   best_move.c                                        :+:      :+:    :+:   */
+/*   str_sort.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 20:04:33 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/01/31 14:25:00 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:26:05 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 
-void vec_str_sort(t_vec_str		   *v,
-						  t_vec_str_sort_fn is_sorted_fn)
+void	vec_str_sort(t_vec_str *v, t_vec_str_sort_fn is_sorted_fn)
 {
-	t_usize		  sorted_part;
-	t_usize		  i;
-	t_str tmp;
+	t_usize	sorted_part;
+	t_usize	i;
+	t_str	tmp;
 
 	if (v == NULL)
-		return;
+		return ;
 	sorted_part = v->len;
 	while (sorted_part > 0)
 	{

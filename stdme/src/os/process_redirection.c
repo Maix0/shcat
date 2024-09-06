@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 22:27:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 19:10:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:28:26 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,20 @@ t_error	_handle_redirections_inherited(t_spawn_info *info, t_process *process)
 
 t_error	_handle_redirections_fds(t_spawn_info *info, t_process *process)
 {
-	// t_fd	*tmp;
-
 	if (info->stdin.tag == R_FD)
 	{
-		// tmp = info->stdin.fd.fd;
 		info->stdin = fd(dup_fd(info->stdin.fd.fd));
 		process->stdin = dup_fd(info->stdin.fd.fd);
-		// close_fd(tmp);
 	}
 	if (info->stdout.tag == R_FD)
 	{
-		// tmp = info->stdin.fd.fd;
 		info->stdout = fd(dup_fd(info->stdout.fd.fd));
 		process->stdout = dup_fd(info->stdout.fd.fd);
-		// close_fd(tmp);
 	}
 	if (info->stderr.tag == R_FD)
 	{
-		// tmp = info->stdin.fd.fd;
 		info->stderr = fd(dup_fd(info->stderr.fd.fd));
 		process->stderr = dup_fd(info->stderr.fd.fd);
-		// close_fd(tmp);
 	}
 	return (NO_ERROR);
 }
