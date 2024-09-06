@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 15:39:47 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/06 16:24:40 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/06 16:35:15 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_error	_build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
+t_error	_build_envp_iterator(t_usize idx, const t_str *key, t_str *val, \
 							void *ctx);
 
 t_error	build_envp(\

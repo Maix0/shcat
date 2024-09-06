@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/06 15:46:18 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/06 16:33:58 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,21 @@
 #include <errno.h>
 #include <sys/types.h>
 
-t_error		ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
-void		ast_print_node(t_ast_node self);
-void		ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
+t_error			ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
+t_error			get_user_input(t_state *state);
+t_first_parser	*create_myparser(void);
+void			ast_print_node(t_ast_node self);
+void			ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
+void			exec_shcat(t_state *state);
+void			ft_take_args(t_state *state);
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
 // cle avant le =
 // data apres le =
 
-t_language	*tree_sitter_sh(void);
-void		ast_free(t_ast_node node);
+t_language		*tree_sitter_sh(void);
+void			ast_free(t_ast_node node);
 
 t_error	split_str_first(\
 	t_const_str s, char splitter, t_str *before, t_str *after)
@@ -106,73 +110,15 @@ t_node	parse_str(t_state *state)
 		state->parser, state->str_input, str_len(state->str_input));
 	node = ts_tree_root_node(tree);
 	if (ast_from_node(node, state->str_input, &out))
-		(state->ast = NULL, printf("Error when building node\n"));
+	{
+		state->ast = NULL;
+		printf("Error when building node\n");
+	}
 	else
 		state->ast = out;
 	ret = build_node(node, state->str_input);
 	ts_tree_delete(tree);
 	return (ret);
-}
-
-void	exec_shcat(t_state *state)
-{
-	t_program_result	prog_res;
-
-	prog_res = (t_program_result){.exit = 0};
-	print_node_data(&state->current_node, 0);
-	free_node(state->current_node);
-	if (state->ast != NULL && run_program(\
-			&state->ast->data.program, state, &prog_res))
-		printf("Error when execting the Command \n");
-	ast_free(state->ast);
-}
-
-t_error	get_user_input(t_state *state)
-{
-	t_line_state	lstate;
-
-	if (line_edit_start(&lstate, get_stdin(), get_stdout(), state->prompt))
-		return (ERROR);
-	while (!line_edit_feed(&lstate, &state->str_input))
-	{
-		if (errno == EAGAIN)
-		{
-			errno = 0;
-			lstate.pos = 0;
-			string_clear(&lstate.buf);
-			write_fd(lstate.output_fd, (void *)"^C\n", 3, NULL);
-			line_refresh_line(&lstate);
-		}
-	}
-	line_edit_stop(&lstate);
-	return (NO_ERROR);
-}
-
-void	ft_take_args(t_state *state)
-{
-	while (true)
-	{
-		state->str_input = NULL;
-		if (get_user_input(state))
-			ft_exit(state, 1);
-		if (state->str_input == NULL)
-			ft_exit(state, 0);
-		line_history_add(state->str_input);
-		state->current_node = parse_str(state);
-		exec_shcat(state);
-		mem_free(state->str_input);
-	}
-}
-
-t_first_parser	*create_myparser(void)
-{
-	t_language		*lang;
-	t_first_parser	*parser;
-
-	lang = tree_sitter_sh();
-	parser = ts_parser_new();
-	ts_parser_set_language(parser, lang);
-	return (parser);
 }
 
 t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
