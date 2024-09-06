@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/03 15:51:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/06 15:33:05 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "me/types.h"
 # include "ast/ast.h"
 
-typedef struct s_state t_state;
+typedef struct s_state	t_state;
 
 struct s_state
 {
