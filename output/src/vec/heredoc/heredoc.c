@@ -65,11 +65,9 @@ t_error vec_heredoc_pop(t_vec_heredoc *vec, t_heredoc *value)
 	t_heredoc  temp_value;
 	t_heredoc *ptr;
 
-	if (vec == NULL)
+	if (vec == NULL || vec->len == 0)
 		return (ERROR);
 	ptr = value;
-	if (vec->len == 0)
-		return (ERROR);
 	if (value == NULL)
 		ptr = &temp_value;
 	vec->len--;

@@ -17,9 +17,11 @@
 
 t_str *vec_str_get(t_vec_str *vec, t_usize i)
 {
-	if (vec == NULL || vec->len >= i)
+	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
-	return (&vec->buffer[i]);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
 }
 
 t_str *vec_str_last(t_vec_str *vec)

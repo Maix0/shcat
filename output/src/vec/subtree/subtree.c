@@ -65,11 +65,9 @@ t_error vec_subtree_pop(t_vec_subtree *vec, t_subtree *value)
 	t_subtree  temp_value;
 	t_subtree *ptr;
 
-	if (vec == NULL)
+	if (vec == NULL || vec->len == 0)
 		return (ERROR);
 	ptr = value;
-	if (vec->len == 0)
-		return (ERROR);
 	if (value == NULL)
 		ptr = &temp_value;
 	vec->len--;

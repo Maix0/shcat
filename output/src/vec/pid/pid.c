@@ -65,11 +65,9 @@ t_error vec_pid_pop(t_vec_pid *vec, t_pid *value)
 	t_pid  temp_value;
 	t_pid *ptr;
 
-	if (vec == NULL)
+	if (vec == NULL || vec->len == 0)
 		return (ERROR);
 	ptr = value;
-	if (vec->len == 0)
-		return (ERROR);
 	if (value == NULL)
 		ptr = &temp_value;
 	vec->len--;

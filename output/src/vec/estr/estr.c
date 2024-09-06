@@ -65,11 +65,9 @@ t_error vec_estr_pop(t_vec_estr *vec, t_expandable_str *value)
 	t_expandable_str  temp_value;
 	t_expandable_str *ptr;
 
-	if (vec == NULL)
+	if (vec == NULL || vec->len == 0)
 		return (ERROR);
 	ptr = value;
-	if (vec->len == 0)
-		return (ERROR);
 	if (value == NULL)
 		ptr = &temp_value;
 	vec->len--;

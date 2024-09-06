@@ -17,9 +17,11 @@
 
 C__TYPENAME__ *vec_C__PREFIX___get(t_vec_C__PREFIX__ *vec, t_usize i)
 {
-	if (vec == NULL || vec->len >= i)
+	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
-	return (&vec->buffer[i]);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
 }
 
 C__TYPENAME__ *vec_C__PREFIX___last(t_vec_C__PREFIX__ *vec)

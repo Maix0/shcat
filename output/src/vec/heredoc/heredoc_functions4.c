@@ -17,9 +17,11 @@
 
 t_heredoc *vec_heredoc_get(t_vec_heredoc *vec, t_usize i)
 {
-	if (vec == NULL || vec->len >= i)
+	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
-	return (&vec->buffer[i]);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
 }
 
 t_heredoc *vec_heredoc_last(t_vec_heredoc *vec)

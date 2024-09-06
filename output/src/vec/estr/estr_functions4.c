@@ -17,9 +17,11 @@
 
 t_expandable_str *vec_estr_get(t_vec_estr *vec, t_usize i)
 {
-	if (vec == NULL || vec->len >= i)
+	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
-	return (&vec->buffer[i]);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
 }
 
 t_expandable_str *vec_estr_last(t_vec_estr *vec)

@@ -17,9 +17,11 @@
 
 t_pid *vec_pid_get(t_vec_pid *vec, t_usize i)
 {
-	if (vec == NULL || vec->len >= i)
+	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
-	return (&vec->buffer[i]);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
 }
 
 t_pid *vec_pid_last(t_vec_pid *vec)
