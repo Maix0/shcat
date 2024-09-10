@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scanner.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/10 15:41:11 by rparodi           #+#    #+#             */
+/*   Updated: 2024/09/10 15:51:28 by rparodi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "me/char/char.h"
 #include "me/mem/mem.h"
 #include "me/str/str.h"
@@ -8,8 +20,8 @@
 #include "parser/lexer.h"
 #include "parser/parser.h"
 
-typedef struct s_heredoc t_heredoc;
-typedef struct s_scanner t_scanner;
+typedef struct s_heredoc	t_heredoc;
+typedef struct s_scanner	t_scanner;
 
 enum e_token_type
 {
@@ -37,31 +49,32 @@ enum e_token_type
 
 struct s_scanner
 {
-	t_u8		  last_glob_paren_depth;
-	bool		  ext_was_in_double_quote;
-	bool		  ext_saw_outside_quote;
-	t_vec_heredoc heredocs;
+	t_u8			last_glob_paren_depth;
+	bool			ext_was_in_double_quote;
+	bool			ext_saw_outside_quote;
+	t_vec_heredoc	heredocs;
 };
 
-bool in_error_recovery(const bool *valid_symbols)
+bool	in_error_recovery(const bool *valid_symbols)
 {
 	return (valid_symbols[ERROR_RECOVERY]);
 }
 
-void reset(t_scanner *scanner)
+void	reset(t_scanner *scanner)
 {
-	t_u32 i;
+	t_u32	i;
+
 	i = 0;
 	while (i < scanner->heredocs.len)
 		reset_heredoc(vec_heredoc_get(&scanner->heredocs, i++));
 }
 
-t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
+t_u32	serialize(t_scanner *scanner, t_u8 *buffer)
 {
-	t_u32	   size;
-	t_usize	   delimiter_size;
-	t_usize	   i;
-	t_heredoc *heredoc;
+	t_u32		size;
+	t_usize		delimiter_size;
+	t_usize		i;
+	t_heredoc	*heredoc;
 
 	i = 0;
 	size = 0;
@@ -69,23 +82,22 @@ t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
 	buffer[size++] = (char)scanner->ext_was_in_double_quote;
 	buffer[size++] = (char)scanner->ext_saw_outside_quote;
 	buffer[size++] = (char)scanner->heredocs.len;
-
 	while (i < scanner->heredocs.len)
 	{
 		heredoc = vec_heredoc_get(&scanner->heredocs, i);
-		if (heredoc->delimiter.len + 3 + size >= TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
+		if (heredoc->delimiter.len + 3 + size >= \
+			TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
 			return (0);
-
 		buffer[size++] = (char)heredoc->is_raw;
 		buffer[size++] = (char)heredoc->started;
 		buffer[size++] = (char)heredoc->allows_indent;
-
 		delimiter_size = heredoc->delimiter.len;
 		mem_copy(&buffer[size], &delimiter_size, sizeof(t_usize));
 		size += sizeof(t_usize);
 		if (heredoc->delimiter.len > 0)
 		{
-			mem_copy(&buffer[size], heredoc->delimiter.buf, heredoc->delimiter.len);
+			mem_copy(&buffer[size], heredoc->delimiter.buf, \
+				heredoc->delimiter.len);
 			size += heredoc->delimiter.len;
 		}
 		i++;
@@ -93,14 +105,14 @@ t_u32 serialize(t_scanner *scanner, t_u8 *buffer)
 	return (size);
 }
 
-void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
+void	deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
 {
-	t_u32	   size;
-	t_u32	   heredoc_count;
-	t_usize	   i;
-	t_usize	   delimiter_size;
-	t_heredoc *heredoc;
-	t_heredoc  new_heredoc;
+	t_u32		size;
+	t_u32		heredoc_count;
+	t_usize		i;
+	t_usize		delimiter_size;
+	t_heredoc	*heredoc;
+	t_heredoc	new_heredoc;
 
 	if (length == 0)
 		reset(scanner);
@@ -124,19 +136,17 @@ void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
 				vec_heredoc_push(&scanner->heredocs, new_heredoc);
 				heredoc = vec_heredoc_last(&scanner->heredocs);
 			}
-
 			heredoc->is_raw = buffer[size++];
 			heredoc->started = buffer[size++];
 			heredoc->allows_indent = buffer[size++];
-
 			mem_copy(&delimiter_size, &buffer[size], sizeof(t_usize));
 			size += sizeof(t_usize);
 			heredoc->delimiter.len = delimiter_size;
 			string_reserve(&heredoc->delimiter, heredoc->delimiter.len);
-
 			if (heredoc->delimiter.len > 0)
 			{
-				mem_copy(heredoc->delimiter.buf, &buffer[size], heredoc->delimiter.len);
+				mem_copy(heredoc->delimiter.buf, &buffer[size], \
+				heredoc->delimiter.len);
 				size += heredoc->delimiter.len;
 			}
 			i++;
@@ -153,80 +163,82 @@ void deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length)
  * POSIX-mandated substitution, and assumes the default value for
  * IFS.
  */
-bool advance_word(t_lexer *lexer, t_string *unquoted_word)
+bool	advance_word(t_lexer *lexer, t_string *unquoted_word)
 {
-	bool  empty = true;
-	t_i32 quote = 0;
+	bool	empty;
+	t_i32	quote;
 
+	empty = true;
+	quote = 0;
 	if (lexer->data.lookahead == '\'' || lexer->data.lookahead == '"')
 	{
 		quote = lexer->data.lookahead;
 		lexer->data.advance((void *)lexer, false);
 	}
-
-	while (lexer->data.lookahead &&
-		   !(quote ? lexer->data.lookahead == quote || lexer->data.lookahead == '\r' || lexer->data.lookahead == '\n'
-				   : me_isspace(lexer->data.lookahead)))
+	while (lexer->data.lookahead && \
+	!(quote ? lexer->data.lookahead == quote || lexer->data.lookahead == '\r' \
+		|| lexer->data.lookahead == '\n' : me_isspace(lexer->data.lookahead)))
 	{
 		if (lexer->data.lookahead == '\\')
 		{
 			lexer->data.advance((void *)lexer, false);
 			if (!lexer->data.lookahead)
-				return false;
+				return (false);
 		}
 		empty = false;
 		string_push_char(unquoted_word, lexer->data.lookahead);
 		lexer->data.advance((void *)lexer, false);
 	}
 	string_push_char(unquoted_word, '\0');
-
 	if (quote && lexer->data.lookahead == quote)
 		lexer->data.advance((void *)lexer, false);
-
-	return !empty;
+	return (!empty);
 }
 
-bool scan_bare_dollar(t_lexer *lexer)
+bool	scan_bare_dollar(t_lexer *lexer)
 {
-	while (me_isspace(lexer->data.lookahead) && lexer->data.lookahead != '\n' && !lexer->data.eof((void *)lexer))
+	while (me_isspace(lexer->data.lookahead) && \
+		lexer->data.lookahead != '\n' && !lexer->data.eof((void *)lexer))
 		lexer->data.advance((void *)lexer, true);
-
 	if (lexer->data.lookahead == '$')
 	{
 		lexer->data.advance((void *)lexer, false);
 		lexer->data.result_symbol = BARE_DOLLAR;
 		lexer->data.mark_end((void *)lexer);
-		return (me_isspace(lexer->data.lookahead) || lexer->data.eof((void *)lexer) || lexer->data.lookahead == '\"');
+		return (me_isspace(lexer->data.lookahead) || \
+		lexer->data.eof((void *)lexer) || lexer->data.lookahead == '\"');
 	}
-
-	return false;
+	return (false);
 }
 
-bool scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer)
+bool	scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer)
 {
+	bool found_delimiter;
+
+	found_delimiter = advance_word(lexer, &heredoc->delimiter);
 	while (me_isspace(lexer->data.lookahead))
 	{
 		lexer->data.advance((void *)lexer, true);
 	}
-
 	lexer->data.result_symbol = HEREDOC_START;
-	heredoc->is_raw = lexer->data.lookahead == '\'' || lexer->data.lookahead == '"' || lexer->data.lookahead == '\\';
-
-	bool found_delimiter = advance_word(lexer, &heredoc->delimiter);
+	heredoc->is_raw = lexer->data.lookahead == '\'' || \
+	lexer->data.lookahead == '"' || lexer->data.lookahead == '\\';
 	if (!found_delimiter)
 	{
 		string_clear(&heredoc->delimiter);
 		return false;
 	}
-	return found_delimiter;
+	return (found_delimiter);
 }
 
 bool scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer)
 {
+	t_i32 size;
+
+	size = 0;
 	string_clear(&heredoc->current_leading_word);
 	// Scan the first 'n' characters on this line, to see if they match the
 	// heredoc delimiter
-	t_i32 size = 0;
 	if (heredoc->delimiter.len > 0)
 	{
 		while (lexer->data.lookahead != '\0' && lexer->data.lookahead != '\n' &&
