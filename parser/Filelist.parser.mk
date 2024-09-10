@@ -32,7 +32,7 @@ node/node_relevent                                                            \
 parser                                                                        \
 point/point_funcs1                                                            \
 point/point_funcs2                                                            \
-scanner                                                                       \
+scanner/scanner                                                               \
 stack/stack_add_link                                                          \
 stack/stack_funcs1                                                            \
 stack/stack_funcs2                                                            \
