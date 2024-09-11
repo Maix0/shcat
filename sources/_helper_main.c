@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/11 16:39:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/11 18:29:04 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	exec_shcat(t_state *state)
 	t_program_result	prog_res;
 
 	prog_res = (t_program_result){.exit = 0};
-	print_node_data(&state->current_node, 0);
+	//print_node_data(&state->current_node, 0);
 	free_node(state->current_node);
 	if (state->ast != NULL && run_program(\
 			&state->ast->data.program, state, &prog_res))

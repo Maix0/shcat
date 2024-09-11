@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 17:22:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 13:44:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/11 18:34:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include "me/vec/vec_pid.h"
 #include "me/vec/vec_str.h"
 #include "unistd.h"
+#include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
 
@@ -852,8 +853,9 @@ t_error run_pipeline(t_ast_pipeline *pipeline, t_state *state, t_pipeline_result
 	}
 	if (pids.len != 0)
 	{
-		while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0)
-			;
+		if (!(kill(pids.buffer[pids.len - 1], 0) == -1 && errno == ESRCH))
+			while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0)
+				;
 		while (waitpid(-1, NULL, 0) != -1)
 			;
 		if (WIFEXITED(waitpid_status))
