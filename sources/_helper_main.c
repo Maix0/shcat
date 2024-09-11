@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/06 16:37:49 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/11 16:39:09 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include "parser/api.h"
 #include <errno.h>
 #include <sys/types.h>
+#include "parser/inner/parser_inner.h"
 
 void		ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void		print_node_data(t_node *t, t_usize depth);
@@ -84,11 +85,8 @@ void	ft_take_args(t_state *state)
 
 t_first_parser	*create_myparser(void)
 {
-	t_language		*lang;
 	t_first_parser	*parser;
 
-	lang = tree_sitter_sh();
-	parser = ts_parser_new();
-	ts_parser_set_language(parser, lang);
+	parser = ts_parser_new(tree_sitter_sh());
 	return (parser);
 }

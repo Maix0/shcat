@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 13:54:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:15:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/11 16:40:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,6 @@
 
 #define TREE_SITTER_LANGUAGE_VERSION 14
 #define TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION 13
-
-TSParser		 *ts_parser_new(void);
-void			  ts_parser_delete(TSParser *self);
-const TSLanguage *ts_parser_language(const TSParser *self);
-bool			  ts_parser_set_language(TSParser *self, const TSLanguage *language);
-TSTree			 *ts_parser_parse(TSParser *self, TSInput input);
-TSTree			 *ts_parser_parse_string(TSParser *self, t_const_str string, t_u32 length);
-void			  ts_parser_reset(TSParser *self);
 
 TSTree			 *ts_tree_copy(const TSTree *self);
 void			  ts_tree_delete(TSTree *self);

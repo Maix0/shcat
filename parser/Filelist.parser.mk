@@ -30,6 +30,8 @@ node/node_getter_funcs3                                                       \
 node/node_iterator                                                            \
 node/node_relevent                                                            \
 parser                                                                        \
+parser/parser_external_scanner                                                \
+parser/parser_lifetime                                                        \
 point/point_funcs1                                                            \
 point/point_funcs2                                                            \
 scanner/scanner                                                               \
