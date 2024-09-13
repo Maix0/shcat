@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 15:41:11 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/10 13:58:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:22:23 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ bool	scan_bare_dollar(t_lexer *lexer)
 
 bool	scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer)
 {
-	bool found_delimiter;
+	bool	found_delimiter;
 
 	found_delimiter = advance_word(lexer, &heredoc->delimiter);
 	while (me_isspace(lexer->data.lookahead))
@@ -183,39 +183,44 @@ bool	scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer)
 	if (!found_delimiter)
 	{
 		string_clear(&heredoc->delimiter);
-		return false;
+		return (false);
 	}
 	return (found_delimiter);
 }
 
-bool scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer)
+// Scan the first 'n' characters on this line, to see if they match the
+// heredoc delimiter
+bool	scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer)
 {
-	t_i32 size;
+	t_i32	size;
 
 	size = 0;
 	string_clear(&heredoc->current_leading_word);
-	// Scan the first 'n' characters on this line, to see if they match the
-	// heredoc delimiter
 	if (heredoc->delimiter.len > 0)
 	{
-		while (lexer->data.lookahead != '\0' && lexer->data.lookahead != '\n' &&
-			   (t_i32) * (&heredoc->delimiter.buf[size]) == lexer->data.lookahead &&
-			   heredoc->current_leading_word.len < heredoc->delimiter.len)
+		while (lexer->data.lookahead != '\0' \
+		&& lexer->data.lookahead != '\n' && \
+		(t_i32) * (&heredoc->delimiter.buf[size]) == lexer->data.lookahead && \
+		heredoc->current_leading_word.len < heredoc->delimiter.len)
 		{
-			string_push_char(&heredoc->current_leading_word, lexer->data.lookahead);
+			string_push_char(&heredoc->current_leading_word, \
+			lexer->data.lookahead);
 			lexer->data.advance((void *)lexer, false);
 			size++;
 		}
 	}
 	string_push_char(&heredoc->current_leading_word, '\0');
-	return (heredoc->delimiter.len == 0 ? false : str_compare(heredoc->current_leading_word.buf, heredoc->delimiter.buf));
+	return (heredoc->delimiter.len == 0 ? false : str_compare(\
+	heredoc->current_leading_word.buf, heredoc->delimiter.buf));
 }
 
-bool scan_heredoc_content(t_scanner *scanner, t_lexer *lexer, enum e_token_type middle_type, enum e_token_type end_type)
+bool	scan_heredoc_content(t_scanner *scanner, t_lexer *lexer, \
+	enum e_token_type middle_type, enum e_token_type end_type)
 {
-	bool	   did_advance = false;
+	bool	did_advance;
 	t_heredoc *heredoc = vec_heredoc_last(&scanner->heredocs);
 
+	did_advance = false;
 	for (;;)
 	{
 		switch (lexer->data.lookahead)
