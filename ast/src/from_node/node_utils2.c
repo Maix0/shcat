@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:27:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/02 17:04:40 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 14:42:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@
 #include "parser/api.h"
 #include <stdio.h>
 
+void	_append_redirection_single(t_ast_node node, t_vec_ast **vec)
+{
+	if (node->kind == AST_CASE)
+		*vec = &node->data.case_.suffixes_redirections;
+	else if (node->kind == AST_COMMAND)
+		*vec = &node->data.command.suffixes_redirections;
+	else if (node->kind == AST_COMPOUND_STATEMENT)
+		*vec = &node->data.compound_statement.suffixes_redirections;
+	else if (node->kind == AST_SUBSHELL)
+		*vec = &node->data.subshell.suffixes_redirections;
+	else
+		*vec = _append_scripting(node);
+}
+
 void	_append_redirection(t_ast_node node, t_ast_node redirection)
 {
 	t_vec_ast	*vec;
@@ -29,12 +43,6 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 		!(redirection->kind == AST_FILE_REDIRECTION || \
 		redirection->kind == AST_HEREDOC_REDIRECTION))
 		return (ast_free(redirection));
-	if (node->kind == AST_CASE)
-		vec = &node->data.case_.suffixes_redirections;
-	else if (node->kind == AST_COMMAND)
-		vec = &node->data.command.suffixes_redirections;
-	else if (node->kind == AST_COMPOUND_STATEMENT)
-		vec = &node->data.compound_statement.suffixes_redirections;
 	else if (node->kind == AST_LIST)
 		return (_append_redirection(\
 		node->data.list.right, redirection));
@@ -42,10 +50,8 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 	node->data.pipeline.statements.len != 0)
 		return (_append_redirection(node->data.pipeline.statements.buffer[\
 			node->data.pipeline.statements.len - 1], redirection));
-	else if (node->kind == AST_SUBSHELL)
-		vec = &node->data.subshell.suffixes_redirections;
 	else
-		vec = _append_scripting(node);
+		_append_redirection_single(node, &vec);
 	if (vec != NULL)
 		vec_ast_push(vec, redirection);
 	else

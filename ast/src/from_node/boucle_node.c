@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:43:35 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/02 17:32:38 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 14:38:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,15 @@ t_error	build_sym_for_statement(\
 	t_ast_node	tmp;
 	t_usize		i;
 
-	(void)(out);
+	if (out == NULL || ts_node_symbol(self) != sym_for_statement)
+		return (ERROR);
+	return (ERROR);
+	(void)(i);
+	(void)(ret);
+	(void)(tmp);
 	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_for_statement)
-		return (ERROR);
+}
+/*
 	ret = ast_alloc(AST_FOR);
 	i = 0;
 	while (i < ts_node_child_count(self))
@@ -57,10 +59,8 @@ t_error	build_sym_for_statement(\
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue ;
 		if (ts_node_field_id_for_child(self, i) == field_var)
-		{
 			ret->data.for_.var_name = \
 			_extract_str(ts_node_child(self, i), input);
-		}
 		if (ts_node_field_id_for_child(self, i) == field_value)
 		{
 			if (ast_from_node(ts_node_child(self, i), input, &tmp))
@@ -77,6 +77,7 @@ t_error	build_sym_for_statement(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_while_statement(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
@@ -87,13 +88,17 @@ t_error	build_sym_while_statement(\
 	t_parse_node			child;
 	t_ast_terminator_kind	term;
 
-	(void)(out);
+	if (out == NULL || ts_node_symbol(self) != sym_while_statement)
+		return (ERROR);
+	return (ERROR);
+	(void)(child);
+	(void)(i);
+	(void)(ret);
+	(void)(term);
+	(void)(tmp);
 	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_while_statement)
-		return (ERROR);
+}
+/*
 	i = 0;
 	if (ts_node_symbol(ts_node_child(self, 0)) == anon_sym_until)
 		ret = ast_alloc(AST_UNTIL);
@@ -125,6 +130,7 @@ t_error	build_sym_while_statement(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_do_group(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
@@ -134,13 +140,16 @@ t_error	build_sym_do_group(\
 	t_usize					i;
 	t_ast_terminator_kind	term;
 
-	(void)(out);
+	if (out == NULL || ts_node_symbol(self) != sym_do_group)
+		return (ERROR);
+	return (ERROR);
+	(void)(i);
+	(void)(ret);
+	(void)(term);
+	(void)(tmp);
 	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_do_group)
-		return (ERROR);
+}
+/*
 	ret = ast_alloc(AST_COMPOUND_STATEMENT);
 	i = 0;
 	while (i < ts_node_child_count(self))
@@ -168,3 +177,4 @@ t_error	build_sym_do_group(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/

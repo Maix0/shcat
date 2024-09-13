@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 17:33:20 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/02 17:33:41 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 15:25:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_error	build_sym_compound_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
-{
-	t_ast_node				ret;
-	t_ast_node				tmp;
-	t_usize					i;
-	t_ast_terminator_kind	term;
-
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_compound_statement)
-		return (ERROR);
-	ret = ast_alloc(AST_COMPOUND_STATEMENT);
-	i = 0;
-	while (i < ts_node_child_count(self))
-	{
+/*
 		if (ts_node_field_id_for_child(self, i) == field_term && \
 			ret->data.compound_statement.body.len != 0)
 		{
@@ -47,6 +29,21 @@ t_error	build_sym_compound_statement(\
 				ret->data.compound_statement.body.len - 1], term);
 		}
 		else
+	*/
+
+t_error	build_sym_compound_statement(\
+	t_parse_node self, t_const_str input, t_ast_node *out)
+{
+	t_ast_node				ret;
+	t_ast_node				tmp;
+	t_usize					i;
+
+	if (out == NULL || ts_node_symbol(self) != sym_compound_statement)
+		return (ERROR);
+	ret = ast_alloc(AST_COMPOUND_STATEMENT);
+	i = 0;
+	while (i < ts_node_child_count(self))
+	{
 		{
 			if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 				continue ;
@@ -58,6 +55,15 @@ t_error	build_sym_compound_statement(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+/*
+		if (ts_node_field_id_for_child(self, i) == field_term)
+		{
+			if (ret->data.program.body.len == 0 && (i++, true))
+				continue ;
+			ast_set_term(&ret->data.program.body.buffer[\
+ret->data.program.body.len - 1], _select_term(ts_node_child(self, i)));
+		}
+*/
 
 t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 {
@@ -65,9 +71,7 @@ t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 	t_usize		i;
 	t_ast_node	temp;
 
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_program)
+	if (out == NULL || ts_node_symbol(self) != sym_program)
 		return (ERROR);
 	ret = ast_alloc(AST_PROGRAM);
 	i = 0;
@@ -79,14 +83,6 @@ t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 			if (ast_from_node(ts_node_child(self, i), input, &temp))
 				return (ast_free(ret), ERROR);
 			vec_ast_push(&ret->data.program.body, temp);
-		}
-		if (ts_node_field_id_for_child(self, i) == field_term)
-		{
-			if (ret->data.program.body.len == 0 && (i++, true))
-				continue ;
-			ast_set_term(&ret->data.program.body.buffer[\
-				ret->data.program.body.len - 1], \
-				_select_term(ts_node_child(self, i)));
 		}
 		i++;
 	}

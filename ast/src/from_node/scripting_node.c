@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:34:12 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/09 14:42:13 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 15:10:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@
 t_error	build_sym_function_definition(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node	ret;
 	t_ast_node	tmp;
 	t_usize		i;
@@ -55,10 +61,17 @@ t_error	build_sym_function_definition(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_case_statement(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node	ret;
 	t_ast_node	tmp;
 	t_usize		i;
@@ -90,10 +103,17 @@ t_error	build_sym_case_statement(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym__case_item_last(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node	ret;
 	t_ast_node	tmp;
 	t_usize		i;
@@ -127,10 +147,17 @@ t_error	build_sym__case_item_last(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_case_item(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node	ret;
 	t_ast_node	tmp;
 	t_usize		i;
@@ -164,3 +191,4 @@ t_error	build_sym_case_item(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/

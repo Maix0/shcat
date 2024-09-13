@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:36:09 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/06 18:58:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 15:09:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,17 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 t_error	build_sym_if_statement(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_parse_node	child;
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_symbol(self) != sym_if_statement)
@@ -96,10 +99,17 @@ t_error	build_sym_if_statement(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_elif_clause(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
@@ -134,10 +144,17 @@ t_error	build_sym_elif_clause(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/
 
 t_error	build_sym_else_clause(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
+	(void)(self);
+	(void)(input);
+	(void)(out);
+	return (ERROR);
+}
+/*
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
@@ -166,3 +183,4 @@ t_error	build_sym_else_clause(\
 	}
 	return (*out = ret, NO_ERROR);
 }
+*/

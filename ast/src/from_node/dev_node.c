@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 15:07:10 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/02 11:35:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 14:30:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,10 @@ t_error	build_sym_pipeline(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
-	t_ast_node	tmp;
-	t_ast_node	tmp2;
+	t_ast_node	t[2];
 	t_usize		i;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_pipeline)
+	if (out == NULL || ts_node_symbol(self) != sym_pipeline)
 		return (ERROR);
 	ret = ast_alloc(AST_PIPELINE);
 	i = 0;
@@ -61,16 +55,16 @@ t_error	build_sym_pipeline(\
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue ;
-		if (ast_from_node(ts_node_child(self, i), input, &tmp))
+		if (ast_from_node(ts_node_child(self, i), input, &t[0]))
 			return (ast_free(ret), ERROR);
-		if (tmp->kind == AST_PIPELINE)
+		if (t[0]->kind == AST_PIPELINE)
 		{
-			while (!vec_ast_pop_front(&tmp->data.pipeline.statements, &tmp2))
-				vec_ast_push(&ret->data.pipeline.statements, tmp2);
-			ast_free(tmp);
+			while (!vec_ast_pop_front(&t[0]->data.pipeline.statements, &t[1]))
+				vec_ast_push(&ret->data.pipeline.statements, t[1]);
+			ast_free(t[0]);
 		}
 		else
-			vec_ast_push(&ret->data.pipeline.statements, tmp);
+			vec_ast_push(&ret->data.pipeline.statements, t[0]);
 		i++;
 	}
 	return (*out = ret, NO_ERROR);

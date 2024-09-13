@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:26:15 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/02 17:34:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/13 14:56:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,16 @@
 #include "parser/api.h"
 #include <stdio.h>
 
+void	_build_sym_command_substitution_inner(\
+	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i);
+void	_build_sym_expansion_inner(\
+	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i);
+
 t_error	build_sym_regex(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_symbol(self) != sym_regex)
@@ -44,9 +46,6 @@ t_error	build_sym_extglob_pattern(\
 {
 	t_ast_node	ret;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
 	if (out == NULL)
 		return (ERROR);
 	if (ts_node_symbol(self) != sym_extglob_pattern)
@@ -63,12 +62,7 @@ t_error	build_sym_expansion(\
 	t_ast_node	tmp;
 	t_usize		i;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_expansion)
+	if (out == NULL || ts_node_symbol(self) != sym_expansion)
 		return (ERROR);
 	ret = ast_alloc(AST_EXPANSION);
 	ret->data.expansion.kind = E_OP_NONE;
@@ -77,13 +71,7 @@ t_error	build_sym_expansion(\
 	{
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue ;
-		if (ts_node_field_id_for_child(self, i) == field_len)
-			ret->data.expansion.len_operator = true;
-		if (ts_node_field_id_for_child(self, i) == field_name)
-			ret->data.expansion.var_name = \
-			_extract_str(ts_node_child(self, i), input);
-		if (ts_node_field_id_for_child(self, i) == field_op)
-			ret->data.expansion.kind = _extract_exp_op(ts_node_child(self, i));
+		_build_sym_expansion_inner(self, input, ret, i);
 		if (ts_node_field_id_for_child(self, i) == field_args)
 		{
 			if (ast_from_node(ts_node_child(self, i), input, &tmp))
@@ -101,12 +89,7 @@ t_error	build_sym_simple_expansion(\
 	t_ast_node	ret;
 	t_usize		i;
 
-	(void)(out);
-	(void)(input);
-	(void)(self);
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_simple_expansion)
+	if (out == NULL || ts_node_symbol(self) != sym_simple_expansion)
 		return (ERROR);
 	ret = ast_alloc(AST_EXPANSION);
 	ret->data.expansion.kind = E_OP_NONE;
@@ -129,9 +112,7 @@ t_error	build_sym_command_substitution(\
 	t_ast_node	tmp;
 	t_usize		i;
 
-	if (out == NULL)
-		return (ERROR);
-	if (ts_node_symbol(self) != sym_command_substitution)
+	if ((out == NULL) || ts_node_symbol(self) != sym_command_substitution)
 		return (ERROR);
 	ret = ast_alloc(AST_COMMAND_SUBSTITUTION);
 	i = 0;
@@ -140,12 +121,7 @@ t_error	build_sym_command_substitution(\
 		if (!ts_node_is_named(ts_node_child(self, i)) && (i++, true))
 			continue ;
 		if (ts_node_symbol(ts_node_child(self, i)) == field_term)
-		{
-			if (ret->data.command_substitution.body.len != 0)
-				ast_set_term(&ret->data.command_substitution.body.buffer[\
-				ret->data.command_substitution.body.len - 1], \
-				_select_term(ts_node_child(self, i)));
-		}
+			_build_sym_command_substitution_inner(self, input, ret, i);
 		else
 		{
 			if (ast_from_node(ts_node_child(self, i), input, &tmp))

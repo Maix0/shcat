@@ -18,6 +18,8 @@ from_node/file_node                                                           \
 from_node/from_node                                                           \
 from_node/node_utils                                                          \
 from_node/node_utils2                                                         \
+from_node/node_utils3                                                         \
+from_node/other_node                                                          \
 from_node/redirect_node                                                       \
 from_node/scripting_node                                                      \
 from_node/string_node                                                         \
