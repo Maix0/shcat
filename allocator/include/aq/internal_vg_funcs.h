@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 22:20:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/10 16:40:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 15:32:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,19 @@
 
 # include "me/types.h"
 
-# if !defined(NVALGRIND) || defined(VGHEADER)
+# ifndef NVALGRIND
+#  if _INCLUDE_VALGRIND
+#   define _INCLUDE_VALGRIND
+#  endif
+# endif
+
+# ifdef VGHEADER
+#  if _INCLUDE_VALGRIND
+#   define _INCLUDE_VALGRIND
+#  endif
+# endif
+
+# ifdef _INCLUDE_VALGRIND
 #  ifdef NVALGRIND
 #   undef NVALGRIND
 #  endif
