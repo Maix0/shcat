@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:49:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:49:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:19:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,6 @@ TSTree	*ts_parser_parse_string(TSParser *self, t_const_str string,
 	t_string_input	input;
 
 	input = (t_string_input){(const t_u8 *)string, length};
-	return (ts_parser_parse(self,
-							(TSInput){
-								&input,
-								ts_string_input_read,
-							}));
+	return (ts_parser_parse(self, \
+	(TSInput){&input, ts_string_input_read}));
 }

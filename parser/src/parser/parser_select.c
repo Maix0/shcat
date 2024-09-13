@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:55:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:55:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:09:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ bool	ts_parser__select_tree(TSParser *self, t_subtree left, t_subtree right)
 		return (true);
 	if (ts_subtree_error_cost(left) < ts_subtree_error_cost(right))
 		return (false);
-	if (ts_subtree_dynamic_precedence(right) > ts_subtree_dynamic_precedence(left))
+	if (ts_subtree_dynamic_precedence(right) > \
+		ts_subtree_dynamic_precedence(left))
 		return (true);
-	if (ts_subtree_dynamic_precedence(left) > ts_subtree_dynamic_precedence(right))
+	if (ts_subtree_dynamic_precedence(left) > \
+		ts_subtree_dynamic_precedence(right))
 		return (false);
 	if (ts_subtree_error_cost(left) > 0)
 		return (true);

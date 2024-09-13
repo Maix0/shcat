@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 13:56:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/11 16:43:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 14:12:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-TSParser *ts_parser_new(TSLanguage *language)
+TSParser	*ts_parser_new(TSLanguage *language)
 {
-	TSParser *self;
+	TSParser	*self;
 
 	self = mem_alloc(sizeof(*self));
 	ts_lexer_init(&self->lexer);
@@ -25,13 +25,13 @@ TSParser *ts_parser_new(TSLanguage *language)
 	self->has_scanner_error = false;
 	self->external_scanner_payload = NULL;
 	self->operation_count = 0;
-	return self;
+	return (self);
 }
 
-void ts_parser_delete(TSParser *self)
+void	ts_parser_delete(TSParser *self)
 {
 	if (!self)
-		return;
+		return ;
 	ts_parser_reset(self);
 	self->language = NULL;
 	ts_stack_delete(self->stack);
@@ -42,7 +42,7 @@ void ts_parser_delete(TSParser *self)
 	mem_free(self);
 }
 
-void ts_parser_reset(TSParser *self)
+void	ts_parser_reset(TSParser *self)
 {
 	ts_parser__external_scanner_destroy(self);
 	ts_lexer_reset(&self->lexer, length_zero());
