@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 14:08:00 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/11 17:32:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/13 13:28:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,14 @@ bool ts_parser__breakdown_top_of_stack(TSParser *self, t_stack_version version)
 	t_u32				i;
 	t_u32				j;
 	t_u32				n;
+	bool				first;
 
+	first = true;
 	did_break_down = false;
 	pending = false;
-	do
+	while (pending || first)
 	{
+		first = false;
 		pop = ts_stack_pop_pending(self->stack, version);
 		if (!pop.size)
 			break;
@@ -69,7 +72,7 @@ bool ts_parser__breakdown_top_of_stack(TSParser *self, t_stack_version version)
 			array_delete(&slice.subtrees);
 			i++;
 		}
-	} while (pending);
+	};
 	return (did_break_down);
 }
 
@@ -469,8 +472,9 @@ t_stack_version ts_parser__reduce(TSParser *self, t_stack_version version, TSSym
 		}
 		i++;
 	}
-	// Return the first new stack version that was created.
-	return ts_stack_version_count(self->stack) > initial_version_count ? initial_version_count : STACK_VERSION_NONE;
+	if (ts_stack_version_count(self->stack) > initial_version_count)
+		return (initial_version_count);
+	return (STACK_VERSION_NONE);
 }
 
 void ts_parser__accept(TSParser *self, t_stack_version version, t_subtree lookahead)
@@ -556,22 +560,28 @@ bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_version star
 	initial_version_count = ts_stack_version_count(self->stack);
 	can_shift_lookahead_symbol = false;
 	version = starting_version;
-	for (i = 0; true; i++)
+	i = 0;
+	while (true)
 	{
 		version_count = ts_stack_version_count(self->stack);
 		if (version >= version_count)
 			break;
 		merged = false;
-		for (j = initial_version_count; j < version; j++)
+		j = initial_version_count;
+		while (j < version)
 		{
 			if (ts_stack_merge(self->stack, j, version))
 			{
 				merged = true;
 				break;
 			}
+			j++;
 		}
 		if (merged)
+		{
+			i++;
 			continue;
+		}
 		state = ts_stack_state(self->stack, version);
 		has_shift_action = false;
 		self->reduce_actions.len = 0;
@@ -585,45 +595,43 @@ bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_version star
 			first_symbol = 1;
 			end_symbol = self->language->token_count;
 		}
-		for (symbol = first_symbol; symbol < end_symbol; symbol++)
+		symbol = first_symbol;
+		while (symbol < end_symbol)
 		{
 			ts_language_table_entry(self->language, state, symbol, &entry);
-			for (k = 0; k < entry.action_count; k++)
+			k = 0;
+			while (k < entry.action_count)
 			{
 				action = entry.actions[k];
-				switch (action.type)
-				{
-				case TSParseActionTypeShift:
-				case TSParseActionTypeRecover:
-					if (!action.shift.extra && !action.shift.repetition)
-						has_shift_action = true;
-					break;
-				case TSParseActionTypeReduce:
-					if (action.reduce.child_count > 0)
-						ts_reduce_action_set_add(&self->reduce_actions, (t_reduce_action){
-																			.symbol = action.reduce.symbol,
-																			.count = action.reduce.child_count,
-																			.dynamic_precedence = action.reduce.dynamic_precedence,
-																			.production_id = action.reduce.production_id,
-																		});
-					break;
-				default:
-					break;
-				}
+				if ((action.type == TSParseActionTypeShift || action.type == TSParseActionTypeRecover) &&
+					(!action.shift.extra && !action.shift.repetition))
+					has_shift_action = true;
+				if ((action.type == TSParseActionTypeReduce) && (action.reduce.child_count > 0))
+					ts_reduce_action_set_add(&self->reduce_actions, (t_reduce_action){
+																		.symbol = action.reduce.symbol,
+																		.count = action.reduce.child_count,
+																		.dynamic_precedence = action.reduce.dynamic_precedence,
+																		.production_id = action.reduce.production_id,
+																	});
+				k++;
 			}
+			symbol++;
 		}
 		reduction_version = STACK_VERSION_NONE;
-		for (k = 0; k < self->reduce_actions.len; k++)
+		k = 0;
+		while (k < self->reduce_actions.len)
 		{
 			reduce_action = self->reduce_actions.buffer[k];
 			reduction_version = ts_parser__reduce(self, version, reduce_action.symbol, reduce_action.count,
 												  reduce_action.dynamic_precedence, reduce_action.production_id, true, false);
+			k++;
 		}
 		if (has_shift_action)
 			can_shift_lookahead_symbol = true;
 		else if (reduction_version != STACK_VERSION_NONE && i < MAX_VERSION_COUNT)
 		{
 			ts_stack_renumber_version(self->stack, reduction_version, version);
+			i++;
 			continue;
 		}
 		else if (lookahead_symbol != 0)
@@ -632,6 +640,7 @@ bool ts_parser__do_all_potential_reductions(TSParser *self, t_stack_version star
 			version = version_count;
 		else
 			version++;
+		i++;
 	}
 	return can_shift_lookahead_symbol;
 }
@@ -1136,6 +1145,12 @@ bool ts_parser_has_outstanding_parse(TSParser *self)
 
 // Parser - Public
 
+bool _parse_condition(TSParser *self, t_u32 *version_count, t_stack_version *version)
+{
+	*version_count = ts_stack_version_count(self->stack);
+	return (*version < *version_count);
+}
+
 TSTree *ts_parser_parse(TSParser *self, TSInput input)
 {
 	TSTree		   *result;
@@ -1166,7 +1181,7 @@ TSTree *ts_parser_parse(TSParser *self, TSInput input)
 	{
 		first = false;
 		version = 0;
-		for (; version_count = ts_stack_version_count(self->stack), version < version_count;)
+		while (_parse_condition(self, &version_count, &version))
 		{
 			while (ts_stack_is_active(self->stack, version))
 			{
