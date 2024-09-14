@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:46:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 14:37:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,6 @@ t_error	_ast_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		return (_exp_into_str(self, state, append));
 	if (self->kind == AST_ARITHMETIC_EXPANSION)
 		return (_arith_into_str(self, state, append));
-	if (self->kind == AST_COMMAND_SUBSTITUTION)
-		return (_cmd_into_str(self, state, append));
 	if (self->kind == AST_WORD)
 		return (_word_into_str(self, state, append));
 	if (self->kind == AST_RAW_STRING)

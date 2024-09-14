@@ -72,6 +72,7 @@ subtree/subtree_funcs                                                         \
 subtree/subtree_helper                                                        \
 subtree/subtree_new                                                           \
 subtree/subtree_summarize                                                     \
+subtree/subtree_summarize_loop                                                \
 subtree/subtree_vec_helper                                                    \
 tree/tree_funcs1                                                              \
 tree/tree_funcs2                                                              \
