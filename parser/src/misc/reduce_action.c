@@ -6,14 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:33:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/06 17:11:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 12:55:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/reduce_action.h"
 #include "me/vec/vec_reduce_action.h"
 
-void	ts_reduce_action_set_add(ReduceActionSet *self, t_reduce_action new_action)
+void	ts_reduce_action_set_add(\
+	ReduceActionSet *self, t_reduce_action new_action)
 {
 	t_reduce_action	action;
 	t_u32			i;
