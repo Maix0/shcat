@@ -13,5 +13,19 @@ run_arithmetic/_to_ast_node                                                   \
 run_arithmetic/arithmetic                                                     \
 run_arithmetic/arithmetic_operation                                           \
 run_arithmetic/operator_bis                                                   \
-run_ast                                                                       \
+run_ast/_ast_into_str                                                         \
+run_ast/_ast_into_str2                                                        \
+run_ast/_run_exit_code                                                        \
+run_ast/_run_exp_operators                                                    \
+run_ast/_spawn_cmd                                                            \
+run_ast/run_builtins                                                          \
+run_ast/run_cmd_sub                                                           \
+run_ast/run_command                                                           \
+run_ast/run_expansion                                                         \
+run_ast/run_expansion_builtin                                                 \
+run_ast/run_list                                                              \
+run_ast/run_pipeline                                                          \
+run_ast/run_program                                                           \
+run_ast/run_subshell                                                          \
+run_ast/run_words                                                             \
 

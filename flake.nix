@@ -30,6 +30,7 @@
               coreutils
               generic_c.packages.${system}.default
               python312
+              tree
             ]
             ++ (
               if system == "x86_64-linux"

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/30 18:05:23 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/14 12:22:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define _RUN_AST_H
 
 # include "app/state.h"
+# include "exec/_run_arith.h"
 # include "ast/ast.h"
 # include "me/fs/fs.h"
 # include "me/os/os.h"
@@ -86,61 +87,99 @@ struct s_subshell_result
 	t_fd	*stderr;
 };
 
-t_error	run_arithmetic_expansion(\
-t_ast_arithmetic_expansion *arithmetic_expansion, t_state *state, t_i64 *out);
+struct s_ffree_state
+{
+	t_state		*state;
+	t_cmd_pipe	cmd_pipe;
+};
+
+struct s_subshell_info
+{
+	t_fd		*stdin;
+	t_fd		*stderr;
+	t_fd		*stdout;
+	t_fd		*ret_stdout;
+};
+
+bool	_is_builtin(\
+	t_const_str argv0);
+bool	_is_special_var(\
+	t_ast_expansion *self);
+t_error	_arith_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
+t_error	_ast_get_str(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__arimethic_expansion(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__command_substitution(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__expansion(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__raw(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__raw__double_quote(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__raw__no_quote(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__raw__single_quote(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__word(\
+	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
+t_error	_cmd_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
+t_error	_exp_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
+t_error	_get_expansion_value(\
+	t_ast_expansion *self, t_state *state, t_expansion_result *out);
+t_error	_get_op_func(\
+	t_ast_expansion *self, t_error (**op_func)(t_ast_expansion *self, \
+	t_state *state, t_expansion_result *value));
+t_error	_handle_builtin(\
+	t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe, \
+	t_command_result *out);
+t_error	_handle_expansion_operator(\
+	t_ast_expansion *self, t_state *state, t_expansion_result *value);
+t_error	_handle_len_operator(\
+	t_ast_expansion *self, t_state *state, t_expansion_result *value);
+t_error	_handle_no_operator(\
+	t_ast_expansion *self, t_state *state, t_expansion_result *value);
+t_error	_raw_str_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
+t_error	_run_expansion_special_var(\
+	t_ast_expansion *self, t_state *state, t_expansion_result *out);
+t_error	_run_get_exit_code(\
+	t_ast_node self, t_state *state, int *out);
+t_error	_spawn_cmd_and_run(\
+	t_vec_str args, t_vec_ast redirection, t_state *state, \
+	t_cmd_pipe cmd_pipe, t_command_result *out);
+t_error	_word_into_str(\
+	t_ast_node self, t_state *state, t_vec_str *append);
 t_error	run_command(\
-t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, \
-t_command_result *out);
+	t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, \
+	t_command_result *out);
+t_error	run_command_substitution(\
+	t_ast_command_substitution *self, t_state *state, void *out);
 t_error	run_expansion(\
 	t_ast_expansion *self, t_state *state, t_expansion_result *out);
-t_error	run_word(\
-	t_ast_word *word, t_state *state, t_word_result *out);
-t_error	run_program(\
-	t_ast_program *program, t_state *state, t_program_result *out);
-t_error	run_pipeline(\
-	t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out);
 t_error	run_list(\
 	t_ast_list *list, t_state *state, t_list_result *out);
+t_error	run_pipeline(\
+	t_ast_pipeline *pipeline, t_state *state, t_pipeline_result *out);
+t_error	run_program(\
+	t_ast_program *self, t_state *state, t_program_result *out);
 t_error	run_subshell(\
 	t_ast_subshell *subshell, t_state *state, t_cmd_pipe cmd_pipe, \
 	t_subshell_result *out);
-t_error	run_case_(\
-	t_ast_case *case_, t_state *state, void *out);
-t_error	run_case_item(\
-	t_ast_case_item *case_item, t_state *state, void *out);
-t_error	run_command_substitution(\
-t_ast_command_substitution *command_substitution, t_state *state, void *out);
-t_error	run_compound_statement(\
-	t_ast_compound_statement *compound_statement, t_state *state, void *out);
-t_error	run_elif(\
-	t_ast_elif *elif, t_state *state, void *out);
-t_error	run_else_(\
-	t_ast_else *else_, t_state *state, void *out);
-t_error	run_extglob(\
-	t_ast_extglob *extglob, t_state *state, void *out);
-t_error	run_for_(\
-	t_ast_for *for_, t_state *state, void *out);
-t_error	run_function_definition(\
-	t_ast_function_definition *function_definition, t_state *state, void *out);
-t_error	run_if_(\
-	t_ast_if *if_, t_state *state, void *out);
-t_error	run_regex(\
-	t_ast_regex *regex, t_state *state, void *out);
-t_error	run_until(\
-	t_ast_until *until, t_state *state, void *out);
-t_error	run_variable_assignment(\
-t_ast_variable_assignment *variable_assignment, t_state *state, \
-bool is_temporary, void *out);
-t_error	run_while_(\
-	t_ast_while *while_, t_state *state, void *out);
+t_error	run_word(\
+	t_ast_word *word, t_state *state, t_word_result *out);
+t_str	_get_ifs_value(\
+	t_state *state);
+void	_ffree_func(\
+	struct s_ffree_state *state);
+void	_run_word_into_str(\
+	t_usize idx, t_ast_node *elem, t_word_iterator *state);
 
-t_error	run_heredoc_redirection(\
-	t_ast_heredoc_redirection *heredoc_redirection, t_state *state, void *out);
-t_error	run_file_redirection(\
-	t_ast_file_redirection *file_redirection, t_state *state, void *out);
-t_error	run_empty(\
-	t_ast_empty *empty, t_state *state, void *out);
-t_error	run_raw_string(\
-	t_ast_raw_string *raw_string, t_state *state, void *out);
 
 #endif
