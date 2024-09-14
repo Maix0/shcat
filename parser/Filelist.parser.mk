@@ -49,7 +49,11 @@ parser/parser_shift                                                           \
 parser/parser_versions                                                        \
 point/point_funcs1                                                            \
 point/point_funcs2                                                            \
+scanner/helper                                                                \
+scanner/scan                                                                  \
 scanner/scanner                                                               \
+scanner/serialize                                                             \
+scanner/tree_sitter                                                           \
 stack/stack_add_link                                                          \
 stack/stack_funcs1                                                            \
 stack/stack_funcs2                                                            \

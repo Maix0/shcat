@@ -1,8 +1,8 @@
 SRC_FILES =                                                                   \
-_env_norm_helper                                                              \
-_helper_main                                                                  \
 env                                                                           \
+_env_norm_helper                                                              \
 ft_exit                                                                       \
+_helper_main                                                                  \
 main                                                                          \
 node/node                                                                     \
 signal_handler                                                                \
