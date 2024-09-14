@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 15:41:11 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/13 18:22:23 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/14 13:09:27 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,123 +218,116 @@ bool	scan_heredoc_content(t_scanner *scanner, t_lexer *lexer, \
 	enum e_token_type middle_type, enum e_token_type end_type)
 {
 	bool	did_advance;
-	t_heredoc *heredoc = vec_heredoc_last(&scanner->heredocs);
+	t_heredoc	*heredoc;
 
 	did_advance = false;
+	heredoc = vec_heredoc_last(&scanner->heredocs);
 	for (;;)
 	{
 		switch (lexer->data.lookahead)
 		{
-		case '\0': {
-			if (lexer->data.eof((void *)lexer) && did_advance)
-			{
-				reset_heredoc(heredoc);
-				lexer->data.result_symbol = end_type;
-				return true;
-			}
-			return false;
-		}
-
-		case '\\': {
-			did_advance = true;
-			lexer->data.advance((void *)lexer, false);
-			lexer->data.advance((void *)lexer, false);
-			break;
-		}
-
-		case '$': {
-			if (heredoc->is_raw)
-			{
-				did_advance = true;
-				lexer->data.advance((void *)lexer, false);
-				break;
-			}
-			if (did_advance)
-			{
-				lexer->data.mark_end((void *)lexer);
-				lexer->data.result_symbol = middle_type;
-				heredoc->started = true;
-				lexer->data.advance((void *)lexer, false);
-				if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '{' || lexer->data.lookahead == '(')
+			case '\0': {
+				if (lexer->data.eof((void *)lexer) && did_advance)
 				{
+					reset_heredoc(heredoc);
+					lexer->data.result_symbol = end_type;
 					return true;
 				}
-				break;
+				return (false);
 			}
-			if (middle_type == HEREDOC_BODY_BEGINNING && lexer->data.get_column((void *)lexer) == 0)
-			{
-				lexer->data.result_symbol = middle_type;
-				heredoc->started = true;
-				return true;
-			}
-			return false;
-		}
 
-		case '\n': {
-			if (!did_advance)
-			{
-				lexer->data.advance((void *)lexer, true);
-			}
-			else
-			{
+			case '\\': {
+				did_advance = true;
 				lexer->data.advance((void *)lexer, false);
+				lexer->data.advance((void *)lexer, false);
+				break ;
 			}
-			did_advance = true;
-			if (heredoc->allows_indent)
-			{
-				while (me_isspace(lexer->data.lookahead))
-				{
-					lexer->data.advance((void *)lexer, false);
-				}
-			}
-			lexer->data.result_symbol = heredoc->started ? middle_type : end_type;
-			lexer->data.mark_end((void *)lexer);
-			if (scan_heredoc_end_identifier(heredoc, lexer))
-			{
-				if (lexer->data.result_symbol == HEREDOC_END)
-				{
-					vec_heredoc_pop(&scanner->heredocs, NULL);
-				}
-				return true;
-			}
-			break;
-		}
 
-		default: {
-			if (lexer->data.get_column((void *)lexer) == 0)
-			{
-				// an alternative is to check the starting column of the
-				// heredoc body and track that statefully
-				while (me_isspace(lexer->data.lookahead))
+			case '$': {
+				if (heredoc->is_raw)
 				{
-					if (did_advance)
-						lexer->data.advance((void *)lexer, false);
-					else
-						lexer->data.advance((void *)lexer, true);
+					did_advance = true;
+					lexer->data.advance((void *)lexer, false);
+					break ;
 				}
-				if (end_type != SIMPLE_HEREDOC_BODY)
+				if (did_advance)
+				{
+					lexer->data.mark_end((void *)lexer);
+					lexer->data.result_symbol = middle_type;
+					heredoc->started = true;
+					lexer->data.advance((void *)lexer, false);
+					if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '{' || lexer->data.lookahead == '(')
+					{
+						return (true);
+					}
+					break ;
+				}
+				if (middle_type == HEREDOC_BODY_BEGINNING && lexer->data.get_column((void *)lexer) == 0)
 				{
 					lexer->data.result_symbol = middle_type;
-					if (scan_heredoc_end_identifier(heredoc, lexer))
-						return true;
+					heredoc->started = true;
+					return (true);
 				}
-				if (end_type == SIMPLE_HEREDOC_BODY)
-				{
-					lexer->data.result_symbol = end_type;
-					lexer->data.mark_end((void *)lexer);
-					if (scan_heredoc_end_identifier(heredoc, lexer))
-						return true;
-				}
+				return (false);
 			}
-			did_advance = true;
-			lexer->data.advance((void *)lexer, false);
-			break;
-		}
+
+			case '\n': {
+				if (!did_advance)
+					lexer->data.advance((void *)lexer, true);
+				else
+					lexer->data.advance((void *)lexer, false);
+				did_advance = true;
+				if (heredoc->allows_indent)
+				{
+					while (me_isspace(lexer->data.lookahead))
+						lexer->data.advance((void *)lexer, false);
+				}
+				lexer->data.result_symbol = heredoc->started ? middle_type : end_type;
+				lexer->data.mark_end((void *)lexer);
+				if (scan_heredoc_end_identifier(heredoc, lexer))
+				{
+					if (lexer->data.result_symbol == HEREDOC_END)
+						vec_heredoc_pop(&scanner->heredocs, NULL);
+					return (true);
+				}
+				break ;
+			}
+
+			default: {
+				if (lexer->data.get_column((void *)lexer) == 0)
+				{
+					// an alternative is to check the starting column of the
+					// heredoc body and track that statefully
+					while (me_isspace(lexer->data.lookahead))
+					{
+						if (did_advance)
+							lexer->data.advance((void *)lexer, false);
+						else
+							lexer->data.advance((void *)lexer, true);
+					}
+					if (end_type != SIMPLE_HEREDOC_BODY)
+					{
+						lexer->data.result_symbol = middle_type;
+						if (scan_heredoc_end_identifier(heredoc, lexer))
+							return (true);
+					}
+					if (end_type == SIMPLE_HEREDOC_BODY)
+					{
+						lexer->data.result_symbol = end_type;
+						lexer->data.mark_end((void *)lexer);
+						if (scan_heredoc_end_identifier(heredoc, lexer))
+							return (true);
+					}
+				}
+				did_advance = true;
+				lexer->data.advance((void *)lexer, false);
+				break ;
+			}
 		}
 	}
 }
 
-bool scan_concat(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
+bool	scan_concat(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 {
 	(void)(scanner);
 	(void)(lexer);
@@ -345,14 +338,14 @@ bool scan_concat(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 		lexer->data.mark_end((void *)lexer);
 		lexer->data.advance((void *)lexer, false);
 		if (lexer->data.lookahead == '"' || lexer->data.lookahead == '\'' || lexer->data.lookahead == '\\')
-			return true;
+			return (true);
 		if (lexer->data.eof((void *)lexer))
-			return false;
+			return (false);
 	}
-	return true;
+	return (true);
 }
 
-bool scan_double_hash(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
+bool	scan_double_hash(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 {
 	(void)(scanner);
 	(void)(lexer);
@@ -370,7 +363,7 @@ bool scan_double_hash(t_scanner *scanner, t_lexer *lexer, const bool *valid_symb
 				{
 					lexer->data.result_symbol = IMMEDIATE_DOUBLE_HASH;
 					lexer->data.mark_end((void *)lexer);
-					return true;
+					return (true);
 				}
 			}
 		}
@@ -378,9 +371,9 @@ bool scan_double_hash(t_scanner *scanner, t_lexer *lexer, const bool *valid_symb
 	return (false);
 }
 
-bool scan_heredoc_end(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
+bool	scan_heredoc_end(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 {
-	t_heredoc *heredoc;
+	t_heredoc	*heredoc;
 
 	if (valid_symbols[HEREDOC_END] && scanner->heredocs.len > 0)
 	{
@@ -397,7 +390,7 @@ bool scan_heredoc_end(t_scanner *scanner, t_lexer *lexer, const bool *valid_symb
 	return (false);
 }
 
-bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
+bool	scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 {
 	if (valid_symbols[CONCAT] && !(valid_symbols[ERROR_RECOVERY]) &&
 		(!(lexer->data.lookahead == 0 || me_isspace(lexer->data.lookahead) || lexer->data.lookahead == '>' ||
@@ -449,7 +442,7 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 				}
 			}
 			else
-				break;
+				break ;
 		}
 		if (!valid_symbols[EXPANSION_WORD] &&
 			(lexer->data.lookahead == '*' || lexer->data.lookahead == '@' || lexer->data.lookahead == '?' || lexer->data.lookahead == '-' ||
@@ -460,12 +453,12 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 			if (lexer->data.lookahead == '=' || lexer->data.lookahead == '[' || lexer->data.lookahead == ':' ||
 				lexer->data.lookahead == '-' || lexer->data.lookahead == '%' || lexer->data.lookahead == '#' ||
 				lexer->data.lookahead == '/')
-				return false;
+				return (false);
 			if (valid_symbols[EXTGLOB_PATTERN] && me_isspace(lexer->data.lookahead))
 			{
 				lexer->data.mark_end((void *)lexer);
 				lexer->data.result_symbol = EXTGLOB_PATTERN;
-				return true;
+				return (true);
 			}
 		}
 
@@ -483,7 +476,7 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 			return (false);
 		}
 
-		bool is_number = true;
+		bool	is_number = true;
 		if (me_isdigit(lexer->data.lookahead))
 			lexer->data.advance((void *)lexer, false);
 		else if (me_isalpha(lexer->data.lookahead) || lexer->data.lookahead == '_')
@@ -494,13 +487,9 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 		else
 		{
 			if (lexer->data.lookahead == '{')
-			{
 				return (false);
-			}
 			if (valid_symbols[EXPANSION_WORD])
-			{
 				goto expansion_word;
-			}
 			return (false);
 		}
 
@@ -514,7 +503,7 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 				lexer->data.advance((void *)lexer, false);
 			}
 			else
-				break;
+				break ;
 		}
 
 		if (is_number && valid_symbols[FILE_DESCRIPTOR] && (lexer->data.lookahead == '>' || lexer->data.lookahead == '<'))
@@ -527,17 +516,17 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 				lexer->data.advance((void *)lexer, false);
 				if (lexer->data.lookahead == '=' || lexer->data.lookahead == ':')
 					return (lexer->data.result_symbol = VARIABLE_NAME, true);
-				return false;
+				return (false);
 			}
 			if (lexer->data.lookahead == '/')
-				return false;
+				return (false);
 			if (lexer->data.lookahead == '=' || lexer->data.lookahead == '[' ||
 				(lexer->data.lookahead == ':' && !valid_symbols[OPENING_PAREN]) || lexer->data.lookahead == '%' ||
 				(lexer->data.lookahead == '#' && !is_number) || lexer->data.lookahead == '@' || (lexer->data.lookahead == '-'))
 			{
 				lexer->data.mark_end((void *)lexer);
 				lexer->data.result_symbol = VARIABLE_NAME;
-				return true;
+				return (true);
 			}
 			if (lexer->data.lookahead == '?')
 			{
@@ -547,7 +536,7 @@ bool scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols)
 				return me_isalpha(lexer->data.lookahead);
 			}
 		}
-		return false;
+		return (false);
 	}
 
 	if (valid_symbols[BARE_DOLLAR] && !(valid_symbols[ERROR_RECOVERY]) && scan_bare_dollar(lexer))
@@ -561,7 +550,7 @@ expansion_word:
 		for (;;)
 		{
 			if (lexer->data.lookahead == '\"')
-				return false;
+				return (false);
 			if (lexer->data.lookahead == '$')
 			{
 				lexer->data.mark_end((void *)lexer);
@@ -570,7 +559,7 @@ expansion_word:
 					me_isalnum(lexer->data.lookahead))
 				{
 					lexer->data.result_symbol = EXPANSION_WORD;
-					return advanced_once;
+					return (advanced_once);
 				}
 				advanced_once = true;
 			}
@@ -579,7 +568,7 @@ expansion_word:
 			{
 				lexer->data.mark_end((void *)lexer);
 				lexer->data.result_symbol = EXPANSION_WORD;
-				return advanced_once || advance_once_space;
+				return (advanced_once || advance_once_space);
 			}
 
 			if (lexer->data.lookahead == '(' && !(advanced_once || advance_once_space))
@@ -600,7 +589,7 @@ expansion_word:
 							me_isalnum(lexer->data.lookahead))
 						{
 							lexer->data.result_symbol = EXPANSION_WORD;
-							return advanced_once;
+							return (advanced_once);
 						}
 						advanced_once = true;
 					}
@@ -618,61 +607,60 @@ expansion_word:
 					lexer->data.advance((void *)lexer, false);
 					lexer->data.mark_end((void *)lexer);
 					if (lexer->data.lookahead == '}')
-						return false;
+						return (false);
 				}
 				else
-					return false;
+					return (false);
 			}
 
 			if (lexer->data.lookahead == '\'')
-				return false;
+				return (false);
 			if (lexer->data.eof((void *)lexer))
-				return false;
+				return (false);
 			advanced_once = advanced_once || !me_isspace(lexer->data.lookahead);
 			advance_once_space = advance_once_space || me_isspace(lexer->data.lookahead);
 			lexer->data.advance((void *)lexer, false);
 		}
 	}
-
-	return false;
+	return (false);
 }
 
-void *tree_sitter_sh_external_scanner_create()
+void	*tree_sitter_sh_external_scanner_create()
 {
-	t_scanner *scanner;
+	t_scanner	*scanner;
 
 	scanner = mem_alloc(sizeof(*scanner));
 	scanner->heredocs = vec_heredoc_new(0, heredoc_free);
 	return (scanner);
 }
 
-bool tree_sitter_sh_external_scanner_scan(void *payload, t_lexer *lexer, const bool *valid_symbols)
+bool	tree_sitter_sh_external_scanner_scan(void *payload, t_lexer *lexer, const bool *valid_symbols)
 {
-	t_scanner *scanner;
+	t_scanner	*scanner;
 
 	scanner = (t_scanner *)payload;
-	return scan(scanner, lexer, valid_symbols);
+	return (scan(scanner, lexer, valid_symbols));
 }
 
-t_u32 tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
+t_u32	tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state)
 {
-	t_scanner *scanner;
+	t_scanner	*scanner;
 
 	scanner = (t_scanner *)payload;
-	return serialize(scanner, state);
+	return (serialize(scanner, state));
 }
 
-void tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
+void	tree_sitter_sh_external_scanner_deserialize(void *payload, const t_u8 *state, t_u32 length)
 {
-	t_scanner *scanner;
+	t_scanner	*scanner;
 
 	scanner = (t_scanner *)payload;
 	deserialize(scanner, state, length);
 }
 
-void tree_sitter_sh_external_scanner_destroy(void *payload)
+void	tree_sitter_sh_external_scanner_destroy(void *payload)
 {
-	t_scanner *scanner;
+	t_scanner	*scanner;
 
 	scanner = (t_scanner *)payload;
 	vec_heredoc_free(scanner->heredocs);
