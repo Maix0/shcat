@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:25:33 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 14:14:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void ts_subtree_array_delete(t_vec_subtree *);
 void ts_subtree_array_remove_trailing_extras(t_vec_subtree *, t_vec_subtree *);
 void ts_subtree_array_reverse(t_vec_subtree *);
 
-t_subtree						ts_subtree_new_leaf(TSSymbol, Length, Length, t_u32, TSStateId, bool, bool, bool, const TSLanguage *);
-t_subtree						ts_subtree_new_error(t_i32, Length, Length, t_u32, TSStateId, const TSLanguage *);
+t_subtree						ts_subtree_new_leaf(t_st_newleaf_args args);
+t_subtree						ts_subtree_new_error(t_st_newerr_args args);
 t_subtree						ts_subtree_new_node(TSSymbol, t_vec_subtree *, t_u32, const TSLanguage *);
 t_subtree						ts_subtree_new_error_node(t_vec_subtree *, bool, const TSLanguage *);
 t_subtree						ts_subtree_new_missing_leaf(TSSymbol, Length, t_u32, const TSLanguage *);

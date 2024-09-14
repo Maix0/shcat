@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:54:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:54:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 14:32:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,8 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 		padding = length_sub(error_start_position, start_position);
 		size = length_sub(error_end_position, error_start_position);
 		lookahead_bytes = lookahead_end_byte - error_end_position.bytes;
-		result = ts_subtree_new_error(first_error_character, padding, size,
-				lookahead_bytes, parse_state, self->language);
+		result = ts_subtree_new_error((t_st_newerr_args){first_error_character, padding, size,
+				lookahead_bytes, parse_state, self->language});
 	}
 	else
 	{
@@ -151,9 +151,9 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 				symbol = self->lexer.data.result_symbol;
 			}
 		}
-		result = ts_subtree_new_leaf(symbol, padding, size, lookahead_bytes,
+		result = ts_subtree_new_leaf((t_st_newleaf_args){symbol, padding, size, lookahead_bytes,
 				parse_state, found_external_token, called_get_column,
-				is_keyword, self->language);
+				is_keyword, self->language});
 		if (found_external_token)
 		{
 			ts_external_scanner_state_init(&result->external_scanner_state,

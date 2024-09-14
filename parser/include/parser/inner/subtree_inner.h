@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:01:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/06 17:00:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 14:30:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,43 @@ struct s_subtree_data
 
 // The fundamental building block of a syntax tree.
 typedef t_subtree_data *t_subtree;
+
+typedef struct s_subtree_new_leaf_args t_st_newleaf_args;
+typedef struct s_subtree_new_error_args t_st_newerr_args;
+
+struct s_subtree_new_leaf_args
+{
+	TSSymbol		  symbol;
+	Length			  padding;
+	Length			  size;
+	t_u32			  lookahead_bytes;
+	TSStateId		  parse_state;
+	bool			  has_external_tokens;
+	bool			  depends_on_column;
+	bool			  is_keyword;
+	const TSLanguage *language;
+};
+
+struct s_subtree_new_error_args
+{
+	t_i32			  lookahead_char;
+	Length			  padding;
+	Length			  size;
+	t_u32			  bytes_scanned;
+	TSStateId		  parse_state;
+	const TSLanguage *language;
+};
+
+struct s_summarize_state
+{
+	t_u32			structural_index;
+	const TSSymbol	*alias_sequence;
+	t_u32			lookahead_end_byte;
+	t_subtree		*children;
+	t_subtree		child;
+	t_u32			child_lookahead_end_byte;
+	t_u32			grandchild_count;
+	t_usize			i;
+};
 
 #endif /* SUBTREE_INNER_H */

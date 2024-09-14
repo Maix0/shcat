@@ -1,50 +1,54 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   subtree_funcs1.c                                   :+:      :+:    :+:   */
+/*   subtree_funcs.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 20:36:10 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:39:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/14 14:06:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/vec/vec_subtree.h"
 #include "parser/subtree.h"
 
+void	_subtree_release_inner(t_vec_subtree	*to_free)
+{
+	t_usize			i;
+	t_subtree		*children;
+	t_subtree		tree;
+
+	vec_subtree_pop(to_free, &tree);
+	if (tree->child_count > 0)
+	{
+		children = ts_subtree_children(tree);
+		i = 0;
+		while (i < tree->child_count)
+		{
+			if (--(children[i])->ref_count == 0)
+				vec_subtree_push(to_free, children[i]);
+			i++;
+		}
+		mem_free(children);
+	}
+	else
+	{
+		if (tree->has_external_tokens)
+			ts_external_scanner_state_delete(&tree->external_scanner_state);
+		mem_free(tree);
+	}
+}
+
 void	ts_subtree_release(t_subtree self)
 {
 	t_vec_subtree	to_free;
-	t_subtree		tree;
-	t_subtree		*children;
-	t_usize			i;
 
 	to_free = vec_subtree_new(16, NULL);
 	if (--self->ref_count == 0)
 		vec_subtree_push(&to_free, self);
 	while (to_free.len > 0)
-	{
-		vec_subtree_pop(&to_free, &tree);
-		if (tree->child_count > 0)
-		{
-			i = 0;
-			children = ts_subtree_children(tree);
-			while (i < tree->child_count)
-			{
-				if (--(children[i])->ref_count == 0)
-					vec_subtree_push(&to_free, children[i]);
-				i++;
-			}
-			mem_free(children);
-		}
-		else
-		{
-			if (tree->has_external_tokens)
-				ts_external_scanner_state_delete(&tree->external_scanner_state);
-			mem_free(tree);
-		}
-	}
+		_subtree_release_inner(&to_free);
 	vec_subtree_free(to_free);
 }
 
