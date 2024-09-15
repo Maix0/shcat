@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 16:12:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/14 16:19:31 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/15 20:23:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,4 @@ void	tree_sitter_sh_external_scanner_destroy(void *payload);
 bool	in_error_recovery(const bool *valid_symbols)
 {
 	return (valid_symbols[ERROR_RECOVERY]);
-}
-
-void	reset(t_scanner *scanner)
-{
-	t_u32	i;
-
-	i = 0;
-	while (i < scanner->heredocs.len)
-		reset_heredoc(vec_heredoc_get(&scanner->heredocs, i++));
 }

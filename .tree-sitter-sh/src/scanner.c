@@ -9,11 +9,6 @@
 
 enum TokenType
 {
-	HEREDOC_START,
-	SIMPLE_HEREDOC_BODY,
-	HEREDOC_BODY_BEGINNING,
-	HEREDOC_CONTENT,
-	HEREDOC_END,
 	FILE_DESCRIPTOR,
 	EMPTY_VALUE,
 	CONCAT,
@@ -23,11 +18,10 @@ enum TokenType
 	EXTGLOB_PATTERN,
 	BARE_DOLLAR,
 	IMMEDIATE_DOUBLE_HASH,
-	HEREDOC_ARROW,
-	HEREDOC_ARROW_DASH,
+	// HEREDOC_ARROW,
+	// HEREDOC_ARROW_DASH,
 	NEWLINE,
 	OPENING_PAREN,
-	ESAC,
 	ERROR_RECOVERY,
 };
 
@@ -42,13 +36,13 @@ typedef struct Heredoc
 	String current_leading_word;
 } Heredoc;
 
-#define heredoc_new()                                                                                                                      \
-	{                                                                                                                                      \
-		.is_raw = false,                                                                                                                   \
-		.started = false,                                                                                                                  \
-		.allows_indent = false,                                                                                                            \
-		.delimiter = array_new(),                                                                                                          \
-		.current_leading_word = array_new(),                                                                                               \
+#define heredoc_new()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          \
+	{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          \
+		.is_raw = false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       \
+		.started = false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      \
+		.allows_indent = false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                \
+		.delimiter = array_new(),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              \
+		.current_leading_word = array_new(),                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   \
 	};
 
 typedef struct Scanner
@@ -194,8 +188,7 @@ static bool advance_word(TSLexer *lexer, String *unquoted_word)
 		advance(lexer);
 	}
 
-	while (lexer->lookahead &&
-		   !(quote ? lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n' : iswspace(lexer->lookahead)))
+	while (lexer->lookahead && !(quote ? lexer->lookahead == quote || lexer->lookahead == '\r' || lexer->lookahead == '\n' : iswspace(lexer->lookahead)))
 	{
 		if (lexer->lookahead == '\\')
 		{
@@ -231,178 +224,11 @@ static inline bool scan_bare_dollar(TSLexer *lexer)
 	return false;
 }
 
-static bool scan_heredoc_start(Heredoc *heredoc, TSLexer *lexer)
-{
-	while (iswspace(lexer->lookahead))
-	{
-		skip(lexer);
-	}
-
-	lexer->result_symbol = HEREDOC_START;
-	heredoc->is_raw = lexer->lookahead == '\'' || lexer->lookahead == '"' || lexer->lookahead == '\\';
-
-	bool found_delimiter = advance_word(lexer, &heredoc->delimiter);
-	if (!found_delimiter)
-	{
-		reset_string(&heredoc->delimiter);
-		return false;
-	}
-	return found_delimiter;
-}
-
-static bool scan_heredoc_end_identifier(Heredoc *heredoc, TSLexer *lexer)
-{
-	reset_string(&heredoc->current_leading_word);
-	// Scan the first 'n' characters on this line, to see if they match the
-	// heredoc delimiter
-	int32_t size = 0;
-	if (heredoc->delimiter.size > 0)
-	{
-		while (lexer->lookahead != '\0' && lexer->lookahead != '\n' && (int32_t)*array_get(&heredoc->delimiter, size) == lexer->lookahead &&
-			   heredoc->current_leading_word.size < heredoc->delimiter.size)
-		{
-			array_push(&heredoc->current_leading_word, lexer->lookahead);
-			advance(lexer);
-			size++;
-		}
-	}
-	array_push(&heredoc->current_leading_word, '\0');
-	return heredoc->delimiter.size == 0 ? false : strcmp(heredoc->current_leading_word.contents, heredoc->delimiter.contents) == 0;
-}
-
-static bool scan_heredoc_content(Scanner *scanner, TSLexer *lexer, enum TokenType middle_type, enum TokenType end_type)
-{
-	bool	 did_advance = false;
-	Heredoc *heredoc = array_back(&scanner->heredocs);
-
-	for (;;)
-	{
-		switch (lexer->lookahead)
-		{
-		case '\0': {
-			if (lexer->eof(lexer) && did_advance)
-			{
-				reset_heredoc(heredoc);
-				lexer->result_symbol = end_type;
-				return true;
-			}
-			return false;
-		}
-
-		case '\\': {
-			did_advance = true;
-			advance(lexer);
-			advance(lexer);
-			break;
-		}
-
-		case '$': {
-			if (heredoc->is_raw)
-			{
-				did_advance = true;
-				advance(lexer);
-				break;
-			}
-			if (did_advance)
-			{
-				lexer->mark_end(lexer);
-				lexer->result_symbol = middle_type;
-				heredoc->started = true;
-				advance(lexer);
-				if (iswalpha(lexer->lookahead) || lexer->lookahead == '{' || lexer->lookahead == '(')
-				{
-					return true;
-				}
-				break;
-			}
-			if (middle_type == HEREDOC_BODY_BEGINNING && lexer->get_column(lexer) == 0)
-			{
-				lexer->result_symbol = middle_type;
-				heredoc->started = true;
-				return true;
-			}
-			return false;
-		}
-
-		case '\n': {
-			if (!did_advance)
-			{
-				skip(lexer);
-			}
-			else
-			{
-				advance(lexer);
-			}
-			did_advance = true;
-			if (heredoc->allows_indent)
-			{
-				while (iswspace(lexer->lookahead))
-				{
-					advance(lexer);
-				}
-			}
-			lexer->result_symbol = heredoc->started ? middle_type : end_type;
-			lexer->mark_end(lexer);
-			if (scan_heredoc_end_identifier(heredoc, lexer))
-			{
-				if (lexer->result_symbol == HEREDOC_END)
-				{
-					(void)array_pop(&scanner->heredocs);
-				}
-				return true;
-			}
-			break;
-		}
-
-		default: {
-			if (lexer->get_column(lexer) == 0)
-			{
-				// an alternative is to check the starting column of the
-				// heredoc body and track that statefully
-				while (iswspace(lexer->lookahead))
-				{
-					if (did_advance)
-					{
-						advance(lexer);
-					}
-					else
-					{
-						skip(lexer);
-					}
-				}
-				if (end_type != SIMPLE_HEREDOC_BODY)
-				{
-					lexer->result_symbol = middle_type;
-					if (scan_heredoc_end_identifier(heredoc, lexer))
-					{
-						return true;
-					}
-				}
-				if (end_type == SIMPLE_HEREDOC_BODY)
-				{
-					lexer->result_symbol = end_type;
-					lexer->mark_end(lexer);
-					if (scan_heredoc_end_identifier(heredoc, lexer))
-					{
-						return true;
-					}
-				}
-			}
-			did_advance = true;
-			advance(lexer);
-			break;
-		}
-		}
-	}
-}
-
 static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 {
 	if (valid_symbols[CONCAT] && !in_error_recovery(valid_symbols))
 	{
-		if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' ||
-			  lexer->lookahead == ')' || lexer->lookahead == '(' || lexer->lookahead == ';' || lexer->lookahead == '&' ||
-			  lexer->lookahead == '|' || lexer->lookahead == '{' || lexer->lookahead == '}'))
+		if (!(lexer->lookahead == 0 || iswspace(lexer->lookahead) || lexer->lookahead == '>' || lexer->lookahead == '<' || lexer->lookahead == ')' || lexer->lookahead == '(' || lexer->lookahead == ';' || lexer->lookahead == '&' || lexer->lookahead == '|' || lexer->lookahead == '{' || lexer->lookahead == '}'))
 		{
 			lexer->result_symbol = CONCAT;
 			// So for a`b`, we want to return a concat. We check if the
@@ -477,44 +303,11 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 	}
 
-	if ((valid_symbols[HEREDOC_BODY_BEGINNING] || valid_symbols[SIMPLE_HEREDOC_BODY]) && scanner->heredocs.size > 0 &&
-		!array_back(&scanner->heredocs)->started && !in_error_recovery(valid_symbols))
-	{
-		return scan_heredoc_content(scanner, lexer, HEREDOC_BODY_BEGINNING, SIMPLE_HEREDOC_BODY);
-	}
-
-	if (valid_symbols[HEREDOC_END] && scanner->heredocs.size > 0)
-	{
-		Heredoc *heredoc = array_back(&scanner->heredocs);
-		if (scan_heredoc_end_identifier(heredoc, lexer))
-		{
-			array_delete(&heredoc->current_leading_word);
-			array_delete(&heredoc->delimiter);
-			(void)array_pop(&scanner->heredocs);
-			lexer->result_symbol = HEREDOC_END;
-			return true;
-		}
-	}
-
-	if (valid_symbols[HEREDOC_CONTENT] && scanner->heredocs.size > 0 && array_back(&scanner->heredocs)->started &&
-		!in_error_recovery(valid_symbols))
-	{
-		return scan_heredoc_content(scanner, lexer, HEREDOC_CONTENT, HEREDOC_END);
-	}
-
-	if (valid_symbols[HEREDOC_START] && !in_error_recovery(valid_symbols) && scanner->heredocs.size > 0)
-	{
-		return scan_heredoc_start(array_back(&scanner->heredocs), lexer);
-	}
-
-	if ((valid_symbols[VARIABLE_NAME] || valid_symbols[FILE_DESCRIPTOR] || valid_symbols[HEREDOC_ARROW]) &&
-		!in_error_recovery(valid_symbols))
+	if ((valid_symbols[VARIABLE_NAME] || valid_symbols[FILE_DESCRIPTOR]) && !in_error_recovery(valid_symbols))
 	{
 		for (;;)
 		{
-			if ((lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
-				 (lexer->lookahead == '\n' && !valid_symbols[NEWLINE])) &&
-				!valid_symbols[EXPANSION_WORD])
+			if ((lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' || (lexer->lookahead == '\n' && !valid_symbols[NEWLINE])) && !valid_symbols[EXPANSION_WORD])
 			{
 				skip(lexer);
 			}
@@ -553,13 +346,11 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 		}
 
 		// no '*', '@', '?', '-', '$', '0', '_'
-		if (!valid_symbols[EXPANSION_WORD] && (lexer->lookahead == '*' || lexer->lookahead == '@' || lexer->lookahead == '?' ||
-											   lexer->lookahead == '-' || lexer->lookahead == '0' || lexer->lookahead == '_'))
+		if (!valid_symbols[EXPANSION_WORD] && (lexer->lookahead == '*' || lexer->lookahead == '@' || lexer->lookahead == '?' || lexer->lookahead == '-' || lexer->lookahead == '0' || lexer->lookahead == '_'))
 		{
 			lexer->mark_end(lexer);
 			advance(lexer);
-			if (lexer->lookahead == '=' || lexer->lookahead == '[' || lexer->lookahead == ':' || lexer->lookahead == '-' ||
-				lexer->lookahead == '%' || lexer->lookahead == '#' || lexer->lookahead == '/')
+			if (lexer->lookahead == '=' || lexer->lookahead == '[' || lexer->lookahead == ':' || lexer->lookahead == '-' || lexer->lookahead == '%' || lexer->lookahead == '#' || lexer->lookahead == '/')
 			{
 				return false;
 			}
@@ -569,35 +360,6 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 				lexer->result_symbol = EXTGLOB_PATTERN;
 				return true;
 			}
-		}
-
-		if (valid_symbols[HEREDOC_ARROW] && lexer->lookahead == '<')
-		{
-			advance(lexer);
-			if (lexer->lookahead == '<')
-			{
-				advance(lexer);
-				if (lexer->lookahead == '-')
-				{
-					advance(lexer);
-					Heredoc heredoc = heredoc_new();
-					heredoc.allows_indent = true;
-					array_push(&scanner->heredocs, heredoc);
-					lexer->result_symbol = HEREDOC_ARROW_DASH;
-				}
-				// else if (lexer->lookahead == '<' || lexer->lookahead == '=')
-				// {
-				// 	return false;
-				// }
-				else
-				{
-					Heredoc heredoc = heredoc_new();
-					array_push(&scanner->heredocs, heredoc);
-					lexer->result_symbol = HEREDOC_ARROW;
-				}
-				return true;
-			}
-			return false;
 		}
 
 		bool is_number = true;
@@ -667,12 +429,9 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 			{
 				return false;
 			}
-			if (lexer->lookahead == '=' || lexer->lookahead == '[' ||
-				(lexer->lookahead == ':' &&
-				 !valid_symbols[OPENING_PAREN]) || // TODO(amaanq): more cases for regular word chars but not variable
-												   // names for function words, only handling : for now? #235
-				lexer->lookahead == '%' ||
-				(lexer->lookahead == '#' && !is_number) || lexer->lookahead == '@' || (lexer->lookahead == '-'))
+			if (lexer->lookahead == '=' || lexer->lookahead == '[' || (lexer->lookahead == ':' && !valid_symbols[OPENING_PAREN]) || // TODO(amaanq): more cases for regular word chars but not variable
+																																	// names for function words, only handling : for now? #235
+				lexer->lookahead == '%' || (lexer->lookahead == '#' && !is_number) || lexer->lookahead == '@' || (lexer->lookahead == '-'))
 			{
 				lexer->mark_end(lexer);
 				lexer->result_symbol = VARIABLE_NAME;
@@ -706,8 +465,7 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols)
 			}
 		}
 
-		if ((lexer->lookahead != '"' && lexer->lookahead != '\'') || ((lexer->lookahead == '$' || lexer->lookahead == '\'')) ||
-			(lexer->lookahead == '\''))
+		if ((lexer->lookahead != '"' && lexer->lookahead != '\'') || ((lexer->lookahead == '$' || lexer->lookahead == '\'')) || (lexer->lookahead == '\''))
 		{
 			typedef struct
 			{
@@ -828,9 +586,7 @@ extglob_pattern:
 			skip(lexer);
 		}
 
-		if (lexer->lookahead == '?' || lexer->lookahead == '*' || lexer->lookahead == '+' || lexer->lookahead == '@' ||
-			lexer->lookahead == '!' || lexer->lookahead == '-' || lexer->lookahead == ')' || lexer->lookahead == '\\' ||
-			lexer->lookahead == '.' || lexer->lookahead == '[' || (iswalpha(lexer->lookahead)))
+		if (lexer->lookahead == '?' || lexer->lookahead == '*' || lexer->lookahead == '+' || lexer->lookahead == '@' || lexer->lookahead == '!' || lexer->lookahead == '-' || lexer->lookahead == ')' || lexer->lookahead == '\\' || lexer->lookahead == '.' || lexer->lookahead == '[' || (iswalpha(lexer->lookahead)))
 		{
 			if (lexer->lookahead == '\\')
 			{
@@ -944,9 +700,7 @@ extglob_pattern:
 				return true;
 			}
 
-			if (!iswalnum(lexer->lookahead) && lexer->lookahead != '(' && lexer->lookahead != '"' && lexer->lookahead != '[' &&
-				lexer->lookahead != '?' && lexer->lookahead != '/' && lexer->lookahead != '\\' && lexer->lookahead != '_' &&
-				lexer->lookahead != '*')
+			if (!iswalnum(lexer->lookahead) && lexer->lookahead != '(' && lexer->lookahead != '"' && lexer->lookahead != '[' && lexer->lookahead != '?' && lexer->lookahead != '/' && lexer->lookahead != '\\' && lexer->lookahead != '_' && lexer->lookahead != '*')
 			{
 				return false;
 			}

@@ -21,7 +21,7 @@
 
 typedef struct s_symbols_names_array
 {
-	const char	*a[158];
+	const char	*a[117];
 }	t_symbols_names_array;
 
 #endif // TYPE_SYMBOLS_NAMES_H

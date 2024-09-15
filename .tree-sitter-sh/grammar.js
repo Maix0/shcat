@@ -57,11 +57,6 @@ module.exports = grammar({
 	],
 
 	externals: $ => [
-		$.heredoc_start,
-		$.simple_heredoc_body,
-		$._heredoc_body_beginning,
-		$.heredoc_content,
-		$.heredoc_end,
 		$.file_descriptor,
 		$._empty_value,
 		$._concat,
@@ -71,11 +66,9 @@ module.exports = grammar({
 		$.extglob_pattern,
 		$._bare_dollar,
 		$._immediate_double_hash,
-		'<<',
-		'<<-',
+		//'<<',
 		/\n/,
 		'(',
-		'esac',
 		$.__error_recovery,
 	],
 
@@ -85,11 +78,6 @@ module.exports = grammar({
 		/\\\r?\n/,
 		/\\( |\t|\v|\f)/,
 	],
-
-	// supertypes: $ => [
-	//   $._statement,
-	//   $._primary_expression,
-	// ],
 
 	word: $ => $.word,
 
@@ -118,35 +106,35 @@ module.exports = grammar({
 		),
 
 		_statement_not_subshell: $ => choice(
-			$.case_statement,
+			// $.case_statement,
 			$.command,
 			$.compound_statement,
-			$.for_statement,
-			$.function_definition,
-			$.if_statement,
+			// $.for_statement,
+			// $.function_definition,
+			// $.if_statement,
 			$.list,
 			$.negated_command,
 			$.pipeline,
 			$.redirected_statement,
 			$.variable_assignment,
 			$._variable_assignments,
-			$.while_statement,
+			// $.while_statement,
 		),
 
 		_statement_not_pipeline: $ => prec(1, choice(
-			$.case_statement,
+			// $.case_statement,
 			$.command,
 			$.compound_statement,
-			$.for_statement,
-			$.function_definition,
-			$.if_statement,
+			// $.for_statement,
+			// $.function_definition,
+			// $.if_statement,
 			$.list,
 			$.negated_command,
 			$.redirected_statement,
 			$.subshell,
 			$.variable_assignment,
 			$._variable_assignments,
-			$.while_statement,
+			// $.while_statement,
 		)),
 
 		redirected_statement: $ => prec.dynamic(-1, prec.right(-1, choice(
@@ -157,6 +145,7 @@ module.exports = grammar({
 			field('redr', repeat1($.file_redirect)),
 		))),
 
+		/*
 		for_statement: $ => seq(
 			'for',
 			field('var', $._simple_variable_name),
@@ -240,6 +229,7 @@ module.exports = grammar({
 			'(', ')',
 			field('body', choice($.compound_statement, $.subshell, $.command, $.while_statement, $.if_statement, $.for_statement, $._variable_assignments, repeat1($.file_redirect))),
 		)),
+		*/
 
 		compound_statement: $ => seq('{', $._terminated_statement, '}'),
 		subshell: $ => seq('(', $._statements, ')'),
@@ -301,45 +291,8 @@ module.exports = grammar({
 
 		heredoc_redirect: $ => seq(
 			field('op', alias('<<', $.operator)),
-			$.heredoc_start,
-			optional(choice(
-				alias($._heredoc_pipeline, $.pipeline),
-				seq(
-					field('redr', repeat1($.file_redirect)),
-					optional($._heredoc_expression),
-				),
-				$._heredoc_expression,
-				$._heredoc_command,
-			)),
-			/\n/,
-			choice($._heredoc_body, $._simple_heredoc_body),
+			field('del', alias(/[\w\d\-\._]+/, $.heredoc_delimiter)),
 		),
-
-		_heredoc_pipeline: $ => seq('|', $._statement,),
-
-		_heredoc_expression: $ => seq(
-			field('op', alias(choice('||', '&&'), $.operator)),
-			field('rhs', $._statement),
-		),
-
-		_heredoc_command: $ => repeat1(field('arg', $._literal)),
-
-		_heredoc_body: $ => seq(
-			$.heredoc_body,
-			$.heredoc_end,
-		),
-
-		heredoc_body: $ => seq(
-			$._heredoc_body_beginning,
-			repeat(choice(
-				$.expansion,
-				$.simple_expansion,
-				$.command_substitution,
-				$.heredoc_content,
-			)),
-		),
-
-		_simple_heredoc_body: $ => seq(alias($.simple_heredoc_body, $.heredoc_body), $.heredoc_end),
 
 		// Literals
 
@@ -401,10 +354,10 @@ module.exports = grammar({
 			field('else', $._arithmetic_expression),
 		)),
 
-		arithmetic_unary_expression: $ =>prec(PREC.UNARY, seq(
-				field('op', alias(tokenLiterals(1, '-', '+'), $.operator)),
-				$._arithmetic_expression,
-			)),
+		arithmetic_unary_expression: $ => prec(PREC.UNARY, seq(
+			field('op', alias(tokenLiterals(1, '-', '+'), $.operator)),
+			$._arithmetic_expression,
+		)),
 
 		arithmetic_postfix_expression: $ => prec(PREC.POSTFIX, seq(
 			$._arithmetic_expression,
@@ -478,8 +431,7 @@ module.exports = grammar({
 			field('op', alias(immediateLiterals(':-', '-', ':=', '=', ':?', '?', ':+', '+'), $.operator)),
 			field('args', optional(choice(
 				alias($._concatenation_in_expansion, $.concatenation),
-				//alias($._expansion_word, $.word1),
-				alias(prec(10000000, $._word_no_brace), $.word2),
+				alias(prec(1, $._word_no_brace), $.word2),
 				$.expansion,
 				$.raw_string,
 				$.string,

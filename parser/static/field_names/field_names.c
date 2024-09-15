@@ -22,11 +22,10 @@ t_field_names_array	g_t_field_names_array = {.a = {
 [field_arg] = "arg",
 [field_args] = "args",
 [field_body] = "body",
-[field_cases] = "cases",
 [field_cmd] = "cmd",
 [field_cond] = "cond",
+[field_del] = "del",
 [field_dest] = "dest",
-[field_elif] = "elif",
 [field_else] = "else",
 [field_len] = "len",
 [field_lhs] = "lhs",
@@ -38,7 +37,6 @@ t_field_names_array	g_t_field_names_array = {.a = {
 [field_term] = "term",
 [field_then] = "then",
 [field_value] = "value",
-[field_var] = "var",
 }};
 
 const t_field_names_array	*create_field_names(void)

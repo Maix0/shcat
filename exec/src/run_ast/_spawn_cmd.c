@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:31:00 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:17:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ t_error	_spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection,
 				info.stdout.tag = R_INHERITED;
 				if (create_pipe(&heredoc_pipe))
 					return (ERROR);
-				put_string_fd(heredoc_pipe.write,
-					red->data.heredoc_redirection.content);
+				//put_string_fd(heredoc_pipe.write,
+				//	red->data.heredoc_redirection.content);
 				close_fd(heredoc_pipe.write);
 				info.stdin = fd(heredoc_pipe.read);
 			}

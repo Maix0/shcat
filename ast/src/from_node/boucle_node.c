@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:43:35 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/13 14:38:32 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:11:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
+/*
 t_vec_ast	*_append_scripting(\
 	t_ast_node node)
 {
@@ -51,6 +52,8 @@ t_error	build_sym_for_statement(\
 	(void)(tmp);
 	(void)(input);
 }
+
+*/
 /*
 	ret = ast_alloc(AST_FOR);
 	i = 0;
@@ -78,6 +81,7 @@ t_error	build_sym_for_statement(\
 	return (*out = ret, NO_ERROR);
 }
 */
+/*
 
 t_error	build_sym_while_statement(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
@@ -98,6 +102,8 @@ t_error	build_sym_while_statement(\
 	(void)(tmp);
 	(void)(input);
 }
+
+*/
 /*
 	i = 0;
 	if (ts_node_symbol(ts_node_child(self, 0)) == anon_sym_until)
@@ -131,6 +137,7 @@ t_error	build_sym_while_statement(\
 	return (*out = ret, NO_ERROR);
 }
 */
+/*
 
 t_error	build_sym_do_group(\
 	t_parse_node self, t_const_str input, t_ast_node *out)
@@ -149,6 +156,7 @@ t_error	build_sym_do_group(\
 	(void)(tmp);
 	(void)(input);
 }
+*/
 /*
 	ret = ast_alloc(AST_COMPOUND_STATEMENT);
 	i = 0;

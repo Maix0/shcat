@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:46:58 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/02 17:03:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:14:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,7 +387,6 @@ struct s_ast_file_redirection
 
 struct s_ast_heredoc_redirection
 {
-	t_str					content;
 	t_ast_redirection_kind	op;
 	t_str					delimiter;
 };

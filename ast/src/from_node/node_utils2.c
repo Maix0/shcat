@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 18:27:48 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/13 14:42:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:21:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "parser/api.h"
 #include <stdio.h>
 
+//	else
+//		*vec = _append_scripting(node);
 void	_append_redirection_single(t_ast_node node, t_vec_ast **vec)
 {
 	if (node->kind == AST_CASE)
@@ -30,8 +32,6 @@ void	_append_redirection_single(t_ast_node node, t_vec_ast **vec)
 		*vec = &node->data.compound_statement.suffixes_redirections;
 	else if (node->kind == AST_SUBSHELL)
 		*vec = &node->data.subshell.suffixes_redirections;
-	else
-		*vec = _append_scripting(node);
 }
 
 void	_append_redirection(t_ast_node node, t_ast_node redirection)

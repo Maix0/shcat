@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 16:10:31 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/14 16:20:59 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/15 20:26:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@ bool	advance_word(t_lexer *lexer, t_string *unquoted_word);
 t_u32	serialize(t_scanner *scanner, t_u8 *buffer);
 void	deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length);
 bool	scan_bare_dollar(t_lexer *lexer);
-bool	scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer);
-bool	scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer);
-bool	scan_heredoc_content(t_scanner *scanner, t_lexer *lexer,
-		enum e_token_type middle_type, enum e_token_type end_type);
 bool	scan_double_hash(t_scanner *scanner, t_lexer *lexer,
 		const bool *valid_symbols);
 bool	scan_concat(t_scanner *scanner, t_lexer *lexer,
@@ -46,7 +42,6 @@ void	*tree_sitter_sh_external_scanner_create(void)
 	t_scanner	*scanner;
 
 	scanner = mem_alloc(sizeof(*scanner));
-	scanner->heredocs = vec_heredoc_new(0, heredoc_free);
 	return (scanner);
 }
 
@@ -81,6 +76,5 @@ void	tree_sitter_sh_external_scanner_destroy(void *payload)
 	t_scanner	*scanner;
 
 	scanner = (t_scanner *)payload;
-	vec_heredoc_free(scanner->heredocs);
 	mem_free(scanner);
 }

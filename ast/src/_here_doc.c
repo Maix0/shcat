@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _here_doc_not_done.c                               :+:      :+:    :+:   */
+/*   _here_doc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 16:37:28 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/06 10:53:13 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/15 20:14:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,8 @@ t_error	build_sym_heredoc_redirect(t_parse_node self, t_const_str input, \
 		if (ts_node_field_id_for_child(self, i) == field_op)
 			ret->data.heredoc_redirection.op = \
 				_get_redirection_op(ts_node_child(self, i));
-		else if (ts_node_symbol(ts_node_child(self, i)) == sym_heredoc_start)
+		else if (ts_node_field_id_for_child(self, i) == field_del)
 			ret->data.heredoc_redirection.delimiter = \
-				_extract_str(ts_node_child(self, i), input);
-		else if (ts_node_symbol(ts_node_child(self, i)) == sym_heredoc_body)
-			ret->data.heredoc_redirection.content = \
 				_extract_str(ts_node_child(self, i), input);
 		i++;
 	}

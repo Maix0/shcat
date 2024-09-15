@@ -23,11 +23,6 @@ src/vec/estr/estr_functions2                                                  \
 src/vec/estr/estr_functions3                                                  \
 src/vec/estr/estr_functions4                                                  \
 src/vec/estr/estr_sort                                                        \
-src/vec/heredoc/heredoc                                                       \
-src/vec/heredoc/heredoc_functions2                                            \
-src/vec/heredoc/heredoc_functions3                                            \
-src/vec/heredoc/heredoc_functions4                                            \
-src/vec/heredoc/heredoc_sort                                                  \
 src/vec/pid/pid                                                               \
 src/vec/pid/pid_functions2                                                    \
 src/vec/pid/pid_functions3                                                    \

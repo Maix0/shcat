@@ -25,31 +25,31 @@ t_alias_sequences_array	g_t_alias_sequences_array = {.a = {
 [7] = {
 [0] = anon_sym_AT,
 },
-[21] = {
+[20] = {
 [1] = sym_string_content,
 },
-[23] = {
+[22] = {
 [0] = anon_sym_AT,
 },
-[25] = {
+[24] = {
 [1] = anon_sym_AT,
 },
-[37] = {
+[33] = {
 [2] = sym_string_content,
 },
-[38] = {
+[34] = {
 [3] = sym_word,
 },
-[39] = {
+[35] = {
 [0] = sym_regex,
 },
-[42] = {
+[38] = {
 [1] = anon_sym_AT,
 },
-[50] = {
+[39] = {
 [0] = sym_word,
 },
-[61] = {
+[41] = {
 [1] = sym_word,
 },
 }};

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:35:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:35:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:17:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,8 @@ t_error	run_subshell(t_ast_subshell *subshell, t_state *state,
 				info.stdout = NULL;
 				if (create_pipe(&heredoc_pipe))
 					return (ERROR);
-				put_string_fd(heredoc_pipe.write,
-					red->data.heredoc_redirection.content);
+				//put_string_fd(heredoc_pipe.write,
+				//	red->data.heredoc_redirection.content);
 				close_fd(heredoc_pipe.write);
 				info.stdin = heredoc_pipe.read;
 			}

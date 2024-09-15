@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/13 15:29:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:16:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 
 t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
 
+//	if (ts_node_symbol(node) == sym_while_statement)
+//		return (build_sym_while_statement(node, input, out));
 t_error	_from_node_inner3(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
 {
@@ -45,13 +47,17 @@ t_error	_from_node_inner3(\
 		return (build_sym_subshell(node, input, out));
 	if (ts_node_symbol(node) == sym_variable_assignment)
 		return (build_sym_variable_assignment(node, input, out));
-	if (ts_node_symbol(node) == sym_while_statement)
-		return (build_sym_while_statement(node, input, out));
 	if (ts_node_symbol(node) == sym_word)
 		return (build_sym_word(node, input, out));
 	return (ERROR);
 }
 
+//	if (ts_node_symbol(node) == sym_for_statement)
+//		return (build_sym_for_statement(node, input, out));
+//	if (ts_node_symbol(node) == sym_function_definition)
+//		return (build_sym_function_definition(node, input, out));
+//	if (ts_node_symbol(node) == sym_if_statement)
+//		return (build_sym_if_statement(node, input, out));
 t_error	_from_node_inner2(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
 {
@@ -61,14 +67,8 @@ t_error	_from_node_inner2(\
 		return (build_sym_file_descriptor(node, input, out));
 	if (ts_node_symbol(node) == sym_file_redirect)
 		return (build_sym_file_redirect(node, input, out));
-	if (ts_node_symbol(node) == sym_for_statement)
-		return (build_sym_for_statement(node, input, out));
-	if (ts_node_symbol(node) == sym_function_definition)
-		return (build_sym_function_definition(node, input, out));
 	if (ts_node_symbol(node) == sym_heredoc_redirect)
 		return (build_sym_heredoc_redirect(node, input, out));
-	if (ts_node_symbol(node) == sym_if_statement)
-		return (build_sym_if_statement(node, input, out));
 	if (ts_node_symbol(node) == sym_list)
 		return (build_sym_list(node, input, out));
 	if (ts_node_symbol(node) == sym_negated_command)
@@ -78,6 +78,12 @@ t_error	_from_node_inner2(\
 	return (_from_node_inner3(node, input, out));
 }
 
+//	if (ts_node_symbol(node) == sym_do_group)
+//		return (build_sym_do_group(node, input, out));
+//	if (ts_node_symbol(node) == sym_elif_clause)
+//		return (build_sym_elif_clause(node, input, out));
+//	if (ts_node_symbol(node) == sym_else_clause)
+//		return (build_sym_else_clause(node, input, out));
 t_error	_from_node_inner(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
 {
@@ -93,17 +99,16 @@ t_error	_from_node_inner(\
 		return (build_sym_compound_statement(node, input, out));
 	if (ts_node_symbol(node) == sym_concatenation)
 		return (build_sym_concatenation(node, input, out));
-	if (ts_node_symbol(node) == sym_do_group)
-		return (build_sym_do_group(node, input, out));
-	if (ts_node_symbol(node) == sym_elif_clause)
-		return (build_sym_elif_clause(node, input, out));
-	if (ts_node_symbol(node) == sym_else_clause)
-		return (build_sym_else_clause(node, input, out));
 	if (ts_node_symbol(node) == sym_expansion)
 		return (build_sym_expansion(node, input, out));
 	return (_from_node_inner2(node, input, out));
 }
 
+
+//	else if (ts_node_symbol(node) == sym_case_item)
+//		return (build_sym_case_item(node, input, out));
+//	else if (ts_node_symbol(node) == sym_case_statement)
+//		return (build_sym_case_statement(node, input, out));
 t_error	ast_from_node(\
 	t_parse_node node, t_const_str input, t_ast_node *out)
 {
@@ -124,9 +129,5 @@ t_error	ast_from_node(\
 		return (build_sym_arithmetic_ternary_expression(node, input, out));
 	else if (ts_node_symbol(node) == sym_arithmetic_unary_expression)
 		return (build_sym_arithmetic_unary_expression(node, input, out));
-	else if (ts_node_symbol(node) == sym_case_item)
-		return (build_sym_case_item(node, input, out));
-	else if (ts_node_symbol(node) == sym_case_statement)
-		return (build_sym_case_statement(node, input, out));
 	return (_from_node_inner(node, input, out));
 }
