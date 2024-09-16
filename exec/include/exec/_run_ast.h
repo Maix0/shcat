@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/14 12:22:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 13:59:49 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,5 @@ void	_ffree_func(\
 	struct s_ffree_state *state);
 void	_run_word_into_str(\
 	t_usize idx, t_ast_node *elem, t_word_iterator *state);
-
 
 #endif
