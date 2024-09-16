@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 10:55:52 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/15 20:16:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 13:49:34 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ t_error	_from_node_inner(\
 		return (build_sym_expansion(node, input, out));
 	return (_from_node_inner2(node, input, out));
 }
-
 
 //	else if (ts_node_symbol(node) == sym_case_item)
 //		return (build_sym_case_item(node, input, out));
