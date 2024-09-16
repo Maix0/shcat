@@ -6,15 +6,50 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/15 20:17:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:11:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/env.h"
 #include "exec/_run_ast.h"
+#include "me/fs/fs.h"
 #include "me/str/str.h"
 #include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
+#include "line/line.h"
+
+t_error _get_heredoc_input(t_fd *write_end, t_str delim)
+{
+	struct s_line_state	lstate;
+	t_str				line;
+
+	if (write_end == NULL || delim == NULL)
+		return (ERROR);
+	while (true) {
+		if (line_edit_start(&lstate, get_stdin(), get_stdout(), "> "))
+			return (ERROR);
+		while (!line_edit_feed(&lstate, &line))
+		{	
+			if (errno == EAGAIN)
+			{
+				errno = 0;
+				lstate.pos = 0;
+				string_clear(&lstate.buf);
+				write_fd(lstate.output_fd, (void *)"^C\n", 3, NULL);
+				line_refresh_line(&lstate);
+				return (ERROR);
+			}
+		}
+		line_edit_stop(&lstate);
+		if (line == NULL || str_compare(delim, line))
+			break ;
+		put_string_fd(write_end, line);
+		put_string_fd(write_end, "\n");
+		str_free(line);
+	}
+	return (NO_ERROR);
+}
 
 t_error	_spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection,
 		t_state *state, t_cmd_pipe cmd_pipe, t_command_result *out)
@@ -111,8 +146,8 @@ t_error	_spawn_cmd_and_run(t_vec_str args, t_vec_ast redirection,
 				info.stdout.tag = R_INHERITED;
 				if (create_pipe(&heredoc_pipe))
 					return (ERROR);
-				//put_string_fd(heredoc_pipe.write,
-				//	red->data.heredoc_redirection.content);
+				if (_get_heredoc_input(heredoc_pipe.write, red->data.heredoc_redirection.delimiter))
+					return (ERROR);
 				close_fd(heredoc_pipe.write);
 				info.stdin = fd(heredoc_pipe.read);
 			}
