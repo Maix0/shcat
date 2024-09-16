@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 18:10:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 15:30:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/15 20:52:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ bool	line_no_tty_impl(t_str *out)
 		chr = '\n';
 		if (read_fd(get_stdin(), (t_u8 *)&chr, 1, &ret))
 			return (string_free(line), *out = NULL, true);
-		if (ret == 0)
+		if (ret == 0 || chr == '\n')
 		{
 			if (line.len == 0)
 				return (string_free(line), *out = NULL, true);

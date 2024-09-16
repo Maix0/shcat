@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/30 19:12:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 19:19:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef struct s_builtin_spawn_info	t_builtin_spawn_info;
 
 struct s_builtin_spawn_info
 {
+	t_state		*state;
 	t_vec_str	args;
 	t_fd		*stdin;
 	t_fd		*stdout;

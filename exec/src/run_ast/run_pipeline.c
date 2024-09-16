@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:33:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 19:22:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 				vec_ast_push(&child->data.command.suffixes_redirections,
 					tmp_ast);
 			if (run_command(&child->data.command, state, cmd_pipe, &cmd_result))
-			{
 				ret = ERROR;
-			}
 			else
 			{
 				vec_pid_push(&pids, cmd_result.process.pid);

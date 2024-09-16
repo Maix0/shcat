@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/16 13:59:49 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/16 19:02:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "me/fs/fs.h"
 # include "me/os/os.h"
 # include "me/types.h"
+# include "me/vec/vec_ast.h"
 # include "me/vec/vec_estr.h"
 
 typedef struct s_expansion_result	t_expansion_result;
@@ -101,6 +102,14 @@ struct s_subshell_info
 	t_fd		*ret_stdout;
 };
 
+struct s_redirections
+{
+	t_cmd_pipe	cmd_pipe;
+	t_vec_ast	redirections;
+};
+
+typedef struct s_redirections		t_redirections;
+
 bool	_is_builtin(\
 	t_const_str argv0);
 bool	_is_special_var(\
@@ -151,9 +160,8 @@ t_error	_run_expansion_special_var(\
 	t_ast_expansion *self, t_state *state, t_expansion_result *out);
 t_error	_run_get_exit_code(\
 	t_ast_node self, t_state *state, int *out);
-t_error	_spawn_cmd_and_run(\
-	t_vec_str args, t_vec_ast redirection, t_state *state, \
-	t_cmd_pipe cmd_pipe, t_command_result *out);
+t_error	_spawn_cmd_and_run(t_vec_str args, t_redirections redirs, \
+		t_state *state, t_command_result *out);
 t_error	_word_into_str(\
 	t_ast_node self, t_state *state, t_vec_str *append);
 t_error	run_command(\
@@ -180,5 +188,8 @@ void	_ffree_func(\
 	struct s_ffree_state *state);
 void	_run_word_into_str(\
 	t_usize idx, t_ast_node *elem, t_word_iterator *state);
+t_error	_setup_redirection(\
+	t_spawn_info *info, t_state *state, \
+	t_cmd_pipe cmd_pipe, t_vec_ast *redirection);
 
 #endif

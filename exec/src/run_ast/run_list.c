@@ -6,21 +6,17 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:34:33 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:34:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/16 19:09:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec/_run_ast.h"
 
-t_error	run_list(t_ast_list *list, t_state *state, t_list_result *out)
+t_error	_append_redir(t_ast_list *list)
 {
-	int					left;
-	int					right;
-	t_ast_node			tmp;
 	t_vec_ast			*append;
+	t_ast_node			tmp;
 
-	if (list == NULL || state == NULL || out == NULL)
-		return (ERROR);
 	append = NULL;
 	if (list->right->kind == AST_COMMAND)
 		append = &list->right->data.command.suffixes_redirections;
@@ -35,6 +31,18 @@ t_error	run_list(t_ast_list *list, t_state *state, t_list_result *out)
 		while (!vec_ast_pop_front(&list->suffixes_redirections, &tmp))
 			vec_ast_push(append, tmp);
 	}
+	return (NO_ERROR);
+}
+
+t_error	run_list(t_ast_list *list, t_state *state, t_list_result *out)
+{
+	int					left;
+	int					right;
+
+	if (list == NULL || state == NULL || out == NULL)
+		return (ERROR);
+	if (_append_redir(list))
+		return (ERROR);
 	left = -1;
 	right = -1;
 	if (_run_get_exit_code(list->left, state, &left))
