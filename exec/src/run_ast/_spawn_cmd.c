@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/16 18:22:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/17 21:41:55 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ t_error	_redirection_fd(\
 	t_spawn_info *info, t_state *state, t_ast_node red)
 {
 	t_vec_str	fname;
-	t_fd		*red_fd;
 
 	fname = vec_str_new(16, str_free);
 	if (_redir_input(info, state, &fname, red))
@@ -143,6 +142,7 @@ t_error	_redirection_heredoc(\
 {
 	t_pipe	heredoc_pipe;
 
+	(void)state;
 	if (red->data.heredoc_redirection.op == AST_REDIR_HEREDOC)
 	{
 		(void)((info->stdout.tag == R_FD) && (close_fd(info->stdout.fd.fd), 1));
