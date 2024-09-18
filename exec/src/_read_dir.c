@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 21:43:33 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/17 22:39:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/18 21:05:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,34 +40,47 @@
  */
 t_error	listing_files(t_string path, t_vec_str *out)
 {
-	DIR				*tmp;
 	struct dirent	*entry;
+	t_dir			*tmp;
+	t_vec_str		ret;
 
-	tmp = opendir(path.buf);
-	if (tmp == NULL)
-		return (ERROR);
-	while ((entry = readdir(tmp)) != NULL)
-		vec_str_push(out, entry->d_name);
-	return (NO_ERROR);
+	if (out == NULL)
+		return (string_free(path), ERROR);
+	if (open_dir(path.buf, &tmp))
+		return (string_free(path), ERROR);
+	string_free(path);
+	ret = vec_str_new(16, str_free);
+	while (!read_dir(tmp, &entry))
+	{
+		if (entry == NULL)
+			break ;
+		if (entry->d_name[0] == '.')
+			continue ;
+		vec_str_push(&ret, str_clone(entry->d_name));
+	}
+	return (*out = ret, NO_ERROR);
 }
 
 /**
  * @brief list all files in the current directory
  *
- * @param out the return value
+ * @param out[out] the return value, it'll be populated on success;
  * @return ERROR (1) / NO_ERROR (0)
  */
 t_error	list_files_in_current_directory(t_vec_str *out)
 {
-	t_vec_str	*tmp;
 	t_string	path;
 
-	(void)out;
-	tmp = NULL;
+	if (out == NULL)
+		return (ERROR);
+	path = string_new(1024);
 	while (getcwd(path.buf, path.capacity - 1) == NULL)
+	{
+		printf("lololol\n");
 		if (errno == ERANGE)
 			string_reserve(&path, path.capacity * 3);
-	if (!listing_files(path, tmp))
-		return (NO_ERROR);
-	return (out = tmp, NO_ERROR);
+		else
+			return (string_free(path), ERROR);
+	}
+	return (listing_files(path, out));
 }

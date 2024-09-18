@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/09/15 20:52:40 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/09/18 21:04:01 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,8 +47,9 @@ endif
 # CFLAGS_ADDITIONAL	+= -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
+# CFLAGS_ADDITIONAL	+= -fsanitize=memory -fno-omit-frame-pointer  -fsanitize-memory-track-origins #-fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--allow-multiple
 # CFLAGS_ADDITIONAL	+= -O0 
-# CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits -Wno-unused-command-line-argument
+CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits -Wno-unused-command-line-argument
 CFLAGS_ADDITIONAL	+= -gcolumn-info -g3
 CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
 # CFLAGS_ADDITIONAL	+= -O2

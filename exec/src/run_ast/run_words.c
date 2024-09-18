@@ -6,11 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:11:48 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:23:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/18 21:04:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec/_run_ast.h"
+#include "me/str/str.h"
+#include "me/vec/vec_estr.h"
+#include "me/vec/vec_str.h"
 
 t_error	run_word(t_ast_word *word, t_state *state, t_word_result *out)
 {

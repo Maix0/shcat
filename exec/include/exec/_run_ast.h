@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/16 19:02:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/18 22:18:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include "ast/ast.h"
 # include "me/fs/fs.h"
 # include "me/os/os.h"
+# include "me/string/string.h"
 # include "me/types.h"
 # include "me/vec/vec_ast.h"
 # include "me/vec/vec_estr.h"
@@ -108,8 +109,21 @@ struct s_redirections
 	t_vec_ast	redirections;
 };
 
+struct s_word_str_args
+{
+	t_usize			i;
+	t_state			*state;
+	t_string		*tmp;
+	t_word_result	*res;
+	t_vec_str		*append;
+	t_str			*tmp_str;
+	t_vec_str		*splitted;
+	t_str			ifs;
+};
+
 typedef struct s_redirections		t_redirections;
 
+t_error	list_files_in_current_directory(t_vec_str *out);
 bool	_is_builtin(\
 	t_const_str argv0);
 bool	_is_special_var(\
