@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/16 19:22:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/17 17:09:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 			else
 			{
 				vec_pid_push(&pids, cmd_result.process.pid);
-				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					cmd_pipe.input = cmd_result.process.stdout;
 				if (cmd_result.process.stdin != NULL)
@@ -56,6 +55,8 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 				if (cmd_result.process.stderr != NULL)
 					close_fd(cmd_result.process.stderr);
 			}
+			if (cmd_pipe.input != NULL)
+				printf("[%i]%s\n", cmd_pipe.input->fd, cmd_pipe.input->name);
 		}
 		i++;
 	}
@@ -73,7 +74,6 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 			else
 			{
 				vec_pid_push(&pids, cmd_result.process.pid);
-				close_fd(cmd_pipe.input);
 				if (cmd_result.process.stdout != NULL)
 					close_fd(cmd_result.process.stdout);
 				if (cmd_result.process.stdin != NULL)
@@ -85,9 +85,8 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 	}
 	if (pids.len != 0)
 	{
-		if (!(kill(pids.buffer[pids.len - 1], 0) == -1 && errno == ESRCH))
-			while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0)
-				;
+		while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0 && errno != ESRCH)
+			;
 		while (waitpid(-1, NULL, 0) != -1)
 			;
 		if (WIFEXITED(waitpid_status))

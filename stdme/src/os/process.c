@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/11 12:00:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/17 17:12:21 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ t_error	spawn_process(t_spawn_info info, t_process *process)
 		(spawn_process_exec(info, process), exit(1));
 	else
 	{
-		_process_cleanup(info, process, false);
+		_process_cleanup(info, process, process->pid == -1);
 		if (process->pid == -1)
 			return (ERROR);
 	}

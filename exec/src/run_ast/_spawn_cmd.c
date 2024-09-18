@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/17 21:41:55 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/18 14:20:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,8 @@ t_error	_redirection_heredoc(\
 	(void)state;
 	if (red->data.heredoc_redirection.op == AST_REDIR_HEREDOC)
 	{
-		(void)((info->stdout.tag == R_FD) && (close_fd(info->stdout.fd.fd), 1));
-		info->stdout.tag = R_INHERITED;
+		(void)((info->stdin.tag == R_FD) && (close_fd(info->stdin.fd.fd), 1));
+		info->stdin.tag = R_INHERITED;
 		if (create_pipe(&heredoc_pipe))
 			return (ERROR);
 		if (_get_heredoc_input(heredoc_pipe.write, \
