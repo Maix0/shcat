@@ -48,7 +48,7 @@ void	ast_set_term(t_ast_node *node, t_ast_terminator_kind term)
 }
 
 t_error	build_sym_if_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -56,7 +56,7 @@ t_error	build_sym_if_statement(\
 	return (ERROR);
 }
 /*
-	t_parse_node	child;
+	t_node	child;
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
@@ -102,7 +102,7 @@ t_error	build_sym_if_statement(\
 */
 
 t_error	build_sym_elif_clause(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -113,7 +113,7 @@ t_error	build_sym_elif_clause(\
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
-	t_parse_node	child;
+	t_node	child;
 
 	(void)(out);
 	(void)(input);
@@ -147,7 +147,7 @@ t_error	build_sym_elif_clause(\
 */
 
 t_error	build_sym_else_clause(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -158,7 +158,7 @@ t_error	build_sym_else_clause(\
 	t_ast_node		ret;
 	t_ast_node		tmp;
 	t_usize			i;
-	t_parse_node	child;
+	t_node	child;
 
 	(void)(out);
 	(void)(input);

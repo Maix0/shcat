@@ -6,13 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:02:35 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:02:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:23:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-void	ts_parser__accept(TSParser *self, t_stack_version version,
+void	ts_parser__accept(t_parser *self, t_stack_version version,
 		t_subtree lookahead)
 {
 	t_u32				child_count;
@@ -26,7 +26,7 @@ void	ts_parser__accept(TSParser *self, t_stack_version version,
 	t_subtree			tree;
 
 	assert(ts_subtree_is_eof(lookahead));
-	ts_stack_push(self->stack, version, lookahead, false, 1);
+	ts_stack_push(self->stack, (struct s_stack_push_arg){version, lookahead, false, 1});
 	pop = ts_stack_pop_all(self->stack, version);
 	i = 0;
 	while (i < pop.size)

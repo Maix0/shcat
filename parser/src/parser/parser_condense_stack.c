@@ -12,7 +12,7 @@
 
 #include "parser/inner/parser_inner.h"
 
-t_u32	ts_parser__condense_stack(TSParser *self)
+t_u32	ts_parser__condense_stack(t_parser *self)
 {
 	bool				has_unpaused_version;
 	t_error_comparison	cmp;

@@ -6,13 +6,12 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/11 16:41:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:28:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/colors.h"
 #include "app/env.h"
-#include "app/node.h"
 #include "app/signal_handler.h"
 #include "app/state.h"
 #include "ast/ast.h"
@@ -28,9 +27,9 @@
 #include <errno.h>
 #include <sys/types.h>
 
-t_error			ast_from_node(t_parse_node node, t_str input, t_ast_node *out);
+t_error			ast_from_node(t_node node, t_str input, t_ast_node *out);
 t_error			get_user_input(t_state *state);
-t_first_parser *create_myparser(void);
+t_parser		*create_myparser(void);
 void			ast_print_node(t_ast_node self);
 void			ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void			exec_shcat(t_state *state);
@@ -83,6 +82,7 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 	return (NO_ERROR);
 }
 
+/*
 void print_node_data(t_node *t, t_usize depth)
 {
 	t_usize idx;
@@ -98,12 +98,12 @@ void print_node_data(t_node *t, t_usize depth)
 	while (idx < t->childs_count)
 		print_node_data(&t->childs[idx++], depth + 1);
 }
+*/
 
-t_node parse_str(t_state *state)
+void parse_str(t_state *state)
 {
-	t_first_tree *tree;
-	t_parse_node  node;
-	t_node		  ret;
+	t_tree *tree;
+	t_node  node;
 	t_ast_node	  out;
 
 	tree = ts_parser_parse_string(state->parser, state->str_input, str_len(state->str_input));
@@ -115,9 +115,7 @@ t_node parse_str(t_state *state)
 	}
 	else
 		state->ast = out;
-	ret = build_node(node, state->str_input);
 	ts_tree_delete(tree);
-	return (ret);
 }
 
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])

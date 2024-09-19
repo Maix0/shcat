@@ -12,7 +12,7 @@
 
 #include "parser/inner/parser_inner.h"
 
-bool	ts_parser_has_outstanding_parse(TSParser *self)
+bool	ts_parser_has_outstanding_parse(t_parser *self)
 {
 	return (self->external_scanner_payload || ts_stack_state(self->stack,
 			0) != 1 || ts_stack_node_count_since_error(self->stack, 0) != 0);

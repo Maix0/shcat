@@ -14,9 +14,9 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-bool	ts_node__is_relevant(TSNode self, bool include_anonymous)
+bool	ts_node__is_relevant(t_node self, bool include_anonymous)
 {
-	TSSymbol	alias;
+	t_symbol	alias;
 	t_subtree	tree;
 
 	tree = ts_node__subtree(self);
@@ -29,7 +29,7 @@ bool	ts_node__is_relevant(TSNode self, bool include_anonymous)
 		return (ts_subtree_visible(tree) && ts_subtree_named(tree));
 }
 
-t_u32	ts_node__relevant_child_count(TSNode self, bool include_anonymous)
+t_u32	ts_node__relevant_child_count(t_node self, bool include_anonymous)
 {
 	t_subtree	tree;
 

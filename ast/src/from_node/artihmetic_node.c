@@ -22,7 +22,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_ast_arithmetic_operator	_parse_operator(t_parse_node self)
+t_ast_arithmetic_operator	_parse_operator(t_node self)
 {
 	t_symbol	symbol;
 
@@ -47,7 +47,7 @@ t_ast_arithmetic_operator	_parse_operator(t_parse_node self)
 }
 
 t_error	build_sym_arithmetic_binary_expression(\
-		t_parse_node self, t_const_str input, t_ast_node *out)
+		t_node self, t_const_str input, t_ast_node *out)
 {
 	t_usize		i;
 	t_ast_node	ret;
@@ -77,7 +77,7 @@ t_error	build_sym_arithmetic_binary_expression(\
 }
 
 t_error	build_sym_arithmetic_literal(\
-		t_parse_node self, t_const_str input, t_ast_node *out)
+		t_node self, t_const_str input, t_ast_node *out)
 {
 	t_usize		i;
 	t_ast_node	ret;
@@ -95,7 +95,7 @@ t_error	build_sym_arithmetic_literal(\
 }
 
 t_error	build_sym_arithmetic_parenthesized_expression( \
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	if (out == NULL)
 		return (ERROR);
@@ -105,7 +105,7 @@ t_error	build_sym_arithmetic_parenthesized_expression( \
 }
 
 t_error	build_sym_arithmetic_postfix_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 

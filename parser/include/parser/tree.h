@@ -19,10 +19,10 @@
 struct s_tree
 {
 	t_subtree			  root;
-	const TSLanguage *language;
+	const t_language *language;
 };
 
-TSTree *ts_tree_new(t_subtree root, const TSLanguage *language);
-TSNode	ts_node_new(const TSTree *, const t_subtree *, Length, TSSymbol);
+t_tree *ts_tree_new(t_subtree root, const t_language *language);
+t_node	ts_node_new(const t_tree *, const t_subtree *, t_length, t_symbol);
 
 #endif // TREE_H

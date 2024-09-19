@@ -13,10 +13,10 @@
 #include "parser/language.h"
 #include "parser/subtree.h"
 
-void	ts_subtree_set_symbol(t_subtree *self, TSSymbol symbol,
-		const TSLanguage *language)
+void	ts_subtree_set_symbol(t_subtree *self, t_symbol symbol,
+		const t_language *language)
 {
-	TSSymbolMetadata	metadata;
+	t_symbol_metadata	metadata;
 
 	metadata = ts_language_symbol_metadata(language, symbol);
 	(*self)->symbol = symbol;

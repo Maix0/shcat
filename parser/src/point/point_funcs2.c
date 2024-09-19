@@ -12,22 +12,22 @@
 
 #include "parser/point.h"
 
-bool	point_gt(TSPoint a, TSPoint b)
+bool	point_gt(t_point a, t_point b)
 {
 	return ((a.row > b.row) || (a.row == b.row && a.column > b.column));
 }
 
-bool	point_gte(TSPoint a, TSPoint b)
+bool	point_gte(t_point a, t_point b)
 {
 	return ((a.row > b.row) || (a.row == b.row && a.column >= b.column));
 }
 
-bool	point_eq(TSPoint a, TSPoint b)
+bool	point_eq(t_point a, t_point b)
 {
 	return (a.row == b.row && a.column == b.column);
 }
 
-TSPoint	point_min(TSPoint a, TSPoint b)
+t_point	point_min(t_point a, t_point b)
 {
 	if (a.row < b.row || (a.row == b.row && a.column < b.column))
 		return (a);
@@ -35,7 +35,7 @@ TSPoint	point_min(TSPoint a, TSPoint b)
 		return (b);
 }
 
-TSPoint	point_max(TSPoint a, TSPoint b)
+t_point	point_max(t_point a, t_point b)
 {
 	if (a.row > b.row || (a.row == b.row && a.column > b.column))
 		return (a);

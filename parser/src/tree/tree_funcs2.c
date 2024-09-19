@@ -14,22 +14,22 @@
 #include "parser/subtree.h"
 #include "parser/tree.h"
 
-TSNode	ts_tree_root_node(const TSTree *self)
+t_node	ts_tree_root_node(const t_tree *self)
 {
 	return (ts_node_new(self, &self->root, ts_subtree_padding(self->root), 0));
 }
 
-TSNode	ts_tree_root_node_with_offset(const TSTree *self, t_u32 offset_bytes,
-		TSPoint offset_extent)
+t_node	ts_tree_root_node_with_offset(const t_tree *self, t_u32 offset_bytes,
+		t_point offset_extent)
 {
-	Length	offset;
+	t_length	offset;
 
-	offset = (Length){offset_bytes, offset_extent};
+	offset = (t_length){offset_bytes, offset_extent};
 	return (ts_node_new(self, &self->root, length_add(offset,
 				ts_subtree_padding(self->root)), 0));
 }
 
-const TSLanguage	*ts_tree_language(const TSTree *self)
+const t_language	*ts_tree_language(const t_tree *self)
 {
 	return (self->language);
 }

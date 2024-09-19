@@ -16,18 +16,18 @@
 #include "parser/api.h"
 #include "me/types.h"
 
-#define POINT_ZERO ((TSPoint){0, 0})
-#define POINT_MAX ((TSPoint){UINT32_MAX, UINT32_MAX})
+#define POINT_ZERO ((t_point){0, 0})
+#define POINT_MAX ((t_point){UINT32_MAX, UINT32_MAX})
 
-TSPoint point_max(TSPoint a, TSPoint b);
-TSPoint point_min(TSPoint a, TSPoint b);
-TSPoint point__new(t_u32 row, t_u32 column);
-TSPoint point_add(TSPoint a, TSPoint b);
-TSPoint point_sub(TSPoint a, TSPoint b);
-bool	point_lte(TSPoint a, TSPoint b);
-bool	point_lt(TSPoint a, TSPoint b);
-bool	point_gte(TSPoint a, TSPoint b);
-bool	point_gt(TSPoint a, TSPoint b);
-bool	point_eq(TSPoint a, TSPoint b);
+t_point point_max(t_point a, t_point b);
+t_point point_min(t_point a, t_point b);
+t_point point__new(t_u32 row, t_u32 column);
+t_point point_add(t_point a, t_point b);
+t_point point_sub(t_point a, t_point b);
+bool	point_lte(t_point a, t_point b);
+bool	point_lt(t_point a, t_point b);
+bool	point_gte(t_point a, t_point b);
+bool	point_gt(t_point a, t_point b);
+bool	point_eq(t_point a, t_point b);
 
 #endif

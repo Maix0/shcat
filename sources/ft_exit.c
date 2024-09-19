@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/04 14:17:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:27:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "me/mem/mem.h"
 #include "parser/api.h"
 
-void	ts_parser_delete(t_first_parser *self);
+void	ts_parser_delete(t_parser *self);
 
 void	ft_free(void *ptr)
 {

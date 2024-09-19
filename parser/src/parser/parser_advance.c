@@ -6,15 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:01:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:01:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:24:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-bool	ts_parser__advance(TSParser *self, t_stack_version version)
+bool	ts_parser__advance(t_parser *self, t_stack_version version)
 {
-	TSStateId		state;
+	t_state_id		state;
 	t_subtree		mutable_lookahead;
 	t_subtree		lookahead;
 	TableEntry		table_entry;
@@ -22,7 +22,7 @@ bool	ts_parser__advance(TSParser *self, t_stack_version version)
 	t_u32			i;
 	t_stack_version	last_reduction_version;
 	TSParseAction	action;
-	TSStateId		next_state;
+	t_state_id		next_state;
 	bool			is_fragile;
 	bool			end_of_non_terminal_extra;
 	t_stack_version	reduction_version;
@@ -78,7 +78,7 @@ bool	ts_parser__advance(TSParser *self, t_stack_version version)
 						action.reduce.dynamic_precedence,
 						action.reduce.production_id, is_fragile,
 						end_of_non_terminal_extra);
-				if (reduction_version != STACK_VERSION_NONE)
+				if (reduction_version != (t_stack_version)STACK_VERSION_NONE)
 					last_reduction_version = reduction_version;
 				i++;
 			}
@@ -87,7 +87,7 @@ bool	ts_parser__advance(TSParser *self, t_stack_version version)
 			if (action.type == TSParseActionTypeRecover)
 				return (ts_parser__recover(self, version, lookahead), true);
 		}
-		if (last_reduction_version != STACK_VERSION_NONE)
+		if (last_reduction_version != (t_stack_version)STACK_VERSION_NONE)
 		{
 			ts_stack_renumber_version(self->stack, last_reduction_version,
 				version);

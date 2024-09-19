@@ -12,7 +12,7 @@
 
 #include "parser/inner/node.h"
 
-t_u32	ts_node_child_count(TSNode self)
+t_u32	ts_node_child_count(t_node self)
 {
 	t_subtree	tree;
 
@@ -23,7 +23,7 @@ t_u32	ts_node_child_count(TSNode self)
 		return (0);
 }
 
-t_u32	ts_node_named_child_count(TSNode self)
+t_u32	ts_node_named_child_count(t_node self)
 {
 	t_subtree	tree;
 
@@ -34,17 +34,17 @@ t_u32	ts_node_named_child_count(TSNode self)
 		return (0);
 }
 
-TSFieldId	ts_node_field_id_for_child(TSNode self, t_u32 child_index)
+t_field_id	ts_node_field_id_for_child(t_node self, t_u32 child_index)
 {
-	TSNode				result;
+	t_node				result;
 	bool				did_descend;
-	TSFieldId			inherited_field_id;
-	TSNode				child;
+	t_field_id			inherited_field_id;
+	t_node				child;
 	t_u32				index;
 	NodeChildIterator	iterator;
 	t_u32				grandchild_index;
 	t_u32				grandchild_count;
-	TSFieldId			field_id;
+	t_field_id			field_id;
 
 	result = self;
 	did_descend = true;

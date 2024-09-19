@@ -14,7 +14,7 @@
 #include "me/vec/vec_reduce_action.h"
 
 void	ts_reduce_action_set_add(\
-	ReduceActionSet *self, t_reduce_action new_action)
+	t_vec_reduce_action *self, t_reduce_action new_action)
 {
 	t_reduce_action	action;
 	t_u32			i;

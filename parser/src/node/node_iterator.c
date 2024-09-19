@@ -14,10 +14,10 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-NodeChildIterator	ts_node_iterate_children(const TSNode *node)
+NodeChildIterator	ts_node_iterate_children(const t_node *node)
 {
 	t_subtree		subtree;
-	const TSSymbol	*alias_sequence;
+	const t_symbol	*alias_sequence;
 
 	subtree = ts_node__subtree(*node);
 	if (ts_subtree_child_count(subtree) == 0)
@@ -40,10 +40,10 @@ bool	ts_node_child_iterator_done(NodeChildIterator *self)
 	return (self->child_index == self->parent->child_count);
 }
 
-bool	ts_node_child_iterator_next(NodeChildIterator *self, TSNode *result)
+bool	ts_node_child_iterator_next(NodeChildIterator *self, t_node *result)
 {
 	const t_subtree	*child;
-	TSSymbol		alias_symbol;
+	t_symbol		alias_symbol;
 
 	if (!self->parent || ts_node_child_iterator_done(self))
 		return (false);

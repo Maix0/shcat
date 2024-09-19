@@ -6,11 +6,10 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/02 16:37:28 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/15 20:14:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:46:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "app/node.h"
 #include "ast/_from_node.h"
 #include "ast/ast.h"
 #include "gmr/symbols.h"
@@ -20,7 +19,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_error	build_sym_heredoc_redirect(t_parse_node self, t_const_str input, \
+t_error	build_sym_heredoc_redirect(t_node self, t_const_str input, \
 	t_ast_node *out)
 {
 	t_ast_node	ret;

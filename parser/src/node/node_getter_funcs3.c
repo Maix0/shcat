@@ -14,15 +14,15 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-t_u32	ts_node_end_byte(TSNode self)
+t_u32	ts_node_end_byte(t_node self)
 {
 	return (ts_node_start_byte(self)
 		+ ts_subtree_size(ts_node__subtree(self)).bytes);
 }
 
-TSSymbol	ts_node_symbol(TSNode self)
+t_symbol	ts_node_symbol(t_node self)
 {
-	TSSymbol	symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node__alias(&self);
 	if (!symbol)
@@ -30,9 +30,9 @@ TSSymbol	ts_node_symbol(TSNode self)
 	return (ts_language_public_symbol(self.tree->language, symbol));
 }
 
-t_const_str	ts_node_type(TSNode self)
+t_const_str	ts_node_type(t_node self)
 {
-	TSSymbol	symbol;
+	t_symbol	symbol;
 
 	symbol = ts_node__alias(&self);
 	if (!symbol)
@@ -40,14 +40,14 @@ t_const_str	ts_node_type(TSNode self)
 	return (ts_language_symbol_name(self.tree->language, symbol));
 }
 
-TSSymbol	ts_node_grammar_symbol(TSNode self)
+t_symbol	ts_node_grammar_symbol(t_node self)
 {
 	return (ts_subtree_symbol(ts_node__subtree(self)));
 }
 
-t_const_str	ts_node_grammar_type(TSNode self)
+t_const_str	ts_node_grammar_type(t_node self)
 {
-	TSSymbol	symbol;
+	t_symbol	symbol;
 
 	symbol = ts_subtree_symbol(ts_node__subtree(self));
 	return (ts_language_symbol_name(self.tree->language, symbol));

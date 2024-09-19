@@ -14,27 +14,27 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-t_u32	ts_node_start_byte(TSNode self)
+t_u32	ts_node_start_byte(t_node self)
 {
 	return (self.start_byte);
 }
 
-const TSLanguage	*ts_node_language(TSNode self)
+const t_language	*ts_node_language(t_node self)
 {
 	return (self.tree->language);
 }
 
-TSPoint	ts_node_start_point(TSNode self)
+t_point	ts_node_start_point(t_node self)
 {
-	return ((TSPoint){self.start_row, self.start_col});
+	return ((t_point){self.start_row, self.start_col});
 }
 
-t_u32	ts_node__alias(const TSNode *self)
+t_u32	ts_node__alias(const t_node *self)
 {
 	return (self->alias);
 }
 
-t_subtree	ts_node__subtree(TSNode self)
+t_subtree	ts_node__subtree(t_node self)
 {
 	return (*(const t_subtree *)self.id);
 }

@@ -16,10 +16,10 @@
 // Create a new parent node with the given children.
 //
 // This takes ownership of the children array.
-t_subtree	ts_subtree_new_node(TSSymbol symbol, t_vec_subtree *children, \
-		t_u32 production_id, const TSLanguage *language)
+t_subtree	ts_subtree_new_node(t_symbol symbol, t_vec_subtree *children, \
+		t_u32 production_id, const t_language *language)
 {
-	TSSymbolMetadata	metadata;
+	t_symbol_metadata	metadata;
 	bool				fragile;
 	t_subtree			data;
 
@@ -44,7 +44,7 @@ t_subtree	ts_subtree_new_node(TSSymbol symbol, t_vec_subtree *children, \
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
 t_subtree	ts_subtree_new_error_node(t_vec_subtree *children, bool extra,
-		const TSLanguage *language)
+		const t_language *language)
 {
 	t_subtree	result;
 
@@ -57,8 +57,8 @@ t_subtree	ts_subtree_new_error_node(t_vec_subtree *children, bool extra,
 //
 // This node is treated as 'extra'. Its children are prevented from having
 // having any effect on the parse state.
-t_subtree	ts_subtree_new_missing_leaf(TSSymbol symbol, Length padding,
-		t_u32 lookahead_bytes, const TSLanguage *language)
+t_subtree	ts_subtree_new_missing_leaf(t_symbol symbol, t_length padding,
+		t_u32 lookahead_bytes, const t_language *language)
 {
 	t_subtree	result;
 
@@ -71,7 +71,7 @@ t_subtree	ts_subtree_new_missing_leaf(TSSymbol symbol, Length padding,
 
 t_subtree	ts_subtree_new_leaf(t_st_newleaf_args args)
 {
-	TSSymbolMetadata	metadata;
+	t_symbol_metadata	metadata;
 	bool				extra;
 	t_subtree_data		*data;
 

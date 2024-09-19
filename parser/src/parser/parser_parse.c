@@ -12,16 +12,16 @@
 
 #include "parser/inner/parser_inner.h"
 
-bool	_parse_condition(TSParser *self, t_u32 *version_count,
+bool	_parse_condition(t_parser *self, t_u32 *version_count,
 		t_stack_version *version)
 {
 	*version_count = ts_stack_version_count(self->stack);
 	return (*version < *version_count);
 }
 
-TSTree	*ts_parser_parse(TSParser *self, TSInput input)
+t_tree	*ts_parser_parse(t_parser *self, t_input input)
 {
-	TSTree			*result;
+	t_tree			*result;
 	t_u32			position;
 	t_u32			last_position;
 	t_u32			version_count;

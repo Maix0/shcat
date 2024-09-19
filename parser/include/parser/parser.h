@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:45:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:57:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,50 +15,47 @@
 
 #include "me/types.h"
 
-#define ts_builtin_sym_error ((TSSymbol)-1)
+#define ts_builtin_sym_error ((t_symbol)-1)
 #define ts_builtin_sym_end 0
 #define TREE_SITTER_SERIALIZATION_BUFFER_SIZE 1024
 
-#ifndef TREE_SITTER_API_H_
-typedef t_u16			  TSStateId;
-typedef t_u16			  TSSymbol;
-typedef t_u16			  TSFieldId;
-typedef struct TSLanguage TSLanguage;
-#endif
+typedef t_u16				t_state_id;
+typedef t_u16				t_symbol;
+typedef t_u16				t_field_id;
+typedef struct s_language	t_language;
+typedef struct s_lexer		t_lexer;
 
-typedef struct TSFieldMapEntry
+typedef struct s_field_map_entry
 {
-	TSFieldId field_id;
+	t_field_id field_id;
 	t_u8	  child_index;
 	bool	  inherited;
 } TSFieldMapEntry;
 
-typedef struct TSFieldMapSlice
+typedef struct s_field_map_slice
 {
 	t_u16 index;
 	t_u16 length;
 } TSFieldMapSlice;
 
-typedef struct TSSymbolMetadata
+typedef struct s_symbol_metadata
 {
 	bool visible;
 	bool named;
 	bool supertype;
-} TSSymbolMetadata;
-
-typedef struct s_lexer_functions TSLexer;
+} t_symbol_metadata;
 
 struct s_lexer_functions
 {
 	t_i32	 lookahead;
-	TSSymbol result_symbol;
-	void (*advance)(TSLexer *, bool);
-	void (*mark_end)(TSLexer *);
-	t_u32 (*get_column)(TSLexer *);
-	bool (*eof)(const TSLexer *);
+	t_symbol result_symbol;
+	void (*advance)(t_lexer *, bool);
+	void (*mark_end)(t_lexer *);
+	t_u32 (*get_column)(t_lexer *);
+	bool (*eof)(const t_lexer *);
 };
 
-typedef enum TSParseActionType
+typedef enum e_parse_action_type
 {
 	TSParseActionTypeShift,
 	TSParseActionTypeReduce,
@@ -66,47 +63,47 @@ typedef enum TSParseActionType
 	TSParseActionTypeRecover,
 } TSParseActionType;
 
-typedef union TSParseAction {
-	struct TSParseActionShift
+typedef union u_parse_action {
+	struct s_parse_action_shift
 	{
 		t_u8	  type;
-		TSStateId state;
+		t_state_id state;
 		bool	  extra;
 		bool	  repetition;
 	} shift;
-	struct TSParseActionReduce
+	struct s_parse_action_reduce
 	{
 		t_u8	 type;
 		t_u8	 child_count;
-		TSSymbol symbol;
+		t_symbol symbol;
 		t_i16	 dynamic_precedence;
 		t_u16	 production_id;
 	} reduce;
 	t_u8 type;
 } TSParseAction;
 
-typedef struct TSLexMode
+typedef struct s_lex_mode
 {
 	t_u16 lex_state;
 	t_u16 external_lex_state;
 } TSLexMode;
 
-typedef union TSParseActionEntry {
+typedef union u_parse_action_entry {
 	TSParseAction action;
-	struct TSParseActionEntryInner
+	struct s_parse_action_entry_inner
 	{
 		t_u8 count;
 		bool reusable;
 	} entry;
 } TSParseActionEntry;
 
-typedef struct TSCharacterRange
+typedef struct s_character_range
 {
 	t_i32 start;
 	t_i32 end;
 } TSCharacterRange;
 
-struct TSLanguage
+struct s_language
 {
 	t_u32					  version;
 	t_u32					  symbol_count;
@@ -126,25 +123,25 @@ struct TSLanguage
 	t_const_str const		 *field_names;
 	const TSFieldMapSlice	 *field_map_slices;
 	const TSFieldMapEntry	 *field_map_entries;
-	const TSSymbolMetadata	 *symbol_metadata;
-	const TSSymbol			 *public_symbol_map;
+	const t_symbol_metadata	 *symbol_metadata;
+	const t_symbol			 *public_symbol_map;
 	const t_u16				 *alias_map;
-	const TSSymbol			 *alias_sequences;
+	const t_symbol			 *alias_sequences;
 	const TSLexMode			 *lex_modes;
-	bool (*lex_fn)(TSLexer *, TSStateId);
-	bool (*keyword_lex_fn)(TSLexer *, TSStateId);
-	TSSymbol keyword_capture_token;
+	bool (*lex_fn)(t_lexer *, t_state_id);
+	bool (*keyword_lex_fn)(t_lexer *, t_state_id);
+	t_symbol keyword_capture_token;
 	struct ExternalScannerDefinition
 	{
 		const bool	   *states;
-		const TSSymbol *symbol_map;
+		const t_symbol *symbol_map;
 		void *(*create)(void);
 		void (*destroy)(void *);
-		bool (*scan)(void *, TSLexer *, const bool *symbol_whitelist);
+		bool (*scan)(void *, t_lexer *, const bool *symbol_whitelist);
 		t_u32 (*serialize)(void *, t_u8 *);
 		void (*deserialize)(void *, const t_u8 *, t_u32);
 	} external_scanner;
-	const TSStateId *primary_state_ids;
+	const t_state_id *primary_state_ids;
 };
 
 static inline bool set_contains(TSCharacterRange *ranges, t_u32 len, t_i32 lookahead)
@@ -184,10 +181,10 @@ static inline bool set_contains(TSCharacterRange *ranges, t_u32 len, t_i32 looka
 	t_i32 lookahead;                                                                                                                       \
 	goto start;                                                                                                                            \
 next_state:                                                                                                                                \
-	lexer->data.advance((void *)lexer, skip);                                                                                                           \
+	lexer->funcs.advance((void *)lexer, skip);                                                                                                           \
 start:                                                                                                                                     \
 	skip = false;                                                                                                                          \
-	lookahead = lexer->data.lookahead;
+	lookahead = lexer->funcs.lookahead;
 
 #define ADVANCE(state_value)                                                                                                               \
 	{                                                                                                                                      \
@@ -217,8 +214,8 @@ start:                                                                          
 
 #define ACCEPT_TOKEN(symbol_value)                                                                                                         \
 	result = true;                                                                                                                         \
-	lexer->data.result_symbol = symbol_value;                                                                                                   \
-	lexer->data.mark_end((void *)lexer);
+	lexer->funcs.result_symbol = symbol_value;                                                                                                   \
+	lexer->funcs.mark_end((void *)lexer);
 
 #define END_STATE() return result;
 

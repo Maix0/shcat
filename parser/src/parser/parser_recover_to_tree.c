@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:48:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:48:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:23:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-bool	ts_parser__recover_to_state(TSParser *self, t_stack_version version,
-		t_u32 depth, TSStateId goal_state)
+bool	ts_parser__recover_to_state(t_parser *self, t_stack_version version,
+		t_u32 depth, t_state_id goal_state)
 {
 	t_stack_slice		slice;
 	t_stack_slice_array	pop;
@@ -71,7 +71,7 @@ bool	ts_parser__recover_to_state(TSParser *self, t_stack_version version,
 		{
 			error = ts_subtree_new_error_node(&slice.subtrees, true,
 					self->language);
-			ts_stack_push(self->stack, slice.version, error, false, goal_state);
+			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, error, false, goal_state});
 		}
 		else
 		{
@@ -81,11 +81,11 @@ bool	ts_parser__recover_to_state(TSParser *self, t_stack_version version,
 		while (j < self->trailing_extras.len)
 		{
 			tree = self->trailing_extras.buffer[j];
-			ts_stack_push(self->stack, slice.version, tree, false, goal_state);
+			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, tree, false, goal_state});
 			j++;
 		}
 		previous_version = slice.version;
 		i++;
 	}
-	return (previous_version != STACK_VERSION_NONE);
+	return (previous_version != (t_stack_version)STACK_VERSION_NONE);
 }

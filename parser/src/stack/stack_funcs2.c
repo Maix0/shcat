@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/stack.h"
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 t_u32	ts_stack_error_cost(const t_stack *self, t_stack_version version)
 {

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/stack.h"
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 void	ts_stack_remove_version(t_stack *self, t_stack_version version)
 {

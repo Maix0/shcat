@@ -68,13 +68,13 @@ void	_append_redirection(t_ast_node node, t_ast_node redirection)
 // if (symbol == anon_sym_SEMI_SEMI)
 // 	return (AST_TERM_DOUBLE_SEMI);
 // printf("unknown term symbol %d\n", symbol);
-t_ast_terminator_kind	_select_term(t_parse_node node)
+t_ast_terminator_kind	_select_term(t_node node)
 {
 	(void)(node);
 	return (AST_TERM_NONE);
 }
 
-t_str	_extract_str(t_parse_node self, t_const_str input)
+t_str	_extract_str(t_node self, t_const_str input)
 {
 	t_usize	start;
 	t_usize	end;

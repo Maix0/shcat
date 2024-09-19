@@ -17,7 +17,7 @@
 #include "ast/_from_node.h"
 
 static void	_set_op_list(\
-	t_parse_node self, t_ast_node **output, t_ast_node ret, t_usize i)
+	t_node self, t_ast_node **output, t_ast_node ret, t_usize i)
 {
 	t_symbol	temp;
 
@@ -29,7 +29,7 @@ static void	_set_op_list(\
 	*output = &ret->data.list.right;
 }
 
-t_error	build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_list(t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	*output;
@@ -55,7 +55,7 @@ t_error	build_sym_list(t_parse_node self, t_const_str input, t_ast_node *out)
 }
 
 t_error	build_sym_subshell(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node				ret;
 	t_ast_node				tmp;

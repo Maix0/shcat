@@ -6,23 +6,23 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:54:24 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 14:32:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:22:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
-		TSStateId parse_state)
+t_subtree	ts_parser__lex(t_parser *self, t_stack_version version,
+		t_state_id parse_state)
 {
-	Length		current_position;
-	Length		error_end_position;
-	Length		error_start_position;
-	Length		padding;
-	Length		size;
-	Length		start_position;
+	t_length		current_position;
+	t_length		error_end_position;
+	t_length		error_start_position;
+	t_length		padding;
+	t_length		size;
+	t_length		start_position;
 	TSLexMode	lex_mode;
-	TSSymbol	symbol;
+	t_symbol	symbol;
 	bool		called_get_column;
 	bool		error_mode;
 	bool		external_scanner_state_changed;
@@ -87,7 +87,7 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 			ts_lexer_reset(&self->lexer, current_position);
 		}
 		ts_lexer_start(&self->lexer);
-		found_token = self->language->lex_fn(&self->lexer.data,
+		found_token = self->language->lex_fn(&self->lexer,
 				lex_mode.lex_state);
 		ts_lexer_finish(&self->lexer, &lookahead_end_byte);
 		if (found_token)
@@ -104,16 +104,16 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 			skipped_error = true;
 			error_start_position = self->lexer.token_start_position;
 			error_end_position = self->lexer.token_start_position;
-			first_error_character = self->lexer.data.lookahead;
+			first_error_character = self->lexer.funcs.lookahead;
 		}
 		if (self->lexer.current_position.bytes == error_end_position.bytes)
 		{
-			if (self->lexer.data.eof(&self->lexer.data))
+			if (self->lexer.funcs.eof(&self->lexer))
 			{
-				self->lexer.data.result_symbol = ts_builtin_sym_error;
+				self->lexer.funcs.result_symbol = ts_builtin_sym_error;
 				break ;
 			}
-			self->lexer.data.advance(&self->lexer.data, false);
+			self->lexer.funcs.advance(&self->lexer, false);
 		}
 		error_end_position = self->lexer.current_position;
 	}
@@ -128,7 +128,7 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 	else
 	{
 		is_keyword = false;
-		symbol = self->lexer.data.result_symbol;
+		symbol = self->lexer.funcs.result_symbol;
 		padding = length_sub(self->lexer.token_start_position, start_position);
 		size = length_sub(self->lexer.token_end_position,
 				self->lexer.token_start_position);
@@ -143,12 +143,12 @@ t_subtree	ts_parser__lex(TSParser *self, t_stack_version version,
 			end_byte = self->lexer.token_end_position.bytes;
 			ts_lexer_reset(&self->lexer, self->lexer.token_start_position);
 			ts_lexer_start(&self->lexer);
-			is_keyword = self->language->keyword_lex_fn(&self->lexer.data, 0);
+			is_keyword = self->language->keyword_lex_fn(&self->lexer, 0);
 			if (is_keyword && self->lexer.token_end_position.bytes == end_byte
 				&& ts_language_has_actions(self->language, parse_state,
-					self->lexer.data.result_symbol))
+					self->lexer.funcs.result_symbol))
 			{
-				symbol = self->lexer.data.result_symbol;
+				symbol = self->lexer.funcs.result_symbol;
 			}
 		}
 		result = ts_subtree_new_leaf((t_st_newleaf_args){symbol, padding, size, lookahead_bytes,

@@ -19,7 +19,7 @@
 struct s_reduce_action
 {
 	t_u32	 count;
-	TSSymbol symbol;
+	t_symbol symbol;
 	int		 dynamic_precedence;
 	t_u16	 production_id;
 };

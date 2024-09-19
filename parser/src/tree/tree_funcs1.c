@@ -14,9 +14,9 @@
 #include "parser/subtree.h"
 #include "parser/tree.h"
 
-TSTree	*ts_tree_new(t_subtree root, const TSLanguage *language)
+t_tree	*ts_tree_new(t_subtree root, const t_language *language)
 {
-	TSTree	*result;
+	t_tree	*result;
 
 	result = mem_alloc(sizeof(*result));
 	result->root = root;
@@ -24,13 +24,13 @@ TSTree	*ts_tree_new(t_subtree root, const TSLanguage *language)
 	return (result);
 }
 
-TSTree	*ts_tree_copy(const TSTree *self)
+t_tree	*ts_tree_copy(const t_tree *self)
 {
 	(self->root->ref_count++);
 	return (ts_tree_new(self->root, self->language));
 }
 
-void	ts_tree_delete(TSTree *self)
+void	ts_tree_delete(t_tree *self)
 {
 	if (self == NULL)
 		return ;

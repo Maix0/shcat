@@ -6,16 +6,16 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:36:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:36:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:19:45 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-bool	ts_parser__breakdown_top_of_stack(TSParser *self,
+bool	ts_parser__breakdown_top_of_stack(t_parser *self,
 		t_stack_version version)
 {
-	TSStateId			state;
+	t_state_id			state;
 	bool				did_break_down;
 	bool				pending;
 	t_stack_slice		slice;
@@ -57,15 +57,15 @@ bool	ts_parser__breakdown_top_of_stack(TSParser *self,
 					state = ts_language_next_state(self->language, state,
 							ts_subtree_symbol(child));
 				child->ref_count++;
-				ts_stack_push(self->stack, slice.version, child, pending,
-					state);
+				ts_stack_push(self->stack, \
+(struct s_stack_push_arg){slice.version, child, pending, state});
 				j++;
 			}
 			j = 1;
 			while (j < slice.subtrees.len)
 			{
 				tree = slice.subtrees.buffer[j];
-				ts_stack_push(self->stack, slice.version, tree, false, state);
+				ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, tree, false, state});
 				j++;
 			}
 			ts_subtree_release(parent);

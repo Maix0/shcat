@@ -16,25 +16,25 @@
 #include "parser/language.h"
 #include "parser/parser.h"
 
-TSSymbolMetadata	ts_language_symbol_metadata(const TSLanguage *self,
-		TSSymbol symbol)
+t_symbol_metadata	ts_language_symbol_metadata(const t_language *self,
+		t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
-		return ((TSSymbolMetadata){.visible = true, .named = true});
+		return ((t_symbol_metadata){.visible = true, .named = true});
 	else if (symbol == ts_builtin_sym_error_repeat)
-		return ((TSSymbolMetadata){.visible = false, .named = false});
+		return ((t_symbol_metadata){.visible = false, .named = false});
 	else
 		return (self->symbol_metadata[symbol]);
 }
 
-TSSymbol	ts_language_public_symbol(const TSLanguage *self, TSSymbol symbol)
+t_symbol	ts_language_public_symbol(const t_language *self, t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 		return (symbol);
 	return (self->public_symbol_map[symbol]);
 }
 
-t_const_str	ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
+t_const_str	ts_language_symbol_name(const t_language *self, t_symbol symbol)
 {
 	if (symbol == ts_builtin_sym_error)
 		return ("ERROR");
@@ -46,12 +46,12 @@ t_const_str	ts_language_symbol_name(const TSLanguage *self, TSSymbol symbol)
 		return (NULL);
 }
 
-TSSymbol	ts_language_symbol_for_name(const TSLanguage *self,
+t_symbol	ts_language_symbol_for_name(const t_language *self,
 		t_const_str string, t_u32 length, bool is_named)
 {
-	TSSymbolMetadata	metadata;
+	t_symbol_metadata	metadata;
 	t_u16				count;
-	TSSymbol			i;
+	t_symbol			i;
 	t_const_str			symbol_name;
 
 	if (str_n_compare(string, "ERROR", length))
@@ -75,15 +75,15 @@ TSSymbol	ts_language_symbol_for_name(const TSLanguage *self,
 	return (0);
 }
 
-TSSymbolType	ts_language_symbol_type(const TSLanguage *self, TSSymbol symbol)
+t_symbol_type	ts_language_symbol_type(const t_language *self, t_symbol symbol)
 {
-	TSSymbolMetadata	metadata;
+	t_symbol_metadata	metadata;
 
 	metadata = ts_language_symbol_metadata(self, symbol);
 	if (metadata.named && metadata.visible)
-		return (TSSymbolTypeRegular);
+		return (t_symbol_typeRegular);
 	else if (metadata.visible)
-		return (TSSymbolTypeAnonymous);
+		return (t_symbol_typeAnonymous);
 	else
-		return (TSSymbolTypeAuxiliary);
+		return (t_symbol_typeAuxiliary);
 }

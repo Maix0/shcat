@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/stack.h"
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 t_stack_action	pop_error_callback(void *payload,
 		const t_stack_iterator *iterator)

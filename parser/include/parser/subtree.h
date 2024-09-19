@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:06 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 14:14:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:37:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,35 +31,37 @@
 
 typedef t_vec_subtree t_vec_subtree;
 
-void		ts_external_scanner_state_init(t_external_scanner_state *, const t_u8 *, t_u32);
-const t_u8 *ts_external_scanner_state_data(const t_external_scanner_state *);
-bool		ts_external_scanner_state_eq(const t_external_scanner_state *self, const t_u8 *, t_u32);
-void		ts_external_scanner_state_delete(t_external_scanner_state *self);
+bool _subtree_compress_inner(t_subtree *tree, t_symbol symbol, t_vec_subtree *stack);
+int subtree_compare_func(t_subtree left, t_subtree right);
+int ts_subtree_compare(t_subtree left, t_subtree right);
+struct s_summarize_state _init_sumnarize_state(t_subtree self, const t_language *language);
+t_subtree ts_subtree_clone(t_subtree self);
+t_subtree ts_subtree_ensure_owner(t_subtree self);
+t_subtree ts_subtree_last_external_token(t_subtree tree);
+t_subtree ts_subtree_new_error(t_st_newerr_args args);
+t_subtree ts_subtree_new_error_node(t_vec_subtree *children, bool extra, const t_language *language);
+t_subtree ts_subtree_new_leaf(t_st_newleaf_args args);
+t_subtree ts_subtree_new_missing_leaf(t_symbol symbol, t_length padding, t_u32 lookahead_bytes, const t_language *language);
+t_subtree ts_subtree_new_node(t_symbol symbol, t_vec_subtree *children, t_u32 production_id, const t_language *language);
+void _subtree_balance_inner(const t_language *language, t_vec_subtree *tree_stack);
+void _subtree_balance_repush(t_vec_subtree *tree_stack, t_subtree tree);
+void _subtree_release_inner(t_vec_subtree *to_free);
+void _sumarize_end(t_subtree self, t_subtree *children);
+void _summarize_loop_inner1(t_subtree self, const t_language *language, struct s_summarize_state *s);
+void _summarize_loop_inner2(t_subtree self, const t_language *language, struct s_summarize_state *s);
+void _summarize_loop_inner3(t_subtree self, const t_language *language, struct s_summarize_state *s);
+void _summarize_loop_inner4(t_subtree self, const t_language *language, struct s_summarize_state *s);
+void ts_subtree__compress(t_subtree self, t_u32 count, const t_language *language, t_vec_subtree *stack);
+void ts_subtree_array_clear(t_vec_subtree *self);
+void ts_subtree_array_copy(t_vec_subtree self, t_vec_subtree *dest);
+void ts_subtree_array_delete(t_vec_subtree *self);
+void ts_subtree_array_remove_trailing_extras(t_vec_subtree *self, t_vec_subtree *destination);
+void ts_subtree_balance(t_subtree self, const t_language *language);
+void ts_subtree_release(t_subtree self);
+void ts_subtree_set_symbol(t_subtree *self, t_symbol symbol, const t_language *language);
+void ts_subtree_summarize_children(t_subtree self, const t_language *language);
 
-void ts_subtree_array_copy(t_vec_subtree, t_vec_subtree *);
-void ts_subtree_array_clear(t_vec_subtree *);
-void ts_subtree_array_delete(t_vec_subtree *);
-void ts_subtree_array_remove_trailing_extras(t_vec_subtree *, t_vec_subtree *);
-void ts_subtree_array_reverse(t_vec_subtree *);
-
-t_subtree						ts_subtree_new_leaf(t_st_newleaf_args args);
-t_subtree						ts_subtree_new_error(t_st_newerr_args args);
-t_subtree						ts_subtree_new_node(TSSymbol, t_vec_subtree *, t_u32, const TSLanguage *);
-t_subtree						ts_subtree_new_error_node(t_vec_subtree *, bool, const TSLanguage *);
-t_subtree						ts_subtree_new_missing_leaf(TSSymbol, Length, t_u32, const TSLanguage *);
-t_subtree						ts_subtree_ensure_owner(t_subtree);
-void							ts_subtree_release(t_subtree);
-int								ts_subtree_compare(t_subtree, t_subtree);
-void							ts_subtree_set_symbol(t_subtree *, TSSymbol, const TSLanguage *);
-void							ts_subtree_summarize(t_subtree, const t_subtree *, t_u32, const TSLanguage *);
-void							ts_subtree_summarize_children(t_subtree, const TSLanguage *);
-void							ts_subtree_balance(t_subtree, const TSLanguage *);
-char						   *ts_subtree_string(t_subtree, TSSymbol, bool, const TSLanguage *, bool include_all);
-t_subtree						ts_subtree_last_external_token(t_subtree);
-const t_external_scanner_state *ts_subtree_external_scanner_state(t_subtree self);
-bool							ts_subtree_external_scanner_state_eq(t_subtree, t_subtree);
-
-static inline TSSymbol ts_subtree_symbol(t_subtree self)
+static inline t_symbol ts_subtree_symbol(t_subtree self)
 {
 	return ((self)->symbol);
 }
@@ -87,7 +89,7 @@ static inline bool ts_subtree_is_keyword(t_subtree self)
 {
 	return ((self)->is_keyword);
 }
-static inline TSStateId ts_subtree_parse_state(t_subtree self)
+static inline t_state_id ts_subtree_parse_state(t_subtree self)
 {
 	return ((self)->parse_state);
 }
@@ -115,31 +117,31 @@ static inline void ts_subtree_set_extra(t_subtree *self, bool is_extra)
 	(*self)->extra = is_extra;
 }
 
-static inline TSSymbol ts_subtree_leaf_symbol(t_subtree self)
+static inline t_symbol ts_subtree_leaf_symbol(t_subtree self)
 {
 	if (self->child_count == 0)
 		return self->symbol;
 	return self->first_leaf.symbol;
 }
 
-static inline TSStateId ts_subtree_leaf_parse_state(t_subtree self)
+static inline t_state_id ts_subtree_leaf_parse_state(t_subtree self)
 {
 	if (self->child_count == 0)
 		return self->parse_state;
 	return self->first_leaf.parse_state;
 }
 
-static inline Length ts_subtree_padding(t_subtree self)
+static inline t_length ts_subtree_padding(t_subtree self)
 {
 	return self->padding;
 }
 
-static inline Length ts_subtree_size(t_subtree self)
+static inline t_length ts_subtree_size(t_subtree self)
 {
 	return self->size;
 }
 
-static inline Length ts_subtree_total_size(t_subtree self)
+static inline t_length ts_subtree_total_size(t_subtree self)
 {
 	return (length_add(ts_subtree_padding(self), ts_subtree_size(self)));
 }

@@ -6,28 +6,28 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 18:07:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:12:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:58:53 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "parser/lexer.h"
 
-bool	ts_lexer__eof(const TSLexer *_self);
-t_u32	ts_lexer__get_column(TSLexer *_self);
-void	ts_lexer__advance(TSLexer *_self, bool skip);
+bool	ts_lexer__eof(const t_lexer *_self);
+t_u32	ts_lexer__get_column(t_lexer *_self);
+void	ts_lexer__advance(t_lexer *_self, bool skip);
 void	ts_lexer__do_advance(t_lexer *self, bool skip);
 void	ts_lexer__clear_chunk(t_lexer *self);
 void	ts_lexer__get_chunk(t_lexer *self);
 void	ts_lexer__get_lookahead(t_lexer *self);
-void	ts_lexer__mark_end(TSLexer *_self);
+void	ts_lexer__mark_end(t_lexer *_self);
 void	ts_lexer_advance_to_end(t_lexer *self);
-void	ts_lexer_goto(t_lexer *self, Length position);
+void	ts_lexer_goto(t_lexer *self, t_length position);
 
 // Check if the lexer has reached EOF. This state is stored
 // by setting the lexer's `current_included_range_index` such that
 // it has consumed all of its available ranges.
-bool	ts_lexer__eof(const TSLexer *_self)
+bool	ts_lexer__eof(const t_lexer *_self)
 {
 	t_lexer	*self;
 
@@ -37,14 +37,14 @@ bool	ts_lexer__eof(const TSLexer *_self)
 
 // Mark that a token match has completed. This can be called multiple
 // times if a longer match is found later.
-void	ts_lexer__mark_end(TSLexer *_self)
+void	ts_lexer__mark_end(t_lexer *_self)
 {
 	t_lexer	*self;
-	TSRange	*current_included_range;
-	TSRange	*previous_included_range;
+	t_range	*current_included_range;
+	t_range	*previous_included_range;
 
 	self = (t_lexer *)_self;
-	if (!ts_lexer__eof(&self->data))
+	if (!ts_lexer__eof(self))
 	{
 		current_included_range = \
 			&self->included_ranges[self->current_included_range_index];
@@ -52,7 +52,7 @@ void	ts_lexer__mark_end(TSLexer *_self)
 		&& self->current_position.bytes == current_included_range->start_byte)
 		{
 			previous_included_range = current_included_range - 1;
-			self->token_end_position = (Length){
+			self->token_end_position = (t_length){
 				previous_included_range->end_byte,
 				previous_included_range->end_point,
 			};
@@ -65,5 +65,5 @@ void	ts_lexer__mark_end(TSLexer *_self)
 void	ts_lexer_advance_to_end(t_lexer *self)
 {
 	while (self->chunk)
-		ts_lexer__advance(&self->data, false);
+		ts_lexer__advance(self, false);
 }

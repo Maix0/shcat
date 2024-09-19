@@ -14,7 +14,7 @@
 #include "parser/subtree.h"
 
 void	_summarize_loop_inner1(t_subtree self,
-		const TSLanguage *language, struct s_summarize_state *s)
+		const t_language *language, struct s_summarize_state *s)
 {
 	(void)(language);
 	s->child = s->children[s->i];
@@ -39,7 +39,7 @@ void	_summarize_loop_inner1(t_subtree self,
 }
 
 void	_summarize_loop_inner2(t_subtree self,
-		const TSLanguage *language, struct s_summarize_state *s)
+		const t_language *language, struct s_summarize_state *s)
 {
 	(void)(language);
 	if (self->symbol == ts_builtin_sym_error
@@ -61,7 +61,7 @@ void	_summarize_loop_inner2(t_subtree self,
 }
 
 void	_summarize_loop_inner3(t_subtree self,
-		const TSLanguage *language, struct s_summarize_state *s)
+		const t_language *language, struct s_summarize_state *s)
 {
 	(void)(language);
 	if (s->alias_sequence && s->alias_sequence[s->structural_index] != 0
@@ -88,7 +88,7 @@ void	_summarize_loop_inner3(t_subtree self,
 }
 
 void	_summarize_loop_inner4(t_subtree self,
-		const TSLanguage *language, struct s_summarize_state *s)
+		const t_language *language, struct s_summarize_state *s)
 {
 	(void)(language);
 	if (ts_subtree_has_external_tokens(s->child))

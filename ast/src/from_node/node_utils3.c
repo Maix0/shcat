@@ -18,7 +18,7 @@
 #include "parser/api.h"
 
 void	_build_sym_expansion_inner(\
-	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i)
+	t_node self, t_const_str input, t_ast_node ret, t_usize i)
 {
 	if (ts_node_field_id_for_child(self, i) == field_len)
 		ret->data.expansion.len_operator = true;
@@ -30,7 +30,7 @@ void	_build_sym_expansion_inner(\
 }
 
 void	_build_sym_command_substitution_inner(\
-	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i)
+	t_node self, t_const_str input, t_ast_node ret, t_usize i)
 {
 	(void)(input);
 	if (ret->data.command_substitution.body.len != 0)

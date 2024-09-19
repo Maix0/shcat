@@ -6,18 +6,18 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:03:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:03:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:20:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-t_stack_version	ts_parser__reduce(TSParser *self, t_stack_version version,
-		TSSymbol symbol, t_u32 count, int dynamic_precedence,
+t_stack_version	ts_parser__reduce(t_parser *self, t_stack_version version,
+		t_symbol symbol, t_u32 count, int dynamic_precedence,
 		t_u16 production_id, bool is_fragile, bool end_of_non_terminal_extra)
 {
-	TSStateId			next_state;
-	TSStateId			state;
+	t_state_id			next_state;
+	t_state_id			state;
 	t_stack_slice		next_slice;
 	t_stack_slice		slice;
 	t_stack_slice_array	pop;
@@ -97,12 +97,12 @@ t_stack_version	ts_parser__reduce(TSParser *self, t_stack_version version,
 		else
 			parent->parse_state = state;
 		parent->dynamic_precedence += dynamic_precedence;
-		ts_stack_push(self->stack, slice_version, (parent), false, next_state);
+		ts_stack_push(self->stack, (struct s_stack_push_arg){slice_version, (parent), false, next_state});
 		j = 0;
 		while (j < self->trailing_extras.len)
 		{
-			ts_stack_push(self->stack, slice_version,
-				self->trailing_extras.buffer[j], false, next_state);
+			ts_stack_push(self->stack, (struct s_stack_push_arg){slice_version,
+				self->trailing_extras.buffer[j], false, next_state});
 			j++;
 		}
 		k = 0;

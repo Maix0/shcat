@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/stack.h"
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 t_stack_action	summarize_stack_callback(void *payload,
 		const t_stack_iterator *iterator)
 {
 	t_summarize_stack_session	*session;
-	TSStateId					state;
+	t_state_id					state;
 	t_u32						depth;
 	t_stack_summary_entry		entry;
 	t_usize						i;

@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/stack.h"
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 t_u32	ts_stack_version_count(const t_stack *self)
 {
 	return (self->heads.size);
 }
 
-TSStateId	ts_stack_state(const t_stack *self, t_stack_version version)
+t_state_id	ts_stack_state(const t_stack *self, t_stack_version version)
 {
 	return (array_get(&self->heads, version)->node->state);
 }
 
-Length	ts_stack_position(const t_stack *self, t_stack_version version)
+t_length	ts_stack_position(const t_stack *self, t_stack_version version)
 {
 	return (array_get(&self->heads, version)->node->position);
 }

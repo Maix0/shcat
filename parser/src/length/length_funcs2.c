@@ -13,12 +13,12 @@
 #include "parser/length.h"
 #include "parser/point.h"
 
-Length	length_zero(void)
+t_length	length_zero(void)
 {
-	return ((Length){0, {0, 0}});
+	return ((t_length){0, {0, 0}});
 }
 
-Length	length_saturating_sub(Length len1, Length len2)
+t_length	length_saturating_sub(t_length len1, t_length len2)
 {
 	if (len1.bytes > len2.bytes)
 		return (length_sub(len1, len2));

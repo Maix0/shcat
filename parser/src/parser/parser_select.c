@@ -18,7 +18,7 @@
 // The decision is based on the trees' error costs (if any),
 // their dynamic precedence, and finally, as a default, by a
 // recursive comparison of the trees' symbols.
-bool	ts_parser__select_tree(TSParser *self, t_subtree left, t_subtree right)
+bool	ts_parser__select_tree(t_parser *self, t_subtree left, t_subtree right)
 {
 	int	comparison;
 
@@ -45,7 +45,7 @@ bool	ts_parser__select_tree(TSParser *self, t_subtree left, t_subtree right)
 
 // Determine if a given tree's children should be replaced
 // by an alternative array of children.
-bool	ts_parser__select_children(TSParser *self, t_subtree left,
+bool	ts_parser__select_children(t_parser *self, t_subtree left,
 		const t_vec_subtree *children)
 {
 	t_subtree	scratch_tree;

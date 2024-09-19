@@ -28,13 +28,13 @@ typedef struct s_subtree_data t_subtree_data;
 struct s_subtree_data
 {
 	t_u32	  ref_count;
-	Length	  padding;
-	Length	  size;
+	t_length	  padding;
+	t_length	  size;
 	t_u32	  lookahead_bytes;
 	t_u32	  error_cost;
 	t_u32	  child_count;
-	TSSymbol  symbol;
-	TSStateId parse_state;
+	t_symbol  symbol;
+	t_state_id parse_state;
 
 	bool visible;
 	bool named;
@@ -60,8 +60,8 @@ struct s_subtree_data
 			t_u16 production_id;
 			struct
 			{
-				TSSymbol  symbol;
-				TSStateId parse_state;
+				t_symbol  symbol;
+				t_state_id parse_state;
 			} first_leaf;
 		};
 
@@ -81,31 +81,31 @@ typedef struct s_subtree_new_error_args t_st_newerr_args;
 
 struct s_subtree_new_leaf_args
 {
-	TSSymbol		  symbol;
-	Length			  padding;
-	Length			  size;
+	t_symbol		  symbol;
+	t_length			  padding;
+	t_length			  size;
 	t_u32			  lookahead_bytes;
-	TSStateId		  parse_state;
+	t_state_id		  parse_state;
 	bool			  has_external_tokens;
 	bool			  depends_on_column;
 	bool			  is_keyword;
-	const TSLanguage *language;
+	const t_language *language;
 };
 
 struct s_subtree_new_error_args
 {
 	t_i32			  lookahead_char;
-	Length			  padding;
-	Length			  size;
+	t_length			  padding;
+	t_length			  size;
 	t_u32			  bytes_scanned;
-	TSStateId		  parse_state;
-	const TSLanguage *language;
+	t_state_id		  parse_state;
+	const t_language *language;
 };
 
 struct s_summarize_state
 {
 	t_u32			structural_index;
-	const TSSymbol	*alias_sequence;
+	const t_symbol	*alias_sequence;
 	t_u32			lookahead_end_byte;
 	t_subtree		*children;
 	t_subtree		child;

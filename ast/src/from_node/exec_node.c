@@ -32,7 +32,7 @@
 	*/
 
 t_error	build_sym_compound_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node				ret;
 	t_ast_node				tmp;
@@ -65,7 +65,7 @@ ret->data.program.body.len - 1], _select_term(ts_node_child(self, i)));
 		}
 */
 
-t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_program(t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;
@@ -90,7 +90,7 @@ t_error	build_sym_program(t_parse_node self, t_const_str input, t_ast_node *out)
 }
 
 t_error	build_sym_command_name(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	if (out == NULL)
 		return (ERROR);
@@ -99,7 +99,7 @@ t_error	build_sym_command_name(\
 	return (ast_from_node(ts_node_child(self, 0), input, out));
 }
 
-t_error	build_sym_command(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_command(t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;

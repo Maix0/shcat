@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 t_error	build_sym_number(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
@@ -41,7 +41,7 @@ t_error	build_sym_number(\
 }
 
 t_error	build_sym_file_descriptor(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 

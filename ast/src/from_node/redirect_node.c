@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 t_error	build_sym_file_redirect(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	n[2];
 	t_usize		i;
@@ -53,7 +53,7 @@ t_error	build_sym_file_redirect(\
 }
 
 t_error	build_sym_redirected_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	n[3];
 	t_usize		i;

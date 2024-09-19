@@ -6,18 +6,18 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:44:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:14:07 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:23:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-void	ts_parser__external_scanner_create(TSParser *self)
+void	ts_parser__external_scanner_create(t_parser *self)
 {
 	self->external_scanner_payload = self->language->external_scanner.create();
 }
 
-void	ts_parser__external_scanner_destroy(TSParser *self)
+void	ts_parser__external_scanner_destroy(t_parser *self)
 {
 	if (self->external_scanner_payload != NULL)
 	{
@@ -27,7 +27,7 @@ void	ts_parser__external_scanner_destroy(TSParser *self)
 	}
 }
 
-t_u32	ts_parser__external_scanner_serialize(TSParser *self)
+t_u32	ts_parser__external_scanner_serialize(t_parser *self)
 {
 	t_u32	length;
 
@@ -39,7 +39,7 @@ t_u32	ts_parser__external_scanner_serialize(TSParser *self)
 	return (length);
 }
 
-void	ts_parser__external_scanner_deserialize(TSParser *self,
+void	ts_parser__external_scanner_deserialize(t_parser *self,
 		t_subtree external_token)
 {
 	const t_u8	*data;
@@ -58,13 +58,13 @@ void	ts_parser__external_scanner_deserialize(TSParser *self,
 		data, length);
 }
 
-bool	ts_parser__external_scanner_scan(TSParser *self,
-		TSStateId external_lex_state)
+bool	ts_parser__external_scanner_scan(t_parser *self,
+		t_state_id external_lex_state)
 {
 	const bool	*valid_external_tokens;
 
 	valid_external_tokens = ts_language_enabled_external_tokens(self->language,
 			external_lex_state);
 	return (self->language->external_scanner.scan(\
-	self->external_scanner_payload, &self->lexer.data, valid_external_tokens));
+	self->external_scanner_payload, &self->lexer, valid_external_tokens));
 }

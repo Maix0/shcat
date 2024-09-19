@@ -14,13 +14,13 @@
 #include "parser/subtree.h"
 
 void	_summarize_loop_inner1(t_subtree self, \
-		const TSLanguage *language, struct s_summarize_state *s);
+		const t_language *language, struct s_summarize_state *s);
 void	_summarize_loop_inner2(t_subtree self, \
-		const TSLanguage *language, struct s_summarize_state *s);
+		const t_language *language, struct s_summarize_state *s);
 void	_summarize_loop_inner3(t_subtree self, \
-		const TSLanguage *language, struct s_summarize_state *s);
+		const t_language *language, struct s_summarize_state *s);
 void	_summarize_loop_inner4(t_subtree self, \
-		const TSLanguage *language, struct s_summarize_state *s);
+		const t_language *language, struct s_summarize_state *s);
 
 void	_sumarize_end(t_subtree self, t_subtree *children)
 {
@@ -50,7 +50,7 @@ void	_sumarize_end(t_subtree self, t_subtree *children)
 }
 
 struct s_summarize_state	_init_sumnarize_state(t_subtree self,
-		const TSLanguage *language)
+		const t_language *language)
 {
 	struct s_summarize_state	s;
 
@@ -75,7 +75,7 @@ struct s_summarize_state	_init_sumnarize_state(t_subtree self,
 
 // Assign all of the node's properties that depend on its children.
 void	ts_subtree_summarize_children(t_subtree self,
-		const TSLanguage *language)
+		const t_language *language)
 {
 	struct s_summarize_state	s;
 

@@ -13,16 +13,16 @@
 #include "me/types.h"
 #include "parser/lexer.h"
 
-bool	ts_lexer__eof(const TSLexer *_self);
-t_u32	ts_lexer__get_column(TSLexer *_self);
-void	ts_lexer__advance(TSLexer *_self, bool skip);
+bool	ts_lexer__eof(const t_lexer *_self);
+t_u32	ts_lexer__get_column(t_lexer *_self);
+void	ts_lexer__advance(t_lexer *_self, bool skip);
 void	ts_lexer__do_advance(t_lexer *self, bool skip);
 void	ts_lexer__clear_chunk(t_lexer *self);
 void	ts_lexer__get_chunk(t_lexer *self);
 void	ts_lexer__get_lookahead(t_lexer *self);
-void	ts_lexer__mark_end(TSLexer *_self);
+void	ts_lexer__mark_end(t_lexer *_self);
 void	ts_lexer_advance_to_end(t_lexer *self);
-void	ts_lexer_goto(t_lexer *self, Length position);
+void	ts_lexer_goto(t_lexer *self, t_length position);
 
 // Clear the currently stored chunk of source code, because the lexer's
 // position has changed.

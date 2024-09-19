@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 
 #include "me/vec/vec_subtree.h"
-#include "parser/inner/stack.h"
-#include "parser/stack.h"
+#include "parser/inner/stack_inner.h"
+#include "parser/inner/stack_inner.h"
 
 t_stack_slice_array	stack__iter(t_stack *self, t_stack_version version,
 		t_stack_callback callback, void *payload, int goal_subtree_count)

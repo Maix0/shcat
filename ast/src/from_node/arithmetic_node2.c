@@ -22,7 +22,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_error	check_error_ternary(t_parse_node self, t_ast_node *out)
+t_error	check_error_ternary(t_node self, t_ast_node *out)
 {
 	if (out == NULL)
 		return (ERROR);
@@ -34,7 +34,7 @@ t_error	check_error_ternary(t_parse_node self, t_ast_node *out)
 }
 
 t_error	build_sym_arithmetic_ternary_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;
@@ -63,7 +63,7 @@ t_error	build_sym_arithmetic_ternary_expression(\
 }
 
 t_error	build_sym_arithmetic_unary_expression(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
@@ -84,7 +84,7 @@ t_error	build_sym_arithmetic_unary_expression(\
 }
 
 t_error	arithmetic_choice(\
-	t_parse_node self, t_const_str input, t_ast_node *out, t_usize i)
+	t_node self, t_const_str input, t_ast_node *out, t_usize i)
 {
 	if (ts_node_field_id_for_child(self, i) \
 		== sym_arithmetic_binary_expression)
@@ -108,7 +108,7 @@ t_error	arithmetic_choice(\
 }
 
 t_error	build_sym_arithmetic_expansion(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_usize		i;
 	t_ast_node	ret;

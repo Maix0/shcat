@@ -19,8 +19,8 @@
 #include "parser/inner/reduce_action_inner.h"
 #include "me/vec/vec_reduce_action.h"
 
-typedef t_vec_reduce_action ReduceActionSet;
+typedef t_vec_reduce_action t_vec_reduce_action;
 
-void ts_reduce_action_set_add(ReduceActionSet *self, t_reduce_action new_action);
+void ts_reduce_action_set_add(t_vec_reduce_action *self, t_reduce_action new_action);
 
 #endif // REDUCE_ACTION_H

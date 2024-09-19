@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/inner/stack.h"
+#include "parser/inner/stack_inner.h"
 #include "parser/language.h"
-#include "parser/stack.h"
+#include "parser/inner/stack_inner.h"
 
 void	stack_node_retain(t_stack_node *self)
 {
@@ -83,7 +83,7 @@ t_u32	stack__subtree_node_count(t_subtree subtree)
 }
 
 t_stack_node	*stack_node_new(t_stack_node *previous_node,
-		t_subtree subtree, bool is_pending, TSStateId state)
+		t_subtree subtree, bool is_pending, t_state_id state)
 {
 	t_stack_node	*node;
 

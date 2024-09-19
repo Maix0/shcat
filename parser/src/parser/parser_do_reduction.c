@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:04:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:04:29 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:21:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-bool	ts_parser__do_all_potential_reductions(TSParser *self,
-		t_stack_version starting_version, TSSymbol lookahead_symbol)
+bool	ts_parser__do_all_potential_reductions(t_parser *self,
+		t_stack_version starting_version, t_symbol lookahead_symbol)
 {
 	t_u32			initial_version_count;
 	bool			can_shift_lookahead_symbol;
@@ -22,14 +22,14 @@ bool	ts_parser__do_all_potential_reductions(TSParser *self,
 	t_u32			version_count;
 	bool			merged;
 	t_stack_version	j;
-	TSStateId		state;
+	t_state_id		state;
 	bool			has_shift_action;
-	TSSymbol		first_symbol;
-	TSSymbol		end_symbol;
+	t_symbol		first_symbol;
+	t_symbol		end_symbol;
 	t_stack_version	reduction_version;
 	t_reduce_action	reduce_action;
 	t_u32			k;
-	TSSymbol		symbol;
+	t_symbol		symbol;
 	TableEntry		entry;
 	TSParseAction	action;
 
@@ -109,7 +109,7 @@ bool	ts_parser__do_all_potential_reductions(TSParser *self,
 		}
 		if (has_shift_action)
 			can_shift_lookahead_symbol = true;
-		else if (reduction_version != STACK_VERSION_NONE
+		else if (reduction_version != (t_stack_version)STACK_VERSION_NONE
 			&& i < MAX_VERSION_COUNT)
 		{
 			ts_stack_renumber_version(self->stack, reduction_version, version);

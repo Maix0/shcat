@@ -15,13 +15,13 @@
 #include "parser/language.h"
 #include "parser/parser.h"
 
-bool	ts_language_has_actions(const TSLanguage *self, TSStateId state,
-		TSSymbol symbol)
+bool	ts_language_has_actions(const t_language *self, t_state_id state,
+		t_symbol symbol)
 {
 	return (ts_language_lookup(self, state, symbol) != 0);
 }
 
-const bool	*ts_language_enabled_external_tokens(const TSLanguage *self,
+const bool	*ts_language_enabled_external_tokens(const t_language *self,
 		t_u32 external_scanner_state)
 {
 	if (external_scanner_state == 0)
@@ -31,7 +31,7 @@ const bool	*ts_language_enabled_external_tokens(const TSLanguage *self,
 	+ self->external_token_count * external_scanner_state);
 }
 
-const TSSymbol	*ts_language_alias_sequence(const TSLanguage *self,
+const t_symbol	*ts_language_alias_sequence(const t_language *self,
 		t_u32 production_id)
 {
 	if (production_id)
@@ -41,7 +41,7 @@ const TSSymbol	*ts_language_alias_sequence(const TSLanguage *self,
 		return (NULL);
 }
 
-TSSymbol	ts_language_alias_at(const TSLanguage *self, t_u32 production_id,
+t_symbol	ts_language_alias_at(const t_language *self, t_u32 production_id,
 		t_u32 child_index)
 {
 	if (production_id)

@@ -16,7 +16,7 @@
 #include "parser/language.h"
 #include "parser/parser.h"
 
-t_const_str	ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
+t_const_str	ts_language_field_name_for_id(const t_language *self, t_field_id id)
 {
 	t_u32	count;
 
@@ -27,11 +27,11 @@ t_const_str	ts_language_field_name_for_id(const TSLanguage *self, TSFieldId id)
 		return (NULL);
 }
 
-TSFieldId	ts_language_field_id_for_name(const TSLanguage *self,
+t_field_id	ts_language_field_id_for_name(const t_language *self,
 		t_const_str name, t_u32 name_length)
 {
 	t_u16		count;
-	TSSymbol	i;
+	t_symbol	i;
 
 	count = (t_u16)ts_language_field_count(self);
 	i = 1;
@@ -45,7 +45,7 @@ TSFieldId	ts_language_field_id_for_name(const TSLanguage *self,
 	return (0);
 }
 
-void	ts_language_field_map(const TSLanguage *self, t_u32 production_id,
+void	ts_language_field_map(const t_language *self, t_u32 production_id,
 		const TSFieldMapEntry **start, const TSFieldMapEntry **end)
 {
 	TSFieldMapSlice	slice;

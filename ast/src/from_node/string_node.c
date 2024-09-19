@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 t_error	build_sym_word(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_str		temp_str;
@@ -43,7 +43,7 @@ t_error	build_sym_word(\
 }
 
 t_error	build_sym_string(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;
@@ -72,7 +72,7 @@ t_error	build_sym_string(\
 }
 
 t_error	build_sym_concatenation(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;
@@ -99,7 +99,7 @@ t_error	build_sym_concatenation(\
 }
 
 t_error	build_sym_string_content(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_str		temp_str;
@@ -117,7 +117,7 @@ t_error	build_sym_string_content(\
 }
 
 t_error	build_sym_raw_string(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	temp;

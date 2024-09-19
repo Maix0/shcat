@@ -15,8 +15,8 @@
 #include "parser/language.h"
 #include "parser/parser.h"
 
-void	ts_language_table_entry(const TSLanguage *self, TSStateId state,
-		TSSymbol symbol, TableEntry *result)
+void	ts_language_table_entry(const t_language *self, t_state_id state,
+		t_symbol symbol, TableEntry *result)
 {
 	t_u32						action_index;
 	const TSParseActionEntry	*entry;
@@ -37,8 +37,8 @@ void	ts_language_table_entry(const TSLanguage *self, TSStateId state,
 	}
 }
 
-TSStateId	ts_language_next_state(const TSLanguage *self, TSStateId state,
-		TSSymbol symbol)
+t_state_id	ts_language_next_state(const t_language *self, t_state_id state,
+		t_symbol symbol)
 {
 	t_u32				count;
 	const TSParseAction	*actions;
@@ -67,8 +67,8 @@ TSStateId	ts_language_next_state(const TSLanguage *self, TSStateId state,
 		return (ts_language_lookup(self, state, symbol));
 }
 
-const TSParseAction	*ts_language_actions(const TSLanguage *self,
-		TSStateId state, TSSymbol symbol, t_u32 *count)
+const TSParseAction	*ts_language_actions(const t_language *self,
+		t_state_id state, t_symbol symbol, t_u32 *count)
 {
 	TableEntry	entry;
 
@@ -77,8 +77,8 @@ const TSParseAction	*ts_language_actions(const TSLanguage *self,
 	return (entry.actions);
 }
 
-bool	ts_language_has_reduce_action(const TSLanguage *self, TSStateId state,
-		TSSymbol symbol)
+bool	ts_language_has_reduce_action(const t_language *self, t_state_id state,
+		t_symbol symbol)
 {
 	TableEntry	entry;
 
@@ -94,8 +94,8 @@ bool	ts_language_has_reduce_action(const TSLanguage *self, TSStateId state,
 // For 'large' parse states, this is a direct lookup. For 'small' parse
 // states, this requires searching through the symbol groups to find
 // the given symbol.
-t_u16	ts_language_lookup(const TSLanguage *self, TSStateId state,
-		TSSymbol symbol)
+t_u16	ts_language_lookup(const t_language *self, t_state_id state,
+		t_symbol symbol)
 {
 	if (state >= self->large_state_count)
 		return (me_abort("we got a small parse table, which isn't supported"),

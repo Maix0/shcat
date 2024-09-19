@@ -38,7 +38,7 @@ t_vec_ast	*_append_scripting(\
 }
 
 t_error	build_sym_for_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	tmp;
@@ -84,12 +84,12 @@ t_error	build_sym_for_statement(\
 /*
 
 t_error	build_sym_while_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node				ret;
 	t_ast_node				tmp;
 	t_usize					i;
-	t_parse_node			child;
+	t_node			child;
 	t_ast_terminator_kind	term;
 
 	if (out == NULL || ts_node_symbol(self) != sym_while_statement)
@@ -140,7 +140,7 @@ t_error	build_sym_while_statement(\
 /*
 
 t_error	build_sym_do_group(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node				ret;
 	t_ast_node				tmp;

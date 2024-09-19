@@ -6,14 +6,14 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:55:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:55:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:20:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-void	ts_parser__shift(TSParser *self, t_stack_version version,
-		TSStateId state, t_subtree lookahead, bool extra)
+void	ts_parser__shift(t_parser *self, t_stack_version version,
+		t_state_id state, t_subtree lookahead, bool extra)
 {
 	bool		is_leaf;
 	t_subtree	result;
@@ -27,7 +27,7 @@ void	ts_parser__shift(TSParser *self, t_stack_version version,
 		ts_subtree_set_extra(&result, extra);
 		subtree_to_push = (result);
 	}
-	ts_stack_push(self->stack, version, subtree_to_push, !is_leaf, state);
+	ts_stack_push(self->stack,(struct s_stack_push_arg){ version, subtree_to_push, !is_leaf, state});
 	if (ts_subtree_has_external_tokens(subtree_to_push))
 		ts_stack_set_last_external_token(self->stack, version,
 			ts_subtree_last_external_token(subtree_to_push));

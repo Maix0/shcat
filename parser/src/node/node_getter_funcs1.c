@@ -14,14 +14,14 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-bool	ts_node_is_extra(TSNode self)
+bool	ts_node_is_extra(t_node self)
 {
 	return (ts_subtree_extra(ts_node__subtree(self)));
 }
 
-bool	ts_node_is_named(TSNode self)
+bool	ts_node_is_named(t_node self)
 {
-	TSSymbol	alias;
+	t_symbol	alias;
 
 	alias = ts_node__alias(&self);
 	if (alias)
@@ -29,12 +29,12 @@ bool	ts_node_is_named(TSNode self)
 	return (ts_subtree_named(ts_node__subtree(self)));
 }
 
-TSNode	ts_node_child(TSNode self, t_u32 child_index)
+t_node	ts_node_child(t_node self, t_u32 child_index)
 {
 	return (ts_node__child(self, child_index, true));
 }
 
-TSNode	ts_node_named_child(TSNode self, t_u32 child_index)
+t_node	ts_node_named_child(t_node self, t_u32 child_index)
 {
 	return (ts_node__child(self, child_index, false));
 }

@@ -39,16 +39,16 @@ void	tree_sitter_sh_external_scanner_destroy(void *payload);
 
 bool	scan_bare_dollar(t_lexer *lexer)
 {
-	while (me_isspace(lexer->data.lookahead) && lexer->data.lookahead != '\n'
-		&& !lexer->data.eof((void *)lexer))
-		lexer->data.advance((void *)lexer, true);
-	if (lexer->data.lookahead == '$')
+	while (me_isspace(lexer->funcs.lookahead) && lexer->funcs.lookahead != '\n'
+		&& !lexer->funcs.eof((void *)lexer))
+		lexer->funcs.advance((void *)lexer, true);
+	if (lexer->funcs.lookahead == '$')
 	{
-		lexer->data.advance((void *)lexer, false);
-		lexer->data.result_symbol = BARE_DOLLAR;
-		lexer->data.mark_end((void *)lexer);
-		return (me_isspace(lexer->data.lookahead)
-			|| lexer->data.eof((void *)lexer) || lexer->data.lookahead == '\"');
+		lexer->funcs.advance((void *)lexer, false);
+		lexer->funcs.result_symbol = BARE_DOLLAR;
+		lexer->funcs.mark_end((void *)lexer);
+		return (me_isspace(lexer->funcs.lookahead)
+			|| lexer->funcs.eof((void *)lexer) || lexer->funcs.lookahead == '\"');
 	}
 	return (false);
 }
@@ -62,17 +62,17 @@ bool	scan_double_hash(t_scanner *scanner, t_lexer *lexer,
 	if (valid_symbols[IMMEDIATE_DOUBLE_HASH]
 		&& !(valid_symbols[ERROR_RECOVERY]))
 	{
-		if (lexer->data.lookahead == '#')
+		if (lexer->funcs.lookahead == '#')
 		{
-			lexer->data.mark_end((void *)lexer);
-			lexer->data.advance((void *)lexer, false);
-			if (lexer->data.lookahead == '#')
+			lexer->funcs.mark_end((void *)lexer);
+			lexer->funcs.advance((void *)lexer, false);
+			if (lexer->funcs.lookahead == '#')
 			{
-				lexer->data.advance((void *)lexer, false);
-				if (lexer->data.lookahead != '}')
+				lexer->funcs.advance((void *)lexer, false);
+				if (lexer->funcs.lookahead != '}')
 				{
-					lexer->data.result_symbol = IMMEDIATE_DOUBLE_HASH;
-					lexer->data.mark_end((void *)lexer);
+					lexer->funcs.result_symbol = IMMEDIATE_DOUBLE_HASH;
+					lexer->funcs.mark_end((void *)lexer);
 					return (true);
 				}
 			}

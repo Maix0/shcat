@@ -45,29 +45,29 @@ bool	advance_word(t_lexer *lexer, t_string *unquoted_word)
 
 	empty = true;
 	quote = 0;
-	if (lexer->data.lookahead == '\'' || lexer->data.lookahead == '"')
+	if (lexer->funcs.lookahead == '\'' || lexer->funcs.lookahead == '"')
 	{
-		quote = lexer->data.lookahead;
-		lexer->data.advance((void *)lexer, false);
+		quote = lexer->funcs.lookahead;
+		lexer->funcs.advance((void *)lexer, false);
 	}
-	while (lexer->data.lookahead && !((quote && (lexer->data.lookahead == quote
-					|| lexer->data.lookahead == '\r'
-					|| lexer->data.lookahead == '\n')) || (!quote
-				&& me_isspace(lexer->data.lookahead))))
+	while (lexer->funcs.lookahead && !((quote && (lexer->funcs.lookahead == quote
+					|| lexer->funcs.lookahead == '\r'
+					|| lexer->funcs.lookahead == '\n')) || (!quote
+				&& me_isspace(lexer->funcs.lookahead))))
 	{
-		if (lexer->data.lookahead == '\\')
+		if (lexer->funcs.lookahead == '\\')
 		{
-			lexer->data.advance((void *)lexer, false);
-			if (!lexer->data.lookahead)
+			lexer->funcs.advance((void *)lexer, false);
+			if (!lexer->funcs.lookahead)
 				return (false);
 		}
 		empty = false;
-		string_push_char(unquoted_word, lexer->data.lookahead);
-		lexer->data.advance((void *)lexer, false);
+		string_push_char(unquoted_word, lexer->funcs.lookahead);
+		lexer->funcs.advance((void *)lexer, false);
 	}
 	string_push_char(unquoted_word, '\0');
-	if (quote && lexer->data.lookahead == quote)
-		lexer->data.advance((void *)lexer, false);
+	if (quote && lexer->funcs.lookahead == quote)
+		lexer->funcs.advance((void *)lexer, false);
 	return (!empty);
 }
 

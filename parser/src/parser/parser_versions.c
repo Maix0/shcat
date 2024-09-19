@@ -12,7 +12,7 @@
 
 #include "parser/inner/parser_inner.h"
 
-t_error_comparison	ts_parser__compare_versions(TSParser *self,
+t_error_comparison	ts_parser__compare_versions(t_parser *self,
 		t_error_status a, t_error_status b)
 {
 	(void)self;
@@ -51,7 +51,7 @@ t_error_comparison	ts_parser__compare_versions(TSParser *self,
 	return (ECNone);
 }
 
-t_error_status	ts_parser__version_status(TSParser *self,
+t_error_status	ts_parser__version_status(t_parser *self,
 		t_stack_version version)
 {
 	t_u32	cost;
@@ -68,11 +68,11 @@ t_error_status	ts_parser__version_status(TSParser *self,
 			version) == ERROR_STATE});
 }
 
-bool	ts_parser__better_version_exists(TSParser *self,
+bool	ts_parser__better_version_exists(t_parser *self,
 		t_stack_version version, bool is_in_error, t_u32 cost)
 {
 	t_error_status		status_i;
-	Length				position;
+	t_length				position;
 	t_error_status		status;
 	t_stack_version		i;
 	t_stack_version		n;

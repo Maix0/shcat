@@ -20,12 +20,12 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_error	ast_from_node(t_parse_node node, t_const_str input, t_ast_node *out);
+t_error	ast_from_node(t_node node, t_const_str input, t_ast_node *out);
 
 //	if (ts_node_symbol(node) == sym_while_statement)
 //		return (build_sym_while_statement(node, input, out));
 t_error	_from_node_inner3(\
-	t_parse_node node, t_const_str input, t_ast_node *out)
+	t_node node, t_const_str input, t_ast_node *out)
 {
 	if (ts_node_symbol(node) == sym_pipeline)
 		return (build_sym_pipeline(node, input, out));
@@ -59,7 +59,7 @@ t_error	_from_node_inner3(\
 //	if (ts_node_symbol(node) == sym_if_statement)
 //		return (build_sym_if_statement(node, input, out));
 t_error	_from_node_inner2(\
-	t_parse_node node, t_const_str input, t_ast_node *out)
+	t_node node, t_const_str input, t_ast_node *out)
 {
 	if (ts_node_symbol(node) == sym_extglob_pattern)
 		return (build_sym_extglob_pattern(node, input, out));
@@ -85,7 +85,7 @@ t_error	_from_node_inner2(\
 //	if (ts_node_symbol(node) == sym_else_clause)
 //		return (build_sym_else_clause(node, input, out));
 t_error	_from_node_inner(\
-	t_parse_node node, t_const_str input, t_ast_node *out)
+	t_node node, t_const_str input, t_ast_node *out)
 {
 	if (ts_node_symbol(node) == sym_command)
 		return (build_sym_command(node, input, out));
@@ -109,7 +109,7 @@ t_error	_from_node_inner(\
 //	else if (ts_node_symbol(node) == sym_case_statement)
 //		return (build_sym_case_statement(node, input, out));
 t_error	ast_from_node(\
-	t_parse_node node, t_const_str input, t_ast_node *out)
+	t_node node, t_const_str input, t_ast_node *out)
 {
 	if (out == NULL)
 		return (ERROR);

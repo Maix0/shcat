@@ -13,30 +13,30 @@
 #include "parser/length.h"
 #include "parser/point.h"
 
-bool	length_is_undefined(Length length)
+bool	length_is_undefined(t_length length)
 {
 	return (length.bytes == 0 && length.extent.column != 0);
 }
 
-Length	length_min(Length len1, Length len2)
+t_length	length_min(t_length len1, t_length len2)
 {
 	if (len1.bytes < len2.bytes)
 		return (len1);
 	return (len2);
 }
 
-Length	length_add(Length len1, Length len2)
+t_length	length_add(t_length len1, t_length len2)
 {
-	Length	result;
+	t_length	result;
 
 	result.bytes = len1.bytes + len2.bytes;
 	result.extent = point_add(len1.extent, len2.extent);
 	return (result);
 }
 
-Length	length_sub(Length len1, Length len2)
+t_length	length_sub(t_length len1, t_length len2)
 {
-	Length	result;
+	t_length	result;
 
 	result.bytes = len1.bytes - len2.bytes;
 	result.extent = point_sub(len1.extent, len2.extent);

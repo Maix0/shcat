@@ -6,22 +6,22 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 14:04:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 14:05:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:20:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-void	ts_lexer__mark_end(TSLexer *_self);
+void	ts_lexer__mark_end(t_lexer *_self);
 
-void	ts_parser__handle_error(TSParser *self, t_stack_version version,
+void	ts_parser__handle_error(t_parser *self, t_stack_version version,
 		t_subtree lookahead)
 {
-	Length			padding;
-	Length			position;
-	TSStateId		state;
-	TSStateId		state_after_missing_symbol;
-	TSSymbol		missing_symbol;
+	t_length			padding;
+	t_length			position;
+	t_state_id		state;
+	t_state_id		state_after_missing_symbol;
+	t_symbol		missing_symbol;
 	bool			did_insert_missing_token;
 	t_stack_version	v;
 	t_stack_version	version_with_missing_tree;
@@ -67,8 +67,8 @@ void	ts_parser__handle_error(TSParser *self, t_stack_version version,
 							v);
 					missing_tree = ts_subtree_new_missing_leaf(missing_symbol,
 							padding, lookahead_bytes, self->language);
-					ts_stack_push(self->stack, version_with_missing_tree,
-						missing_tree, false, state_after_missing_symbol);
+					ts_stack_push(self->stack, (struct s_stack_push_arg){version_with_missing_tree,
+						missing_tree, false, state_after_missing_symbol});
 					if (ts_parser__do_all_potential_reductions(self,
 							version_with_missing_tree,
 							ts_subtree_leaf_symbol(lookahead)))
@@ -80,7 +80,7 @@ void	ts_parser__handle_error(TSParser *self, t_stack_version version,
 				missing_symbol++;
 			}
 		}
-		ts_stack_push(self->stack, v, NULL, false, ERROR_STATE);
+		ts_stack_push(self->stack, (struct s_stack_push_arg){v, NULL, false, ERROR_STATE});
 		if (v == version)
 			v = previous_version_count;
 		else

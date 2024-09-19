@@ -6,16 +6,16 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 13:46:43 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 13:47:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:18:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/inner/parser_inner.h"
 
-void	ts_parser__recover(TSParser *self, t_stack_version version,
+void	ts_parser__recover(t_parser *self, t_stack_version version,
 		t_subtree lookahead)
 {
-	Length					position;
+	t_length					position;
 	bool					did_recover;
 	bool					would_merge;
 	t_stack_slice_array		pop;
@@ -123,7 +123,8 @@ void	ts_parser__recover(TSParser *self, t_stack_version version,
 	{
 		children = vec_subtree_new(16, NULL);
 		parent = ts_subtree_new_error_node(&children, false, self->language);
-		ts_stack_push(self->stack, version, parent, false, 1);
+		ts_stack_push(self->stack, \
+				(struct s_stack_push_arg){version, parent, false, 1});
 		ts_parser__accept(self, version, lookahead);
 		return ;
 	}
@@ -169,7 +170,8 @@ void	ts_parser__recover(TSParser *self, t_stack_version version,
 		error_repeat = ts_subtree_new_node(ts_builtin_sym_error_repeat,
 				&pop.contents[0].subtrees, 0, self->language);
 	}
-	ts_stack_push(self->stack, version, (error_repeat), false, ERROR_STATE);
+	ts_stack_push(self->stack, \
+		(struct s_stack_push_arg){version, (error_repeat), false, ERROR_STATE});
 	if (ts_subtree_has_external_tokens(lookahead))
 		ts_stack_set_last_external_token(self->stack, version,
 			ts_subtree_last_external_token(lookahead));

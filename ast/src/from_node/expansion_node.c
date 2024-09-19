@@ -23,12 +23,12 @@
 #include <stdio.h>
 
 void	_build_sym_command_substitution_inner(\
-	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i);
+	t_node self, t_const_str input, t_ast_node ret, t_usize i);
 void	_build_sym_expansion_inner(\
-	t_parse_node self, t_const_str input, t_ast_node ret, t_usize i);
+	t_node self, t_const_str input, t_ast_node ret, t_usize i);
 
 t_error	build_sym_regex(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
@@ -42,7 +42,7 @@ t_error	build_sym_regex(\
 }
 
 t_error	build_sym_extglob_pattern(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
@@ -56,7 +56,7 @@ t_error	build_sym_extglob_pattern(\
 }
 
 t_error	build_sym_expansion(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	tmp;
@@ -84,7 +84,7 @@ t_error	build_sym_expansion(\
 }
 
 t_error	build_sym_simple_expansion(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_usize		i;
@@ -106,7 +106,7 @@ t_error	build_sym_simple_expansion(\
 }
 
 t_error	build_sym_command_substitution(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	tmp;

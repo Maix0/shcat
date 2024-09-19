@@ -15,9 +15,9 @@
 #include "me/types.h"
 #include "parser/parser.h"
 
-// bool		lex_keywords_main(TSLexer *lexer, TSStateId state);
-// bool		lex_normal_main(TSLexer *lexer, TSStateId state);
-bool	tree_sitter_sh_external_scanner_scan(void *ctx, TSLexer *lexer, \
+// bool		lex_keywords_main(t_lexer *lexer, t_state_id state);
+// bool		lex_normal_main(t_lexer *lexer, t_state_id state);
+bool	tree_sitter_sh_external_scanner_scan(void *ctx, t_lexer *lexer, \
 										const bool *ret);
 void	*create_external_scanner_states(void);
 void	*create_field_names(void);
@@ -33,8 +33,8 @@ void	*create_non_terminal_alias_map(void);
 void	*create_unique_symbols_map(void);
 void	*create_symbols_metadata(void);
 void	*create_parse_table(void);
-bool	ts_lex_keywords(TSLexer *lexer, TSStateId state);
-bool	ts_lex(TSLexer *lexer, TSStateId state);
+bool	ts_lex_keywords(t_lexer *lexer, t_state_id state);
+bool	ts_lex(t_lexer *lexer, t_state_id state);
 t_u32	tree_sitter_sh_external_scanner_serialize(void *ctx, t_u8 *state);
 void	tree_sitter_sh_external_scanner_deserialize(void *ctx, \
 			const t_u8 *state, t_u32 val);
@@ -54,7 +54,7 @@ static struct ExternalScannerDefinition	init_scanner(void)
 	});
 }
 
-static void	init_language(TSLanguage *language)
+static void	init_language(t_language *language)
 {
 	static uint32_t	empty_map[] = {0, 0, 0};
 
@@ -78,10 +78,10 @@ static void	init_language(TSLanguage *language)
 	language->external_scanner = init_scanner();
 }
 
-const TSLanguage	*tree_sitter_sh(void)
+const t_language	*tree_sitter_sh(void)
 {
 	static bool			init = false;
-	static TSLanguage	language = {
+	static t_language	language = {
 		.version = LANGUAGE_VERSION,
 		.symbol_count = SYMBOL_COUNT,
 		.alias_count = ALIAS_COUNT,
@@ -99,5 +99,5 @@ const TSLanguage	*tree_sitter_sh(void)
 		init_language(&language);
 		init = true;
 	}
-	return ((TSLanguage *)&language);
+	return ((t_language *)&language);
 }

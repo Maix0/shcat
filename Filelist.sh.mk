@@ -4,7 +4,6 @@ _env_norm_helper                                                              \
 ft_exit                                                                       \
 _helper_main                                                                  \
 main                                                                          \
-node/node                                                                     \
 signal_handler                                                                \
 
 GEN_FILES =                                                                   \

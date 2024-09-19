@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 12:03:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:05:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:36:07 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,7 @@
 
 #include "parser/inner/length_inner.h"
 
-static const Length LENGTH_UNDEFINED = {0, {0, 1}};
-static const Length LENGTH_MAX = {UINT32_MAX, {UINT32_MAX, UINT32_MAX}};
-
-Length length_saturating_sub(Length len1, Length len2);
-Length length_zero(void);
-Length length_sub(Length len1, Length len2);
-Length length_add(Length len1, Length len2);
-Length length_min(Length len1, Length len2);
-Length length_max(Length len1, Length len2);
-bool   length_is_undefined(Length length);
+static const t_length LENGTH_UNDEFINED = {0, {0, 1}};
+static const t_length LENGTH_MAX = {UINT32_MAX, {UINT32_MAX, UINT32_MAX}};
 
 #endif

@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 t_error	build_sym_negated_command(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 
@@ -41,7 +41,7 @@ t_error	build_sym_negated_command(\
 }
 
 t_error	build_sym_pipeline(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node	ret;
 	t_ast_node	t[2];
@@ -70,7 +70,7 @@ t_error	build_sym_pipeline(\
 	return (*out = ret, NO_ERROR);
 }
 
-t_error	build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
+t_error	build_sym_comment(t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(out);
 	(void)(input);
@@ -84,10 +84,10 @@ t_error	build_sym_comment(t_parse_node self, t_const_str input, t_ast_node *out)
 }
 
 t_error	build_sym_variable_assignment(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	t_ast_node		ret;
-	t_parse_node	temp_ast;
+	t_node	temp_ast;
 
 	(void)(self);
 	(void)(input);

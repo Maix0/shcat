@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 23:01:45 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/31 18:41:24 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 16:57:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@
 #include "parser/parser.h"
 #include "me/types.h"
 
-typedef TSSymbolMetadata   t_symbol_metadata;
-typedef TSSymbol		   t_symbol;
-typedef TSStateId		   t_state_id;
-typedef TSFieldId		   t_field_id;
-typedef TSLexer			   t_lexer_funcs;
+typedef t_symbol_metadata   t_symbol_metadata;
+typedef t_symbol		   t_symbol;
+typedef t_state_id		   t_state_id;
+typedef t_field_id		   t_field_id;
+typedef t_lexer			   t_lexer_funcs;
 typedef TSFieldMapSlice	   t_field_map_slice;
 typedef TSFieldMapEntry	   t_field_map_entry;
 typedef TSParseActionEntry t_parse_action_entry;
@@ -71,8 +71,8 @@ static inline bool lex_advance(t_state_id state_value, t_lexer_funcs *lexer, t_l
 static inline bool lex_accept_token(t_symbol symbol_value, t_lexer_funcs *lexer, t_lexer_state *s)
 {
 	s->result = true;
-	lexer->result_symbol = symbol_value;
-	lexer->mark_end(lexer);
+	lexer->funcs.result_symbol = symbol_value;
+	lexer->funcs.mark_end(lexer);
 	return (true);
 };
 

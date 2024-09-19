@@ -15,7 +15,7 @@
 #include "parser/language.h"
 #include "parser/tree.h"
 
-t_const_str	ts_node__field_name_from_language(TSNode self,
+t_const_str	ts_node__field_name_from_language(t_node self,
 		t_u32 structural_child_index)
 {
 	const TSFieldMapEntry	*field_map;
@@ -33,7 +33,7 @@ t_const_str	ts_node__field_name_from_language(TSNode self,
 	return (NULL);
 }
 
-TSFieldId	ts_node__field_id_from_language(TSNode self,
+t_field_id	ts_node__field_id_from_language(t_node self,
 		t_u32 structural_child_index)
 {
 	const TSFieldMapEntry	*field_map;

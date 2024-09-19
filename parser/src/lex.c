@@ -3,7 +3,7 @@
 
 bool ts_lex(t_lexer *lexer, t_state_id state) {
   START_LEXER();
-  eof = lexer->data.eof((void *)lexer);
+  eof = lexer->funcs.eof((void *)lexer);
   switch (state) {
     case 0:
       if (eof) ADVANCE(127);
@@ -2423,7 +2423,7 @@ bool ts_lex(t_lexer *lexer, t_state_id state) {
 
 bool ts_lex_keywords(t_lexer *lexer, t_state_id state) {
   START_LEXER();
-  eof = lexer->data.eof((void *)lexer);
+  eof = lexer->funcs.eof((void *)lexer);
   switch (state) {
     case 0:
       ACCEPT_TOKEN(ts_builtin_sym_end);

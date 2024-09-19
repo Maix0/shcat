@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 t_error	build_sym_function_definition(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -64,7 +64,7 @@ t_error	build_sym_function_definition(\
 */
 
 t_error	build_sym_case_statement(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -106,7 +106,7 @@ t_error	build_sym_case_statement(\
 */
 
 t_error	build_sym__case_item_last(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);
@@ -150,7 +150,7 @@ t_error	build_sym__case_item_last(\
 */
 
 t_error	build_sym_case_item(\
-	t_parse_node self, t_const_str input, t_ast_node *out)
+	t_node self, t_const_str input, t_ast_node *out)
 {
 	(void)(self);
 	(void)(input);

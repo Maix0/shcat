@@ -12,7 +12,7 @@
 
 #include "parser/inner/parser_inner.h"
 
-const t_u8	*ts_string_input_read(void *_self, t_u32 byte, TSPoint point,
+const t_u8	*ts_string_input_read(void *_self, t_u32 byte, t_point point,
 		t_u32 *length)
 {
 	t_string_input	*self;
@@ -31,12 +31,12 @@ const t_u8	*ts_string_input_read(void *_self, t_u32 byte, TSPoint point,
 	}
 }
 
-TSTree	*ts_parser_parse_string(TSParser *self, t_const_str string,
+t_tree	*ts_parser_parse_string(t_parser *self, t_const_str string,
 		t_u32 length)
 {
 	t_string_input	input;
 
 	input = (t_string_input){(const t_u8 *)string, length};
 	return (ts_parser_parse(self, \
-	(TSInput){&input, ts_string_input_read}));
+	(t_input){&input, ts_string_input_read}));
 }

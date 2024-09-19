@@ -12,11 +12,11 @@
 
 #include "parser/inner/node.h"
 
-TSNode	ts_node__child(TSNode self, t_u32 child_index, bool include_anonymous)
+t_node	ts_node__child(t_node self, t_u32 child_index, bool include_anonymous)
 {
-	TSNode				result;
+	t_node				result;
 	bool				did_descend;
-	TSNode				child;
+	t_node				child;
 	t_u32				index;
 	NodeChildIterator	iterator;
 	t_u32				grandchild_index;

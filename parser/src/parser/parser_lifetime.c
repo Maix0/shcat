@@ -12,9 +12,9 @@
 
 #include "parser/inner/parser_inner.h"
 
-TSParser	*ts_parser_new(TSLanguage *language)
+t_parser	*ts_parser_new(t_language *language)
 {
-	TSParser	*self;
+	t_parser	*self;
 
 	self = mem_alloc(sizeof(*self));
 	ts_lexer_init(&self->lexer);
@@ -28,7 +28,7 @@ TSParser	*ts_parser_new(TSLanguage *language)
 	return (self);
 }
 
-void	ts_parser_delete(TSParser *self)
+void	ts_parser_delete(t_parser *self)
 {
 	if (!self)
 		return ;
@@ -42,7 +42,7 @@ void	ts_parser_delete(TSParser *self)
 	mem_free(self);
 }
 
-void	ts_parser_reset(TSParser *self)
+void	ts_parser_reset(t_parser *self)
 {
 	ts_parser__external_scanner_destroy(self);
 	ts_lexer_reset(&self->lexer, length_zero());

@@ -15,11 +15,11 @@
 #include "parser/language.h"
 #include "parser/parser.h"
 
-void	ts_language_aliases_for_symbol(const TSLanguage *self,
-		TSSymbol original_symbol, const TSSymbol **start, const TSSymbol **end)
+void	ts_language_aliases_for_symbol(const t_language *self,
+		t_symbol original_symbol, const t_symbol **start, const t_symbol **end)
 {
 	t_u32		idx;
-	TSSymbol	symbol;
+	t_symbol	symbol;
 	t_u16		count;
 
 	*start = &self->public_symbol_map[original_symbol];
@@ -41,7 +41,7 @@ void	ts_language_aliases_for_symbol(const TSLanguage *self,
 	}
 }
 
-bool	ts_language_is_symbol_external(const TSLanguage *self, TSSymbol symbol)
+bool	ts_language_is_symbol_external(const t_language *self, t_symbol symbol)
 {
 	return (0 < symbol && symbol < self->external_token_count + 1);
 }

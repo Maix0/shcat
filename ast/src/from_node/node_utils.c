@@ -22,7 +22,7 @@
 #include "parser/api.h"
 #include <stdio.h>
 
-t_ast_expansion_operator	_extract_exp_fix(t_parse_node self)
+t_ast_expansion_operator	_extract_exp_fix(t_node self)
 {
 	t_ast_expansion_operator	kind;
 	t_symbol					symbol;
@@ -40,7 +40,7 @@ t_ast_expansion_operator	_extract_exp_fix(t_parse_node self)
 	return (kind);
 }
 
-t_ast_expansion_operator	_extract_exp_op(t_parse_node self)
+t_ast_expansion_operator	_extract_exp_op(t_node self)
 {
 	t_ast_expansion_operator	kind;
 	t_symbol					symbol;
@@ -95,7 +95,7 @@ void	_add_negation(t_ast_node *node)
 		(*node)->data.variable_assignment.bang = true;
 }
 
-t_ast_redirection_kind	_get_redirection_op(t_parse_node self)
+t_ast_redirection_kind	_get_redirection_op(t_node self)
 {
 	t_symbol	symbol;
 
