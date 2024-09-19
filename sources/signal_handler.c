@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 13:22:14 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/13 15:29:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 23:44:41 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void sig_print_trace(int _idk)
+void	sig_print_trace(int _idk)
 {
 	(void)(_idk);
 	print_trace();

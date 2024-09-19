@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/19 17:28:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 23:44:20 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,13 @@ void			ft_take_args(t_state *state);
 // cle avant le =
 // data apres le =
 
-t_language *tree_sitter_sh(void);
-void		ast_free(t_ast_node node);
+t_language		*tree_sitter_sh(void);
+void			ast_free(t_ast_node node);
 
-t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *after)
+t_error	split_str_first(\
+	t_const_str s, char splitter, t_str *before, t_str *after)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (s == NULL || before == NULL || after == NULL || splitter == '\0')
 		return (ERROR);
@@ -61,9 +62,9 @@ t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *afte
 	return (NO_ERROR);
 }
 
-t_error populate_env(t_hashmap_env *env, t_str envp[])
+t_error	populate_env(t_hashmap_env *env, t_str envp[])
 {
-	t_usize i;
+	t_usize	i;
 	t_str	temp[2];
 
 	i = 0;
@@ -90,7 +91,8 @@ void print_node_data(t_node *t, t_usize depth)
 	idx = 0;
 	if (t->kind == 7)
 		return;
-	printf("\x1b[%im[%-6s](%lu)\x1b[0m", t->field_str == NULL ? 90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
+	printf("\x1b[%im[%-6s](%lu)\x1b[0m", t->field_str == NULL ? \
+90 : 32, t->field_str == NULL ? "nil" : t->field_str, t->field);
 	while (idx++ < depth + 1)
 		printf("\t");
 	idx = 0;
@@ -100,13 +102,14 @@ void print_node_data(t_node *t, t_usize depth)
 }
 */
 
-void parse_str(t_state *state)
+void	parse_str(t_state *state)
 {
-	t_tree *tree;
-	t_node  node;
-	t_ast_node	  out;
+	t_tree		*tree;
+	t_node		node;
+	t_ast_node	out;
 
-	tree = ts_parser_parse_string(state->parser, state->str_input, str_len(state->str_input));
+	tree = ts_parser_parse_string(\
+		state->parser, state->str_input, str_len(state->str_input));
 	node = ts_tree_root_node(tree);
 	if (ast_from_node(node, state->str_input, &out))
 	{
@@ -118,9 +121,9 @@ void parse_str(t_state *state)
 	ts_tree_delete(tree);
 }
 
-t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
+t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
 {
-	t_state state;
+	t_state	state;
 
 	(void)argc;
 	(void)argv;
