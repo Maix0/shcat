@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:37:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 16:42:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 18:23:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,22 @@ struct										s_stack_push_arg
 	t_state_id								state;
 };
 
+struct										s_stack_iter_args
+{
+	t_stack_version							version;
+	t_stack_callback						callback;
+	void									*payload;
+	int										goal_subtree_count;
+};
+
+struct										s_stack_iter_indexes
+{
+	t_usize 								i;
+	t_usize 								j;
+	t_usize 								size;
+};
+
+
 t_length ts_stack_position(const t_stack *self, t_stack_version version);
 t_state_id ts_stack_state(const t_stack *self, t_stack_version version);
 bool stack__subtree_is_equivalent(t_subtree left, t_subtree right);
@@ -143,7 +159,7 @@ t_stack_action pop_error_callback(void *payload, const t_stack_iterator *iterato
 t_stack_action pop_pending_callback(void *payload, const t_stack_iterator *iterator);
 t_stack_action summarize_stack_callback(void *payload, const t_stack_iterator *iterator);
 t_stack_node *stack_node_new(t_stack_node *previous_node, t_subtree subtree, bool is_pending, t_state_id state);
-t_stack_slice_array stack__iter(t_stack *self, t_stack_version version, t_stack_callback callback, void *payload, int goal_subtree_count);
+t_stack_slice_array stack__iter(t_stack *self, struct s_stack_iter_args args);
 t_stack_slice_array ts_stack_pop_all(t_stack *self, t_stack_version version);
 t_stack_slice_array ts_stack_pop_count(t_stack *self, t_stack_version version, t_u32 count);
 t_stack_slice_array ts_stack_pop_pending(t_stack *self, t_stack_version version);

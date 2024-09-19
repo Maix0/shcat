@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:55:52 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 18:06:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 18:38:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,24 +57,20 @@ bool	ts_stack_has_advanced_since_error(const t_stack *self,
 		return (true);
 	while (node)
 	{
-		if (node->link_count > 0)
+		if (node->link_count == 0)
+			break ;
+		subtree = node->links[0].subtree;
+		if (subtree)
 		{
-			subtree = node->links[0].subtree;
-			if (subtree)
+			if (ts_subtree_total_bytes(subtree) > 0)
+				return (true);
+			else if (node->node_count > head->node_count_at_last_error
+				&& ts_subtree_error_cost(subtree) == 0)
 			{
-				if (ts_subtree_total_bytes(subtree) > 0)
-				{
-					return (true);
-				}
-				else if (node->node_count > head->node_count_at_last_error
-					&& ts_subtree_error_cost(subtree) == 0)
-				{
-					node = node->links[0].node;
-					continue ;
-				}
+				node = node->links[0].node;
+				continue ;
 			}
 		}
-		break ;
 	}
 	return (false);
 }

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:00:07 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 20:53:54 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 18:26:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,26 +36,24 @@ t_stack_action	pop_error_callback(void *payload,
 
 t_vec_subtree	ts_stack_pop_error(t_stack *self, t_stack_version version)
 {
-	t_stack_node		*node;
+	t_stack_node		*n;
 	bool				found_error;
 	t_stack_slice_array	pop;
 	t_usize				i;
 
-	node = array_get(&self->heads, version)->node;
+	n = array_get(&self->heads, version)->node;
 	i = 0;
-	while (i < node->link_count)
+	while (i < n->link_count)
 	{
-		if (node->links[i].subtree
-			&& ts_subtree_is_error(node->links[i].subtree))
+		if (n->links[i].subtree && ts_subtree_is_error(n->links[i].subtree))
 		{
 			found_error = false;
-			pop = stack__iter(self, version, pop_error_callback, &found_error,
-					1);
+			pop = stack__iter(self, \
+	(struct s_stack_iter_args){version, pop_error_callback, &found_error, 1});
 			if (pop.size > 0)
 			{
-				assert(pop.size == 1);
-				ts_stack_renumber_version(self, pop.contents[0].version,
-					version);
+				ts_stack_renumber_version(\
+					self, pop.contents[0].version, version);
 				return (pop.contents[0].subtrees);
 			}
 			break ;
@@ -77,5 +75,6 @@ t_stack_action	pop_all_callback(void *payload,
 
 t_stack_slice_array	ts_stack_pop_all(t_stack *self, t_stack_version version)
 {
-	return (stack__iter(self, version, pop_all_callback, NULL, 0));
+	return (stack__iter(self, \
+			(struct s_stack_iter_args){version, pop_all_callback, NULL, 0}));
 }

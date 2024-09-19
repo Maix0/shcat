@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:50:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 14:44:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:57:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	ts_stack_push(t_stack *self, struct s_stack_push_arg args)
 	t_stack_node	*new_node;
 
 	head = array_get(&self->heads, args.version);
-	new_node = stack_node_new(head->node, args.subtree, args.pending, args.state);
+	new_node = stack_node_new(\
+		head->node, args.subtree, args.pending, args.state);
 	if (!args.subtree)
 		head->node_count_at_last_error = new_node->node_count;
 	head->node = new_node;
@@ -44,7 +45,9 @@ t_stack_action	pop_count_callback(void *payload,
 t_stack_slice_array	ts_stack_pop_count(t_stack *self, t_stack_version version,
 		t_u32 count)
 {
-	return (stack__iter(self, version, pop_count_callback, &count, (int)count));
+	return (stack__iter(self, \
+	(struct s_stack_iter_args){version, pop_count_callback, \
+					&count, (int)count}));
 }
 
 t_stack_action	pop_pending_callback(void *payload,
@@ -66,7 +69,8 @@ t_stack_slice_array	ts_stack_pop_pending(t_stack *self, t_stack_version version)
 {
 	t_stack_slice_array	pop;
 
-	pop = stack__iter(self, version, pop_pending_callback, NULL, 0);
+	pop = stack__iter(self, \
+		(struct s_stack_iter_args){version, pop_pending_callback, NULL, 0});
 	if (pop.size > 0)
 	{
 		ts_stack_renumber_version(self, pop.contents[0].version, version);

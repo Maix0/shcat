@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 16:50:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/02 17:20:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 18:25:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,21 @@ t_stack_action	summarize_stack_callback(void *payload,
 void	ts_stack_record_summary(t_stack *self, t_stack_version version,
 		t_u32 max_depth)
 {
-	t_summarize_stack_session	session;
+	t_summarize_stack_session	sess;
 	t_stack_head				*head;
 
-	session = (t_summarize_stack_session){.summary = \
+	sess = (t_summarize_stack_session){.summary = \
 	mem_alloc(sizeof(t_stack_summary)), .max_depth = max_depth};
-	array_init(session.summary);
-	stack__iter(self, version, summarize_stack_callback, &session, -1);
+	array_init(sess.summary);
+	stack__iter(self, \
+	(struct s_stack_iter_args){version, summarize_stack_callback, &sess, -1});
 	head = &self->heads.contents[version];
 	if (head->summary)
 	{
 		array_delete(head->summary);
 		mem_free(head->summary);
 	}
-	head->summary = session.summary;
+	head->summary = sess.summary;
 }
 
 t_stack_summary	*ts_stack_get_summary(t_stack *self, t_stack_version version)
