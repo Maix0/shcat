@@ -11,16 +11,13 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_pid.h"
 #include <stdlib.h>
 
-t_error vec_pid_find(t_vec_pid *vec,
-							 bool (*fn)(const t_pid *), t_usize *index)
+t_error	vec_pid_find(t_vec_pid *vec, bool (*fn)(const t_pid *), t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -37,11 +34,10 @@ t_error vec_pid_find(t_vec_pid *vec,
 	return (ERROR);
 }
 
-t_error vec_pid_find_starting(t_vec_pid *vec,
-									  bool (*fn)(const t_pid *),
-									  t_usize starting_index, t_usize *index)
+t_error	vec_pid_find_starting(t_vec_pid *vec, bool (*fn)(const t_pid *),
+		t_usize starting_index, t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -58,10 +54,9 @@ t_error vec_pid_find_starting(t_vec_pid *vec,
 	return (ERROR);
 }
 
-t_error vec_pid_all(t_vec_pid *vec,
-							bool (*fn)(const t_pid *), bool *result)
+t_error	vec_pid_all(t_vec_pid *vec, bool (*fn)(const t_pid *), bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -76,10 +71,9 @@ t_error vec_pid_all(t_vec_pid *vec,
 	return (ERROR);
 }
 
-t_error vec_pid_any(t_vec_pid *vec,
-							bool (*fn)(const t_pid *), bool *result)
+t_error	vec_pid_any(t_vec_pid *vec, bool (*fn)(const t_pid *), bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -94,15 +88,13 @@ t_error vec_pid_any(t_vec_pid *vec,
 	return (ERROR);
 }
 
-void vec_pid_iter(t_vec_pid *vec,
-						  void (*fn)(t_usize index, t_pid *value,
-									 void *state),
-						  void *state)
+void	vec_pid_iter(t_vec_pid *vec, void (*fn)(t_usize index, t_pid *value,
+			void *state), void *state)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL)
-		return;
+		return ;
 	idx = 0;
 	while (idx < vec->len)
 	{

@@ -1,26 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_reduce_action.c                                  :+:      :+:    :+:   */
+/*   reduce_action_functions2.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/30 17:59:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/30 17:59:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 17:50:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_reduce_action.h"
 #include <stdlib.h>
 
-t_error vec_reduce_action_find(t_vec_reduce_action *vec,
-							 bool (*fn)(const t_reduce_action *), t_usize *index)
+t_error	vec_reduce_action_find(t_vec_reduce_action *vec,
+		bool (*fn)(const t_reduce_action *), t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -37,11 +35,11 @@ t_error vec_reduce_action_find(t_vec_reduce_action *vec,
 	return (ERROR);
 }
 
-t_error vec_reduce_action_find_starting(t_vec_reduce_action *vec,
-									  bool (*fn)(const t_reduce_action *),
-									  t_usize starting_index, t_usize *index)
+t_error	vec_reduce_action_find_starting(t_vec_reduce_action *vec,
+		bool (*fn)(const t_reduce_action *), t_usize starting_index,
+		t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -58,10 +56,10 @@ t_error vec_reduce_action_find_starting(t_vec_reduce_action *vec,
 	return (ERROR);
 }
 
-t_error vec_reduce_action_all(t_vec_reduce_action *vec,
-							bool (*fn)(const t_reduce_action *), bool *result)
+t_error	vec_reduce_action_all(t_vec_reduce_action *vec,
+		bool (*fn)(const t_reduce_action *), bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -76,10 +74,10 @@ t_error vec_reduce_action_all(t_vec_reduce_action *vec,
 	return (ERROR);
 }
 
-t_error vec_reduce_action_any(t_vec_reduce_action *vec,
-							bool (*fn)(const t_reduce_action *), bool *result)
+t_error	vec_reduce_action_any(t_vec_reduce_action *vec,
+		bool (*fn)(const t_reduce_action *), bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -94,15 +92,14 @@ t_error vec_reduce_action_any(t_vec_reduce_action *vec,
 	return (ERROR);
 }
 
-void vec_reduce_action_iter(t_vec_reduce_action *vec,
-						  void (*fn)(t_usize index, t_reduce_action *value,
-									 void *state),
-						  void *state)
+void	vec_reduce_action_iter(t_vec_reduce_action *vec,
+		void (*fn)(t_usize index, t_reduce_action *value, void *state),
+		void *state)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL)
-		return;
+		return ;
 	idx = 0;
 	while (idx < vec->len)
 	{

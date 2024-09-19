@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   best_move.c                                        :+:      :+:    :+:   */
+/*   reduce_action_sort.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,15 +13,15 @@
 #include "me/types.h"
 #include "me/vec/vec_reduce_action.h"
 
-void vec_reduce_action_sort(t_vec_reduce_action		   *v,
-						  t_vec_reduce_action_sort_fn is_sorted_fn)
+void	vec_reduce_action_sort(t_vec_reduce_action *v,
+		t_vec_reduce_action_sort_fn is_sorted_fn)
 {
-	t_usize		  sorted_part;
-	t_usize		  i;
-	t_reduce_action tmp;
+	t_usize			sorted_part;
+	t_usize			i;
+	t_reduce_action	tmp;
 
 	if (v == NULL)
-		return;
+		return ;
 	sorted_part = v->len;
 	while (sorted_part > 0)
 	{

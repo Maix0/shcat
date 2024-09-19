@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_reduce_action.c                                  :+:      :+:    :+:   */
+/*   reduce_action_functions3.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,16 +15,16 @@
 #include "me/vec/vec_reduce_action.h"
 #include <stdlib.h>
 
-t_error vec_reduce_action_push_front(t_vec_reduce_action *vec,
-								   t_reduce_action	  element)
+t_error	vec_reduce_action_push_front(t_vec_reduce_action *vec,
+		t_reduce_action element)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len == 0)
 		return (vec_reduce_action_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 &&
-		vec_reduce_action_reserve(vec, 3 * vec->len / 2 + 1))
+	if (vec->capacity < vec->len + 1 && vec_reduce_action_reserve(vec, 3
+			* vec->len / 2 + 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -37,9 +37,10 @@ t_error vec_reduce_action_push_front(t_vec_reduce_action *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_reduce_action_pop_front(t_vec_reduce_action *vec, t_reduce_action *value)
+t_error	vec_reduce_action_pop_front(t_vec_reduce_action *vec,
+		t_reduce_action *value)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len <= 1)
 		return (vec_reduce_action_pop(vec, value));
@@ -55,10 +56,10 @@ t_error vec_reduce_action_pop_front(t_vec_reduce_action *vec, t_reduce_action *v
 	return (NO_ERROR);
 }
 
-void vec_reduce_action_reverse(t_vec_reduce_action *vec)
+void	vec_reduce_action_reverse(t_vec_reduce_action *vec)
 {
-	t_reduce_action temporary;
-	t_usize		  i;
+	t_reduce_action	temporary;
+	t_usize			i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -70,9 +71,9 @@ void vec_reduce_action_reverse(t_vec_reduce_action *vec)
 	}
 }
 
-t_error vec_reduce_action_back(t_vec_reduce_action *vec, t_reduce_action **out)
+t_error	vec_reduce_action_back(t_vec_reduce_action *vec, t_reduce_action **out)
 {
-	t_reduce_action *temporary;
+	t_reduce_action	*temporary;
 
 	if (out == NULL)
 		out = &temporary;
