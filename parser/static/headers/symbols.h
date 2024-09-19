@@ -6,14 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 11:29:50 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SYMBOLS_H
 # define SYMBOLS_H
 
-enum e_symbols {
+enum e_symbols
+{
 	sym_word = 1,
 	anon_sym_LBRACE = 2,
 	anon_sym_RBRACE = 3,

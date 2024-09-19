@@ -6,14 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 11:30:05 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FIELD_IDENTIFIERS_H
 # define FIELD_IDENTIFIERS_H
 
-enum e_field_identifiers {
+enum e_field_identifiers
+{
 	field_arg = 1,
 	field_args = 2,
 	field_body = 3,

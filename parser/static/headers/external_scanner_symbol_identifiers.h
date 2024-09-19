@@ -6,14 +6,15 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 19:17:54 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/04/14 19:18:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 11:29:21 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H
 # define EXTERNAL_SCANNER_SYMBOL_IDENTIFIERS_H
 
-enum e_external_scanner_symbol_identifiers {
+enum e_external_scanner_symbol_identifiers
+{
 	ts_external_token_file_descriptor = 0,
 	ts_external_token__empty_value = 1,
 	ts_external_token__concat = 2,
