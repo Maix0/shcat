@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 18:46:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 14:04:24 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 14:33:54 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef bool	(*t_vec_pid_sort_fn)(t_pid *, t_pid *);
 typedef void	(*t_free_pid_item)(t_pid);
 
 /// @brief A dynamic array of t_pid
-struct s_vec_pid
+typedef struct s_vec_pid
 {
 	t_free_pid_item	free_func;
 	t_usize			len;

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 18:46:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 13:53:08 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 14:33:29 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef bool	(*t_vec_estr_sort_fn)(t_expandable_str *, t_expandable_str *);
 typedef void	(*t_free_estr_item)(t_expandable_str);
 
 /// @brief A dynamic array of t_expandable_str
-struct s_vec_estr
+typedef struct s_vec_estr
 {
 	t_free_estr_item	free_func;
 	t_usize				len;

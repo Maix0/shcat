@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 18:46:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 14:31:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 14:33:44 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef bool	(*t_vec_str_sort_fn)(t_str *, t_str *);
 typedef void	(*t_free_str_item)(t_str);
 
 /// @brief A dynamic array of t_str
-struct s_vec_str
+typedef struct s_vec_str
 {
 	t_free_str_item	free_func;
 	t_usize			len;
