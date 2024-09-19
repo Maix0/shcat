@@ -57,15 +57,18 @@ bool	ts_parser__breakdown_top_of_stack(t_parser *self,
 					state = ts_language_next_state(self->language, state,
 							ts_subtree_symbol(child));
 				child->ref_count++;
-				ts_stack_push(self->stack, \
-(struct s_stack_push_arg){slice.version, child, pending, state});
+				ts_stack_push(self->stack,
+					(struct s_stack_push_arg){slice.version, child, pending,
+					state});
 				j++;
 			}
 			j = 1;
 			while (j < slice.subtrees.len)
 			{
 				tree = slice.subtrees.buffer[j];
-				ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, tree, false, state});
+				ts_stack_push(self->stack,
+					(struct s_stack_push_arg){slice.version, tree, false,
+					state});
 				j++;
 			}
 			ts_subtree_release(parent);

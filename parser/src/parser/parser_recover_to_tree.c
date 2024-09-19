@@ -71,7 +71,8 @@ bool	ts_parser__recover_to_state(t_parser *self, t_stack_version version,
 		{
 			error = ts_subtree_new_error_node(&slice.subtrees, true,
 					self->language);
-			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, error, false, goal_state});
+			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version,
+				error, false, goal_state});
 		}
 		else
 		{
@@ -81,7 +82,8 @@ bool	ts_parser__recover_to_state(t_parser *self, t_stack_version version,
 		while (j < self->trailing_extras.len)
 		{
 			tree = self->trailing_extras.buffer[j];
-			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version, tree, false, goal_state});
+			ts_stack_push(self->stack, (struct s_stack_push_arg){slice.version,
+				tree, false, goal_state});
 			j++;
 		}
 		previous_version = slice.version;

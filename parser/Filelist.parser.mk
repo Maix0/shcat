@@ -31,6 +31,7 @@ node/node_iterator                                                            \
 node/node_relevent                                                            \
 parser/parser_accept                                                          \
 parser/parser_advance                                                         \
+parser/parser_advance_bis                                                     \
 parser/parser_breakdown_top_of_stack                                          \
 parser/parser_condense_stack                                                  \
 parser/parser_do_reduction                                                    \

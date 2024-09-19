@@ -97,7 +97,8 @@ t_stack_version	ts_parser__reduce(t_parser *self, t_stack_version version,
 		else
 			parent->parse_state = state;
 		parent->dynamic_precedence += dynamic_precedence;
-		ts_stack_push(self->stack, (struct s_stack_push_arg){slice_version, (parent), false, next_state});
+		ts_stack_push(self->stack, (struct s_stack_push_arg){slice_version,
+			(parent), false, next_state});
 		j = 0;
 		while (j < self->trailing_extras.len)
 		{

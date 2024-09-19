@@ -37,6 +37,5 @@ t_tree	*ts_parser_parse_string(t_parser *self, t_const_str string,
 	t_string_input	input;
 
 	input = (t_string_input){(const t_u8 *)string, length};
-	return (ts_parser_parse(self, \
-	(t_input){&input, ts_string_input_read}));
+	return (ts_parser_parse(self, (t_input){&input, ts_string_input_read}));
 }

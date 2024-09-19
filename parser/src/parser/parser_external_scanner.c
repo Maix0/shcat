@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 16:44:11 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 17:23:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 21:38:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ts_parser__external_scanner_destroy(t_parser *self)
 	if (self->external_scanner_payload != NULL)
 	{
 		self->language->external_scanner.destroy(\
-			self->external_scanner_payload);
+										self->external_scanner_payload);
 		self->external_scanner_payload = NULL;
 	}
 }
@@ -32,14 +32,14 @@ t_u32	ts_parser__external_scanner_serialize(t_parser *self)
 	t_u32	length;
 
 	length = self->language->external_scanner.serialize(\
-	self->external_scanner_payload, self->lexer.debug_buffer);
+		self->external_scanner_payload, self->lexer.debug_buffer);
 	if (length > TREE_SITTER_SERIALIZATION_BUFFER_SIZE)
 		me_abort("assertion failed in " __FILE__ " `length > " \
 					"TREE_SITTER_SERIALIZATION_BUFFER_SIZE`");
 	return (length);
 }
 
-void	ts_parser__external_scanner_deserialize(t_parser *self,
+void	ts_parser__external_scanner_deserialize(t_parser *self, \
 		t_subtree external_token)
 {
 	const t_u8	*data;
@@ -50,12 +50,12 @@ void	ts_parser__external_scanner_deserialize(t_parser *self,
 	if (external_token)
 	{
 		data = ts_external_scanner_state_data(\
-			&external_token->external_scanner_state);
+								&external_token->external_scanner_state);
 		length = external_token->external_scanner_state.length;
 		printf("HERE\n");
 	}
-	self->language->external_scanner.deserialize(self->external_scanner_payload,
-		data, length);
+	self->language->external_scanner.deserialize(\
+		self->external_scanner_payload, data, length);
 }
 
 bool	ts_parser__external_scanner_scan(t_parser *self,
@@ -63,8 +63,8 @@ bool	ts_parser__external_scanner_scan(t_parser *self,
 {
 	const bool	*valid_external_tokens;
 
-	valid_external_tokens = ts_language_enabled_external_tokens(self->language,
-			external_lex_state);
+	valid_external_tokens = ts_language_enabled_external_tokens(\
+		self->language, external_lex_state);
 	return (self->language->external_scanner.scan(\
-	self->external_scanner_payload, &self->lexer, valid_external_tokens));
+		self->external_scanner_payload, &self->lexer, valid_external_tokens));
 }

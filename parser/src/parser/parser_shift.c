@@ -27,7 +27,8 @@ void	ts_parser__shift(t_parser *self, t_stack_version version,
 		ts_subtree_set_extra(&result, extra);
 		subtree_to_push = (result);
 	}
-	ts_stack_push(self->stack,(struct s_stack_push_arg){ version, subtree_to_push, !is_leaf, state});
+	ts_stack_push(self->stack, (struct s_stack_push_arg){version,
+		subtree_to_push, !is_leaf, state});
 	if (ts_subtree_has_external_tokens(subtree_to_push))
 		ts_stack_set_last_external_token(self->stack, version,
 			ts_subtree_last_external_token(subtree_to_push));

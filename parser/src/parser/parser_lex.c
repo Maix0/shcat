@@ -15,12 +15,12 @@
 t_subtree	ts_parser__lex(t_parser *self, t_stack_version version,
 		t_state_id parse_state)
 {
-	t_length		current_position;
-	t_length		error_end_position;
-	t_length		error_start_position;
-	t_length		padding;
-	t_length		size;
-	t_length		start_position;
+	t_length	current_position;
+	t_length	error_end_position;
+	t_length	error_start_position;
+	t_length	padding;
+	t_length	size;
+	t_length	start_position;
 	TSLexMode	lex_mode;
 	t_symbol	symbol;
 	bool		called_get_column;
@@ -87,8 +87,7 @@ t_subtree	ts_parser__lex(t_parser *self, t_stack_version version,
 			ts_lexer_reset(&self->lexer, current_position);
 		}
 		ts_lexer_start(&self->lexer);
-		found_token = self->language->lex_fn(&self->lexer,
-				lex_mode.lex_state);
+		found_token = self->language->lex_fn(&self->lexer, lex_mode.lex_state);
 		ts_lexer_finish(&self->lexer, &lookahead_end_byte);
 		if (found_token)
 			break ;
@@ -122,8 +121,8 @@ t_subtree	ts_parser__lex(t_parser *self, t_stack_version version,
 		padding = length_sub(error_start_position, start_position);
 		size = length_sub(error_end_position, error_start_position);
 		lookahead_bytes = lookahead_end_byte - error_end_position.bytes;
-		result = ts_subtree_new_error((t_st_newerr_args){first_error_character, padding, size,
-				lookahead_bytes, parse_state, self->language});
+		result = ts_subtree_new_error((t_st_newerr_args){first_error_character,
+				padding, size, lookahead_bytes, parse_state, self->language});
 	}
 	else
 	{
@@ -151,9 +150,9 @@ t_subtree	ts_parser__lex(t_parser *self, t_stack_version version,
 				symbol = self->lexer.funcs.result_symbol;
 			}
 		}
-		result = ts_subtree_new_leaf((t_st_newleaf_args){symbol, padding, size, lookahead_bytes,
-				parse_state, found_external_token, called_get_column,
-				is_keyword, self->language});
+		result = ts_subtree_new_leaf((t_st_newleaf_args){symbol, padding, size,
+				lookahead_bytes, parse_state, found_external_token,
+				called_get_column, is_keyword, self->language});
 		if (found_external_token)
 		{
 			ts_external_scanner_state_init(&result->external_scanner_state,

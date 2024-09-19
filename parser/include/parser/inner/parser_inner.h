@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/10 13:56:47 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 16:44:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 22:10:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,33 @@ struct s_string_input
 {
 	const t_u8 *string;
 	t_u32		length;
+};
+
+struct s_parser_advance_state
+{
+	TSParseAction	action;
+	TableEntry		table_entry;
+	bool			end_of_non_terminal_extra;
+	bool			is_fragile;
+	bool			needs_lex;
+	t_stack_version	last_reduction_version;
+	t_stack_version	reduction_version;
+	t_state_id		next_state;
+	t_state_id		state;
+	t_subtree		lookahead;
+	t_subtree		mutable_lookahead;
+	t_u32			i;
+};
+
+struct s_parser_parse_state
+{
+	t_tree			*result;
+	t_u32			position;
+	t_u32			last_position;
+	t_u32			version_count;
+	t_stack_version	version;
+	t_u32			min_error_cost;
+	bool			first;
 };
 
 t_parser *ts_parser_new(t_language *language);
