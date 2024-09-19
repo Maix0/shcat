@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 16:12:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/15 20:23:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 23:47:19 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,24 @@ void	deserialize(t_scanner *scanner, const t_u8 *buffer, t_u32 length);
 bool	scan_bare_dollar(t_lexer *lexer);
 bool	scan_heredoc_start(t_heredoc *heredoc, t_lexer *lexer);
 bool	scan_heredoc_end_identifier(t_heredoc *heredoc, t_lexer *lexer);
-bool	scan_heredoc_content(t_scanner *scanner, t_lexer *lexer,
+bool	scan_heredoc_content(t_scanner *scanner, t_lexer *lexer, \
 		enum e_token_type middle_type, enum e_token_type end_type);
-bool	scan_double_hash(t_scanner *scanner, t_lexer *lexer,
+bool	scan_double_hash(t_scanner *scanner, t_lexer *lexer, \
 		const bool *valid_symbols);
-bool	scan_concat(t_scanner *scanner, t_lexer *lexer,
+bool	scan_concat(t_scanner *scanner, t_lexer *lexer, \
 		const bool *valid_symbols);
-bool	scan_heredoc_end(t_scanner *scanner, t_lexer *lexer,
+bool	scan_heredoc_end(t_scanner *scanner, t_lexer *lexer, \
 		const bool *valid_symbols);
-bool	scan_advance_words(t_scanner *scanner, t_lexer *lexer,
+bool	scan_advance_words(t_scanner *scanner, t_lexer *lexer, \
 		const bool *valid_symbols);
-bool	scan_literals(t_scanner *scanner, t_lexer *lexer,
+bool	scan_literals(t_scanner *scanner, t_lexer *lexer, \
 		const bool *valid_symbols);
 bool	scan(t_scanner *scanner, t_lexer *lexer, const bool *valid_symbols);
 void	*tree_sitter_sh_external_scanner_create(void);
-bool	tree_sitter_sh_external_scanner_scan(void *payload, t_lexer *lexer,
+bool	tree_sitter_sh_external_scanner_scan(void *payload, t_lexer *lexer, \
 		const bool *valid_symbols);
 t_u32	tree_sitter_sh_external_scanner_serialize(void *payload, t_u8 *state);
-void	tree_sitter_sh_external_scanner_deserialize(void *payload,
+void	tree_sitter_sh_external_scanner_deserialize(void *payload, \
 		const t_u8 *state, t_u32 length);
 void	tree_sitter_sh_external_scanner_destroy(void *payload);
 
