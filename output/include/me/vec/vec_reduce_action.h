@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:09:05 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/19 14:20:30 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 17:45:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef bool	(*t_vec_reduce_action_sort_fn)(\
 typedef void	(*t_free_reduce_action_item)(t_reduce_action);
 
 /// @brief A dynamic array of t_reduce_action
-struct s_vec_reduce_action
+typedef struct s_vec_reduce_action
 {
 	t_free_reduce_action_item	free_func;
 	t_usize						len;
@@ -60,7 +60,7 @@ t_error										vec_reduce_action_push(\
 t_error										vec_reduce_action_push_front(\
 	t_vec_reduce_action *vec, t_reduce_action element);
 
-/// @brief Get the last element from the vec_reduce_action, \
+/// @brief Get the last element from the vec_reduce_action, 
 /// and remove it from the vec_reduce_action
 /// @param vec The vec_reduce_action to get the element from
 /// @param[out] out The last element of the vec_reduce_action
@@ -108,7 +108,7 @@ t_error										vec_reduce_action_find_starting(\
 	t_vec_reduce_action *vec, bool (*fn)(\
 	const t_reduce_action *), t_usize starting_index, t_usize *index);
 
-/// @brief Run the function on every element of the \
+/// @brief Run the function on every element of the 
 /// vec_reduce_action and returns if all elements returned true
 /// @param vec The vec_reduce_action to search in
 /// @param fn The function to run on each element
@@ -119,7 +119,7 @@ t_error										vec_reduce_action_all(\
 	t_vec_reduce_action *vec, bool (*fn)(\
 	const t_reduce_action *), bool *result);
 
-/// @brief Run the function on every element \
+/// @brief Run the function on every element 
 /// of the vec_reduce_action and returns if any element returned true
 /// @param vec The vec_reduce_action to search in
 /// @param fn The function to run on each element

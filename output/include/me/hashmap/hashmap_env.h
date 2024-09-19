@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 11:00:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 12:11:03 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 17:44:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ typedef struct s_hashmap_env
 	t_free_env_fn	free;
 }					t_hashmap_env;
 
-/// @brief Creates a new hashmap with the given hash, \
+/// @brief Creates a new hashmap with the given hash, 
 /// comparison, & free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
@@ -74,7 +74,7 @@ typedef struct s_hashmap_env
 t_hashmap_env	*hmap_env_new(\
 	t_hash_env_fn hash, t_eq_env_fn cmp, t_free_env_fn free);
 
-/// @brief Creates a new hashmap with the given hash, \
+/// @brief Creates a new hashmap with the given hash, 
 /// comparison, and free functions
 /// @param hash The hash function
 /// @param cmp The comparison function
@@ -102,7 +102,7 @@ bool			hmap_env_insert(t_hashmap_env *hmap, t_str key, t_str value);
 /// @brief Gets the value associated with the key
 /// @param hmap The hashmap
 /// @param key The key
-/// @return The value associated with the key, \
+/// @return The value associated with the key, 
 /// or NULL if the key is not in the hashmap
 t_str			*hmap_env_get(t_hashmap_env *hmap, t_str *key);
 
@@ -121,19 +121,19 @@ void			hmap_env_remove(t_hashmap_env *hmap, t_str *key);
 t_entry_env		*hmap_env_get_entry(\
 	t_hashmap_env *hmap, t_usize hash, t_str *key, t_entry_env	**prev);
 
-/// @brief Iterates over the hashmap & \
+/// @brief Iterates over the hashmap & 
 /// calls the given function for each key-value pair
 /// @param self The hashmap
 /// @param func The function to call
 /// @param ctx The context to pass to the function
 /// @return An error code
-/// @note The iteration can be stopped by returning \
+/// @note The iteration can be stopped by returning 
 /// an error code from the function
 t_error			hmap_env_iter(\
 	t_hashmap_env *self, t_error (*func)(\
 	t_usize idx, const t_str *key, t_str *val, void *ctx), void *ctx);
 
-/// @brief Clone an entire hashmap, \
+/// @brief Clone an entire hashmap, 
 /// using the given function to duplicate the items
 /// @param self The hashmap
 /// @param func The function to call

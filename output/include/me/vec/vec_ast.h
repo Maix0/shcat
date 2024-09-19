@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 18:46:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 14:33:03 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/19 17:42:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_vec_ast
 	t_free_ast_item	free_func;
 	t_usize			len;
 	t_usize			capacity;
-	t_ast_node		buffer;
+	t_ast_node		*buffer;
 }					t_vec_ast;
 
 struct s_vec_ast_splice_arguments
