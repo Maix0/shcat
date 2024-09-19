@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_ast.c                                  :+:      :+:    :+:   */
+/*   ast_functions3.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/30 17:59:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/30 17:59:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 15:34:10 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,14 @@
 #include "me/vec/vec_ast.h"
 #include <stdlib.h>
 
-t_error vec_ast_push_front(t_vec_ast *vec,
-								   t_ast_node	  element)
+t_error	vec_ast_push_front(t_vec_ast *vec, t_ast_node element)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len == 0)
 		return (vec_ast_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 &&
+	if (vec->capacity < vec->len + 1 && \
 		vec_ast_reserve(vec, 3 * vec->len / 2 + 1))
 		return (ERROR);
 	while (i > 0)
@@ -37,9 +36,9 @@ t_error vec_ast_push_front(t_vec_ast *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_ast_pop_front(t_vec_ast *vec, t_ast_node *value)
+t_error	vec_ast_pop_front(t_vec_ast *vec, t_ast_node *value)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len <= 1)
 		return (vec_ast_pop(vec, value));
@@ -55,10 +54,10 @@ t_error vec_ast_pop_front(t_vec_ast *vec, t_ast_node *value)
 	return (NO_ERROR);
 }
 
-void vec_ast_reverse(t_vec_ast *vec)
+void	vec_ast_reverse(t_vec_ast *vec)
 {
-	t_ast_node temporary;
-	t_usize		  i;
+	t_ast_node	temporary;
+	t_usize		i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -70,9 +69,9 @@ void vec_ast_reverse(t_vec_ast *vec)
 	}
 }
 
-t_error vec_ast_back(t_vec_ast *vec, t_ast_node **out)
+t_error	vec_ast_back(t_vec_ast *vec, t_ast_node **out)
 {
-	t_ast_node *temporary;
+	t_ast_node	*temporary;
 
 	if (out == NULL)
 		out = &temporary;
