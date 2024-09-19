@@ -6,18 +6,18 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/31 17:04:59 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 16:45:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/19 19:35:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NODE_H
-#define NODE_H
+# define NODE_H
 
-#include "me/types.h"
-#include "parser/length.h"
-#include "parser/subtree.h"
+# include "me/types.h"
+# include "parser/length.h"
+# include "parser/subtree.h"
 
-typedef struct s_node_child_iterator NodeChildIterator;
+typedef struct s_node_child_iterator	NodeChildIterator;
 struct s_node_child_iterator
 {
 	t_subtree		parent;
