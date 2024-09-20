@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 15:07:10 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/13 14:30:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/20 16:38:57 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ t_error	build_sym_comment(t_node self, t_const_str input, t_ast_node *out)
 t_error	build_sym_variable_assignment(\
 	t_node self, t_const_str input, t_ast_node *out)
 {
-	t_ast_node		ret;
-	t_node	temp_ast;
+	t_ast_node	ret;
+	t_node		temp_ast;
 
 	(void)(self);
 	(void)(input);
