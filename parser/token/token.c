@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/25 16:58:17 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/25 16:59:36 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_error	handle_quote(t_string raw, enum e_token actual, int *output)
 	(void)raw;
 	(void)actual;
 	(void)output;
-	printf("\tNOT DONE\n");
+	dprintf(2, "\tNOT DONE\n");
 	return (ERROR);
 }
 
@@ -29,7 +29,7 @@ t_error	handle_arithmetic(t_string raw, enum e_token actual, int *output)
 	(void)raw;
 	(void)actual;
 	(void)output;
-	printf("\tNOT DONE\n");
+	dprintf(2, "\tNOT DONE\n");
 	return (ERROR);
 }
 t_error	tokeniser(t_string raw, enum e_token actual, int *output)
