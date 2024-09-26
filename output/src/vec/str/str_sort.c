@@ -13,14 +13,15 @@
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 
-void	vec_str_sort(t_vec_str *v, t_vec_str_sort_fn is_sorted_fn)
+void vec_str_sort(t_vec_str		   *v,
+						  t_vec_str_sort_fn is_sorted_fn)
 {
-	t_usize	sorted_part;
-	t_usize	i;
-	t_str	tmp;
+	t_usize		  sorted_part;
+	t_usize		  i;
+	t_str tmp;
 
 	if (v == NULL)
-		return ;
+		return;
 	sorted_part = v->len;
 	while (sorted_part > 0)
 	{

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_subtree.c                                  :+:      :+:    :+:   */
+/*   vec_token.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,18 +12,19 @@
 
 #include "me/mem/mem.h"
 #include "me/types.h"
-#include "me/vec/vec_subtree.h"
+#include "me/vec/vec_token.h"
 #include <stdlib.h>
 
-t_error	vec_subtree_push_front(t_vec_subtree *vec, t_subtree element)
+t_error vec_token_push_front(t_vec_token *vec,
+								   t_token	  element)
 {
-	t_usize	i;
+	t_usize i;
 
 	if (vec->len == 0)
-		return (vec_subtree_push(vec, element));
+		return (vec_token_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 && vec_subtree_reserve(vec, 3 * vec->len
-			/ 2 + 1))
+	if (vec->capacity < vec->len + 1 &&
+		vec_token_reserve(vec, 3 * vec->len / 2 + 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -36,12 +37,12 @@ t_error	vec_subtree_push_front(t_vec_subtree *vec, t_subtree element)
 	return (NO_ERROR);
 }
 
-t_error	vec_subtree_pop_front(t_vec_subtree *vec, t_subtree *value)
+t_error vec_token_pop_front(t_vec_token *vec, t_token *value)
 {
-	t_usize	i;
+	t_usize i;
 
 	if (vec->len <= 1)
-		return (vec_subtree_pop(vec, value));
+		return (vec_token_pop(vec, value));
 	i = 0;
 	*value = vec->buffer[0];
 	vec->len--;
@@ -54,10 +55,10 @@ t_error	vec_subtree_pop_front(t_vec_subtree *vec, t_subtree *value)
 	return (NO_ERROR);
 }
 
-void	vec_subtree_reverse(t_vec_subtree *vec)
+void vec_token_reverse(t_vec_token *vec)
 {
-	t_subtree	temporary;
-	t_usize		i;
+	t_token temporary;
+	t_usize		  i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -69,9 +70,9 @@ void	vec_subtree_reverse(t_vec_subtree *vec)
 	}
 }
 
-t_error	vec_subtree_back(t_vec_subtree *vec, t_subtree **out)
+t_error vec_token_back(t_vec_token *vec, t_token **out)
 {
-	t_subtree	*temporary;
+	t_token *temporary;
 
 	if (out == NULL)
 		out = &temporary;

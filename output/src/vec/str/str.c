@@ -15,9 +15,10 @@
 #include "me/vec/vec_str.h"
 #include <stdlib.h>
 
-t_vec_str	vec_str_new(t_usize capacity, t_free_str_item free_function)
+t_vec_str vec_str_new(t_usize				  capacity,
+									  t_free_str_item free_function)
 {
-	t_vec_str	out;
+	t_vec_str out;
 
 	out = (t_vec_str){0};
 	out.free_func = free_function;
@@ -28,7 +29,7 @@ t_vec_str	vec_str_new(t_usize capacity, t_free_str_item free_function)
 }
 
 /// Return true in case of an error
-t_error	vec_str_push(t_vec_str *vec, t_str element)
+t_error vec_str_push(t_vec_str *vec, t_str element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -39,9 +40,9 @@ t_error	vec_str_push(t_vec_str *vec, t_str element)
 }
 
 /// Return true in case of an error
-t_error	vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
+t_error vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 {
-	size_t	new_capacity;
+	size_t new_capacity;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -50,8 +51,8 @@ t_error	vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(vec->buffer, new_capacity,
-				sizeof(t_str));
+		vec->buffer =
+			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_str));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -59,10 +60,10 @@ t_error	vec_str_reserve(t_vec_str *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error	vec_str_pop(t_vec_str *vec, t_str *value)
+t_error vec_str_pop(t_vec_str *vec, t_str *value)
 {
-	t_str	temp_value;
-	t_str	*ptr;
+	t_str  temp_value;
+	t_str *ptr;
 
 	if (vec == NULL || vec->len == 0)
 		return (ERROR);
@@ -76,10 +77,10 @@ t_error	vec_str_pop(t_vec_str *vec, t_str *value)
 }
 
 /// This function is safe to call with `free_elem` being NULL
-void	vec_str_free(t_vec_str vec)
+void vec_str_free(t_vec_str vec)
 {
 	if (vec.buffer == NULL)
-		return ;
+		return;
 	if (vec.free_func)
 	{
 		while (vec.len)

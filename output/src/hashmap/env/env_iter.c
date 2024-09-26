@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_iter.c                                         :+:      :+:    :+:   */
+/*   hashmap_env.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 11:00:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 15:25:10 by rparodi          ###   ########.fr       */
+/*   Updated: 2023/12/11 15:24:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/hashmap/hashmap_env.h"
 
-t_error	hmap_env_iter(\
-	t_hashmap_env *self, t_error (*func)(\
-	t_usize idx, const t_str *key, t_str *val, void *ctx), void *ctx)
+t_error hmap_env_iter(t_hashmap_env *self,
+								 t_error (*func)(t_usize			 idx,
+												 const t_str *key,
+												 t_str *val, void *ctx),
+								 void *ctx)
 {
-	t_usize		bucket_id;
-	t_usize		all_id;
-	t_entry_env	*cur;
+	t_usize				 bucket_id;
+	t_usize				 all_id;
+	t_entry_env *cur;
 
 	bucket_id = 0;
 	all_id = 0;

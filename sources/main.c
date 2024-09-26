@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/19 23:44:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/26 18:14:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,10 @@
 #include "me/str/str.h"
 #include "me/string/string.h"
 #include "me/types.h"
-#include "parser/api.h"
-#include "parser/inner/parser_inner.h"
 #include <errno.h>
 #include <sys/types.h>
 
-t_error			ast_from_node(t_node node, t_str input, t_ast_node *out);
 t_error			get_user_input(t_state *state);
-t_parser		*create_myparser(void);
 void			ast_print_node(t_ast_node self);
 void			ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void			exec_shcat(t_state *state);
@@ -40,7 +36,6 @@ void			ft_take_args(t_state *state);
 // cle avant le =
 // data apres le =
 
-t_language		*tree_sitter_sh(void);
 void			ast_free(t_ast_node node);
 
 t_error	split_str_first(\
@@ -104,21 +99,7 @@ void print_node_data(t_node *t, t_usize depth)
 
 void	parse_str(t_state *state)
 {
-	t_tree		*tree;
-	t_node		node;
-	t_ast_node	out;
-
-	tree = ts_parser_parse_string(\
-		state->parser, state->str_input, str_len(state->str_input));
-	node = ts_tree_root_node(tree);
-	if (ast_from_node(node, state->str_input, &out))
-	{
-		state->ast = NULL;
-		printf("Error when building node\n");
-	}
-	else
-		state->ast = out;
-	ts_tree_delete(tree);
+	(void)(state);
 }
 
 t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
@@ -130,7 +111,6 @@ t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
 	if (install_signal())
 		me_abort("Unable to install signals");
 	state = (t_state){};
-	state.parser = create_myparser();
 	state.env = create_env_map();
 	state.tmp_var = create_env_map();
 	if (populate_env(state.env, envp))

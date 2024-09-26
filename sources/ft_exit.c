@@ -6,16 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/19 17:27:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/26 18:14:26 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/state.h"
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-#include "parser/api.h"
 
-void	ts_parser_delete(t_parser *self);
 
 void	ft_free(void *ptr)
 {
@@ -41,7 +39,6 @@ void	ft_free_utils(t_state *s)
 		hmap_env_free(s->env);
 	if (s->tmp_var)
 		hmap_env_free(s->tmp_var);
-	ts_parser_delete(s->parser);
 }
 
 void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status)

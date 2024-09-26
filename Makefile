@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/09/19 17:33:04 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/09/26 18:01:37 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -132,14 +132,13 @@ tokei:
 
 
 build_filelist:
-	@$(MAKE) --no-print-directory -C ./stdme/ 					build_filelist
-	@$(MAKE) --no-print-directory -C ./allocator/ 				build_filelist
-	@$(MAKE) --no-print-directory -C ./ast/ 					build_filelist
-	@$(MAKE) --no-print-directory -C ./exec/ 					build_filelist
-	@$(MAKE) --no-print-directory -C ./line/ 					build_filelist
-	@$(MAKE) --no-print-directory -C ./parser/ -f ./Grammar.mk	build_filelist
-	@$(MAKE) --no-print-directory -C ./parser/ -f ./Parser.mk	build_filelist
-	@$(MAKE) --no-print-directory -f ./Minishell.mk	 			build_filelist
+	@$(MAKE) --no-print-directory -C ./stdme/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ./allocator/ 	build_filelist
+	@$(MAKE) --no-print-directory -C ./ast/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ./exec/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ./line/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ./parser/		build_filelist
+	@$(MAKE) --no-print-directory -f ./Minishell.mk	build_filelist
 
 #	phony
 .PHONY: all bonus clean fclean re header footer build_filelist

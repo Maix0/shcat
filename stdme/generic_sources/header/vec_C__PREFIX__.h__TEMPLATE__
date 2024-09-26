@@ -17,9 +17,9 @@ C__TYPEHEADER__
 #include "me/types.h"
 
 /// @brief A function that takes two C__TYPENAME__ and compare them
-typedef bool (*t_vec_C__PREFIX___sort_fn)(C__TYPENAME__ *, C__TYPENAME__ *);
+typedef bool (*t_vec_C__PREFIX___sort_fn)(C__TYPENAME__ *lhs, C__TYPENAME__ *rhs);
 /// @brief A function that free an C__TYPENAME__
-typedef void (*t_free_C__PREFIX___item)(C__TYPENAME__);
+typedef void (*t_free_C__PREFIX___item)(C__TYPENAME__ elem);
 
 /// @brief A dynamic array of C__TYPENAME__
 typedef struct s_vec_C__PREFIX__ t_vec_C__PREFIX__;

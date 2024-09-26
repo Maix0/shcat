@@ -13,14 +13,15 @@
 #include "me/types.h"
 #include "me/vec/vec_pid.h"
 
-void	vec_pid_sort(t_vec_pid *v, t_vec_pid_sort_fn is_sorted_fn)
+void vec_pid_sort(t_vec_pid		   *v,
+						  t_vec_pid_sort_fn is_sorted_fn)
 {
-	t_usize	sorted_part;
-	t_usize	i;
-	t_pid	tmp;
+	t_usize		  sorted_part;
+	t_usize		  i;
+	t_pid tmp;
 
 	if (v == NULL)
-		return ;
+		return;
 	sorted_part = v->len;
 	while (sorted_part > 0)
 	{

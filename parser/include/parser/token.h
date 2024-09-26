@@ -1,40 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hashmap_env.h                              :+:      :+:    :+:   */
+/*   token.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 11:00:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 15:24:44 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/26 18:29:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/types.h"
+#ifndef TOKEN_H
+#define TOKEN_H
 
+#include "parser/_token.h"
 
+#include "me/string/string.h"
+#include "me/vec/vec_token.h"
 
-#include "me/hashmap/hashmap_env.h"
-#include "me/mem/mem.h"
-
-
-void	hmap_env_clear(t_hashmap_env *self)
+enum e_token
 {
-	t_usize					bucket_id;
-	t_entry_env		*cur;
-	t_entry_env		*next;
+	AMP,
+	DOLLAR,
+	DQUOTE,
+	LPAREN,
+	NQUOTE,
+	PIPE,
+	CARRET,
+	RPAREN,
+	SEMICOLON,
+	SQUOTE,
+	WHITESPACE
+};
 
-	bucket_id = 0;
-	while (bucket_id < self->num_buckets)
-	{
-		cur = self->buckets[bucket_id];
-		while (cur != NULL)
-		{
-			next = cur->next;
-			self->free(cur->kv);
-			mem_free(cur);
-			cur = next;
-		}
-		bucket_id++;
-	}
-}
+struct s_token
+{
+	t_vec_token		subtokens;
+	t_string		string;
+	enum e_token	type;
+};
+
+
+
+#endif /* TOKEN_H */

@@ -27,19 +27,14 @@ src/vec/pid/pid_functions2                                                    \
 src/vec/pid/pid_functions3                                                    \
 src/vec/pid/pid_functions4                                                    \
 src/vec/pid/pid_sort                                                          \
-src/vec/reduce_action/reduce_action                                           \
-src/vec/reduce_action/reduce_action_functions2                                \
-src/vec/reduce_action/reduce_action_functions3                                \
-src/vec/reduce_action/reduce_action_functions4                                \
-src/vec/reduce_action/reduce_action_sort                                      \
 src/vec/str/str                                                               \
 src/vec/str/str_functions2                                                    \
 src/vec/str/str_functions3                                                    \
 src/vec/str/str_functions4                                                    \
 src/vec/str/str_sort                                                          \
-src/vec/subtree/subtree                                                       \
-src/vec/subtree/subtree_functions2                                            \
-src/vec/subtree/subtree_functions3                                            \
-src/vec/subtree/subtree_functions4                                            \
-src/vec/subtree/subtree_sort                                                  \
+src/vec/token/token                                                           \
+src/vec/token/token_functions2                                                \
+src/vec/token/token_functions3                                                \
+src/vec/token/token_functions4                                                \
+src/vec/token/token_sort                                                      \
 

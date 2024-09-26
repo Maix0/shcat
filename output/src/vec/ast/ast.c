@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast.c                                              :+:      :+:    :+:   */
+/*   vec_ast.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 18:46:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 15:30:00 by rparodi          ###   ########.fr       */
+/*   Updated: 2023/12/09 17:54:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 #include "me/vec/vec_ast.h"
 #include <stdlib.h>
 
-t_vec_ast	vec_ast_new(t_usize capacity, t_free_ast_item free_function)
+t_vec_ast vec_ast_new(t_usize				  capacity,
+									  t_free_ast_item free_function)
 {
-	t_vec_ast	out;
+	t_vec_ast out;
 
 	out = (t_vec_ast){0};
 	out.free_func = free_function;
@@ -27,8 +28,8 @@ t_vec_ast	vec_ast_new(t_usize capacity, t_free_ast_item free_function)
 	return (out);
 }
 
-/// @return true in case of an error
-t_error	vec_ast_push(t_vec_ast *vec, t_ast_node element)
+/// Return true in case of an error
+t_error vec_ast_push(t_vec_ast *vec, t_ast_node element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -39,9 +40,9 @@ t_error	vec_ast_push(t_vec_ast *vec, t_ast_node element)
 }
 
 /// Return true in case of an error
-t_error	vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
+t_error vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
 {
-	size_t	new_capacity;
+	size_t new_capacity;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -50,8 +51,8 @@ t_error	vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer = mem_realloc_array(\
-			vec->buffer, new_capacity, sizeof(t_ast_node));
+		vec->buffer =
+			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_ast_node));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -59,10 +60,10 @@ t_error	vec_ast_reserve(t_vec_ast *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error	vec_ast_pop(t_vec_ast *vec, t_ast_node *value)
+t_error vec_ast_pop(t_vec_ast *vec, t_ast_node *value)
 {
-	t_ast_node	temp_value;
-	t_ast_node	*ptr;
+	t_ast_node  temp_value;
+	t_ast_node *ptr;
 
 	if (vec == NULL || vec->len == 0)
 		return (ERROR);
@@ -76,10 +77,10 @@ t_error	vec_ast_pop(t_vec_ast *vec, t_ast_node *value)
 }
 
 /// This function is safe to call with `free_elem` being NULL
-void	vec_ast_free(t_vec_ast vec)
+void vec_ast_free(t_vec_ast vec)
 {
 	if (vec.buffer == NULL)
-		return ;
+		return;
 	if (vec.free_func)
 	{
 		while (vec.len)

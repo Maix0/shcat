@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/19 17:28:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/26 18:10:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include "me/hashmap/hashmap_env.h"
 # include "me/os/os.h"
 # include "me/types.h"
-# include "parser/inner/node.h"
 
 typedef struct s_state	t_state;
 
@@ -27,7 +26,7 @@ struct s_state
 	t_str			str_input;
 	t_hashmap_env	*env;
 	t_hashmap_env	*tmp_var;
-	t_parser		*parser;
+	void 			*parser;
 	t_ast_node		ast;
 };
 

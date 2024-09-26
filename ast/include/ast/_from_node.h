@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 16:54:31 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/03 15:47:16 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/26 18:06:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "ast/ast.h"
 # include "me/types.h"
-# include "parser/api.h"
 # include "gmr/symbols.h"
 
 void						_add_negation(t_ast_node *node);

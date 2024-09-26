@@ -86,15 +86,7 @@ replace.C__PREFIXUP__ = "PID"
 [[create.vec]]
 sources_output = "src/vec/C__PREFIX__/"
 headers_output = "include/me/vec/"
-replace.C__TYPENAME__ = "t_subtree"
-replace.C__TYPEHEADER__ = '#include "parser/inner/subtree_inner.h"'
-replace.C__PREFIX__ = "subtree"
-replace.C__PREFIXUP__ = "SUBTREE"
-
-[[create.vec]]
-sources_output = "src/vec/C__PREFIX__/"
-headers_output = "include/me/vec/"
-replace.C__TYPENAME__ = "t_reduce_action"
-replace.C__TYPEHEADER__ = '#include "parser/inner/reduce_action_inner.h"'
-replace.C__PREFIX__ = "reduce_action"
-replace.C__PREFIXUP__ = "REDUCE_ACTION"
+replace.C__TYPENAME__ = "t_token"
+replace.C__TYPEHEADER__ = '#include "parser/token.h"'
+replace.C__PREFIX__ = "token"
+replace.C__PREFIXUP__ = "TOKEN"

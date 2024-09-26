@@ -6,11 +6,11 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/25 16:59:36 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/26 17:56:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/token/token.h"
+#include "parser/token.h"
 #include "me/string/string.h"
 #include "me/types.h"
 #include <stdio.h>

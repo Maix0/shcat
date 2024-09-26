@@ -1,40 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hashmap_env.h                              :+:      :+:    :+:   */
+/*   token_functions4.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/06 11:00:22 by maiboyer          #+#    #+#             */
-/*   Updated: 2023/12/11 15:24:44 by maiboyer         ###   ########.fr       */
+/*   Created: 2023/12/30 17:59:28 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/09/26 18:29:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/types.h"
-
-
-
-#include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
+#include "me/types.h"
+#include "me/vec/vec_token.h"
+#include <stdlib.h>
 
-
-void	hmap_env_clear(t_hashmap_env *self)
+t_token *vec_token_get(t_vec_token *vec, t_usize i)
 {
-	t_usize					bucket_id;
-	t_entry_env		*cur;
-	t_entry_env		*next;
+	if (vec == NULL || vec->buffer == NULL)
+		return (NULL);
+	if (i < vec->len)
+		return (&vec->buffer[i]);
+	return (NULL);
+}
 
-	bucket_id = 0;
-	while (bucket_id < self->num_buckets)
-	{
-		cur = self->buckets[bucket_id];
-		while (cur != NULL)
-		{
-			next = cur->next;
-			self->free(cur->kv);
-			mem_free(cur);
-			cur = next;
-		}
-		bucket_id++;
-	}
+t_token *vec_token_last(t_vec_token *vec)
+{
+	if (vec == NULL || vec->len == 0)
+		return (NULL);
+	return (&vec->buffer[vec->len - 1]);
 }

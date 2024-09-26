@@ -11,14 +11,16 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
+#include "me/mem/mem.h"
+#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_estr.h"
 #include <stdlib.h>
 
-t_error	vec_estr_find(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
-		t_usize *index)
+t_error vec_estr_find(t_vec_estr *vec,
+							 bool (*fn)(const t_expandable_str *), t_usize *index)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -35,11 +37,11 @@ t_error	vec_estr_find(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
 	return (ERROR);
 }
 
-t_error	vec_estr_find_starting(t_vec_estr *vec,
-		bool (*fn)(const t_expandable_str *), t_usize starting_index,
-		t_usize *index)
+t_error vec_estr_find_starting(t_vec_estr *vec,
+									  bool (*fn)(const t_expandable_str *),
+									  t_usize starting_index, t_usize *index)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -56,10 +58,10 @@ t_error	vec_estr_find_starting(t_vec_estr *vec,
 	return (ERROR);
 }
 
-t_error	vec_estr_all(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
-		bool *result)
+t_error vec_estr_all(t_vec_estr *vec,
+							bool (*fn)(const t_expandable_str *), bool *result)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -74,10 +76,10 @@ t_error	vec_estr_all(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
 	return (ERROR);
 }
 
-t_error	vec_estr_any(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
-		bool *result)
+t_error vec_estr_any(t_vec_estr *vec,
+							bool (*fn)(const t_expandable_str *), bool *result)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -92,13 +94,15 @@ t_error	vec_estr_any(t_vec_estr *vec, bool (*fn)(const t_expandable_str *),
 	return (ERROR);
 }
 
-void	vec_estr_iter(t_vec_estr *vec, void (*fn)(t_usize index,
-			t_expandable_str *value, void *state), void *state)
+void vec_estr_iter(t_vec_estr *vec,
+						  void (*fn)(t_usize index, t_expandable_str *value,
+									 void *state),
+						  void *state)
 {
-	t_usize	idx;
+	t_usize idx;
 
 	if (vec == NULL || fn == NULL)
-		return ;
+		return;
 	idx = 0;
 	while (idx < vec->len)
 	{

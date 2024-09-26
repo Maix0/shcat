@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/08/19 14:31:41 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/09/26 18:27:18 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,21 +53,20 @@ END = \033[0m
 
 .PHONY: all bonus build_filelist re clean fclean
 
-LIBS_NAMES = me gmr aq ast parser line exec sh
+LIBS_NAMES = me aq ast parser line exec sh
 LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
-all:
-	@$(MAKE) -C ./stdme/ 					"LIB_NAME=$(shell realpath ./stdme)/"		libme.a
-	@$(MAKE) -C ./allocator/ 				"LIB_NAME=$(shell realpath ./allocator)/"	libaq.a
-	@$(MAKE) -C ./ast/ 						"LIB_NAME=$(shell realpath ./ast)/"			libast.a
-	@$(MAKE) -C ./exec/ 					"LIB_NAME=$(shell realpath ./exec)/"		libexec.a
-	@$(MAKE) -C ./line/ 					"LIB_NAME=$(shell realpath ./line)/"		libline.a
-	@$(MAKE) -C ./parser/ -f ./Grammar.mk	"LIB_NAME=$(shell realpath ./parser)/"		libgmr.a
-	@$(MAKE) -C ./parser/ -f ./Parser.mk	"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
-	@$(MAKE) -f./Minishell.mk 															lib$(ANAME).a
-	@$(MAKE) -f./Minishell.mk 															$(NAME)
 
+all:
+	@$(MAKE) -C ./stdme/ 		"LIB_NAME=$(shell realpath ./stdme)/"		libme.a
+	@$(MAKE) -C ./allocator/	"LIB_NAME=$(shell realpath ./allocator)/"	libaq.a
+	#@$(MAKE) -C ./ast/ 			"LIB_NAME=$(shell realpath ./ast)/"			libast.a
+	@$(MAKE) -C ./exec/ 		"LIB_NAME=$(shell realpath ./exec)/"		libexec.a
+	@$(MAKE) -C ./line/ 		"LIB_NAME=$(shell realpath ./line)/"		libline.a
+	@$(MAKE) -C ./parser/ 		"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
+	@$(MAKE) -f./Minishell.mk 												lib$(ANAME).a
+	@$(MAKE) -f./Minishell.mk 												$(NAME)
 
 # Bonus (make bonus)
 bonus: $(OBJ) $(LIBS_FILES)
@@ -76,6 +75,7 @@ bonus: $(OBJ) $(LIBS_FILES)
 	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
 	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -DDEBUG=1 -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
+
 
 # Dependences for all
 $(NAME): $(LIBS_FILES)
