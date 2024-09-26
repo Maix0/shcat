@@ -3,12 +3,12 @@ from ttoken import *
 TT = TokenType
 
 
-def is_quote(c: chr):
+def is_quote(c: str) -> bool:
     return c == "'" or c == '"'
 
 
 # This function takes the string and seperate them into different tokens depending on the quotes
-def str_to_token(s: str):
+def str_to_token(s: str) -> list[Token]:
     tokens = []
     current_token = None
     quote = 0
@@ -36,6 +36,8 @@ def str_to_token(s: str):
                     ):
                         tokens.append(current_token)
                     current_token = Token(TT.WHITESPACE, string="")
+                    i += 1;
+                    continue;
                 else:
                     # we DON'T have a whitespace, then if the current token is a whitespace, just push it and set the new token to raw_string
                     if current_token.ty == TT.WHITESPACE:
@@ -64,7 +66,7 @@ def str_to_token(s: str):
                 elif c == ";":
                     tokens.append(current_token)
                     current_token = None
-                    tokens.append(Token(TT.CARRET, string=";"))
+                    tokens.append(Token(TT.SEMICOLON, string=";"))
                 elif c == ">" or c == "<":
                     tokens.append(current_token)
                     current_token = None
@@ -97,4 +99,9 @@ def str_to_token(s: str):
     # if the current token is not none and the current token is "no quote" then we push it
     if current_token != None and current_token.ty == TT.NQUOTE:
         tokens.append(current_token)
-    return tokens
+    # cleanup the empty tokens that may be here
+    out = []
+    for tok in tokens:
+        if not (tok.ty == TT.NQUOTE and len(tok.string) == 0):
+            out.append(tok)
+    return out

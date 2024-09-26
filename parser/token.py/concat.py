@@ -2,7 +2,7 @@ from ttoken import *
 
 
 # This function will make a "big" token that will represent a word in the shell sense
-def concat(tokens: list[Token]):
+def concat(tokens: list[Token]) -> list[Token]:
     i = 0
     out = []
     while i < len(tokens):

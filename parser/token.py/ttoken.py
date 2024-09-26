@@ -4,25 +4,25 @@ from dataclasses import dataclass
 TokenType = Enum(
     "TokenType",
     [
-        "AMP",
-        "AND",
-        "CARRET",
-        "DOLLAR",
-        "DQUOTE",
-        "EXPENSION",
-        "LCARRET",
-        "LCARRET_DOUBLE",
-        "LPAREN",
-        "NQUOTE",
-        "OR",
-        "PIPE",
-        "RCARRET",
-        "RCARRET_DOUBLE",
-        "RPAREN",
-        "SEMICOLON",
-        "SQUOTE",
-        "WHITESPACE",
-        "WORD",
+        "AMP",  # ampersand == &
+        "AND",  # and == &&
+        "CARRET",  # any carret == < > << >>
+        "DLCARRET",  # double left carret == <<
+        "DOLLAR",  # dollar == $
+        "DQUOTE",  # double quote string
+        "DRCARRET",  # double right carret == >>
+        "EXPENSION",  # an expension == $<no_quote_word>
+        "LCARRET",  # left carret == <
+        "LPAREN",  # left parenthesis == (
+        "NQUOTE",  # no quote string
+        "OR",  # or == ||
+        "PIPE",  # pipe == |
+        "RCARRET",  # right carret == >
+        "RPAREN",  # right parenthesis == )
+        "SEMICOLON",  # semicolor == ;
+        "SQUOTE",  # single quote string
+        "WHITESPACE",  # whitespace outside of quoted strings
+        "WORD",  # a meta token, which contains subtokens
     ],
 )
 
@@ -33,12 +33,14 @@ class Token:
     string: str = None
     subtokens: list = None
 
-    def is_subtoken(self) -> bool:
+    def is_metatoken(self) -> bool:
         return self.subtokens != None
 
     def append_char(self, c: str):
         if self.string is None:
-            raise Exception(f"Tried to push a char on a token that contains subtokens, TT={self.ty}")
+            raise Exception(
+                f"Tried to push a char on a token that contains subtokens, TT={self.ty}"
+            )
         self.string += c
 
     def is_word(self):
@@ -50,34 +52,12 @@ class Token:
         )
 
 
-def print_tokenlist(tokens: list[Token], *, between="", end="\n"):
+def print_tokenlist(tokens: list[Token], *, depth=0):
     for tok in tokens:
-        col = "0"
-        if tok.ty == TokenType.SQUOTE:
-            col = "33"
-        if tok.ty == TokenType.DQUOTE:
-            col = "32"
-        if tok.ty == TokenType.WHITESPACE:
-            col = "31;4"
-        if tok.ty == TokenType.DOLLAR:
-            col = "31"
-        if tok.ty == TokenType.LPAREN:
-            col = "35"
-        if tok.ty == TokenType.RPAREN:
-            col = "35"
-        if tok.ty == TokenType.AMP:
-            col = "35"
-        if tok.ty == TokenType.PIPE:
-            col = "35"
-        if tok.ty == TokenType.SEMICOLON:
-            col = "35"
-        if tok.ty == TokenType.CARRET:
-            col = "35"
-        if tok.is_subtoken():
-            print_tokenlist(tok.subtokens, between="\x1b[100m", end="")
+        if tok.is_metatoken():
+            print_tokenlist(tok.subtokens, depth=depth + 1)
         else:
-            print(f"\x1b[{col}m{between}{tok.string}\x1b[0m", end="")
-    #print(end)
+            print(f"{'\t' * depth}{tok.ty.name:>10} => \x1b[31;40m{tok.string}\x1b[0m")
 
 
 __all__ = ["TokenType", "Token", "print_tokenlist"]
