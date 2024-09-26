@@ -1,9 +1,10 @@
-import make_token
+import str_to_token
 import prettier
+import ttoken
 
 s = input("> ")
-print(s);
-first = make_token.me_tokenize(s)
-pass1 = prettier.pass1(first)
+print(s)
+tokens = str_to_token.str_to_token(s)
+concated_tokens = concat.concat(tokens)
 
-prettier.print_tokenlist(pass1)
+ttoken.print_tokenlist(concated_tokens)
