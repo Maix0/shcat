@@ -1,5 +1,5 @@
 import str_to_token
-import prettier
+import concat 
 import ttoken
 
 s = input("> ")
