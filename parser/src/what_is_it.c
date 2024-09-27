@@ -1,33 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
+/*   what_is_it.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/27 13:14:23 by rparodi          ###   ########.fr       */
+/*   Created: 2024/09/27 11:46:45 by rparodi           #+#    #+#             */
+/*   Updated: 2024/09/27 12:48:18 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/vec/vec_token.h"
 #include "parser/token.h"
 #include "me/string/string.h"
 #include "me/types.h"
-#include "me/vec/vec_token.h"
 #include <stdio.h>
 
-t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
+bool	is_quote(char c)
 {
-
-}
-
-t_error	tokeniser(t_const_str raw, enum e_token list)
-{
-	t_vec_token	output;
-
-	if (!raw.buf || raw.len == 0 || raw.capacity == 0)
-		return (ERROR);
-	output = vec_token_new(16, NULL);
-	start_analyse(raw, list, &output);
-	return (NO_ERROR);
+	if (c == '"' || c == '\'')
+		return (true);
+	return (false);
 }
