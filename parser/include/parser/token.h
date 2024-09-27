@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/27 11:38:18 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/27 22:37:22 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@
 enum e_token
 {
 	AMP,
+	CARRET,
 	DOLLAR,
 	DQUOTE,
 	LPAREN,
 	NQUOTE,
 	PIPE,
-	CARRET,
 	RPAREN,
 	SEMICOLON,
 	SQUOTE,

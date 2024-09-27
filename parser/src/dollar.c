@@ -1,48 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
+/*   dollar.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/27 22:29:04 by rparodi          ###   ########.fr       */
+/*   Created: 2024/09/27 22:18:46 by rparodi           #+#    #+#             */
+/*   Updated: 2024/09/27 22:20:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/vec/vec_token.h"
 #include "parser/token.h"
 #include "me/string/string.h"
 #include "me/types.h"
-#include "me/vec/vec_token.h"
 #include <stdio.h>
-#include <stdbool.h>
 
-bool	is_space(char c)
+bool	is_dollar(char c)
 {
-	if (c == ' ')
+	if (c == '$')
 		return (true);
 	return (false);
-}
-
-t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
-{
-	t_usize	i;
-
-	i = 0;
-	while (raw[i] != '\0')
-	{
-		if (is_space(raw[i]))
-		i++;
-	}
-}
-
-t_error	tokeniser(t_const_str raw, enum e_token list)
-{
-	t_vec_token	output;
-
-	if (!raw.buf || raw.len == 0 || raw.capacity == 0)
-		return (ERROR);
-	output = vec_token_new(16, NULL);
-	start_analyse(raw, list, &output);
-	return (NO_ERROR);
 }
