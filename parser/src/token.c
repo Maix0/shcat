@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/27 22:29:04 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/28 12:16:45 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,14 @@
 #include "me/vec/vec_token.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include "me/mem/mem.h"
 
+/**
+ * @brief boolean function that's say if it's a space or not
+ *
+ * @param c character will be checked
+ * @return true if it's space, if not return false
+ */
 bool	is_space(char c)
 {
 	if (c == ' ')
