@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 11:46:45 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/28 11:50:00 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/28 14:49:11 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,13 @@ bool	is_quote(char c)
  */
 t_error	find_end_string(t_str raw, t_usize *start, t_token *output)
 {
+	char	tmp;
+
 	if (!raw || !output)
 		return (ERROR);
 	if (is_quote(raw[(*start)]))
 	{
+		tmp = raw[(*start)];
 		string_push_char(&output->string, raw[(*start)]);
 		(*start)++;
 		if (raw[(*start)] == '\0')

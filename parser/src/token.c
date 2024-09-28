@@ -6,28 +6,22 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/28 14:48:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/28 15:27:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/token.h"
 #include "me/string/string.h"
 #include "me/types.h"
+#include "me/char/char.h"
 #include "me/vec/vec_token.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include "me/mem/mem.h"
 
-
 // MAIX: attention les whitespace peuvent aussi etre des tab. de memoire il y a 
 // une fonction "me_isspace" qui check ce qu'on veut dans "me/char/char.h"
-/**
- * @brief boolean function that's say if it's a space or not
- *
- * @param c character will be checked
- * @return true if it's space, if not return false
- */
-bool	is_space(char c)
+bool	me_isspace(char c)
 {
 	if (c == ' ')
 		return (true);
@@ -42,6 +36,8 @@ t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
 	t_usize	i;
 	t_token	token;
 
+	if (!raw || !output)
+		return (ERROR);
 	i = 0;
 	while (raw[i] != '\0')
 	{
