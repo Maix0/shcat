@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/28 12:16:45 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/28 14:48:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include <stdbool.h>
 #include "me/mem/mem.h"
 
+
+// MAIX: attention les whitespace peuvent aussi etre des tab. de memoire il y a 
+// une fonction "me_isspace" qui check ce qu'on veut dans "me/char/char.h"
 /**
  * @brief boolean function that's say if it's a space or not
  *
@@ -31,22 +34,27 @@ bool	is_space(char c)
 	return (false);
 }
 
+// MAIX: tu peux faire un token par character "whitespace", vu qu'on va 
+// manipuler la list de token apres pour faire des truc plus simple a process 
+// on se debrouillera pour plus avoir plein de token whitespace :)
 t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
 {
 	t_usize	i;
 	t_token	token;
 
 	i = 0;
-	mem_alloc(sizeof(t_token));
 	while (raw[i] != '\0')
 	{
 		if (is_space(raw[i]))
-			token = 
+			token = token_new(WHITESPACE);
 		i++;
 	}
 	return (NO_ERROR);
 }
 
+// MAIX: attention tu ne fais rien avec le vec_token ici :D
+//		aussi l'argument list est censer faire quoi ? 
+//		c'est un reste d'une version ancienne ?
 t_error	tokeniser(t_const_str raw, enum e_token list)
 {
 	t_vec_token	output;

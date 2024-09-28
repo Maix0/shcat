@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 22:18:46 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/28 11:47:09 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/28 14:50:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 #include "me/types.h"
 #include <stdio.h>
 
+// MAIX: C'est necessaire de split ca dans une fonction a par vu que ca retourne
+//		la valeur de la comparaion ?
+//		Ca serai pas mieux de faire une fonction du genre 
+//		"bool create_single_char_token(char c, t_token *tok)" qui cree un token
+//		dans `tok` et retourne true si il a match un char qui correspond 
+//		a un token specific (genre $ ou parentheses par example)
 /**
  * @brief boolean function that's say if it's a dollar or not
  *
