@@ -6,14 +6,12 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/27 22:37:22 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/28 11:45:54 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKEN_H
 #define TOKEN_H
-
-#include "parser/_token.h"
 
 #include "me/string/string.h"
 #include "me/vec/vec_token.h"
