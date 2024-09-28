@@ -34,20 +34,24 @@ bool	is_space(char c)
 t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
 {
 	t_usize	i;
+	t_token	token;
 
 	i = 0;
+	mem_alloc(sizeof(t_token));
 	while (raw[i] != '\0')
 	{
 		if (is_space(raw[i]))
+			token = 
 		i++;
 	}
+	return (NO_ERROR);
 }
 
 t_error	tokeniser(t_const_str raw, enum e_token list)
 {
 	t_vec_token	output;
 
-	if (!raw.buf || raw.len == 0 || raw.capacity == 0)
+	if (!raw)
 		return (ERROR);
 	output = vec_token_new(16, NULL);
 	start_analyse(raw, list, &output);
