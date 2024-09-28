@@ -31,11 +31,18 @@ enum e_token
 	WHITESPACE
 };
 
-struct s_token
+typedef struct s_token
 {
 	t_vec_token		subtokens;
 	t_string		string;
 	enum e_token	type;
-};
+}					t_token;
 
-#endif /* TOKEN_H */
+bool	is_dollar(char c);
+bool	is_quote(char c);
+bool	is_space(char c);
+t_error	find_end_string(t_str raw, t_usize *start, t_token *output);
+t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output);
+t_error	tokeniser(t_const_str raw, enum e_token list);
+
+#endif
