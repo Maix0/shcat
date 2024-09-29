@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/29 13:29:54 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/29 15:24:11 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "me/mem/mem.h"
-
-// MAIX: attention les whitespace peuvent aussi etre des tab. de memoire il y a 
-// une fonction "me_isspace" qui check ce qu'on veut dans "me/char/char.h"
-bool	me_isspace(char c)
-{
-	if (c == ' ')
-		return (true);
-	return (false);
-}
 
 // MAIX: tu peux faire un token par character "whitespace", vu qu'on va 
 // manipuler la list de token apres pour faire des truc plus simple a process 
