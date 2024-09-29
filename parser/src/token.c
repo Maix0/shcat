@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/29 13:10:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/29 13:29:54 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	me_isspace(char c)
 // MAIX: tu peux faire un token par character "whitespace", vu qu'on va 
 // manipuler la list de token apres pour faire des truc plus simple a process 
 // on se debrouillera pour plus avoir plein de token whitespace :)
-t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
+t_error	start_analyse(t_const_str raw, t_vec_token *output)
 {
 	t_usize	i;
 	t_token	token;
@@ -56,13 +56,13 @@ t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
 // MAIX: attention tu ne fais rien avec le vec_token ici :D
 //		aussi l'argument list est censer faire quoi ? 
 //		c'est un reste d'une version ancienne ?
-t_error	tokeniser(t_const_str raw, enum e_token list)
+t_error	tokeniser(t_const_str raw)
 {
 	t_vec_token	output;
 
 	if (!raw)
 		return (ERROR);
 	output = vec_token_new(16, NULL);
-	start_analyse(raw, list, &output);
+	start_analyse(raw, &output);
 	return (NO_ERROR);
 }
