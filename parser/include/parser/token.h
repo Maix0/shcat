@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/28 14:52:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/09/29 13:08:58 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool	token_is_meta(t_token tok);
 bool	is_dollar(char c);
 bool	is_quote(char c);
 bool	is_space(char c);
-t_error	find_end_string(t_str raw, t_usize *start, t_token *output);
+t_error	find_end_string(t_const_str raw, t_usize *start, t_token *output);
 t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output);
 t_error	tokeniser(t_const_str raw, enum e_token list);
 

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 16:27:03 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/28 15:27:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/09/29 13:10:20 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,13 @@ t_error	start_analyse(t_const_str raw, enum e_token list, t_vec_token *output)
 	i = 0;
 	while (raw[i] != '\0')
 	{
-		if (is_space(raw[i]))
+		if (me_isspace(raw[i]))
 			token = token_new(WHITESPACE);
+		if (is_quote(raw[i]))
+			find_end_string(raw, &i, &token);
+		if (is_dollar(raw[i]))
+			token = token_new(DOLLAR);
+		vec_token_push(output, token);
 		i++;
 	}
 	return (NO_ERROR);
