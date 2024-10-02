@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 17:50:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/02 18:02:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-static void push_token_and_create_new(t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s)
+static void	push_token_and_create_new(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s)
 {
-	t_token tmp;
+	t_token	tmp;
+
 	if (tok->type != TOK_NONE)
 		vec_token_push(tokens, *tok);
 	*tok = token_new_none();
@@ -27,7 +29,7 @@ static void push_token_and_create_new(t_vec_token *tokens, t_token *tok, enum e_
 	vec_token_push(tokens, tmp);
 }
 
-void handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
 	if (chr == *quote)
 	{
@@ -40,7 +42,7 @@ void handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 		string_push_char(&tok->string, chr);
 }
 
-void handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
 	*quote = '\0';
 	if (chr == '$')
@@ -69,11 +71,29 @@ void handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 	}
 }
 
-t_error tokenize(t_const_str s, t_vec_token *out)
+void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *quote)
+{
+	if (*quote == '\0')
+	{
+		*quote = chr;
+		if (chr == '\"')
+			push_token_and_create_new(ret, tok, TOK_DQUOTE, "");
+		else if (chr == '\'')
+			push_token_and_create_new(ret, tok, TOK_SQUOTE, "");
+		else
+			handle_noquote(ret, chr, tok, quote);
+	}
+	else if (*quote == '\'' || *quote == '\"')
+		handle_quote(ret, chr, tok, quote);
+	else
+		me_abort("invalid quote type");
+}
+
+t_error	tokenize(t_const_str s, t_vec_token *out)
 {
 	t_usize		i;
 	char		quote;
-	t_vec_token ret;
+	t_vec_token	ret;
 	t_token		tok;
 
 	if (s == NULL || out == NULL)
@@ -83,23 +103,7 @@ t_error tokenize(t_const_str s, t_vec_token *out)
 	tok = token_new_none();
 	ret = vec_token_new(16, token_free);
 	while (s[i] != '\0')
-	{
-		if (quote == '\0')
-		{
-			quote = s[i];
-			if (s[i] == '\"')
-				push_token_and_create_new(&ret, &tok, TOK_DQUOTE, "");
-			else if (s[i] == '\'')
-				push_token_and_create_new(&ret, &tok, TOK_SQUOTE, "");
-			else
-				handle_noquote(&ret, s[i], &tok, &quote);
-		}
-		else if (quote == '\'' || quote == '\"')
-			handle_quote(&ret, s[i], &tok, &quote);
-		else
-			me_abort("invalid quote type");
-		i++;
-	}
+		tokenize_inner(&ret, s[i++], &tok, &quote);
 	if (tok.type == TOK_NQUOTE)
 		vec_token_push(&ret, tok);
 	if (tok.type == TOK_NQUOTE || tok.type == TOK_NONE)
