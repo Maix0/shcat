@@ -6,10 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 14:37:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/30 20:15:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/02 19:11:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/string/string.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
@@ -33,14 +34,34 @@ t_token token_new_meta(enum e_token type)
 
 bool token_is_meta(t_token tok)
 {
-	if (tok.type == TOK_WORD)
-		return (true);
-	return (false);
+	return (tok.subtokens.buffer != NULL);
 }
 
 t_token token_new_none(void)
 {
-	return ((t_token){.type = TOK_NONE, .string = {NULL, 0, 0}, .subtokens = vec_token_new(16, token_free)});
+	return ((t_token){.type = TOK_NONE, .string = {NULL, 0, 0}, .subtokens = {NULL, 0, 0, NULL}});
+}
+
+t_token token_clone(t_token *tok)
+{
+	t_token out;
+	t_usize i;
+
+	out = token_new_none();
+	out.type = tok->type;
+	if (tok->string.buf != NULL)
+	{
+		out.string = string_new(tok->string.capacity);
+		string_push(&out.string, tok->string.buf);
+	}
+	if (tok->subtokens.buffer != NULL)
+	{
+		out.subtokens = vec_token_new(tok->subtokens.capacity, token_free);
+		i = 0;
+		while (i < tok->subtokens.len)
+			vec_token_push(&out.subtokens, token_clone(&tok->subtokens.buffer[i++]));
+	}
+	return (out);
 }
 
 // TO REMOVE
