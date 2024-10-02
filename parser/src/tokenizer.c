@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/30 20:19:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/02 17:50:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,48 @@ static void push_token_and_create_new(t_vec_token *tokens, t_token *tok, enum e_
 	tmp = token_new(ttype);
 	string_push(&tmp.string, s);
 	vec_token_push(tokens, tmp);
+}
+
+void handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+{
+	if (chr == *quote)
+	{
+		*quote = '\0';
+		if (tok->type != TOK_NONE)
+			vec_token_push(ret, *tok);
+		*tok = token_new_none();
+	}
+	else
+		string_push_char(&tok->string, chr);
+}
+
+void handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+{
+	*quote = '\0';
+	if (chr == '$')
+		push_token_and_create_new(ret, tok, TOK_DOLLAR, "$");
+	else if (chr == '>')
+		push_token_and_create_new(ret, tok, TOK_RCARRET, ">");
+	else if (chr == '<')
+		push_token_and_create_new(ret, tok, TOK_LCARRET, "<");
+	else if (chr == '&')
+		push_token_and_create_new(ret, tok, TOK_AMP, "&");
+	else if (chr == '|')
+		push_token_and_create_new(ret, tok, TOK_PIPE, "|");
+	else if (chr == '(')
+		push_token_and_create_new(ret, tok, TOK_LPAREN, "(");
+	else if (chr == ')')
+		push_token_and_create_new(ret, tok, TOK_RPAREN, ")");
+	else if (chr == ';')
+		push_token_and_create_new(ret, tok, TOK_RPAREN, ";");
+	else if (me_isspace(chr))
+		push_token_and_create_new(ret, tok, TOK_WHITESPACE, " ");
+	else
+	{
+		if (tok->type == TOK_NONE)
+			*tok = token_new(TOK_NQUOTE);
+		string_push_char(&tok->string, chr);
+	}
 }
 
 t_error tokenize(t_const_str s, t_vec_token *out)
@@ -50,58 +92,10 @@ t_error tokenize(t_const_str s, t_vec_token *out)
 			else if (s[i] == '\'')
 				push_token_and_create_new(&ret, &tok, TOK_SQUOTE, "");
 			else
-			{
-				quote = '\0';
-				if (s[i] == '$')
-					push_token_and_create_new(&ret, &tok, TOK_DOLLAR, "$");
-				else if (s[i] == '>')
-					push_token_and_create_new(&ret, &tok, TOK_RCARRET, ">");
-				else if (s[i] == '<')
-					push_token_and_create_new(&ret, &tok, TOK_LCARRET, "<");
-				else if (s[i] == '&')
-					push_token_and_create_new(&ret, &tok, TOK_AMP, "&");
-				else if (s[i] == '|')
-					push_token_and_create_new(&ret, &tok, TOK_PIPE, "|");
-				else if (s[i] == '(')
-					push_token_and_create_new(&ret, &tok, TOK_LPAREN, "(");
-				else if (s[i] == ')')
-					push_token_and_create_new(&ret, &tok, TOK_RPAREN, ")");
-				else if (s[i] == ';')
-					push_token_and_create_new(&ret, &tok, TOK_RPAREN, ";");
-				else if (me_isspace(s[i]))
-					push_token_and_create_new(&ret, &tok, TOK_WHITESPACE, " ");
-				else
-				{
-					if (tok.type == TOK_NONE)
-						tok = token_new(TOK_NQUOTE);
-					string_push_char(&tok.string, s[i]);
-				}
-			}
+				handle_noquote(&ret, s[i], &tok, &quote);
 		}
-		else if (quote == '\'')
-		{
-			if (s[i] == '\'')
-			{
-				quote = '\0';
-				if (tok.type != TOK_NONE)
-					vec_token_push(&ret, tok);
-				tok = token_new_none();
-			}
-			else
-				string_push_char(&tok.string, s[i]);
-		}
-		else if (quote == '\"')
-		{
-			if (s[i] == '\"')
-			{
-				quote = '\0';
-				if (tok.type != TOK_NONE)
-					vec_token_push(&ret, tok);
-				tok = token_new_none();
-			}
-			else
-				string_push_char(&tok.string, s[i]);
-		}
+		else if (quote == '\'' || quote == '\"')
+			handle_quote(&ret, s[i], &tok, &quote);
 		else
 			me_abort("invalid quote type");
 		i++;
