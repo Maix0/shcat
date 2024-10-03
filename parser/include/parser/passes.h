@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:43:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 19:13:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:32:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ struct s_ts_pass_def
 	t_const_str	name;
 };
 
+t_error ts_apply_passes(t_vec_token ts, t_vec_token *out);
 
 // list passes function here
 

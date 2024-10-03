@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 19:12:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:33:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ bool	token_is_meta(t_token tok);
 t_token	token_clone(t_token *tok);
 
 /* PARSING */
-t_error	tokeniser(t_const_str raw);
+t_error	tokenize(t_const_str s, t_vec_token *out);
 
 #endif

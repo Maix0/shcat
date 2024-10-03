@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 19:22:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:32:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static const struct s_ts_pass_def g_ts_passes[] = {
 	{do_fuck_all, "does nothing lol"},
 };
 
-t_error apply_all_passes(t_vec_token ts, t_vec_token *out)
+t_error ts_apply_passes(t_vec_token ts, t_vec_token *out)
 {
 	t_usize		i;
 	t_vec_token next;
@@ -58,6 +58,8 @@ t_error apply_all_passes(t_vec_token ts, t_vec_token *out)
 			return (vec_token_free(ts), ERROR);
 		if ((g_ts_passes[i].fn)(ts, &next))
 			return (me_eprintf("failed on %s token pass\n", g_ts_passes[i].name), ERROR);
+		else
+			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
 		ts = next;
 		i++;
 	}

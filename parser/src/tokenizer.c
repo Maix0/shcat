@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 18:02:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:31:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,16 @@ static void	push_token_and_create_new(\
 	string_push(&tmp.string, s);
 	vec_token_push(tokens, tmp);
 }
+static void	push_token_and_set_new(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s)
+{
+	if (tok->type != TOK_NONE)
+		vec_token_push(tokens, *tok);
+	*tok = token_new(ttype);
+	string_push(&tok->string, s);
+}
 
-void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+static void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
 	if (chr == *quote)
 	{
@@ -42,7 +50,7 @@ void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 		string_push_char(&tok->string, chr);
 }
 
-void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
 	*quote = '\0';
 	if (chr == '$')
@@ -71,15 +79,15 @@ void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 	}
 }
 
-void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *quote)
+static void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
 	if (*quote == '\0')
 	{
 		*quote = chr;
 		if (chr == '\"')
-			push_token_and_create_new(ret, tok, TOK_DQUOTE, "");
+			push_token_and_set_new(ret, tok, TOK_DQUOTE, "");
 		else if (chr == '\'')
-			push_token_and_create_new(ret, tok, TOK_SQUOTE, "");
+			push_token_and_set_new(ret, tok, TOK_SQUOTE, "");
 		else
 			handle_noquote(ret, chr, tok, quote);
 	}
@@ -89,6 +97,10 @@ void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *quote)
 		me_abort("invalid quote type");
 }
 
+// This should even be wrapped with the passes function so the consumer only
+// see the last version of the tokenstream
+//
+// currently it is "Public" API though
 t_error	tokenize(t_const_str s, t_vec_token *out)
 {
 	t_usize		i;

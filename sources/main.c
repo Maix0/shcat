@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/30 20:11:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:32:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include "me/types.h"
 #include "me/vec/vec_str.h"
 #include "me/vec/vec_token.h"
+#include "parser/passes.h"
+#include "parser/token.h"
 #include <errno.h>
 #include <sys/types.h>
 
@@ -104,14 +106,15 @@ void func(t_usize i, t_token *token, void *state)
 {
 	(void)(state);
 	(void)(i);
-	printf("%s => %s\n", token_name(token), token->string.buf);
+	printf("["COL_GREEN"%10s"RESET"] '"COL_YELLOW"%s"RESET"'\n", token_name(token), token->string.buf);
 }
 
-t_error tokenize(t_const_str s, t_vec_token *out);
 void	parse_str(t_state *state)
 {
 	t_vec_token tokens;
 	if (tokenize(state->str_input, &tokens))
+		return ;
+	if (ts_apply_passes(tokens, &tokens))
 		return ;
 	vec_token_iter(&tokens, func, NULL);
 }

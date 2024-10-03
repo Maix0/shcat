@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/30 20:06:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:09:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ t_error	get_user_input(t_state *state)
 		}
 	}
 	line_edit_stop(&lstate);
-	printf("state->str_input = %s\n", state->str_input);
 	return (NO_ERROR);
 }
 
