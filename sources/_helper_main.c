@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/03 21:09:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:44:22 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	exec_shcat(t_state *state)
 	if (state->ast != NULL && run_program(\
 			&state->ast->data.program, state, &prog_res))
 		printf("Error when execting the Command \n");
-	ast_free(state->ast);
+	// ast_free(state->ast);
 }
 
 void	ft_take_args(t_state *state)

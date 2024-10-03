@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:23:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/16 19:08:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 21:43:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ t_error	run_command(t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe,
 	if (command == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	hmap_env_clear(state->tmp_var);
-	red.redirections = vec_ast_new(command->suffixes_redirections.len, \
-	ast_free);
+	red.redirections = vec_ast_new(command->suffixes_redirections.len, NULL);
 	red.cmd_pipe = cmd_pipe;
 	i = 0;
 	while (i < command->prefixes.len)

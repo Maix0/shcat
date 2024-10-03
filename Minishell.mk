@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/09/26 18:27:18 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/03 21:41:55 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,12 @@ bonus: $(OBJ) $(LIBS_FILES)
 $(NAME): $(LIBS_FILES)
 	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -o $(NAME) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
+
+# REMOVE THIS ONE DAY
+libast.a: $(BUILD_DIR)/libast.a
+$(BUILD_DIR)/libast.a: 
+	@echo -e '$(GREY) Mocking \t$(END)$(GOLD)libast.a$(END)'
+	@ar rcs $(BUILD_DIR)/libast.a
 
 lib$(ANAME).a: $(BUILD_DIR)/lib$(ANAME).a
 
