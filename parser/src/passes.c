@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 21:32:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 22:41:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 /// 		double LCARRET into DLCARET, ...)
 /// 	- create EXPENSION token when DOLLAR and NQUOTE follow eachother,
 /// 		maybe leaving some stuff after
-/// 	- parse double quote string to see expansion in them, creating a meta 
+/// 	- parse double quote string to see expansion in them, creating a meta
 /// 		token consisting of the pieces
 
 // here is the signature easily accessible:
@@ -43,7 +43,8 @@
 // bellow is some function to apply all the different passes !
 
 static const struct s_ts_pass_def g_ts_passes[] = {
-	{do_fuck_all, "does nothing lol"},
+	{ts_double_string_pass, "double string parser"},
+	{ts_fold_expension, "fold expansion"},
 };
 
 t_error ts_apply_passes(t_vec_token ts, t_vec_token *out)
@@ -60,6 +61,31 @@ t_error ts_apply_passes(t_vec_token ts, t_vec_token *out)
 			return (me_eprintf("failed on %s token pass\n", g_ts_passes[i].name), ERROR);
 		else
 			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
+		ts = next;
+		i++;
+	}
+	return (*out = ts, NO_ERROR);
+}
+
+static const struct s_ts_pass_def g_ts_dq_passes[] = {
+	{ts_do_fuck_all, "does nothing lol"},
+	{ts_fold_expension, "fold expansion"},
+};
+
+t_error ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
+{
+	t_usize		i;
+	t_vec_token next;
+
+	i = 0;
+	while (i < sizeof(g_ts_dq_passes) / sizeof(g_ts_dq_passes[0]))
+	{
+		if (g_ts_dq_passes[i].fn == NULL)
+			return (vec_token_free(ts), ERROR);
+		if ((g_ts_dq_passes[i].fn)(ts, &next))
+			return (me_eprintf("failed on '%s' dq token pass\n", g_ts_dq_passes[i].name), ERROR);
+		else
+			me_printf("Applied '%s' dq_pass\n", g_ts_dq_passes[i].name);
 		ts = next;
 		i++;
 	}

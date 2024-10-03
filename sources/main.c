@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/03 21:32:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 22:47:05 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,29 @@ void print_node_data(t_node *t, t_usize depth)
 */
 
 t_str token_name(t_token *out);
-void func(t_usize i, t_token *token, void *state)
+void	func(t_usize i, t_token *token, void *vdepth)
 {
-	(void)(state);
-	(void)(i);
-	printf("["COL_GREEN"%10s"RESET"] '"COL_YELLOW"%s"RESET"'\n", token_name(token), token->string.buf);
+	t_usize		depth;
+	t_string	sdepth;
+
+	depth = 0;
+	if (vdepth != NULL)
+		depth = *(t_usize *)vdepth;
+	sdepth = string_new(16);
+	i = 0;
+	while (i++ < depth)
+		string_push_char(&sdepth, '\t');
+	
+	if (token->subtokens.buffer != NULL)
+	{
+		depth++;
+		printf("%s[" COL_GREEN "%10s"RESET"]\n", sdepth.buf ,token_name(token));
+		vec_token_iter(&token->subtokens, func, &depth);
+	}
+	else
+		printf("%s[" COL_GREEN "%10s"RESET"] '"COL_YELLOW"%s"RESET"'\n",\
+			sdepth.buf ,token_name(token), token->string.buf);
+	string_free(sdepth);
 }
 
 void	parse_str(t_state *state)
@@ -117,6 +135,7 @@ void	parse_str(t_state *state)
 	if (ts_apply_passes(tokens, &tokens))
 		return ;
 	vec_token_iter(&tokens, func, NULL);
+	vec_token_free(tokens);
 }
 
 t_i32	main(t_i32 argc, t_str argv[], t_str envp[])

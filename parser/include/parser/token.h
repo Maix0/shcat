@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 21:33:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 22:30:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ enum e_token
 	TOK_DOLLAR,		// dollar == $
 	TOK_DQUOTE,		// double quote string
 	TOK_DRCARRET,	// double right carret == >>
-	TOK_EXPENSION,	// an expension == $<no_quote_word>
+	TOK_EXPENSION,	// an expension == $<no_quote_word>; the $ is not in .string
 	TOK_LCARRET,	// left carret == <
 	TOK_LPAREN,		// left parenthesis == (
 	TOK_NQUOTE,		// no quote string

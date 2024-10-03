@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 21:31:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/03 22:44:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,26 +16,10 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-static void	push_token_and_create_new(\
-	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s)
-{
-	t_token	tmp;
-
-	if (tok->type != TOK_NONE)
-		vec_token_push(tokens, *tok);
-	*tok = token_new_none();
-	tmp = token_new(ttype);
-	string_push(&tmp.string, s);
-	vec_token_push(tokens, tmp);
-}
-static void	push_token_and_set_new(\
-	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s)
-{
-	if (tok->type != TOK_NONE)
-		vec_token_push(tokens, *tok);
-	*tok = token_new(ttype);
-	string_push(&tok->string, s);
-}
+void	push_token_and_create_new(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
+void	push_token_and_set_new(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
 
 static void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
@@ -68,7 +52,7 @@ static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote
 	else if (chr == ')')
 		push_token_and_create_new(ret, tok, TOK_RPAREN, ")");
 	else if (chr == ';')
-		push_token_and_create_new(ret, tok, TOK_RPAREN, ";");
+		push_token_and_create_new(ret, tok, TOK_SEMICOLON, ";");
 	else if (me_isspace(chr))
 		push_token_and_create_new(ret, tok, TOK_WHITESPACE, " ");
 	else
