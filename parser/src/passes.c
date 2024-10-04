@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 19:06:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/04 19:41:34 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@
 /// there is a few stuff we want to do, for example:
 /// 	- combine any *QUOTE token that are next to eachothers
 /// 		into a single metatoken WORD
-/// 	- combine multiple tokens into a single if they can
-/// 		(double PIPE into OR, double AMP into AND,
-/// 		double LCARRET into DLCARET, ...)
 
 // here is the signature easily accessible:
 //
