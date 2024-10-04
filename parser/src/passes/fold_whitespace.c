@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 17:47:32 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/04 18:32:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,22 +33,17 @@ t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output)
 
 	i = 0;
 	out = vec_token_new(input.len, token_free);
-	if (input.buffer[i].type == TOK_WHITESPACE)
-		vec_token_push(&out, token_clone(&input.buffer[i]));
 	while (i < input.len)
 	{
-		if (input.len >= i + 1)
-		{
-			if (input.buffer[i].type == TOK_WHITESPACE)
-				i++;
-	}
+		if (i + 1 >= input.len)
+			vec_token_push(&out, token_clone(&input.buffer[i]));
+		else if (input.buffer[i].type == TOK_WHITESPACE
+				&& input.buffer[i + 1].type == TOK_WHITESPACE)
+			;
+		else
+			vec_token_push(&out, token_clone(&input.buffer[i]));
 		i++;
 	}
 	vec_token_free(input);
 	return (*output = out, NO_ERROR);
 }
-
-static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
-	{ts_do_fuck_all, "does nothing lol"}, \
-	{ts_fold_whitespace, "fold whitespace"},
-};

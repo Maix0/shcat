@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 17:27:36 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/04 18:32:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@
 /// or t_ts_pass
 ///
 /// there is a few stuff we want to do, for example:
-/// 	- combine any whitespace token that are following eachother into a
-/// 		single one, basically discarding duplicates
 /// 	- combine any *QUOTE token that are next to eachothers
 /// 		into a single metatoken WORD
 /// 	- combine multiple tokens into a single if they can
@@ -41,6 +39,7 @@
 static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_double_string_pass, "double string parser"}, \
 	{ts_fold_expension, "fold expansion"},
+	{ts_fold_whitespace, "fold whitespace"},
 };
 
 t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
