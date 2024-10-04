@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 22:41:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/04 16:44:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,6 @@
 /// 	- combine multiple tokens into a single if they can
 /// 		(double PIPE into OR, double AMP into AND,
 /// 		double LCARRET into DLCARET, ...)
-/// 	- create EXPENSION token when DOLLAR and NQUOTE follow eachother,
-/// 		maybe leaving some stuff after
-/// 	- parse double quote string to see expansion in them, creating a meta
-/// 		token consisting of the pieces
 
 // here is the signature easily accessible:
 //
