@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:43:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 18:30:05 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/04 19:01:40 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,13 @@ t_error ts_dq_apply_passes(t_vec_token ts, t_vec_token *out);
 // list passes function here
 
 // this is a example one, does absolutly nothing lol
-t_error ts_do_fuck_all(t_vec_token input, t_vec_token *output);
-t_error ts_fold_expension(t_vec_token input, t_vec_token *output);
+t_error	ts_double_amp(t_vec_token input, t_vec_token *output);
+t_error	ts_double_lcarret(t_vec_token input, t_vec_token *output);
+t_error	ts_double_pipe(t_vec_token input, t_vec_token *output);
+t_error	ts_double_rcarret(t_vec_token input, t_vec_token *output);
 t_error	ts_double_string_pass(t_vec_token input, t_vec_token *output);
 t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output);
+t_error ts_do_fuck_all(t_vec_token input, t_vec_token *output);
+t_error ts_fold_expension(t_vec_token input, t_vec_token *output);
 
 #endif /* PASSES_H */

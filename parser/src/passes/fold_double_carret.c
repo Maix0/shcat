@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fold_double_lcarret.c                              :+:      :+:    :+:   */
+/*   fold_double_carret.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 18:58:16 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/04 19:09:30 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,10 @@ t_error	ts_double_lcarret(t_vec_token input, t_vec_token *output)
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		else if (input.buffer[i].type == TOK_LCARRET
 				&& input.buffer[i + 1].type == TOK_LCARRET)
+		{
 			vec_token_push(&out, token_new(TOK_DLCARRET));
+			i++;
+		}
 		else
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		i++;
@@ -61,7 +64,10 @@ t_error	ts_double_rcarret(t_vec_token input, t_vec_token *output)
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		else if (input.buffer[i].type == TOK_RCARRET
 				&& input.buffer[i + 1].type == TOK_RCARRET)
+		{
 			vec_token_push(&out, token_new(TOK_DRCARRET));
+			i++;
+		}
 		else
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		i++;
