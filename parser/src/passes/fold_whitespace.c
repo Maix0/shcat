@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 17:41:40 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/04 17:47:32 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 /// 		thus it shouldn't be freed in case of error
 /// 	- the output tokens may not be direct copy of the input tokens,
 /// 		but need to be cloned (different allocations for stuff)
+
 t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
@@ -46,3 +47,8 @@ t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output)
 	vec_token_free(input);
 	return (*output = out, NO_ERROR);
 }
+
+static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
+	{ts_do_fuck_all, "does nothing lol"}, \
+	{ts_fold_whitespace, "fold whitespace"},
+};
