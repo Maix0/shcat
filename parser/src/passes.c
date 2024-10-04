@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 16:44:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/04 17:19:58 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static const struct s_ts_pass_def g_ts_passes[] = {
 t_error ts_apply_passes(t_vec_token ts, t_vec_token *out)
 {
 	t_usize		i;
-	t_vec_token next;
+	t_vec_token	next;
 
 	i = 0;
 	while (i < sizeof(g_ts_passes) / sizeof(g_ts_passes[0]))
