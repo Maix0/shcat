@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 14:37:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/02 19:11:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:13:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,13 @@ t_token token_clone(t_token *tok)
 	return (out);
 }
 
+bool token_is_noquote(enum e_token ttype)
+{
+	return (ttype == TOK_NQUOTE \
+		|| ttype == TOK_DOLLAR \
+		|| ttype == TOK_NALPHANUM);
+}
+
 // TO REMOVE
 t_str token_name(t_token *token)
 {
@@ -107,5 +114,7 @@ t_str token_name(t_token *token)
 		return ("WHITESPACE");
 	if (token->type == TOK_WORD)
 		return ("WORD");
+	if (token->type == TOK_NALPHANUM)
+		return ("NALPHANUM");
 	return (NULL);
 }

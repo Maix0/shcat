@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 22:44:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:02:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ void	push_token_and_create_new(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
 void	push_token_and_set_new(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
+void	push_token_and_create_new_chr(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c);
+void	push_token_and_set_new_chr(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c);
 
 static void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 {
@@ -55,6 +59,8 @@ static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote
 		push_token_and_create_new(ret, tok, TOK_SEMICOLON, ";");
 	else if (me_isspace(chr))
 		push_token_and_create_new(ret, tok, TOK_WHITESPACE, " ");
+	else if (!(me_isalnum(chr) || chr == '_'))
+		push_token_and_create_new_chr(ret, tok, TOK_NALPHANUM, chr);
 	else
 	{
 		if (tok->type == TOK_NONE)

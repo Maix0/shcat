@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 22:30:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:11:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ enum e_token
 	TOK_SEMICOLON,	// semicolor == ;
 	TOK_SQUOTE,		// single quote string
 	TOK_WHITESPACE, // whitespace outside of quoted strings
+	TOK_NALPHANUM,  // a non alphanumeric character, used in the expansion folding, then folded back into NQUOTE
 	TOK_WORD,		// a meta token, which contains subtokens
 };
 
@@ -53,9 +54,11 @@ t_token	token_new_meta(enum e_token type);
 // This create a "simple" token consisting of a string
 t_token	token_new(enum e_token type);
 t_token	token_new_none(void);
-void	token_free(t_token tok);
-bool	token_is_meta(t_token tok);
 t_token	token_clone(t_token *tok);
+void	token_free(t_token tok);
+
+bool	token_is_meta(t_token tok);
+bool	token_is_noquote(enum e_token tok);
 
 /* PARSING */
 t_error	tokenize(t_const_str s, t_vec_token *out);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 19:41:34 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/05 13:12:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_double_string_pass, "double string parser"}, \
 	{ts_fold_expension, "fold expansion"},
+	{ts_fold_no_quote, "fold no quote"},
 	{ts_fold_whitespace, "fold whitespace"},
 	{ts_double_amp, "double amp => and"},
 	{ts_double_pipe, "double pipe => or"},
@@ -64,8 +65,8 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 }
 
 static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
-	{ts_do_fuck_all, "does nothing lol"}, \
 	{ts_fold_expension, "fold expansion"},
+	{ts_fold_no_quote, "fold no quote"},
 };
 
 t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)

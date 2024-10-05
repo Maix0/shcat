@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/03 22:43:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 13:06:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ void	push_token_and_create_new(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
 void	push_token_and_set_new(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, t_const_str s);
+void	push_token_and_create_new_chr(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c);
+void	push_token_and_set_new_chr(\
+	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c);
 
 t_error	_parse_dquote_inner(t_token dquote, t_vec_token *append)
 {
@@ -46,8 +50,10 @@ t_error	_parse_dquote_inner(t_token dquote, t_vec_token *append)
 			}
 			string_push_char(&ctok.string, c);
 		}
-		else if (c == '$')
-			push_token_and_create_new(&out.subtokens, &ctok, TOK_DOLLAR, "$");
+		else if ('$')
+			push_token_and_create_new(&out.subtokens, &ctok, TOK_DOLLAR, "$");	
+		else if (!(me_isalnum(c) || c == '_'))
+			push_token_and_create_new_chr(&out.subtokens, &ctok, TOK_NALPHANUM, c);
 		else
 		{
 			if (ctok.type == TOK_NONE)
