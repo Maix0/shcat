@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:11:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:02:03 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ enum e_token
 	TOK_WHITESPACE, // whitespace outside of quoted strings
 	TOK_NALPHANUM,  // a non alphanumeric character, used in the expansion folding, then folded back into NQUOTE
 	TOK_WORD,		// a meta token, which contains subtokens
+	TOK_REDIR,		// a meta token, which contains <OPERATOR> being an [D](L|R)CARRET and the arg being a WORD
 };
 
 typedef struct s_token

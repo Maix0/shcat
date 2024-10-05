@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:12:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:03:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_double_pipe, "double pipe => or"},
 	{ts_double_lcarret, "double lcarret => dlcarret"},
 	{ts_double_rcarret, "double rcarrer => drcarret"},
+	{ts_fold_redir, "fold redir+argument"},
 };
 
 t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)

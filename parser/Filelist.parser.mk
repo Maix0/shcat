@@ -6,6 +6,7 @@ passes/fold_double_carret                                                     \
 passes/fold_double_pipe                                                       \
 passes/fold_expansion                                                         \
 passes/fold_no_quote                                                          \
+passes/fold_redir                                                             \
 passes/fold_whitespace                                                        \
 passes/template_file                                                          \
 token_lifetime                                                                \

@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fold_no_quote.c                                    :+:      :+:    :+:   */
+/*   fold_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:05:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:02:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/string/string.h"
 #include "parser/passes.h"
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+
+bool _is_token_carret(enum e_token ttype)
+{
+	return (ttype == TOK_LCARRET || ttype == TOK_DLCARRET || ttype == TOK_RCARRET || ttype == TOK_DRCARRET);
+}
 
 /// This is a sample pass
 ///
@@ -26,28 +30,25 @@
 /// 		thus it shouldn't be freed in case of error
 /// 	- the output tokens may not be direct copy of the input tokens,
 /// 		but need to be cloned (different allocations for stuff)
-
-t_error	ts_fold_no_quote(t_vec_token input, t_vec_token *output)
+/// This function will take any ``
+t_error	ts_fold_redir(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
 	t_usize		i;
-	t_usize		j;
 	t_token		tmp;
 
 	i = 0;
 	out = vec_token_new(input.len, token_free);
 	while (i < input.len)
 	{
-		if (token_is_noquote(input.buffer[i].type))
+		if (vec_token_get(&input, i + 1) != NULL && _is_token_carret(vec_token_get(&input, i)->type) && vec_token_get(&input, i + 1)->type == TOK_WORD)
 		{
-			j = 0;
-			tmp = token_new(TOK_NQUOTE);
-			while (i + j < input.len && token_is_noquote(input.buffer[i + j].type))
-				string_push(&tmp.string, input.buffer[i + j++].string.buf);
+			tmp = token_new_meta(TOK_REDIR);
+			vec_token_push(&tmp.subtokens, token_clone(vec_token_get(&input, i++)));
+			vec_token_push(&tmp.subtokens, token_clone(vec_token_get(&input, i++)));
 			vec_token_push(&out, tmp);
-			i += j;
 		}
-		else
+		else 
 			vec_token_push(&out, token_clone(&input.buffer[i++]));
 	}
 	vec_token_free(input);

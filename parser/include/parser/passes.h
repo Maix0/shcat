@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:43:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:10:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:03:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ t_error	ts_double_string_pass(t_vec_token input, t_vec_token *output);
 t_error	ts_fold_no_quote(t_vec_token input, t_vec_token *output);
 t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output);
 t_error ts_do_fuck_all(t_vec_token input, t_vec_token *output);
+t_error ts_fold_redir(t_vec_token input, t_vec_token *output);
 t_error ts_fold_expension(t_vec_token input, t_vec_token *output);
 
 
