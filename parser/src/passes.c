@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:03:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:57:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,11 @@ static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_fold_whitespace, "fold whitespace"},
 	{ts_double_amp, "double amp => and"},
 	{ts_double_pipe, "double pipe => or"},
+	{ts_double_lparen, "double lparen => dlparen"},
+	{ts_double_rparen, "double rparen => drparen"},
 	{ts_double_lcarret, "double lcarret => dlcarret"},
 	{ts_double_rcarret, "double rcarrer => drcarret"},
+	// there should be an ts_fold_arith here
 	{ts_fold_redir, "fold redir+argument"},
 };
 
@@ -60,13 +63,17 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
 		ts = next;
+		ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);
 }
 
 static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
+	{ts_double_lparen, "double lparen => dlparen"},
+	{ts_double_rparen, "double rparen => drparen"},
 	{ts_fold_expension, "fold expansion"},
+	// there should be an ts_fold_arith here
 	{ts_fold_no_quote, "fold no quote"},
 };
 
@@ -86,6 +93,7 @@ t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' dq_pass\n", g_ts_dq_passes[i].name);
 		ts = next;
+		ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);

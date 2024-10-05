@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:06:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/05 18:56:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,12 @@ t_error	_parse_dquote_inner(t_token dquote, t_vec_token *append)
 			}
 			string_push_char(&ctok.string, c);
 		}
-		else if ('$')
+		else if (c == '$')
 			push_token_and_create_new(&out.subtokens, &ctok, TOK_DOLLAR, "$");	
+		else if (c == '(')
+			push_token_and_create_new(&out.subtokens, &ctok, TOK_LPAREN, "(");	
+		else if (c == ')')
+			push_token_and_create_new(&out.subtokens, &ctok, TOK_RPAREN, ")");	
 		else if (!(me_isalnum(c) || c == '_'))
 			push_token_and_create_new_chr(&out.subtokens, &ctok, TOK_NALPHANUM, c);
 		else
