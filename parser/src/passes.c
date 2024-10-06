@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 15:27:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 16:50:33 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,8 @@
 /// or t_ts_pass
 ///
 /// there is a few stuff we want to do, for example:
-/// 	- combine any *QUOTE token that are next to eachothers
-/// 		into a single metatoken WORD
 /// 	- do somekind of arith expansion that will have any token between 
-/// 		DOLLAR DLPAREN and the matching DRPAREN in it
+/// 		DOLLAR DLPAREN and the matching DRPAREN in it (yard algo)
 /// 	- do somekind of parenthesis token will have any token between 
 /// 		LPAREN and the matching RPAREN in it
 /// 	- do somekind of CMD token that will store every token that consitute 
