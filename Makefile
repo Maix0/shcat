@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/10/06 14:58:13 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/06 15:10:43 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ endif
 # CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
 # CFLAGS_ADDITIONAL	+= -O2
 # CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols_count.log
-CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3
+# CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3
 # CFLAGS_ADDITIONAL	+= -I$(shell realpath ./includes) -I$(shell realpath ./output/include)
 
 export CFLAGS_ADDITIONAL
