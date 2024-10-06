@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/18 21:45:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:20:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	_append_redir_to_pipeline(t_ast_pipeline *pipeline)
 		vec_ast_push(append, tmp_ast);
 }
 
-void	_wait_pipeline(t_vec_pid pids, t_pipeline_result *out)
+void	_wait_pipeline(t_vec_pid pids, t_state *state, t_pipeline_result *out)
 {
 	int	waitpid_status;
 
@@ -59,6 +59,7 @@ void	_wait_pipeline(t_vec_pid pids, t_pipeline_result *out)
 	}
 	else
 		out->exit = 127;
+	state->last_exit = out->exit;
 	vec_pid_free(pids);
 }
 
@@ -133,5 +134,5 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 			ret |= ((void)(printf("List in pipelines are unsupported,"\
 							" use a subshell !\n")), ERROR);
 	}
-	return (_wait_pipeline(pids, out), ret);
+	return (_wait_pipeline(pids, state, out), ret);
 }

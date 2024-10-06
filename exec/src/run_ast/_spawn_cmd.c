@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/18 21:50:18 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:19:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ t_error	_spawn_cmd_and_run_end(\
 		out->exit = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
 		out->exit = WTERMSIG(status);
+	state->last_exit = out->exit;
 	return (NO_ERROR);
 }
 

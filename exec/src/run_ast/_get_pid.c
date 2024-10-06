@@ -1,34 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.h                                            :+:      :+:    :+:   */
+/*   _get_pid.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/02 15:49:56 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 14:20:09 by maiboyer         ###   ########.fr       */
+/*   Created: 2024/10/06 14:25:20 by maiboyer          #+#    #+#             */
+/*   Updated: 2024/10/06 14:27:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STATE_H
-# define STATE_H
+#include "me/os/os.h"
+#include "me/types.h"
 
-# include "ast/ast.h"
-# include "me/hashmap/hashmap_env.h"
-# include "me/os/os.h"
-# include "me/types.h"
+#define BONUS 1
 
-typedef struct s_state	t_state;
-
-struct s_state
+#if BONUS
+t_pid get_self_pid(void)
 {
-	t_const_str		prompt;
-	t_str			str_input;
-	t_hashmap_env	*env;
-	t_hashmap_env	*tmp_var;
-	void 			*parser;
-	t_ast_node		ast;
-	t_i32			last_exit;
-};
+	return (getpid());
+}
+#else
+t_pid get_self_pid(void)
+{
+	return (1);
+}
 
-#endif /* STATE_H */
+#endif

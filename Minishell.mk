@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/10/03 21:41:55 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/06 14:33:24 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,12 @@ link_group = -Wl,--start-group $(1) -Wl,--end-group
 # Variables
 ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
+
+ifeq ($(MAKECMDGOALS), bonus)
+    CFLAGS_ADDITIONAL += -DBONUS=1
+    BUILD_DIR := $(BUILD_DIR)/bonus
+	NAME := $(NAME)_bonus 
+endif
 
 export CFLAGS_ADDITIONAL
 export CC
@@ -57,7 +63,6 @@ LIBS_NAMES = me aq ast parser line exec sh
 LIBS_FILES = $(addprefix $(BUILD_DIR)/, $(addsuffix .a, $(addprefix lib, $(LIBS_NAMES))))
 LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 
-
 all:
 	@$(MAKE) -C ./stdme/ 		"LIB_NAME=$(shell realpath ./stdme)/"		libme.a
 	@$(MAKE) -C ./allocator/	"LIB_NAME=$(shell realpath ./allocator)/"	libaq.a
@@ -66,16 +71,9 @@ all:
 	@$(MAKE) -C ./line/ 		"LIB_NAME=$(shell realpath ./line)/"		libline.a
 	@$(MAKE) -C ./parser/ 		"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
 	@$(MAKE) -f./Minishell.mk 												lib$(ANAME).a
-	@$(MAKE) -f./Minishell.mk 												$(NAME)
+	@$(MAKE) -f./Minishell.mk 	"NAME=$(NAME)"								$(NAME)
 
-# Bonus (make bonus)
-bonus: $(OBJ) $(LIBS_FILES)
-	@mkdir -p $(BUILD_DIR)
-	@mkdir -p $(BUILD_DIR)/$(SRCDIRNAME)
-	@echo -e '$(GREY) Be Carefull ur in $(END)$(GREEN)Debug Mode$(END)'
-	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
-	@$(CC) $(CFLAGS) -DDEBUG=1 -o $(NAME) $(OBJ) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
-
+bonus: all
 
 # Dependences for all
 $(NAME): $(LIBS_FILES)

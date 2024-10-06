@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:34:33 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/16 19:09:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:20:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,6 @@ t_error	run_list(t_ast_list *list, t_state *state, t_list_result *out)
 	}
 	else
 		out->exit = left;
+	state->last_exit = out->exit;
 	return (NO_ERROR);
 }

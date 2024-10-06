@@ -20,6 +20,7 @@ run_ast/_ast_into_str3                                                        \
 run_ast/_ast_into_str4                                                        \
 run_ast/_ast_into_str5                                                        \
 run_ast/_ast_into_str6                                                        \
+run_ast/_get_pid                                                              \
 run_ast/_run_exit_code                                                        \
 run_ast/_run_exp_operators                                                    \
 run_ast/_spawn_cmd                                                            \

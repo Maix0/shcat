@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:38:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/14 12:42:53 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 14:28:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #include "me/mem/mem.h"
 #include "me/str/str.h"
 #include "me/convert/numbers_to_str.h"
+
+// non bonus only returns 1
+t_pid get_self_pid(void);
 
 bool	_is_special_var(t_ast_expansion *self)
 {
@@ -50,7 +53,27 @@ t_error	_run_expansion_special_var(t_ast_expansion *self, t_state *state,
 	*out = (t_expansion_result){.exists = false, .value = NULL};
 	if (name == '?')
 	{
-		printf("PLEASE MAKE SURE TO FINISH THE SPECIAL VAR HANDLING !");
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(state->last_exit, &out->value))
+			return (ERROR);
+	}
+	if (name == '#')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(1, &out->value))
+			return (ERROR);
+	}
+	if (name == '!')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(1, &out->value))
+			return (ERROR);
+	}
+	if (name == '$')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(get_self_pid(), &out->value))
+			return (ERROR);
 	}
 	return (NO_ERROR);
 }
