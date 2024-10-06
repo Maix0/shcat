@@ -5,6 +5,7 @@ passes/fold_double_amp                                                        \
 passes/fold_double_carret                                                     \
 passes/fold_double_paren                                                      \
 passes/fold_double_pipe                                                       \
+passes/fold_double_quote                                                      \
 passes/fold_expansion                                                         \
 passes/fold_no_quote                                                          \
 passes/fold_redir                                                             \
