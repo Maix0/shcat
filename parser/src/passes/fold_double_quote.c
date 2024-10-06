@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 15:13:45 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/06 15:21:47 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@
 
 bool	_type_extansion(enum e_token type)
 {
-	if (type == TOK_DOLLAR || type == TOK_DQUOTE || type == TOK_SQUOTE)
+	if (type == TOK_DOLLAR)
+		return (true);
+	if (type == TOK_NQUOTE || type == TOK_DQUOTE || type == TOK_SQUOTE)
 		return (true);
 	return (false);
 }
@@ -49,11 +51,11 @@ t_error	ts_fold_double_quote(t_vec_token input, t_vec_token *output)
 		if (token_is_noquote(input.buffer[i].type))
 		{
 			j = 0;
-			tmp = token_new(TOK_NQUOTE);
+			tmp = token_new(TOK_WORD);
 			while (i + j < input.len \
 					&& token_is_noquote(input.buffer[i + j].type))
-				if (type_extansion(input.buffer->type))
-				string_push(&tmp.string, input.buffer[i + j++].subtokens.buffer);
+				if (_type_extansion(input.buffer->type))
+					vec_token_push(&tmp.subtokens, token_clone(&input.buffer[i+j]));
 			vec_token_push(&out, tmp);
 			i += j;
 		}
