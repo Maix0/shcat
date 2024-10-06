@@ -13,11 +13,11 @@ passes/fold_whitespace                                                        \
 passes/paren_to_nquote                                                        \
 passes/split_double_paren                                                     \
 passes/template_file                                                          \
+tokenizer                                                                     \
+tokenizer_utils                                                               \
 token_lifetime                                                                \
 token_name                                                                    \
 token_utils                                                                   \
-tokenizer                                                                     \
-tokenizer_utils                                                               \
 ts_print                                                                      \
 
 GEN_FILES =                                                                   \
