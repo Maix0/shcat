@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 14:31:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:40:58 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/06 14:39:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@
 # ifndef NO_ERROR
 /// @def signal that no error occured
 #  define NO_ERROR 0
+# endif
+
+# ifndef BONUS
+/// @def signal that no error occured
+#  define BONUS 0
 # endif
 
 /// @brief A string, null terminated

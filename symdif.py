@@ -7,7 +7,6 @@ archive_files = [
     "libaq.a",
     "libast.a",
     "libexec.a",
-    "libgmr.a",
     "libline.a",
     "libme.a",
     "libparser.a",
