@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/22 16:23:04 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 15:02:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@ __attribute__((destructor(201))) void	close_all_slots(void)
 		close_slot(&arr->storage[i++]);
 }
 
+// This is to remove the f<name> function from being there...
+//	else if (slot->ty == SLOT_FILE)
+//		;//close_file(&slot->slot.file);
 void	close_slot(struct s_file_slot *slot)
 {
 	if (slot == NULL)
@@ -67,8 +70,6 @@ void	close_slot(struct s_file_slot *slot)
 		close_fd(&slot->slot.fd);
 	else if (slot->ty == SLOT_DIR)
 		close_dir(&slot->slot.dir);
-	else if (slot->ty == SLOT_FILE)
-		close_file(&slot->slot.file);
 	else
 		(void)!write(2, "Unknown SLOT type", 17);
 	mem_set_zero(slot, sizeof(*slot));

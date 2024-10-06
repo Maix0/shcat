@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 16:26:32 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/05 15:19:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 15:05:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+/* TODO: REMOVE THIS COMMENT SURROUNDING THE FUNCTION
 t_error	open_file(t_str name, t_mode mode, t_file **file)
 {
 	t_file				*out;
@@ -82,3 +83,4 @@ void	close_file(t_file *file)
 	mem_set_zero(slot, sizeof(*slot));
 	slot->ty = SLOT_UNUSED;
 }
+*/

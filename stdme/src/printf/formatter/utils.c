@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:57:04 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:10:07 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/06 15:04:47 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ bool	handle_atoi_stuff(t_const_str fmt, t_usize *c_idx, t_usize *nxt,
 	advance_atoi(fmt, c_idx);
 	c_arg->extra.align = (t_u64)atoi_res;
 	handle_prec_and_align(fmt, c_idx, c_arg);
-	atoi_res = atoi(&fmt[*c_idx]);
+	atoi_res = _atoi_printf(&fmt[*c_idx]);
 	if (atoi_res < 0)
 	{
 		*c_idx = *nxt;

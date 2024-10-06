@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 16:17:17 by rparodi           #+#    #+#             */
-/*   Updated: 2024/08/05 15:19:17 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 15:05:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_error	write_fd(t_fd *fd, t_u8 *buffer, t_usize size, t_isize *write_count)
 	return (NO_ERROR);
 }
 
+/* TODO: REMOVE THIS COMMENT SURROUNDING THE FUNCTION
 t_error	stat_fd(t_fd *fd, t_stat *stat)
 {
 	if (fd == NULL || stat == NULL || fd->fd == -1)
@@ -90,6 +91,7 @@ t_error	stat_fd(t_fd *fd, t_stat *stat)
 		return (ERROR);
 	return (NO_ERROR);
 }
+*/
 
 void	close_fd(t_fd *fd)
 {

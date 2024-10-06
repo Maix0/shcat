@@ -72,3 +72,4 @@ parser/split_rust
 .tree-sitter-sh/src/tree_sitter/
 .tree-sitter-sh/src/node-types.json
 .direnv
+minishell_bonus

@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/10/06 14:33:24 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/06 14:42:55 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ link_group = -Wl,--start-group $(1) -Wl,--end-group
 # Variables
 ANAME = sh
 BUILD_DIR ?= $(shell realpath ./build/)
+NAME = minishell
 
 ifeq ($(MAKECMDGOALS), bonus)
     CFLAGS_ADDITIONAL += -DBONUS=1
@@ -42,7 +43,6 @@ GEN_DIR = output
 SRC =	$(addsuffix .c,$(addprefix $(SRC_DIR)/,$(SRC_FILES)) $(addprefix $(GEN_DIR)/,$(GEN_FILES)))
 OBJ =	$(addsuffix .o,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES) $(GEN_FILES)))
 DEP =	$(addsuffix .d,$(addprefix $(BUILD_DIR)/$(ANAME)/,$(SRC_FILES) $(GEN_FILES)))
-NAME = minishell
 
 # Commands
 CC ?= clang
