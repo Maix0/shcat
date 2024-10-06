@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 22:07:25 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:00:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:25:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,19 @@ void	push_token_and_set_new(\
 void	push_token_and_create_new_chr(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c)
 {
-	char tmp[2];
+	char	tmp[2];
 
 	tmp[0] = c;
 	tmp[1] = '\0';
-	push_token_and_create_new(tokens, tok, ttype, (t_const_str)&tmp);
+	push_token_and_create_new(tokens, tok, ttype, (t_const_str) & tmp);
 }
 
 void	push_token_and_set_new_chr(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c)
 {
-	char tmp[2];
+	char	tmp[2];
 
 	tmp[0] = c;
 	tmp[1] = '\0';
-	push_token_and_set_new(tokens, tok, ttype, (t_const_str)&tmp);
+	push_token_and_set_new(tokens, tok, ttype, (t_const_str) & tmp);
 }

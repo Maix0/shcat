@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:43:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:40:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+
+static void	_fold_parens_helper(t_vec_token *v, enum e_token ty, t_const_str s)
+{
+	t_token	tmp;
+
+	tmp = token_new(ty);
+	string_push(&tmp.string, s);
+	vec_token_push(v, tmp);
+}
 
 /// This is a sample pass
 ///
@@ -31,7 +40,6 @@ t_error	ts_double_lparen(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
 	t_usize		i;
-	t_token		tmp;
 
 	i = 0;
 	out = vec_token_new(input.len, token_free);
@@ -40,11 +48,9 @@ t_error	ts_double_lparen(t_vec_token input, t_vec_token *output)
 		if (i + 1 >= input.len)
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		else if (input.buffer[i].type == TOK_LPAREN
-				&& input.buffer[i + 1].type == TOK_LPAREN)
+			&& input.buffer[i + 1].type == TOK_LPAREN)
 		{
-			tmp = token_new(TOK_DLPAREN);
-			string_push(&tmp.string, "((");
-			vec_token_push(&out, tmp);
+			_fold_parens_helper(&out, TOK_DLPAREN, "((");
 			i++;
 		}
 		else
@@ -59,7 +65,6 @@ t_error	ts_double_rparen(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
 	t_usize		i;
-	t_token		tmp;
 
 	i = 0;
 	out = vec_token_new(input.len, token_free);
@@ -68,11 +73,9 @@ t_error	ts_double_rparen(t_vec_token input, t_vec_token *output)
 		if (i + 1 >= input.len)
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		else if (input.buffer[i].type == TOK_RPAREN
-				&& input.buffer[i + 1].type == TOK_RPAREN)
+			&& input.buffer[i + 1].type == TOK_RPAREN)
 		{
-			tmp = token_new(TOK_DRPAREN);
-			string_push(&tmp.string, "))");
-			vec_token_push(&out, tmp);
+			_fold_parens_helper(&out, TOK_DRPAREN, "))");
 			i++;
 		}
 		else

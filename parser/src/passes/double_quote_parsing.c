@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:56:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:51:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,50 +26,53 @@ void	push_token_and_create_new_chr(\
 void	push_token_and_set_new_chr(\
 	t_vec_token *tokens, t_token *tok, enum e_token ttype, char c);
 
+static bool	_dquote_inner2(t_token *ctok, t_token*out, char c)
+{
+	if (me_isspace(c))
+	{
+		if (ctok->type == TOK_NONE)
+			*ctok = token_new(TOK_WHITESPACE);
+		if (ctok->type != TOK_WHITESPACE)
+		{
+			vec_token_push(&out->subtokens, *ctok);
+			*ctok = token_new(TOK_WHITESPACE);
+		}
+		string_push_char(&ctok->string, c);
+	}
+	else if (c == '$')
+		push_token_and_create_new(&out->subtokens, ctok, TOK_DOLLAR, "$");
+	else if (c == '(')
+		push_token_and_create_new(&out->subtokens, ctok, TOK_LPAREN, "(");
+	else if (c == ')')
+		push_token_and_create_new(&out->subtokens, ctok, TOK_RPAREN, ")");
+	else if (!(me_isalnum(c) || c == '_'))
+		push_token_and_create_new_chr(&out->subtokens, ctok, TOK_NALPHANUM, c);
+	else
+		return (false);
+	return (true);
+}
+
 t_error	_parse_dquote_inner(t_token dquote, t_vec_token *append)
 {
 	t_token	ctok;
 	t_token	out;
 	t_usize	i;
-	char c;
 
 	out = token_new_meta(TOK_DQUOTE);
 	i = 0;
 	ctok = token_new_none();
 	while (dquote.string.buf[i] != '\0')
 	{
-		c = dquote.string.buf[i++];
-		if (me_isspace(c))
-		{
-			if (ctok.type == TOK_NONE)
-				ctok = token_new(TOK_WHITESPACE);
-			if (ctok.type != TOK_WHITESPACE)
-			{
-				vec_token_push(&out.subtokens, ctok);
-				ctok = token_new(TOK_WHITESPACE);
-			}
-			string_push_char(&ctok.string, c);
-		}
-		else if (c == '$')
-			push_token_and_create_new(&out.subtokens, &ctok, TOK_DOLLAR, "$");	
-		else if (c == '(')
-			push_token_and_create_new(&out.subtokens, &ctok, TOK_LPAREN, "(");	
-		else if (c == ')')
-			push_token_and_create_new(&out.subtokens, &ctok, TOK_RPAREN, ")");	
-		else if (!(me_isalnum(c) || c == '_'))
-			push_token_and_create_new_chr(&out.subtokens, &ctok, TOK_NALPHANUM, c);
-		else
+		if (!_dquote_inner2(&ctok, &out, dquote.string.buf[i++]))
 		{
 			if (ctok.type == TOK_NONE)
 				ctok = token_new(TOK_NQUOTE);
 			if (ctok.type != TOK_NQUOTE)
-			{
-				vec_token_push(&out.subtokens, ctok);
-				ctok = token_new(TOK_NQUOTE);
-			}
-			string_push_char(&ctok.string, c);
+				ctok = (vec_token_push(&out.subtokens, ctok), \
+					token_new(TOK_NQUOTE));
+			string_push_char(&ctok.string, dquote.string.buf[i - 1]);
 		}
-	};
+	}
 	if (ctok.type != TOK_NONE)
 		vec_token_push(&out.subtokens, ctok);
 	if (ts_dq_apply_passes(out.subtokens, &out.subtokens))
@@ -99,7 +102,7 @@ t_error	ts_double_string_pass(t_vec_token input, t_vec_token *output)
 			if (_parse_dquote_inner(input.buffer[i], &out))
 				return (vec_token_free(input), ERROR);
 		}
-		else 
+		else
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		i++;
 	}

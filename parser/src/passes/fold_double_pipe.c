@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/04 19:08:48 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/06 13:42:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_error	ts_double_pipe(t_vec_token input, t_vec_token *output)
 		if (i + 1 >= input.len)
 			vec_token_push(&out, token_clone(&input.buffer[i]));
 		else if (input.buffer[i].type == TOK_PIPE
-				&& input.buffer[i + 1].type == TOK_PIPE)
+			&& input.buffer[i + 1].type == TOK_PIPE)
 		{
 			vec_token_push(&out, token_new(TOK_OR));
 			i++;

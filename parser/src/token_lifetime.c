@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 14:37:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:48:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:33:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-void token_free(t_token tok)
+void	token_free(t_token tok)
 {
 	if (tok.string.buf != NULL)
 		string_free(tok.string);
@@ -22,105 +22,25 @@ void token_free(t_token tok)
 		vec_token_free(tok.subtokens);
 }
 
-t_token token_new(enum e_token type)
+t_token	token_new(enum e_token type)
 {
-	return ((t_token){.type = type, .string = string_new(16), .subtokens = {NULL, 0, 0, NULL}});
+	return ((t_token){.type = type, .string = string_new(16), \
+		.subtokens = {NULL, 0, 0, NULL}});
 }
 
-t_token token_new_meta(enum e_token type)
+t_token	token_new_meta(enum e_token type)
 {
-	return ((t_token){.type = type, .string = {NULL, 0, 0}, .subtokens = vec_token_new(16, token_free)});
+	return ((t_token){.type = type, .string = {NULL, 0, 0}, \
+		.subtokens = vec_token_new(16, token_free)});
 }
 
-bool token_is_meta(t_token tok)
+bool	token_is_meta(t_token tok)
 {
 	return (tok.subtokens.buffer != NULL);
 }
 
-t_token token_new_none(void)
+t_token	token_new_none(void)
 {
-	return ((t_token){.type = TOK_NONE, .string = {NULL, 0, 0}, .subtokens = {NULL, 0, 0, NULL}});
-}
-
-t_token token_clone(t_token *tok)
-{
-	t_token out;
-	t_usize i;
-
-	out = token_new_none();
-	out.type = tok->type;
-	if (tok->string.buf != NULL)
-	{
-		out.string = string_new(tok->string.capacity);
-		string_push(&out.string, tok->string.buf);
-	}
-	if (tok->subtokens.buffer != NULL)
-	{
-		out.subtokens = vec_token_new(tok->subtokens.capacity, token_free);
-		i = 0;
-		while (i < tok->subtokens.len)
-			vec_token_push(&out.subtokens, token_clone(&tok->subtokens.buffer[i++]));
-	}
-	return (out);
-}
-
-bool token_is_noquote(enum e_token ttype)
-{
-	return (ttype == TOK_NQUOTE \
-		|| ttype == TOK_DOLLAR \
-		|| ttype == TOK_NALPHANUM \
-		// false
-		//|| ttype == TOK_LPAREN \n
-		//|| ttype == TOK_RPAREN \n
-		//|| ttype == TOK_DLPAREN \n
-		//|| ttype == TOK_DRPAREN
-);
-}
-
-// TO REMOVE
-t_str token_name(t_token *token)
-{
-	if (token->type == TOK_NONE)
-		return ("NONE");
-	if (token->type == TOK_AMP)
-		return ("AMP");
-	if (token->type == TOK_AND)
-		return ("AND");
-	if (token->type == TOK_CARRET)
-		return ("CARRET");
-	if (token->type == TOK_DLCARRET)
-		return ("DLCARRET");
-	if (token->type == TOK_DOLLAR)
-		return ("DOLLAR");
-	if (token->type == TOK_DQUOTE)
-		return ("DQUOTE");
-	if (token->type == TOK_DRCARRET)
-		return ("DRCARRET");
-	if (token->type == TOK_EXPENSION)
-		return ("EXPENSION");
-	if (token->type == TOK_LCARRET)
-		return ("LCARRET");
-	if (token->type == TOK_LPAREN)
-		return ("LPAREN");
-	if (token->type == TOK_NQUOTE)
-		return ("NQUOTE");
-	if (token->type == TOK_OR)
-		return ("OR");
-	if (token->type == TOK_PIPE)
-		return ("PIPE");
-	if (token->type == TOK_RCARRET)
-		return ("RCARRET");
-	if (token->type == TOK_RPAREN)
-		return ("RPAREN");
-	if (token->type == TOK_SEMICOLON)
-		return ("SEMICOLON");
-	if (token->type == TOK_SQUOTE)
-		return ("SQUOTE");
-	if (token->type == TOK_WHITESPACE)
-		return ("WHITESPACE");
-	if (token->type == TOK_WORD)
-		return ("WORD");
-	if (token->type == TOK_NALPHANUM)
-		return ("NALPHANUM");
-	return (NULL);
+	return ((t_token){.type = TOK_NONE, .string = {NULL, 0, 0}, \
+		.subtokens = {NULL, 0, 0, NULL}});
 }

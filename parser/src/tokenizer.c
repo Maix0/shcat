@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 19:39:39 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 13:02:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:51:41 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,8 @@ static void	handle_quote(t_vec_token *ret, char chr, t_token *tok, char *quote)
 		string_push_char(&tok->string, chr);
 }
 
-static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote)
+static bool	_handle_singlechr(t_vec_token *ret, char chr, t_token *tok)
 {
-	*quote = '\0';
 	if (chr == '$')
 		push_token_and_create_new(ret, tok, TOK_DOLLAR, "$");
 	else if (chr == '>')
@@ -62,6 +61,14 @@ static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote
 	else if (!(me_isalnum(chr) || chr == '_'))
 		push_token_and_create_new_chr(ret, tok, TOK_NALPHANUM, chr);
 	else
+		return (false);
+	return (true);
+}
+
+static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *q)
+{
+	*q = '\0';
+	if (!_handle_singlechr(ret, chr, tok))
 	{
 		if (tok->type == TOK_NONE)
 			*tok = token_new(TOK_NQUOTE);
@@ -69,20 +76,20 @@ static void	handle_noquote(t_vec_token *ret, char chr, t_token *tok, char *quote
 	}
 }
 
-static void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *quote)
+static void	tokenize_inner(t_vec_token *ret, char chr, t_token *tok, char *q)
 {
-	if (*quote == '\0')
+	if (*q == '\0')
 	{
-		*quote = chr;
+		*q = chr;
 		if (chr == '\"')
 			push_token_and_set_new(ret, tok, TOK_DQUOTE, "");
 		else if (chr == '\'')
 			push_token_and_set_new(ret, tok, TOK_SQUOTE, "");
 		else
-			handle_noquote(ret, chr, tok, quote);
+			handle_noquote(ret, chr, tok, q);
 	}
-	else if (*quote == '\'' || *quote == '\"')
-		handle_quote(ret, chr, tok, quote);
+	else if (*q == '\'' || *q == '\"')
+		handle_quote(ret, chr, tok, q);
 	else
 		me_abort("invalid quote type");
 }

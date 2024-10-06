@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:02:25 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:43:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-bool _is_token_carret(enum e_token ttype)
+bool	_is_token_carret(enum e_token ttype)
 {
-	return (ttype == TOK_LCARRET || ttype == TOK_DLCARRET || ttype == TOK_RCARRET || ttype == TOK_DRCARRET);
+	return (ttype == TOK_LCARRET \
+		|| ttype == TOK_DLCARRET \
+		|| ttype == TOK_RCARRET \
+		|| ttype == TOK_DRCARRET);
 }
 
 /// This is a sample pass
@@ -41,14 +44,18 @@ t_error	ts_fold_redir(t_vec_token input, t_vec_token *output)
 	out = vec_token_new(input.len, token_free);
 	while (i < input.len)
 	{
-		if (vec_token_get(&input, i + 1) != NULL && _is_token_carret(vec_token_get(&input, i)->type) && vec_token_get(&input, i + 1)->type == TOK_WORD)
+		if (vec_token_get(&input, i + 1) != NULL \
+			&& _is_token_carret(vec_token_get(&input, i)->type) \
+			&& vec_token_get(&input, i + 1)->type == TOK_WORD)
 		{
 			tmp = token_new_meta(TOK_REDIR);
-			vec_token_push(&tmp.subtokens, token_clone(vec_token_get(&input, i++)));
-			vec_token_push(&tmp.subtokens, token_clone(vec_token_get(&input, i++)));
+			vec_token_push(&tmp.subtokens, \
+				token_clone(vec_token_get(&input, i++)));
+			vec_token_push(&tmp.subtokens, \
+				token_clone(vec_token_get(&input, i++)));
 			vec_token_push(&out, tmp);
 		}
-		else 
+		else
 			vec_token_push(&out, token_clone(&input.buffer[i++]));
 	}
 	vec_token_free(input);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:05:49 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:41:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ t_error	ts_fold_no_quote(t_vec_token input, t_vec_token *output)
 		{
 			j = 0;
 			tmp = token_new(TOK_NQUOTE);
-			while (i + j < input.len && token_is_noquote(input.buffer[i + j].type))
+			while (i + j < input.len \
+					&& token_is_noquote(input.buffer[i + j].type))
 				string_push(&tmp.string, input.buffer[i + j++].string.buf);
 			vec_token_push(&out, tmp);
 			i += j;

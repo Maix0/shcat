@@ -1,19 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fold_double_amp.c                                  :+:      :+:    :+:   */
+/*   split_double_paren.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 13:42:09 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/06 13:38:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "me/string/string.h"
 #include "parser/passes.h"
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+
+static void	_split_parens_helper(t_vec_token *v, enum e_token ty, char c)
+{
+	t_token	tmp;
+
+	tmp = token_new(ty);
+	string_push_char(&tmp.string, c);
+	vec_token_push(v, tmp);
+}
 
 /// This is a sample pass
 ///
@@ -26,7 +36,7 @@
 /// 	- the output tokens may not be direct copy of the input tokens,
 /// 		but need to be cloned (different allocations for stuff)
 
-t_error	ts_double_amp(t_vec_token input, t_vec_token *output)
+t_error	ts_split_paren(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
 	t_usize		i;
@@ -35,13 +45,15 @@ t_error	ts_double_amp(t_vec_token input, t_vec_token *output)
 	out = vec_token_new(input.len, token_free);
 	while (i < input.len)
 	{
-		if (i + 1 >= input.len)
-			vec_token_push(&out, token_clone(&input.buffer[i]));
-		else if (input.buffer[i].type == TOK_AMP
-			&& input.buffer[i + 1].type == TOK_AMP)
+		if (input.buffer[i].type == TOK_DLPAREN)
 		{
-			vec_token_push(&out, token_new(TOK_AND));
-			i++;
+			_split_parens_helper(&out, TOK_LPAREN, '(');
+			_split_parens_helper(&out, TOK_LPAREN, '(');
+		}
+		else if (input.buffer[i].type == TOK_DRPAREN)
+		{
+			_split_parens_helper(&out, TOK_RPAREN, ')');
+			_split_parens_helper(&out, TOK_RPAREN, ')');
 		}
 		else
 			vec_token_push(&out, token_clone(&input.buffer[i]));

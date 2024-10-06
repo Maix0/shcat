@@ -9,8 +9,12 @@ passes/fold_expansion                                                         \
 passes/fold_no_quote                                                          \
 passes/fold_redir                                                             \
 passes/fold_whitespace                                                        \
+passes/paren_to_nquote                                                        \
+passes/split_double_paren                                                     \
 passes/template_file                                                          \
 token_lifetime                                                                \
+token_name                                                                    \
+token_utils                                                                   \
 tokenizer                                                                     \
 tokenizer_utils                                                               \
 ts_print                                                                      \
