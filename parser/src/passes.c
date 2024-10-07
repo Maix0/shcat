@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 16:50:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/07 16:46:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,10 @@
 /// there is a few stuff we want to do, for example:
 /// 	- do somekind of arith expansion that will have any token between 
 /// 		DOLLAR DLPAREN and the matching DRPAREN in it (yard algo)
-/// 	- do somekind of parenthesis token will have any token between 
-/// 		LPAREN and the matching RPAREN in it
+/// 		
 /// 	- do somekind of CMD token that will store every token that consitute 
 /// 		command into a single token stopping at the correct ending:
 /// 			semicolon, pipe, or, and
-/// 	- do a smth that will take any <TOK (OR|AND) TOK> into a single token
-/// 	- do a smth that will take any TOK PIPE TOK into a single token and 
-/// 		merge if any of the TOK is also a pipeline
-/// 		(merging may be done during the final ast building)
 
 // here is the signature easily accessible:
 //
@@ -54,6 +49,7 @@ static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_double_lcarret, "double lcarret => dlcarret"}, \
 	{ts_double_rcarret, "double rcarrer => drcarret"}, \
 	{ts_fold_into_word, "fold into words"}, \
+	{ts_fold_cmd, "fold into cmd"}, \
 	// there should be an ts_fold_arith here
 {ts_split_paren, "split double parenthesis"}, \
 	{ts_fold_redir, "fold redir+argument"}, \

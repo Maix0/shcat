@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/05 18:54:13 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/07 16:45:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ enum e_token
 	TOK_AMP,		// ampersand == &
 	TOK_AND,		// and == &&
 	TOK_CARRET,		// any carret == < > << >>
+	TOK_CMD,		// a meta token, which contains subtokens
 	TOK_DLCARRET,	// double left carret == <<
 	TOK_DLPAREN,	// double left parenthesis  '(('
 	TOK_DOLLAR,		// dollar == $
