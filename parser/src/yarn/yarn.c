@@ -6,11 +6,10 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:04:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 14:51:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:04:28 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/printf/printf.h"
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
@@ -54,6 +53,7 @@ t_error yarn(t_vec_token ts, t_vec_token *out)
 			vec_token_push(&operator_stack, tmp);
 		else if (tmp.type == TOK_RPAREN)
 		{
+			token_free(tmp);
 			while (vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type != TOK_LPAREN)
 			{
 				vec_token_pop(&operator_stack, &tmp2);
@@ -61,12 +61,9 @@ t_error yarn(t_vec_token ts, t_vec_token *out)
 			}
 			if (!(vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type == TOK_LPAREN))
 				return (ERROR);
-			token_free(tmp);
 			vec_token_pop(&operator_stack, &tmp);
 			token_free(tmp);
 		}
-		else
-			printf("TOK WTF? %s", token_name(&tmp));
 	}
 	while (!vec_token_pop(&operator_stack, &tmp))
 	{
