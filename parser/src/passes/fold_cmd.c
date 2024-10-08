@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 13:40:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:44:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 static bool _is_cmd_node(enum e_token ttype)
 {
-	return (ttype == TOK_WHITESPACE || ttype == TOK_WORD);
+	return (ttype == TOK_WHITESPACE || ttype == TOK_WORD || ttype == TOK_REDIR);
 };
 
 /// This is a sample pass
@@ -49,12 +49,18 @@ t_error	ts_fold_cmd(t_vec_token input, t_vec_token *output)
 			tmp = token_new_meta(TOK_CMD);
 			while (i + j < input.len \
 					&& _is_cmd_node(input.buffer[i + j].type))
-				vec_token_push(&tmp.subtokens, token_clone(&input.buffer[i + j++]));
+			{
+				if (input.buffer[i + j].type != TOK_WHITESPACE)
+					vec_token_push(&tmp.subtokens, token_clone(&input.buffer[i + j]));
+				j++;
+			}
 			vec_token_push(&out, tmp);
 			i += j;
 		}
 		else
+		{
 			vec_token_push(&out, token_clone(&input.buffer[i++]));
+		}
 	}
 	vec_token_free(input);
 	return (*output = out, NO_ERROR);

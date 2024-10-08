@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:04:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 14:20:10 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/08 14:51:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+#include <stdio.h>
 
 int	_get_precedance(t_token *token)
 {
@@ -25,8 +26,9 @@ int	_get_precedance(t_token *token)
 		return (1);
 	return (0);
 }
+t_str	token_name(t_token *token);
 
-t_error yarn(t_vec_token *list, t_vec_token *output)
+t_error yarn(t_vec_token ts, t_vec_token *out)
 {
 	t_token		tmp;
 	t_token		tmp2;
@@ -35,7 +37,7 @@ t_error yarn(t_vec_token *list, t_vec_token *output)
 
 	output_queue = vec_token_new(16, token_free);;
 	operator_stack = vec_token_new(16, token_free);;
-	while (!vec_token_pop_front(list, &tmp))
+	while (!vec_token_pop_front(&ts, &tmp))
 	{
 		if (tmp.type == TOK_CMD)
 			vec_token_push(&output_queue, tmp);
@@ -59,14 +61,20 @@ t_error yarn(t_vec_token *list, t_vec_token *output)
 			}
 			if (!(vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type == TOK_LPAREN))
 				return (ERROR);
-			vec_token_pop(&operator_stack, NULL);
+			token_free(tmp);
+			vec_token_pop(&operator_stack, &tmp);
+			token_free(tmp);
 		}
+		else
+			printf("TOK WTF? %s", token_name(&tmp));
 	}
 	while (!vec_token_pop(&operator_stack, &tmp))
 	{
 		if (tmp.type == TOK_LPAREN)
-			return (ERROR);
+			return (token_free(tmp), ERROR);
 		vec_token_push(&output_queue, tmp);
 	}
-	return (*output = output_queue, NO_ERROR);
+	vec_token_free(ts);
+	vec_token_free(operator_stack);
+	return (*out = output_queue, NO_ERROR);
 }

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/28 14:37:13 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 13:33:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:46:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 
 void	token_free(t_token tok)
 {
-	if (tok.string.buf != NULL)
-		string_free(tok.string);
-	if (tok.subtokens.buffer != NULL)
-		vec_token_free(tok.subtokens);
+	string_free(tok.string);
+	vec_token_free(tok.subtokens);
 }
 
 t_token	token_new(enum e_token type)

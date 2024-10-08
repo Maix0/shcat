@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 13:32:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/07 16:47:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:28:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,7 @@ t_str	token_name(t_token *token)
 		return ("DRPAREN");
 	if (token->type == TOK_CMD)
 		return ("CMD");
+	if (token->type == TOK_REDIR)
+		return ("REDIR");
 	return (NULL);
 }
