@@ -12,6 +12,7 @@ passes/fold_redir                                                             \
 passes/fold_whitespace                                                        \
 passes/fold_word                                                              \
 passes/paren_to_nquote                                                        \
+passes/remove_whitespace                                                      \
 passes/split_double_paren                                                     \
 passes/template_file                                                          \
 token_lifetime                                                                \

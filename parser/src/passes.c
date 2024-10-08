@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 14:52:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:19:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static const struct s_ts_pass_def	g_ts_passes[] = {\
 	// there should be an ts_fold_arith here
 {ts_split_paren, "split double parenthesis"}, \
 	{ts_fold_redir, "fold redir+argument"}, \
+	{ts_remove_whitespace, "rm extra whitespace"}, \
 	{ts_fold_cmd, "fold into cmd"}, \
 };
 
