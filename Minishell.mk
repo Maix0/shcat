@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/28 17:28:30 by maiboyer          #+#    #+#              #
-#    Updated: 2024/10/06 14:42:55 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/08 15:26:22 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ LIBS_FLAGS = $(addprefix -l, $(LIBS_NAMES))
 all:
 	@$(MAKE) -C ./stdme/ 		"LIB_NAME=$(shell realpath ./stdme)/"		libme.a
 	@$(MAKE) -C ./allocator/	"LIB_NAME=$(shell realpath ./allocator)/"	libaq.a
-	#@$(MAKE) -C ./ast/ 			"LIB_NAME=$(shell realpath ./ast)/"			libast.a
+	@$(MAKE) -C ./ast/ 			"LIB_NAME=$(shell realpath ./ast)/"			libast.a
 	@$(MAKE) -C ./exec/ 		"LIB_NAME=$(shell realpath ./exec)/"		libexec.a
 	@$(MAKE) -C ./line/ 		"LIB_NAME=$(shell realpath ./line)/"		libline.a
 	@$(MAKE) -C ./parser/ 		"LIB_NAME=$(shell realpath ./parser)/"		libparser.a
@@ -79,12 +79,6 @@ bonus: all
 $(NAME): $(LIBS_FILES)
 	@echo -e '$(GREY) Linking \t$(END)$(GOLD)$(NAME)$(END)'
 	@$(CC) $(CFLAGS) -o $(NAME) -L$(BUILD_DIR) $(call link_group,$(LIBS_FLAGS))
-
-# REMOVE THIS ONE DAY
-libast.a: $(BUILD_DIR)/libast.a
-$(BUILD_DIR)/libast.a: 
-	@echo -e '$(GREY) Mocking \t$(END)$(GOLD)libast.a$(END)'
-	@ar rcs $(BUILD_DIR)/libast.a
 
 lib$(ANAME).a: $(BUILD_DIR)/lib$(ANAME).a
 

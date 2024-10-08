@@ -6,13 +6,14 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:04:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 15:04:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/08 15:32:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+#include "ast/ast.h"
 #include <stdio.h>
 
 int	_get_precedance(t_token *token)
@@ -27,25 +28,28 @@ int	_get_precedance(t_token *token)
 }
 t_str	token_name(t_token *token);
 
-t_error yarn(t_vec_token ts, t_vec_token *out)
+t_ast_node ast_from_cmd(t_token tok);
+t_ast_node ast_from_op(t_token tok, t_vec_ast *out);
+
+t_error yarn(t_vec_token ts, t_vec_ast *out)
 {
 	t_token		tmp;
-	t_token		tmp2;
-	t_vec_token	output_queue;
+	t_token		op;
+	t_vec_ast	output_queue;
 	t_vec_token	operator_stack;
 
-	output_queue = vec_token_new(16, token_free);;
+	output_queue = vec_ast_new(16, ast_free);;
 	operator_stack = vec_token_new(16, token_free);;
 	while (!vec_token_pop_front(&ts, &tmp))
 	{
 		if (tmp.type == TOK_CMD)
-			vec_token_push(&output_queue, tmp);
+			vec_ast_push(&output_queue, ast_from_cmd(tmp));
 		else if (tmp.type == TOK_OR || tmp.type == TOK_AND || tmp.type == TOK_PIPE)
 		{
 			while (vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type != TOK_LPAREN && _get_precedance(vec_token_last(&operator_stack)) > _get_precedance(&tmp))
 			{
-				vec_token_pop(&operator_stack, &tmp2);
-				vec_token_push(&output_queue, tmp2);
+				vec_token_pop(&operator_stack, &op);
+				vec_ast_push(&output_queue, ast_from_op(op, &output_queue));
 			}
 			vec_token_push(&operator_stack, tmp);
 		}
@@ -56,8 +60,8 @@ t_error yarn(t_vec_token ts, t_vec_token *out)
 			token_free(tmp);
 			while (vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type != TOK_LPAREN)
 			{
-				vec_token_pop(&operator_stack, &tmp2);
-				vec_token_push(&output_queue, tmp2);
+				vec_token_pop(&operator_stack, &op);
+				vec_ast_push(&output_queue, ast_from_op(op, &output_queue));
 			}
 			if (!(vec_token_last(&operator_stack) != NULL && vec_token_last(&operator_stack)->type == TOK_LPAREN))
 				return (ERROR);
@@ -65,11 +69,11 @@ t_error yarn(t_vec_token ts, t_vec_token *out)
 			token_free(tmp);
 		}
 	}
-	while (!vec_token_pop(&operator_stack, &tmp))
+	while (!vec_token_pop(&operator_stack, &op))
 	{
-		if (tmp.type == TOK_LPAREN)
+		if (op.type == TOK_LPAREN)
 			return (token_free(tmp), ERROR);
-		vec_token_push(&output_queue, tmp);
+		vec_ast_push(&output_queue, ast_from_op(op, &output_queue));
 	}
 	vec_token_free(ts);
 	vec_token_free(operator_stack);

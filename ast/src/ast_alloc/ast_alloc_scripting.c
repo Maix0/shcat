@@ -6,18 +6,15 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:57:11 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/30 18:32:33 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/08 15:26:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast/ast.h"
-#include "gmr/field_identifiers.h"
-#include "gmr/symbols.h"
 #include "me/mem/mem.h"
 #include "me/str/str.h"
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
-#include "parser/api.h"
 #include <stdio.h>
 #include <inttypes.h>
 

@@ -6,18 +6,15 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 14:29:42 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/15 20:14:43 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:26:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ast/ast.h"
-#include "gmr/field_identifiers.h"
-#include "gmr/symbols.h"
 #include "me/mem/mem.h"
 #include "me/str/str.h"
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
-#include "parser/api.h"
 #include <stdio.h>
 
 void	ast_free_arith(t_ast_node elem);
