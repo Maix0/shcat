@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/07 16:45:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 13:40:23 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_error	ts_fold_cmd(t_vec_token input, t_vec_token *output)
 		if (_is_cmd_node(input.buffer[i].type))
 		{
 			j = 0;
-			tmp = token_new(TOK_CMD);
+			tmp = token_new_meta(TOK_CMD);
 			while (i + j < input.len \
 					&& _is_cmd_node(input.buffer[i + j].type))
 				vec_token_push(&tmp.subtokens, token_clone(&input.buffer[i + j++]));

@@ -20,6 +20,7 @@ token_utils                                                                   \
 tokenizer                                                                     \
 tokenizer_utils                                                               \
 ts_print                                                                      \
+yarn/yarn                                                                     \
 
 GEN_FILES =                                                                   \
                                                                               \

@@ -6,34 +6,37 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 13:33:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 13:33:48 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 13:40:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "parser/token.h"
+#include <stdio.h>
+
+
+t_str	token_name(t_token *token);
 
 t_token	token_clone(t_token *tok)
 {
-	t_token	out;
+	t_token	ret;
 	t_usize	i;
 
-	out = token_new_none();
-	out.type = tok->type;
+	ret = token_new_none();
+	ret.type = tok->type;
 	if (tok->string.buf != NULL)
 	{
-		out.string = string_new(tok->string.capacity);
-		string_push(&out.string, tok->string.buf);
+		ret.string = string_new(tok->string.capacity);
+		string_push(&ret.string, tok->string.buf);
 	}
 	if (tok->subtokens.buffer != NULL)
 	{
-		out.subtokens = vec_token_new(tok->subtokens.capacity, token_free);
+		ret.subtokens = vec_token_new(tok->subtokens.capacity, token_free);
 		i = 0;
 		while (i < tok->subtokens.len)
-			vec_token_push(&out.subtokens, \
-				token_clone(&tok->subtokens.buffer[i++]));
+			vec_token_push(&ret.subtokens, token_clone(&tok->subtokens.buffer[i++]));
 	}
-	return (out);
+	return (ret);
 }
 
 bool	token_is_noquote(enum e_token ttype)

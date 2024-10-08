@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/07 18:15:14 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/08 13:40:48 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "me/types.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+#include <stdio.h>
 
 /// This is a list what of kind of passes we need to make on the tokenstream
 /// they'll all have the same function signature, basically taking a token
@@ -71,7 +72,7 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
 		ts = next;
-		ts_print(&ts);
+		//ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);
@@ -103,7 +104,7 @@ t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' dq_pass\n", g_ts_dq_passes[i].name);
 		ts = next;
-		ts_print(&ts);
+		//ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);
