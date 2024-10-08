@@ -33,7 +33,7 @@
               tree
             ]
             ++ (
-              if system == "x86_64-linux"
+              if system == "x86_64-linux" || system == "aarch64-linux"
               then [valgrind valgrind.dev]
               else []
             );

@@ -6,6 +6,8 @@ CompileFlags: # Tweak the parse settings
     - "-I/nix/store/wxxgsgjxbnkkyczgf8lkbfrsqiywm8bi-clang-17.0.6-lib/lib/clang/17/include/"
     - "-I/nix/store/3mmvgb08qy8n6n37mnprf77fnp4rssi9-glibc-2.38-27-dev/include/"
     - "-I/nix/store/3jlclvmii9b6qmpqw9w09cp3zdnngvhk-clang-18.1.8/bin/clanglib/clang/17/include/"
+    - "-I/nix/store/8mh0vrd6ll02j61612wz28vvsww1ps1z-glibc-2.39-52/include/"
+    - "-I/nix/store/8vbzvmsm0iy931mdm4hk2vza7gsyc4gs-clang-17.0.6-lib/lib/clang/17/include/"
     - "-I/usr/include/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/vendor/"
     - "-I/home/maiboyer/Documents/ring-2/shcat/stdme/include/"

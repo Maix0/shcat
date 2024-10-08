@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 13:29:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:22:42 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,15 +101,21 @@ void print_node_data(t_node *t, t_usize depth)
 }
 */
 
+t_error	yarn(t_vec_token *list, t_vec_token *output);
+
 void	parse_str(t_state *state)
 {
-	t_vec_token tokens;
+	t_vec_token	tokens;
+	t_vec_token	tok_yarn;
+
 	if (tokenize(state->str_input, &tokens))
 		return ;
 	if (ts_apply_passes(tokens, &tokens))
 		return ;
+	if (yarn(&tokens, &tok_yarn))
+		return ;
 	printf("\n\nEND TOKENS\n");
-	ts_print(&tokens);
+	ts_print(&tok_yarn);
 	vec_token_free(tokens);
 }
 
