@@ -21,6 +21,8 @@ token_utils                                                                   \
 tokenizer                                                                     \
 tokenizer_utils                                                               \
 ts_print                                                                      \
+yarn/ast_cmd                                                                  \
+yarn/ast_op                                                                   \
 yarn/yarn                                                                     \
 
 GEN_FILES =                                                                   \

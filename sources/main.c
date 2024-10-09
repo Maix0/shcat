@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 14:41:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:40:13 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ void	parse_str(t_state *state)
 		return ;
 	if (ts_apply_passes(tokens, &tokens))
 		return ;
-	if (yarn(tokens, &tokens))
-		return ;
+	//if (yarn(tokens, &tokens))
+	//	return ;
 	printf("\n\nEND TOKENS\n");
 	ts_print(&tokens);
 	vec_token_free(tokens);

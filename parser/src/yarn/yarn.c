@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:04:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/08 15:47:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:44:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_str token_name(t_token *token);
 /// let TOK_WORD dans ast_node->data.command.arguements;
 /// les noms peuvent etre different idk
 /// a terme la fonction utilisera t_error et tt;
+/// struct s_ast_command `ast/include/ast/_raw_structs.h`
 t_ast_node ast_from_cmd(t_token tok);
 
 /// en fonction de op, qui peut etre: TOK_AND TOK_PIPE TOK_OR
@@ -44,6 +45,10 @@ t_ast_node ast_from_cmd(t_token tok);
 /// utilise me_abort(MSG) pour faire un abort et print le msg + la stacktrace.
 ///
 /// a terme la fonction utilisera t_error et tt;
+///
+/// struct s_ast_list if (tok.type == TOK_AND || tok.type == TOK_OR)
+/// struct s_ast_pipeline if (tok.type == TOK_PIPE)
+/// `ast/include/ast/_raw_structs.h`
 t_ast_node ast_from_op(t_token tok, t_vec_ast *output_queue);
 
 t_error yarn(t_vec_token ts, t_vec_ast *out)
