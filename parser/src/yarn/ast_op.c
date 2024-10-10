@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 16:22:39 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:26:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,40 @@
 #include "me/vec/vec_ast.h"
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
+
+static enum e_ast_list_kind _ast_list_get_op(enum e_token ty)
+{
+	if (ty == TOK_AND)
+		return (AST_LIST_AND);
+	else if (ty == TOK_OR)
+		return (AST_LIST_OR);
+	me_abort("invalid token type for ast_list operator");
+	return (-1);
+}
+
+static t_error _tok_pipeline(t_vec_ast *output_queue, t_ast_node rhs, t_ast_node lhs)
+{
+	t_ast_node ret;
+
+	if (rhs->kind == AST_PIPELINE)
+	{
+		vec_ast_push_front(&rhs->data.pipeline.statements, lhs);
+		vec_ast_push(output_queue, rhs);
+	}
+	else if (lhs->kind == AST_PIPELINE)
+	{
+		vec_ast_push(&lhs->data.pipeline.statements, rhs);
+		vec_ast_push(output_queue, lhs);
+	}
+	else
+	{
+		ret = ast_alloc(AST_PIPELINE);
+		vec_ast_push(&ret->data.pipeline.statements, lhs);
+		vec_ast_push(&ret->data.pipeline.statements, rhs);
+		vec_ast_push(output_queue, ret);
+	}
+	return (NO_ERROR);
+}
 
 /// en fonction de op, qui peut etre: TOK_AND TOK_PIPE TOK_OR
 /// choisir le bon ast_node a faire (t_ast_node->data.list + set operator ou t_asdt_node->data.pipeline)
@@ -30,39 +64,28 @@
 ///
 /// in the end we should change to using `t_error` and pushing the ast_node directly to output_queue in the function,
 /// will change that later tho :)
-t_ast_node ast_from_op(t_token tok, t_vec_ast *output_queue)
+t_error ast_from_op(t_token tok, t_vec_ast *output_queue)
 {
 	t_ast_node ret;
-	t_ast_node tmp;
+	t_ast_node lhs;
+	t_ast_node rhs;
 
-	// this needs have a protection in case output_queue is smaller than 2 elements
-	// otherwise it is good :)
-	// you could also make it so TOK_AND and TOK_OR share the same code to win some lines
-	ret = NULL;
-	if (tok.type == TOK_AND)
+	if (!(tok.type == TOK_AND || tok.type == TOK_OR || tok.type == TOK_PIPE))
+		return (ERROR);
+	if (output_queue == NULL || output_queue->len < 2)
+		return (ERROR);
+	vec_ast_pop(output_queue, &rhs);
+	vec_ast_pop(output_queue, &lhs);
+	if (tok.type == TOK_AND || tok.type == TOK_OR)
 	{
 		ret = ast_alloc(AST_LIST);
-		ret->data.list.op = AST_LIST_AND;
-		vec_ast_pop(output_queue, &ret->data.list.right);
-		vec_ast_pop(output_queue, &ret->data.list.left);
+		ret->data.list.op = _ast_list_get_op(tok.type);
+		ret->data.list.left = lhs;
+		ret->data.list.right = rhs;
+		vec_ast_push(output_queue, ret);
 	}
-	else if (tok.type == TOK_OR)
-	{
-		ret = ast_alloc(AST_LIST);
-		ret->data.list.op = AST_LIST_OR;
-		vec_ast_pop(output_queue, &ret->data.list.right);
-		vec_ast_pop(output_queue, &ret->data.list.left);
-	}
-	else if (tok.type == TOK_PIPE)
-	{
-		// Here there is some kind of optimization that could be done in the future: if one node is already a AST_PIPELINE, just pus the other node into the right place in it and return the non created AST_PIPELINE node !
-		ret = ast_alloc(AST_PIPELINE);
-		vec_ast_pop(output_queue, &tmp);
-		vec_ast_push(&ret->data.pipeline.statements, tmp);
-		vec_ast_pop(output_queue, &tmp);
-		vec_ast_push(&ret->data.pipeline.statements, tmp);
-	}
-	else
-		me_abort("ast_from_op not the good token type gived !\n");
-	return (ret);
+	else if (tok.type == TOK_PIPE && _tok_pipeline(output_queue, rhs, lhs))
+		return (ERROR);
+	token_free(tok);
+	return (NO_ERROR);
 }

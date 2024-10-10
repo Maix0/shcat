@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 15:16:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:19:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static t_error _create_ast_redir(enum e_token ty, t_ast_node *out)
 	return (*out = ret, NO_ERROR);
 }
 
-t_const_str _token_to_string(t_token *arg)
+t_const_str _token_to_string(t_token *arg, bool dollar_exp)
 {
 	t_usize		i;
 	t_string	s;
@@ -58,7 +58,7 @@ t_const_str _token_to_string(t_token *arg)
 	s = string_new(16);
 	if (arg->string.buf != NULL)
 	{
-		if (arg->type == TOK_EXPENSION)
+		if (dollar_exp && arg->type == TOK_EXPENSION)
 			string_push_char(&s, '$');
 		string_push(&s, arg->string.buf);
 	}
@@ -67,7 +67,7 @@ t_const_str _token_to_string(t_token *arg)
 		i = 0;
 		while (i < arg->subtokens.len)
 		{
-			tmp = _token_to_string(&arg->subtokens.buffer[i++]);
+			tmp = _token_to_string(&arg->subtokens.buffer[i++], false);
 			string_push(&s, tmp);
 			str_free((t_str)tmp);
 		}
@@ -80,7 +80,7 @@ static t_error _ast_set_redir_arg(t_ast_node node, t_token *arg)
 	if (node == NULL || arg == NULL || (node->kind != AST_HEREDOC_REDIRECTION && node->kind != AST_FILE_REDIRECTION))
 		return (ERROR);
 	if (node->kind == AST_HEREDOC_REDIRECTION)
-		node->data.heredoc_redirection.delimiter = (t_str)_token_to_string(arg);
+		node->data.heredoc_redirection.delimiter = (t_str)_token_to_string(arg, true);
 	else if (handle_tok_word_inner(arg, &node->data.file_redirection.output))
 		return (ERROR);
 	return (NO_ERROR);
@@ -104,7 +104,7 @@ t_error _tok_word_expansion(t_token *tok, t_ast_node *out)
 	t_ast_node ret;
 
 	ret = ast_alloc(AST_EXPANSION);
-	ret->data.expansion.var_name = (t_str)_token_to_string(tok);
+	ret->data.expansion.var_name = (t_str)_token_to_string(tok, false);
 	return (*out = ret, NO_ERROR);
 }
 t_error _tok_word_nquote(t_token *tok, t_ast_node *out)
@@ -115,7 +115,7 @@ t_error _tok_word_nquote(t_token *tok, t_ast_node *out)
 	ret = ast_alloc(AST_WORD);
 	ret->data.word.kind = AST_WORD_NO_QUOTE;
 	tmp = ast_alloc(AST_RAW_STRING);
-	tmp->data.raw_string.str = (t_str)_token_to_string(tok);
+	tmp->data.raw_string.str = (t_str)_token_to_string(tok, false);
 	vec_ast_push(&ret->data.word.inner, tmp);
 	return (*out = ret, NO_ERROR);
 }
@@ -127,7 +127,7 @@ t_error _tok_word_squote(t_token *tok, t_ast_node *out)
 	ret = ast_alloc(AST_WORD);
 	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
 	tmp = ast_alloc(AST_RAW_STRING);
-	tmp->data.raw_string.str = (t_str)_token_to_string(tok);
+	tmp->data.raw_string.str = (t_str)_token_to_string(tok, false);
 	vec_ast_push(&ret->data.word.inner, tmp);
 	return (*out = ret, NO_ERROR);
 }
@@ -142,7 +142,7 @@ t_error _tok_word_dquote(t_token *tok, t_ast_node *out)
 	i = 0;
 	while (i < tok->subtokens.len)
 	{
-		if (_tok_word(&tok->subtokens.buffer[i], &tmp))
+		if (_tok_word(&tok->subtokens.buffer[i++], &tmp))
 			return (ast_free(ret), ERROR);
 		vec_ast_push(&ret->data.word.inner, tmp);
 	}
@@ -221,13 +221,13 @@ t_error handle_tok_redir(t_ast_node cmd, t_token *tok)
 /// les noms peuvent etre different idk
 /// a terme la fonction utilisera t_error et tt;
 /// struct s_ast_command `ast/include/ast/_raw_structs.h`
-t_ast_node ast_from_cmd(t_token tok)
+t_error ast_from_cmd(t_token tok, t_vec_ast *output_queue)
 {
 	t_ast_node ret;
 	t_usize	   i;
 
 	if (tok.type != TOK_CMD)
-		me_abort("tok.type != TOK_CMD");
+		return (ERROR);
 	ret = ast_alloc(AST_COMMAND);
 	i = 0;
 	while (i < tok.subtokens.len)
@@ -235,15 +235,17 @@ t_ast_node ast_from_cmd(t_token tok)
 		if (tok.subtokens.buffer[i].type == TOK_REDIR)
 		{
 			if (handle_tok_redir(ret, &tok.subtokens.buffer[i]))
-				me_abort("handle_tok_redir error");
+				return (ast_free(ret), ERROR);
 		}
 		else if (tok.subtokens.buffer[i].type == TOK_WORD)
 		{
 			if (handle_tok_word(ret, &tok.subtokens.buffer[i]))
-				me_abort("handle_tok_word error");
+				return (ast_free(ret), ERROR);
 		}
 		else
-			me_abort("handle_tok_cmd not word|redir");
+			return (ast_free(ret), ERROR);
+		i++;
 	}
-	return (ret);
+	token_free(tok);
+	return (vec_ast_push(output_queue, ret), NO_ERROR);
 }

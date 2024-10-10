@@ -6,13 +6,13 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/03 21:44:22 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:39:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "app/colors.h"
 #include "app/env.h"
-//#include "app/node.h"
+// #include "app/node.h"
 #include "app/signal_handler.h"
 #include "app/state.h"
 #include "ast/ast.h"
@@ -26,12 +26,12 @@
 #include <errno.h>
 #include <sys/types.h>
 
-void		ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
-void		parse_str(t_state *state);
+void ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
+void parse_str(t_state *state);
 
-t_error	get_user_input(t_state *state)
+t_error get_user_input(t_state *state)
 {
-	t_line_state	lstate;
+	t_line_state lstate;
 
 	if (line_edit_start(&lstate, get_stdin(), get_stdout(), state->prompt))
 		return (ERROR);
@@ -50,19 +50,25 @@ t_error	get_user_input(t_state *state)
 	return (NO_ERROR);
 }
 
-//for the norme line 62: print_node_data(&state->current_node, 0);
-void	exec_shcat(t_state *state)
+// for the norme line 62: print_node_data(&state->current_node, 0);
+void exec_shcat(t_state *state)
 {
-	t_program_result	prog_res;
+	t_program_result prog_res;
+	t_ast_node		 prog;
 
 	prog_res = (t_program_result){.exit = 0};
-	if (state->ast != NULL && run_program(\
-			&state->ast->data.program, state, &prog_res))
+	if (state->ast->kind != AST_PROGRAM)
+	{
+		prog = ast_alloc(AST_PROGRAM);
+		vec_ast_push(&prog->data.program.body, state->ast);
+		state->ast = prog;
+	}
+	if (state->ast != NULL && run_program(&state->ast->data.program, state, &prog_res))
 		printf("Error when execting the Command \n");
-	// ast_free(state->ast);
+	ast_free(state->ast);
 }
 
-void	ft_take_args(t_state *state)
+void ft_take_args(t_state *state)
 {
 	while (true)
 	{

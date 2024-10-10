@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:24:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/18 21:07:23 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:25:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ t_error	_handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe,
 	t_builtin_func			actual_func;
 	t_builtin_spawn_info	binfo;
 
+	mem_set_zero(&binfo, sizeof(binfo));
 	binfo.state = state;
 	mem_set_zero(out, sizeof(*out));
 	if (_find_builtin(&info, &actual_func))

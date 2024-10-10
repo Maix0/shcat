@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/12 16:34:50 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:17:58 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,20 @@ static inline void	ast_print_block1(t_ast_node self);
 static inline void	ast_print_block2(t_ast_node self);
 static inline void	ast_print_block3(t_ast_node self);
 
+static inline void ast_print_notdone(t_ast_node self)
+{
+	printf(" <ast_print_notdone> ");
+	(void)(self);
+}
+
 static inline void	ast_print_block1(t_ast_node self)
 {
 	if (self->kind == AST_ARITHMETIC_EXPANSION)
 		return (ast_print_node_arithmetic_expansion(self));
 	if (self->kind == AST_CASE)
-		return (ast_print_node_case(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_CASE_ITEM)
-		return (ast_print_node_case_item(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_COMMAND)
 		return (ast_print_node_command(self));
 	if (self->kind == AST_COMMAND_SUBSTITUTION)
@@ -60,9 +66,9 @@ static inline void	ast_print_block1(t_ast_node self)
 	if (self->kind == AST_COMPOUND_STATEMENT)
 		return (ast_print_node_compound_statement(self));
 	if (self->kind == AST_ELIF)
-		return (ast_print_node_elif(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_ELSE)
-		return (ast_print_node_else(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_EMPTY)
 		return ;
 	ast_print_block2(self);
@@ -77,13 +83,13 @@ static inline void	ast_print_block2(t_ast_node self)
 	if (self->kind == AST_FILE_REDIRECTION)
 		return (ast_print_node_file_redirection(self));
 	if (self->kind == AST_FOR)
-		return (ast_print_node_for(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_FUNCTION_DEFINITION)
 		return (ast_print_node_function_definition(self));
 	if (self->kind == AST_HEREDOC_REDIRECTION)
-		return (ast_print_node_heredoc_redirection(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_IF)
-		return (ast_print_node_if(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_LIST)
 		return (ast_print_node_list(self));
 	ast_print_block3(self);
@@ -102,11 +108,11 @@ static inline void	ast_print_block3(t_ast_node self)
 	if (self->kind == AST_SUBSHELL)
 		return (ast_print_node_subshell(self));
 	if (self->kind == AST_UNTIL)
-		return (ast_print_node_until(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_VARIABLE_ASSIGNMENT)
 		return (ast_print_node_variable_assignment(self));
 	if (self->kind == AST_WHILE)
-		return (ast_print_node_while(self));
+		return (ast_print_notdone(self));
 	if (self->kind == AST_WORD)
 		return (ast_print_node_word(self));
 	printf("Unknown ast->kind: %#04x\n", self->kind);

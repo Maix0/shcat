@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 15:27:12 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:25:40 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
 		ts = next;
-		ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);
@@ -98,7 +97,6 @@ t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
 		else
 			me_printf("Applied '%s' dq_pass\n", g_ts_dq_passes[i].name);
 		ts = next;
-		ts_print(&ts);
 		i++;
 	}
 	return (*out = ts, NO_ERROR);

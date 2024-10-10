@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/12 16:33:47 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:56:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ast_print_node_command_substitution(t_ast_node self)
 	i = 0;
 	while (i < self->data.command_substitution.body.len)
 	{
-		ast_print_node(self->data.command_substitution.body.buffer[i++]);
+		ast_print(self->data.command_substitution.body.buffer[i++]);
 	}
 	printf(")");
 }
@@ -36,13 +36,13 @@ void	ast_print_node_command_helper(t_ast_node self)
 	i = 0;
 	while (i < self->data.command.cmd_word.len)
 	{
-		ast_print_node(self->data.command.cmd_word.buffer[i++]);
+		ast_print(self->data.command.cmd_word.buffer[i++]);
 		printf(" ");
 	}
 	i = 0;
 	while (i < self->data.command.suffixes_redirections.len)
 	{
-		ast_print_node(self->data.command.suffixes_redirections.buffer[i++]);
+		ast_print(self->data.command.suffixes_redirections.buffer[i++]);
 		printf(" ");
 	}
 	_print_term(self->data.command.term);
@@ -61,7 +61,7 @@ void	ast_print_node_command(t_ast_node self)
 	i = 0;
 	while (i < self->data.command.prefixes.len)
 	{
-		ast_print_node(self->data.command.prefixes.buffer[i++]);
+		ast_print(self->data.command.prefixes.buffer[i++]);
 		printf(" ");
 	}
 	return (ast_print_node_command_helper(self));
@@ -104,6 +104,6 @@ void	ast_print_node_expansion(t_ast_node self)
 	ast_print_node_expansion_choose_op(self);
 	i = 0;
 	while (i < self->data.expansion.args.len)
-		ast_print_node(self->data.expansion.args.buffer[i++]);
+		ast_print(self->data.expansion.args.buffer[i++]);
 	printf("}");
 }

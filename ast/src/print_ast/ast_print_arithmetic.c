@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_arithmetic.c                                 :+:      :+:    :+:   */
+/*   ast_print_arithmetic.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:05:36 by rparodi           #+#    #+#             */
-/*   Updated: 2024/07/26 13:08:22 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/10 16:57:18 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ast_print_node_arithmetic_expansion(t_ast_node self)
 	if (self->kind != AST_ARITHMETIC_EXPANSION)
 		return ;
 	printf("$((");
-	ast_print_node(self->data.arithmetic_expansion.expr);
+	ast_print(self->data.arithmetic_expansion.expr);
 	printf("))");
 }
 
@@ -35,7 +35,7 @@ void	ast_print_node_function_definition(t_ast_node self)
 	i = 0;
 	while (i < self->data.function_definition.body.len)
 	{
-		ast_print_node(self->data.function_definition.body.buffer[i++]);
+		ast_print(self->data.function_definition.body.buffer[i++]);
 		printf(" ");
 	}
 }
