@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/09 21:55:35 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:16:38 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,21 +55,24 @@ t_const_str _token_to_string(t_token *arg)
 
 	if (arg == NULL || arg->type == TOK_NONE)
 		return (NULL);
+	s = string_new(16);
 	if (arg->string.buf != NULL)
-		return (str_clone(arg->string.buf));
+	{
+		if (arg->type == TOK_EXPENSION)
+			string_push_char(&s, '$');
+		string_push(&s, arg->string.buf);
+	}
 	else if (arg->subtokens.buffer != NULL)
 	{
 		i = 0;
-		s = string_new(16);
 		while (i < arg->subtokens.len)
 		{
 			tmp = _token_to_string(&arg->subtokens.buffer[i++]);
 			string_push(&s, tmp);
 			str_free((t_str)tmp);
 		}
-		return (s.buf);
 	}
-	return (NULL);
+	return (s.buf);
 }
 
 static t_error _ast_set_redir_arg(t_ast_node node, t_token *arg)

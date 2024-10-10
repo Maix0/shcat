@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/09/18 22:18:11 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:37:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,7 @@ t_error	_ast_get_str__command_substitution(\
 	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
 t_error	_ast_get_str__expansion(\
 	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
-t_error	_ast_get_str__raw(\
-	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
+t_error	_ast_get_str__raw(t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
 t_error	_ast_get_str__raw__double_quote(\
 	t_ast_node elem, t_word_iterator *state, t_vec_estr *out);
 t_error	_ast_get_str__raw__no_quote(\
@@ -176,8 +175,12 @@ t_error	_run_get_exit_code(\
 	t_ast_node self, t_state *state, int *out);
 t_error	_spawn_cmd_and_run(t_vec_str args, t_redirections redirs, \
 		t_state *state, t_command_result *out);
-t_error	_word_into_str(\
-	t_ast_node self, t_state *state, t_vec_str *append);
+
+
+t_error	_word_into_str(t_ast_node self, t_state *state, t_vec_str *append);
+
+
+
 t_error	run_command(\
 	t_ast_command *command, t_state *state, t_cmd_pipe cmd_pipe, \
 	t_command_result *out);
