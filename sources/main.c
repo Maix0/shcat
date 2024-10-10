@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/10 17:37:45 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:47:24 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,25 +83,25 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 
 t_error yarn(t_vec_token ts, t_vec_ast *output);
 
-void parse_str(t_state *state)
+t_error parse_str(t_state *state)
 {
 	t_vec_token tokens;
 	t_vec_ast	ast;
 
 	if (tokenize(state->str_input, &tokens))
-		return;
+		return (ERROR);
 	if (ts_apply_passes(tokens, &tokens))
-		return;
-	// TODO: remove
-	ts_print(&tokens);
+		return (ERROR);
+	ts_print(&tokens); // TODO: remove
 	if (yarn(tokens, &ast))
-		return ((void)printf("failed to ast build\n"));
+		return ((void)printf("failed to ast build\n"), (ERROR));
 	if (ast.len != 1)
-		me_abort("Unhandled error: ast.len != 1");
+		return (ERROR);	
 	vec_ast_pop(&ast, &state->ast);
 	ast_print(state->ast);
 	printf("\nast\n");
 	vec_ast_free(ast);
+	return (NO_ERROR);
 }
 
 t_i32 main(t_i32 argc, t_str argv[], t_str envp[])

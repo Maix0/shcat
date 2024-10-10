@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/10 17:39:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:48:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@
 #include <errno.h>
 #include <sys/types.h>
 
-void ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
-void parse_str(t_state *state);
+void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
+t_error parse_str(t_state *state);
 
 t_error get_user_input(t_state *state)
 {
@@ -78,7 +78,11 @@ void ft_take_args(t_state *state)
 		if (state->str_input == NULL)
 			ft_exit(state, 0);
 		line_history_add(state->str_input);
-		parse_str(state);
+		if (parse_str(state))
+		{
+			mem_free(state->str_input);
+			continue;
+		}
 		exec_shcat(state);
 		mem_free(state->str_input);
 	}

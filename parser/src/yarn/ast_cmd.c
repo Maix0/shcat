@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:19:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:48:57 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,25 +110,17 @@ t_error _tok_word_expansion(t_token *tok, t_ast_node *out)
 t_error _tok_word_nquote(t_token *tok, t_ast_node *out)
 {
 	t_ast_node ret;
-	t_ast_node tmp;
 
-	ret = ast_alloc(AST_WORD);
-	ret->data.word.kind = AST_WORD_NO_QUOTE;
-	tmp = ast_alloc(AST_RAW_STRING);
-	tmp->data.raw_string.str = (t_str)_token_to_string(tok, false);
-	vec_ast_push(&ret->data.word.inner, tmp);
+	ret = ast_alloc(AST_RAW_STRING);
+	ret->data.raw_string.str = (t_str)_token_to_string(tok, false);
 	return (*out = ret, NO_ERROR);
 }
 t_error _tok_word_squote(t_token *tok, t_ast_node *out)
 {
 	t_ast_node ret;
-	t_ast_node tmp;
 
-	ret = ast_alloc(AST_WORD);
-	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
-	tmp = ast_alloc(AST_RAW_STRING);
-	tmp->data.raw_string.str = (t_str)_token_to_string(tok, false);
-	vec_ast_push(&ret->data.word.inner, tmp);
+	ret = ast_alloc(AST_RAW_STRING);
+	ret->data.raw_string.str = (t_str)_token_to_string(tok, false);
 	return (*out = ret, NO_ERROR);
 }
 t_error _tok_word_dquote(t_token *tok, t_ast_node *out)
@@ -156,7 +148,7 @@ t_error _tok_word(t_token *tok, t_ast_node *out)
 		if (_tok_word_expansion(tok, out))
 			return (ERROR);
 	}
-	else if (tok->type == TOK_NQUOTE)
+	else if (tok->type == TOK_NQUOTE || tok->type == TOK_WHITESPACE)
 	{
 		if (_tok_word_nquote(tok, out))
 			return (ERROR);
