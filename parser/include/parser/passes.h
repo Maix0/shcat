@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:43:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 15:19:03 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:27:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ t_error ts_dq_apply_passes(t_vec_token ts, t_vec_token *out);
 // list passes function here
 
 // this is a example one, does absolutly nothing lol
+t_error ts_do_fuck_all(t_vec_token input, t_vec_token *output);
+
 t_error	ts_double_amp(t_vec_token input, t_vec_token *output);
 t_error	ts_double_lcarret(t_vec_token input, t_vec_token *output);
 t_error	ts_double_lparen(t_vec_token input, t_vec_token *output);
@@ -48,7 +50,7 @@ t_error	ts_fold_no_quote(t_vec_token input, t_vec_token *output);
 t_error	ts_fold_whitespace(t_vec_token input, t_vec_token *output);
 t_error	ts_paren_to_noquote(t_vec_token input, t_vec_token *output);
 t_error	ts_split_paren(t_vec_token input, t_vec_token *output);
-t_error ts_do_fuck_all(t_vec_token input, t_vec_token *output);
+t_error	ts_verify_tokens(t_vec_token input, t_vec_token *output);
 t_error ts_fold_expension(t_vec_token input, t_vec_token *output);
 t_error ts_fold_redir(t_vec_token input, t_vec_token *output);
 t_error ts_remove_whitespace(t_vec_token input, t_vec_token *output);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 15:19:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:27:12 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,13 @@ static const struct s_ts_pass_def	g_ts_passes[] = {\
 	{ts_fold_whitespace, "fold whitespace"}, \
 	{ts_double_amp, "double amp => and"}, \
 	{ts_double_pipe, "double pipe => or"}, \
-	{ts_double_lparen, "double lparen => dlparen"}, \
-	{ts_double_rparen, "double rparen => drparen"}, \
 	{ts_double_lcarret, "double lcarret => dlcarret"}, \
 	{ts_double_rcarret, "double rcarrer => drcarret"}, \
 	{ts_fold_into_word, "fold into words"}, \
-	// there should be an ts_fold_arith here
-{ts_split_paren, "split double parenthesis"}, \
 	{ts_fold_redir, "fold redir+argument"}, \
 	{ts_remove_whitespace, "rm extra whitespace"}, \
 	{ts_fold_cmd, "fold into cmd"}, \
+	{ts_verify_tokens, "verify only tokens"}, \
 };
 
 t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
@@ -80,11 +77,7 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 }
 
 static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
-	{ts_double_lparen, "double lparen => dlparen"}, \
-	{ts_double_rparen, "double rparen => drparen"}, \
 	{ts_fold_expension, "fold expansion"}, \
-	// there should be an ts_fold_arith here
-{ts_split_paren, "split double parenthesis"}, \
 	{ts_paren_to_noquote, "parenthesis to noquote"}, \
 	{ts_fold_no_quote, "fold no quote"},
 };

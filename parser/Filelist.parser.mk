@@ -15,6 +15,7 @@ passes/paren_to_nquote                                                        \
 passes/remove_whitespace                                                      \
 passes/split_double_paren                                                     \
 passes/template_file                                                          \
+passes/verify_invalid_tokens                                                  \
 token_lifetime                                                                \
 token_name                                                                    \
 token_utils                                                                   \
