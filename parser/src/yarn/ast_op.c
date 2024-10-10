@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 16:21:44 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 16:22:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ t_ast_node ast_from_op(t_token tok, t_vec_ast *output_queue)
 	// this needs have a protection in case output_queue is smaller than 2 elements
 	// otherwise it is good :)
 	// you could also make it so TOK_AND and TOK_OR share the same code to win some lines
+	ret = NULL;
 	if (tok.type == TOK_AND)
 	{
 		ret = ast_alloc(AST_LIST);
