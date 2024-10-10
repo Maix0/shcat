@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:15:57 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/16 19:39:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:49:27 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "me/str/str.h"
 #include "me/types.h"
 #include <stdint.h>
+#include <stdio.h>
 
 static t_error	_check_base(t_str base)
 {
@@ -41,7 +42,9 @@ static void	_set_modulus(t_num_str_state *s)
 {
 	s->modulus = 0;
 	s->base_len = str_len(s->base);
-	while (UINT64_MAX - s->modulus >= s->base_len)
+	if (s->base_len == 10)
+		return ((void)(s->modulus = 10000000000000000000lu));
+	while (UINT64_MAX - s->modulus > s->base_len)
 		s->modulus += s->base_len;
 }
 
@@ -85,6 +88,7 @@ t_error	_format_u64(t_num_str args, t_str *out)
 		args.prefix = "";
 	mem_set_zero(&s, sizeof(s));
 	s.idx = 0;
+	s.base = args.base;
 	if (args.is_nonnegative)
 		s.buffer[s.idx++] = '-';
 	_set_modulus(&s);

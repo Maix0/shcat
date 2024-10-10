@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:35:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 16:31:30 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:52:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ t_error	_wait_subshell(\
 		out->exit = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
 		out->exit = WTERMSIG(status);
+	printf("out->exit for subshell is %i\n", out->exit);
+	sinfo.state->last_exit = out->exit;
 	return (NO_ERROR);
 }
 
@@ -94,6 +96,7 @@ t_error	run_subshell(t_ast_subshell *subshell, t_state *state,
 	if (subshell == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	mem_set_zero(&sinfo, sizeof(sinfo));
+	sinfo.state = state;
 	if (_setup_redirection(&info, state, cmd_pipe, \
 		&subshell->suffixes_redirections))
 		return (ERROR);

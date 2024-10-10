@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:31:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 14:22:08 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:54:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ t_error	_run_other(t_ast_node self, t_state *state, int *out)
 		*out = subshell_res.exit;
 	}
 	state->last_exit = *out;
+	printf("state->last_exit = %i\n", state->last_exit);
 	return (NO_ERROR);
 }
 

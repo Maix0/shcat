@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/10 17:48:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:50:37 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ t_error get_user_input(t_state *state)
 		{
 			errno = 0;
 			lstate.pos = 0;
+			state->last_exit = 127;
 			string_clear(&lstate.buf);
 			write_fd(lstate.output_fd, (void *)"^C\n", 3, NULL);
 			line_refresh_line(&lstate);

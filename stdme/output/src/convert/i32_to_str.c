@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 21:15:19 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/07/30 16:31:39 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/10 18:38:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_error	i32_to_str_base_prefix(t_i32 val, t_str base, t_str prefix, t_str *out)
 	if (out == NULL || base == NULL || prefix == NULL)
 		return (ERROR);
 	value.i32 = val;
-	is_nonnegative = val & 0x80000000;
+	is_nonnegative = value.u32 & 0x80000000;
 	if (is_nonnegative)
 		value.u32 = ~value.u32 + 1;
 	return (_format_u64((t_num_str){.value = value.u64,

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 17:57:57 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/09 15:37:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:51:29 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ struct s_ffree_state
 
 struct s_subshell_info
 {
+	t_state		*state;
 	t_fd		*stdin;
 	t_fd		*stderr;
 	t_fd		*stdout;
