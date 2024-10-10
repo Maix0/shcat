@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 15:19:20 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/10 15:56:05 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ t_ast_node ast_from_op(t_token tok, t_vec_ast *output_queue)
 {
 	t_ast_node	tmp;
 
-	if (tok.type != TOK_AND && tok.type != TOK_OR && tok.type != TOK_PIPE)
-		me_abort("ast_from_op not the good token type gived !\n");
 	if (tok.type == TOK_AND)
 	{
 		tmp = ast_alloc(AST_LIST);
@@ -39,15 +37,21 @@ t_ast_node ast_from_op(t_token tok, t_vec_ast *output_queue)
 		vec_ast_pop(output_queue, &tmp->data.list.right);
 		vec_ast_pop(output_queue, &tmp->data.list.left);
 	}
-	if (tok.type == TOK_OR)
+	else if (tok.type == TOK_OR)
 	{
 		tmp = ast_alloc(AST_LIST);
 		tmp->data.list.op = AST_LIST_OR;
 		vec_ast_pop(output_queue, &tmp->data.list.right);
 		vec_ast_pop(output_queue, &tmp->data.list.left);
 	}
-	if (tok.type == TOK_PIPE)
+	else if (tok.type == TOK_PIPE)
 	{
 		tmp = ast_alloc(AST_PIPELINE);
+		vec_ast_pop(output_queue, &tmp);
+		vec_ast_push(&tmp.data.pipeline.statements, tmp);
+		vec_ast_pop(output_queue, &tmp);
+		vec_ast_push(&tmp.data.pipeline.statements, tmp);
 	}
+	else
+		me_abort("ast_from_op not the good token type gived !\n");
 }
