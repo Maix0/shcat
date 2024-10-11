@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 18:15:57 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 18:49:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 11:30:00 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,10 @@ static t_error	_check_base(t_str base)
 
 static void	_set_modulus(t_num_str_state *s)
 {
-	s->modulus = 0;
+	s->modulus = 1;
 	s->base_len = str_len(s->base);
-	if (s->base_len == 10)
-		return ((void)(s->modulus = 10000000000000000000lu));
-	while (UINT64_MAX - s->modulus > s->base_len)
-		s->modulus += s->base_len;
+	while (UINT64_MAX / s->modulus >= s->base_len)
+		s->modulus *= s->base_len;
 }
 
 static char	_get_char(t_u64 value, t_num_str_state *s)
@@ -66,7 +64,7 @@ static t_error	_format_u64_base_innner(t_num_str_state *s)
 	while (s->modulus)
 	{
 		c = _get_char(s->value / s->modulus, s);
-		if (s->zero || s->print)
+		if (!s->zero || s->print)
 		{
 			s->buffer[s->idx++] = c;
 			s->print = true;
@@ -89,6 +87,7 @@ t_error	_format_u64(t_num_str args, t_str *out)
 	mem_set_zero(&s, sizeof(s));
 	s.idx = 0;
 	s.base = args.base;
+	s.value = args.value;
 	if (args.is_nonnegative)
 		s.buffer[s.idx++] = '-';
 	_set_modulus(&s);

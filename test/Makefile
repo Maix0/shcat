@@ -6,12 +6,12 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/10/11 10:51:13 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/11 10:54:39 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Objdir
-BUILD_DIR = $(shell realpath ./build)
+BUILD_DIR = $(shell realpath ../build/test)
 BASE_PATH = $(shell pwd)
 
 # Colors
@@ -66,12 +66,12 @@ export BUILD_DIR
 # All (make all)
 all: 
 	@$(MAKE) --no-print-directory header
-	@$(MAKE) --no-print-directory -f ./Minishell.mk $(PMAKE)
+	@$(MAKE) --no-print-directory -f ./Test.mk $(PMAKE)
 	@$(MAKE) --no-print-directory footer
 
 bonus: 
 	@$(MAKE) --no-print-directory header
-	@$(MAKE) --no-print-directory -f ./Minishell.mk $(PMAKE) bonus
+	@$(MAKE) --no-print-directory -f ./Test.mk $(PMAKE) bonus
 	@$(MAKE) --no-print-directory footer
 
 #	Header
@@ -132,14 +132,14 @@ tokei:
 
 
 build_filelist:
-	@$(MAKE) --no-print-directory -C ./stdme/ 		build_filelist
-	@$(MAKE) --no-print-directory -C ./allocator/ 	build_filelist
-	@$(MAKE) --no-print-directory -C ./ast/ 		build_filelist
-	@$(MAKE) --no-print-directory -C ./exec/ 		build_filelist
-	@$(MAKE) --no-print-directory -C ./line/ 		build_filelist
-	@$(MAKE) --no-print-directory -C ./parser/		build_filelist
-	@$(MAKE) --no-print-directory -f ./Minishell.mk	build_filelist
-	@$(MAKE) --no-print-directory -C test ./Test.mk	build_filelist
+	@$(MAKE) --no-print-directory -C ../stdme/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ../allocator/ 	build_filelist
+	@$(MAKE) --no-print-directory -C ../ast/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ../exec/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ../line/ 		build_filelist
+	@$(MAKE) --no-print-directory -C ../parser/		build_filelist
+	@$(MAKE) --no-print-directory -C .. -f ./Minishell.mk	build_filelist
+	@$(MAKE) --no-print-directory -f ./Test.mk	build_filelist
 
 #	phony
 .PHONY: all bonus clean fclean re header footer build_filelist
