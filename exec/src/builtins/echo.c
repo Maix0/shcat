@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/08/30 16:53:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/11 14:54:48 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_error	builtin_echo__(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	t_usize		i;
+	t_usize		j;
 	bool		print_line;
 	t_string	s;
 
@@ -27,10 +28,18 @@ t_error	builtin_echo__(\
 	print_line = true;
 	i = 1;
 	s = string_new(1024);
-	if (i < info.args.len && str_compare(info.args.buffer[i], "-n"))
+	while (i < info.args.len && info.args.buffer[i][0] == '-')
 	{
-		print_line = false;
-		i++;
+		j = 1;
+		while (info.args.buffer[i][j] == 'n')
+			j++;
+		if (info.args.buffer[i][j] == '\0')
+		{
+			print_line = false;
+			i++;
+		}
+		else
+			break ;
 	}
 	while (i < info.args.len - 1)
 	{
