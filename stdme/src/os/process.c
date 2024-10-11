@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/17 17:12:21 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 11:47:20 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path_raw,
 	{
 		string_clear(s);
 		me_printf_str(s, "%s/%s", path.buffer[idx++], info->binary_path);
-		if (access(s->buf, X_OK | R_OK) == 0)
+		printf("testing %s\n", s->buf);
+		if (access(s->buf, X_OK) == 0)
 			return (vec_str_free(path), NO_ERROR);
 	}
 	return (vec_str_free(path), ERROR);
@@ -86,7 +87,7 @@ t_error	find_binary(t_spawn_info *info, t_process *process)
 		if (in_path(info, process, info->environement.buffer[p_idx], &s))
 			return (string_free(s), ERROR);
 	}
-	if (access(s.buf, X_OK | R_OK) == 0)
+	if (access(s.buf, X_OK) == 0)
 	{
 		mem_free(info->binary_path);
 		info->binary_path = s.buf;
