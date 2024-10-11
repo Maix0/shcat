@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:48:57 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 15:12:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static t_error _create_ast_redir(enum e_token ty, t_ast_node *out)
 		ret = ast_alloc(AST_HEREDOC_REDIRECTION);
 		ret->data.heredoc_redirection.op = AST_REDIR_HEREDOC;
 	}
-	else if (ty == TOK_DRCARRET || ty == TOK_LCARRET || ty == TOK_DRCARRET)
+	else if (ty == TOK_RCARRET || ty == TOK_LCARRET || ty == TOK_DRCARRET)
 		ret = ast_alloc(AST_FILE_REDIRECTION);
 	else
 		return (ERROR);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:24:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 18:56:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:16:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,6 @@ t_error	_handle_builtin(t_spawn_info info, t_state *state, t_cmd_pipe cmd_pipe,
 		return (ERROR);
 	if (_setup_binfo(&info, &binfo, out))
 		return (ERROR);
-	printf("last_exit = %i\n", state->last_exit);
 	_run_builtin(&binfo, actual_func, cmd_pipe, out);
 	if (binfo.stdin)
 		close_fd(binfo.stdin);

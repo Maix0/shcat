@@ -6,10 +6,11 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:22:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 11:47:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:19:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "fcntl.h"
 #include "me/fs/fs.h"
 #include "me/mem/mem.h"
 #include "me/os/os.h"
@@ -29,6 +30,7 @@ t_error		handle_redirections(t_spawn_info *info, t_process *process);
 
 t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 {
+	(void)(process);
 	if (info.forked_free)
 		info.forked_free(info.forked_free_args);
 	signal(SIGINT, SIG_DFL);
@@ -36,12 +38,12 @@ t_error	spawn_process_exec(t_spawn_info info, t_process *process)
 	dup2(info.stdin.fd.fd->fd, 0);
 	dup2(info.stdout.fd.fd->fd, 1);
 	dup2(info.stderr.fd.fd->fd, 2);
-	close_fd(process->stdin);
-	close_fd(process->stdout);
-	close_fd(process->stderr);
-	close_fd(info.stdin.fd.fd);
-	close_fd(info.stdout.fd.fd);
-	close_fd(info.stderr.fd.fd);
+	if (info.stdin.fd.fd->fd != 0)
+		close_fd(info.stdin.fd.fd);
+	if (info.stdout.fd.fd->fd != 1)
+		close_fd(info.stdout.fd.fd);
+	if (info.stderr.fd.fd->fd != 2)
+		close_fd(info.stderr.fd.fd);
 	vec_str_push(&info.arguments, NULL);
 	vec_str_push(&info.environement, NULL);
 	execve(info.binary_path, info.arguments.buffer, info.environement.buffer);
@@ -62,7 +64,6 @@ t_error	in_path(t_spawn_info *info, t_process *process, t_const_str path_raw,
 	{
 		string_clear(s);
 		me_printf_str(s, "%s/%s", path.buffer[idx++], info->binary_path);
-		printf("testing %s\n", s->buf);
 		if (access(s->buf, X_OK) == 0)
 			return (vec_str_free(path), NO_ERROR);
 	}
@@ -105,9 +106,12 @@ static void	_process_cleanup(t_spawn_info info, t_process *process, \
 		close_fd(process->stdout);
 	if (cleanup_process && process->stderr)
 		close_fd(process->stderr);
-	close_fd(info.stdin.fd.fd);
-	close_fd(info.stdout.fd.fd);
-	close_fd(info.stderr.fd.fd);
+	if (info.stdin.fd.fd->fd != 0)
+		close_fd(info.stdin.fd.fd);
+	if (info.stdout.fd.fd->fd != 1)
+		close_fd(info.stdout.fd.fd);
+	if (info.stderr.fd.fd->fd != 2)
+		close_fd(info.stderr.fd.fd);
 	vec_str_free(info.arguments);
 	vec_str_free(info.environement);
 	mem_free(info.binary_path);

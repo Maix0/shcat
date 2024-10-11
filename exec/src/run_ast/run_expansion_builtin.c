@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:38:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 18:58:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:16:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ t_error	_run_expansion_special_var(t_ast_expansion *self, t_state *state,
 	if (name == '?')
 	{
 		*out = (t_expansion_result){.exists = true, .value = NULL};
-		printf("state->last_exit in exp = %i \n", state->last_exit);
 		if (i32_to_str(state->last_exit, &out->value)) // TODO: fix this shit
 			return (ERROR);
 	}

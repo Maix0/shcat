@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/09/18 21:51:46 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:19:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ put_string_fd(lstate.output_fd, "^C\n"), line_refresh_line(&lstate), ERROR);
 			}
 		}
 		line_edit_stop(&lstate);
-		if (line == NULL || str_compare(delim, line))
+		if (line == NULL || (str_compare(delim, line) && (str_free(line), 1)))
 			break ;
 		(put_string_fd(write, line), put_char_fd(write, '\n'), str_free(line));
 	}

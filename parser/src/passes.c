@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:25:40 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 21:33:34 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 		if ((g_ts_passes[i].fn)(ts, &next))
 			return (me_eprintf("failed on %s token pass\n", \
 					g_ts_passes[i].name), ERROR);
-		else
-			me_printf("Applied '%s' pass\n", g_ts_passes[i].name);
 		ts = next;
 		i++;
 	}
@@ -94,8 +92,6 @@ t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
 		if ((g_ts_dq_passes[i].fn)(ts, &next))
 			return (me_eprintf(\
 			"failed on '%s' dq token pass\n", g_ts_dq_passes[i].name), ERROR);
-		else
-			me_printf("Applied '%s' dq_pass\n", g_ts_dq_passes[i].name);
 		ts = next;
 		i++;
 	}
