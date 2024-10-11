@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:44:20 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:36:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_error	list_files_in_current_directory(t_vec_str *out);
 
 bool	_word_is_star(t_ast_word *word)
 {
-	return (word->kind == AST_WORD_NO_QUOTE && word->inner.len == 1 \
+	return (BONUS && word->kind == AST_WORD_NO_QUOTE && word->inner.len == 1 \
 	&& word->inner.buffer[0]->kind == AST_RAW_STRING \
 	&& str_compare("*", word->inner.buffer[0]->data.raw_string.str));
 }

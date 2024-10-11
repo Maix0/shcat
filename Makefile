@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/10/11 10:51:13 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/11 22:24:03 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,9 +50,9 @@ endif
 # CFLAGS_ADDITIONAL	+= -fsanitize=memory -fno-omit-frame-pointer  -fsanitize-memory-track-origins #-fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--allow-multiple
 # CFLAGS_ADDITIONAL	+= -O0 
 # CFLAGS_ADDITIONAL	+= -Wno-cpp -Wno-type-limits -Wno-unused-command-line-argument
- CFLAGS_ADDITIONAL	+= -gcolumn-info -g3 -fno-builtin
- CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
-CFLAGS_ADDITIONAL	+= -O2
+CFLAGS_ADDITIONAL	+= -gcolumn-info -g3 -fno-builtin
+# CFLAGS_ADDITIONAL	+= '-DERROR=((void)printf("ERROR HERE: " __FILE__ ":%d in %s\n", __LINE__, __func__), 1)'
+# CFLAGS_ADDITIONAL	+= -O2
 # CFLAGS_ADDITIONAL	+= -fuse-ld=gold -Wl,--print-symbol-counts -Wl,/tmp/symbols_count.log
 # CFLAGS_ADDITIONAL	+= -fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,-O3
 # CFLAGS_ADDITIONAL	+= -I$(shell realpath ./includes) -I$(shell realpath ./output/include)

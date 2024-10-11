@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/11 16:21:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/11 22:23:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@ t_error	parse_str(t_state *state)
 	if (ast.len != 1)
 		return (ERROR);
 	vec_ast_pop(&ast, &state->ast);
-	ast_print(state->ast);
-	printf("\nast\n");
 	vec_ast_free(ast);
 	return (NO_ERROR);
 }

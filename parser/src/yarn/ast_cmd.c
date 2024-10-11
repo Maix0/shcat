@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 15:12:36 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:35:33 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,13 @@ t_error _tok_word_nquote(t_token *tok, t_ast_node *out)
 t_error _tok_word_squote(t_token *tok, t_ast_node *out)
 {
 	t_ast_node ret;
+	t_ast_node tmp;
 
-	ret = ast_alloc(AST_RAW_STRING);
-	ret->data.raw_string.str = (t_str)_token_to_string(tok, false);
+	ret = ast_alloc(AST_WORD);
+	tmp = ast_alloc(AST_RAW_STRING);
+	tmp->data.raw_string.str = (t_str)_token_to_string(tok, false);
+	vec_ast_push(&ret->data.word.inner, tmp);
+	ret->data.word.kind = AST_WORD_SINGLE_QUOTE;
 	return (*out = ret, NO_ERROR);
 }
 t_error _tok_word_dquote(t_token *tok, t_ast_node *out)
