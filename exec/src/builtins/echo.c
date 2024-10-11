@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 18:43:18 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 14:54:48 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/11 22:43:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,29 @@
 #include "me/string/string.h"
 #include "me/types.h"
 
+void	_skip_options(t_usize *i, bool *print_line, t_builtin_spawn_info *info)
+{
+	t_usize		j;
+
+	while (*i < info->args.len && info->args.buffer[*i][0] == '-')
+	{
+		j = 1;
+		while (info->args.buffer[*i][j] == 'n')
+			j++;
+		if (info->args.buffer[*i][j] == '\0')
+		{
+			*print_line = false;
+			(*i)++;
+		}
+		else
+			break ;
+	}
+}
+
 t_error	builtin_echo__(\
 	t_state *state, t_builtin_spawn_info info, t_i32 *exit_code)
 {
 	t_usize		i;
-	t_usize		j;
 	bool		print_line;
 	t_string	s;
 
@@ -28,19 +46,7 @@ t_error	builtin_echo__(\
 	print_line = true;
 	i = 1;
 	s = string_new(1024);
-	while (i < info.args.len && info.args.buffer[i][0] == '-')
-	{
-		j = 1;
-		while (info.args.buffer[i][j] == 'n')
-			j++;
-		if (info.args.buffer[i][j] == '\0')
-		{
-			print_line = false;
-			i++;
-		}
-		else
-			break ;
-	}
+	_skip_options(&i, &print_line, &info);
 	while (i < info.args.len - 1)
 	{
 		string_push(&s, info.args.buffer[i++]);

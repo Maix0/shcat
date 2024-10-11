@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:38:38 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 22:16:10 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:41:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 #include "me/str/str.h"
 #include "me/convert/numbers_to_str.h"
 
-// non bonus only returns 1
-t_pid get_self_pid(void);
+// non bonus only returns -1
+t_pid	get_self_pid(void);
 
 bool	_is_special_var(t_ast_expansion *self)
 {
@@ -33,6 +33,33 @@ bool	_is_special_var(t_ast_expansion *self)
 		|| name == '-' || name == '$' || name == '0')
 		return (true);
 	return (false);
+}
+
+static inline t_error	_run_expansion_special_var_inner(\
+	t_ast_expansion *self, t_state *state, \
+		t_expansion_result *out, char name)
+{
+	(void)(self);
+	(void)(state);
+	if (name == '#')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(1, &out->value))
+			return (ERROR);
+	}
+	if (name == '!')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(1, &out->value))
+			return (ERROR);
+	}
+	if (name == '$')
+	{
+		*out = (t_expansion_result){.exists = true, .value = NULL};
+		if (i32_to_str(get_self_pid(), &out->value))
+			return (ERROR);
+	}
+	return (NO_ERROR);
 }
 
 // return pid of last run program
@@ -54,26 +81,8 @@ t_error	_run_expansion_special_var(t_ast_expansion *self, t_state *state,
 	if (name == '?')
 	{
 		*out = (t_expansion_result){.exists = true, .value = NULL};
-		if (i32_to_str(state->last_exit, &out->value)) // TODO: fix this shit
+		if (i32_to_str(state->last_exit, &out->value))
 			return (ERROR);
 	}
-	if (name == '#')
-	{
-		*out = (t_expansion_result){.exists = true, .value = NULL};
-		if (i32_to_str(1, &out->value))
-			return (ERROR);
-	}
-	if (name == '!')
-	{
-		*out = (t_expansion_result){.exists = true, .value = NULL};
-		if (i32_to_str(1, &out->value))
-			return (ERROR);
-	}
-	if (name == '$')
-	{
-		*out = (t_expansion_result){.exists = true, .value = NULL};
-		if (i32_to_str(get_self_pid(), &out->value))
-			return (ERROR);
-	}
-	return (NO_ERROR);
+	return (_run_expansion_special_var_inner(self, state, out, name));
 }

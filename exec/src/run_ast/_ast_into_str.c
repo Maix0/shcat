@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 22:33:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:38:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ t_error	_word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		|| self->kind != AST_WORD)
 		return (ERROR);
 	if (_word_is_star(&self->data.word))
-		return (dprintf(2, "word is star !\n"), _word_handle_star(&self->data.word, state, append));
+		return (_word_handle_star(&self->data.word, state, append));
 	if (run_word(&self->data.word, state, &res))
 		return (ERROR);
 	if (res.kind == AST_WORD_NO_QUOTE)

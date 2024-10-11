@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 10:56:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 11:30:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:44:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@
 #include <stdlib.h>
 
 t_error	_format_u64(t_num_str args, t_str *out);
-//if (_format_u64((t_num_str){.value = tmp, .is_nonnegative = false, .base = "0123456789ABCDEF", .prefix = ""}, &str))
+//if (_format_u64((t_num_str){.value = tmp, .is_nonnegative = false, .base 
+//= "0123456789ABCDEF", .prefix = ""}, &str))
 //	continue;
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
-	t_usize i;
+	t_usize	i;
 	t_u64	tmp;
 	t_str	str;
 
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
 	{
 		tmp = atoll(argv[i++]);
 		if (u64_to_str(tmp, &str))
-			continue;
+			continue ;
 		printf("%lu -> %s\n", tmp, str);
 		mem_free(str);
 	}

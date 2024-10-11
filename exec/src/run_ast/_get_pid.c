@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 14:25:20 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/06 14:41:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:38:30 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,17 @@
 #include "me/types.h"
 
 #if BONUS
-t_pid get_self_pid(void)
+
+t_pid	get_self_pid(void)
 {
 	return (getpid());
 }
+
 #else
-t_pid get_self_pid(void)
+
+t_pid	get_self_pid(void)
 {
-	return (1);
+	return (-1);
 }
 
 #endif

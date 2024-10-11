@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:17:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 22:37:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static inline void	ast_print_block1(t_ast_node self);
 static inline void	ast_print_block2(t_ast_node self);
 static inline void	ast_print_block3(t_ast_node self);
 
-static inline void ast_print_notdone(t_ast_node self)
+static inline void	ast_print_notdone(t_ast_node self)
 {
 	printf(" <ast_print_notdone> ");
 	(void)(self);
