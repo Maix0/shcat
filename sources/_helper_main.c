@@ -27,11 +27,11 @@
 #include <sys/types.h>
 
 void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
-t_error parse_str(t_state *state);
+t_error	parse_str(t_state *state);
 
-t_error get_user_input(t_state *state)
+t_error	get_user_input(t_state *state)
 {
-	t_line_state lstate;
+	t_line_state	lstate;
 
 	if (line_edit_start(&lstate, get_stdin(), get_stdout(), state->prompt))
 		return (ERROR);
@@ -52,10 +52,10 @@ t_error get_user_input(t_state *state)
 }
 
 // for the norme line 62: print_node_data(&state->current_node, 0);
-void exec_shcat(t_state *state)
+void	exec_shcat(t_state *state)
 {
-	t_program_result prog_res;
-	t_ast_node		 prog;
+	t_program_result	prog_res;
+	t_ast_node			prog;
 
 	prog_res = (t_program_result){.exit = 0};
 	if (state->ast->kind != AST_PROGRAM)
@@ -64,12 +64,13 @@ void exec_shcat(t_state *state)
 		vec_ast_push(&prog->data.program.body, state->ast);
 		state->ast = prog;
 	}
-	if (state->ast != NULL && run_program(&state->ast->data.program, state, &prog_res))
+	if (state->ast != NULL && run_program(&state->ast->data.program, state,
+			&prog_res))
 		printf("Error when execting the Command \n");
 	ast_free(state->ast);
 }
 
-void ft_take_args(t_state *state)
+void	ft_take_args(t_state *state)
 {
 	while (true)
 	{
@@ -82,7 +83,7 @@ void ft_take_args(t_state *state)
 		if (parse_str(state))
 		{
 			mem_free(state->str_input);
-			continue;
+			continue ;
 		}
 		exec_shcat(state);
 		mem_free(state->str_input);

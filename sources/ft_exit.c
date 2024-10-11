@@ -14,7 +14,6 @@
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
 
-
 void	ft_free(void *ptr)
 {
 	if (!ptr)

@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/10 17:47:24 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/11 16:21:01 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #include <errno.h>
 #include <sys/types.h>
 
-t_error get_user_input(t_state *state);
+t_error	get_user_input(t_state *state);
 void	ast_print_node(t_ast_node self);
 void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void	exec_shcat(t_state *state);
@@ -40,11 +40,12 @@ void	ft_take_args(t_state *state);
 // cle avant le =
 // data apres le =
 
-void ast_free(t_ast_node node);
+void	ast_free(t_ast_node node);
 
-t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *after)
+t_error	split_str_first(t_const_str s, char splitter, t_str *before,
+		t_str *after)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (s == NULL || before == NULL || after == NULL || splitter == '\0')
 		return (ERROR);
@@ -60,9 +61,9 @@ t_error split_str_first(t_const_str s, char splitter, t_str *before, t_str *afte
 	return (NO_ERROR);
 }
 
-t_error populate_env(t_hashmap_env *env, t_str envp[])
+t_error	populate_env(t_hashmap_env *env, t_str envp[])
 {
-	t_usize i;
+	t_usize	i;
 	t_str	temp[2];
 
 	i = 0;
@@ -81,22 +82,21 @@ t_error populate_env(t_hashmap_env *env, t_str envp[])
 	return (NO_ERROR);
 }
 
-t_error yarn(t_vec_token ts, t_vec_ast *output);
+t_error	yarn(t_vec_token ts, t_vec_ast *output);
 
-t_error parse_str(t_state *state)
+t_error	parse_str(t_state *state)
 {
-	t_vec_token tokens;
+	t_vec_token	tokens;
 	t_vec_ast	ast;
 
 	if (tokenize(state->str_input, &tokens))
 		return (ERROR);
 	if (ts_apply_passes(tokens, &tokens))
 		return (ERROR);
-	ts_print(&tokens); // TODO: remove
 	if (yarn(tokens, &ast))
 		return ((void)printf("failed to ast build\n"), (ERROR));
 	if (ast.len != 1)
-		return (ERROR);	
+		return (ERROR);
 	vec_ast_pop(&ast, &state->ast);
 	ast_print(state->ast);
 	printf("\nast\n");
@@ -104,9 +104,9 @@ t_error parse_str(t_state *state)
 	return (NO_ERROR);
 }
 
-t_i32 main(t_i32 argc, t_str argv[], t_str envp[])
+t_i32	main(t_i32 argc, t_str argv[], t_str envp[])
 {
-	t_state state;
+	t_state	state;
 
 	(void)argc;
 	(void)argv;
