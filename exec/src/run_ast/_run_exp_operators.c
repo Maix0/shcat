@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:40:01 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:25 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/12 17:54:46 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,18 @@ t_error	_get_op_func(t_ast_expansion *self,
 	return (ERROR);
 }
 
+// t_error (*op_func)(t_ast_expansion * self, t_state * state, 
+// 	t_expansion_result * value);
+// 	if (self == NULL || state == NULL || value == NULL)
+// 		return (ERROR);
+// 	if (_get_op_func(self, &op_func))
+// 		return (ERROR);
+// 	if (op_func(self, state, value))
+// 		return (ERROR);
+// 	return (NO_ERROR);
+
 t_error	_handle_expansion_operator(t_ast_expansion *self, t_state *state,
 		t_expansion_result *value)
 {
-	t_error (*op_func)(t_ast_expansion * self, t_state * state, \
-	t_expansion_result * value);
-	if (self == NULL || state == NULL || value == NULL)
-		return (ERROR);
-	if (_get_op_func(self, &op_func))
-		return (ERROR);
-	if (op_func(self, state, value))
-		return (ERROR);
-	return (NO_ERROR);
+	return (_handle_no_operator(self, state, value));
 }
