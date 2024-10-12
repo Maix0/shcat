@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:41:16 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/11 21:33:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:34:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,66 +32,44 @@
 /// 		command into a single token stopping at the correct ending:
 /// 			semicolon, pipe, or, and
 
-// here is the signature easily accessible:
-//
-// t_error	pass_name(t_vec_token input, t_vec_token *output);
-
 // bellow is some function to apply all the different passes !
-
-static const struct s_ts_pass_def	g_ts_passes[] = {\
-	{ts_double_string_pass, "double string parser"}, \
-	{ts_fold_expension, "fold expansion"}, \
-	{ts_fold_no_quote, "fold no quote"}, \
-	{ts_fold_whitespace, "fold whitespace"}, \
-	{ts_double_amp, "double amp => and"}, \
-	{ts_double_pipe, "double pipe => or"}, \
-	{ts_double_lcarret, "double lcarret => dlcarret"}, \
-	{ts_double_rcarret, "double rcarrer => drcarret"}, \
-	{ts_fold_into_word, "fold into words"}, \
-	{ts_fold_redir, "fold redir+argument"}, \
-	{ts_remove_whitespace, "rm extra whitespace"}, \
-	{ts_fold_cmd, "fold into cmd"}, \
-	{ts_verify_tokens, "verify only tokens"}, \
-};
 
 t_error	ts_apply_passes(t_vec_token ts, t_vec_token *out)
 {
-	t_usize		i;
-	t_vec_token	next;
+	t_usize					i;
+	t_vec_token				next;
+	struct s_global_passes	passes;
 
 	i = 0;
-	while (i < sizeof(g_ts_passes) / sizeof(g_ts_passes[0]))
+	passes = _get_global_passes();
+	while (i < sizeof(passes) / sizeof(passes.passes[0]))
 	{
-		if (g_ts_passes[i].fn == NULL)
+		if (passes.passes[i].fn == NULL)
 			return (vec_token_free(ts), ERROR);
-		if ((g_ts_passes[i].fn)(ts, &next))
+		if ((passes.passes[i].fn)(ts, &next))
 			return (me_eprintf("failed on %s token pass\n", \
-					g_ts_passes[i].name), ERROR);
+					passes.passes[i].name), ERROR);
 		ts = next;
 		i++;
 	}
 	return (*out = ts, NO_ERROR);
 }
 
-static const struct s_ts_pass_def	g_ts_dq_passes[] = {\
-	{ts_fold_expension, "fold expansion"}, \
-	{ts_paren_to_noquote, "parenthesis to noquote"}, \
-	{ts_fold_no_quote, "fold no quote"},
-};
-
 t_error	ts_dq_apply_passes(t_vec_token ts, t_vec_token *out)
 {
-	t_usize		i;
-	t_vec_token	next;
+	t_usize				i;
+	t_vec_token			next;
+	struct s_dq_passes	passes;
 
 	i = 0;
-	while (i < sizeof(g_ts_dq_passes) / sizeof(g_ts_dq_passes[0]))
+	passes = _get_dq_passes();
+	while (i < sizeof(passes) / sizeof(passes.passes[0]))
 	{
-		if (g_ts_dq_passes[i].fn == NULL)
+		if (passes.passes[i].fn == NULL)
 			return (vec_token_free(ts), ERROR);
-		if ((g_ts_dq_passes[i].fn)(ts, &next))
+		if ((passes.passes[i].fn)(ts, &next))
 			return (me_eprintf(\
-			"failed on '%s' dq token pass\n", g_ts_dq_passes[i].name), ERROR);
+			"failed on '%s' dq token pass\n", passes.passes[i].name), ERROR);
 		ts = next;
 		i++;
 	}
