@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 14:44:55 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:51:43 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,30 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-static bool _is_cmd_node(enum e_token ttype)
+static bool	_is_cmd_node(enum e_token ttype)
 {
 	return (ttype == TOK_WHITESPACE || ttype == TOK_WORD || ttype == TOK_REDIR);
-};
+}
+
+static void	_handle_cmd_node(\
+			t_vec_token *input, t_usize *i, t_vec_token *out)
+{
+	t_usize	j;
+	t_token	tmp;
+
+	j = 0;
+	tmp = token_new_meta(TOK_CMD);
+	while (*i + j < input->len \
+			&& _is_cmd_node(input->buffer[*i + j].type))
+	{
+		if (input->buffer[*i + j].type != TOK_WHITESPACE)
+			vec_token_push(&tmp.subtokens, \
+				token_clone(&input->buffer[*i + j]));
+		j++;
+	}
+	vec_token_push(out, tmp);
+	*i += j;
+}
 
 /// This is a sample pass
 ///
@@ -36,31 +56,15 @@ t_error	ts_fold_cmd(t_vec_token input, t_vec_token *output)
 {
 	t_vec_token	out;
 	t_usize		i;
-	t_usize		j;
-	t_token		tmp;
 
 	i = 0;
 	out = vec_token_new(input.len, token_free);
 	while (i < input.len)
 	{
 		if (_is_cmd_node(input.buffer[i].type))
-		{
-			j = 0;
-			tmp = token_new_meta(TOK_CMD);
-			while (i + j < input.len \
-					&& _is_cmd_node(input.buffer[i + j].type))
-			{
-				if (input.buffer[i + j].type != TOK_WHITESPACE)
-					vec_token_push(&tmp.subtokens, token_clone(&input.buffer[i + j]));
-				j++;
-			}
-			vec_token_push(&out, tmp);
-			i += j;
-		}
+			_handle_cmd_node(&input, &i, &out);
 		else
-		{
 			vec_token_push(&out, token_clone(&input.buffer[i++]));
-		}
 	}
 	vec_token_free(input);
 	return (*output = out, NO_ERROR);

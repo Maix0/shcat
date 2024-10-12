@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/07 16:48:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:52:16 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_error	ts_fold_into_word(t_vec_token input, t_vec_token *output)
 			while (i + j < input.len \
 				&& _type_extansion(input.buffer[i + j].type))
 				vec_token_push(&tmp.subtokens, \
-				   token_clone(&input.buffer[i + j++]));
+					token_clone(&input.buffer[i + j++]));
 			vec_token_push(&out, tmp);
 			i += j;
 		}

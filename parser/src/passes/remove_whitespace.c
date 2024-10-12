@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 19:04:32 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 15:18:58 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:52:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 /// 	- the output tokens may not be direct copy of the input tokens,
 /// 		but need to be cloned (different allocations for stuff)
 
-t_error ts_remove_whitespace(t_vec_token input, t_vec_token *output)
+t_error	ts_remove_whitespace(t_vec_token input, t_vec_token *output)
 {
-	t_vec_token out;
+	t_vec_token	out;
 	t_usize		i;
 
 	i = 0;

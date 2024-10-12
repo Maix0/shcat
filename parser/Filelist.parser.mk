@@ -4,7 +4,6 @@ passes/double_quote_parsing                                                   \
 passes/fold_cmd                                                               \
 passes/fold_double_amp                                                        \
 passes/fold_double_carret                                                     \
-passes/fold_double_paren                                                      \
 passes/fold_double_pipe                                                       \
 passes/fold_expansion                                                         \
 passes/fold_no_quote                                                          \
@@ -14,7 +13,6 @@ passes/fold_word                                                              \
 passes/paren_to_nquote                                                        \
 passes/remove_whitespace                                                      \
 passes/split_double_paren                                                     \
-passes/template_file                                                          \
 passes/verify_invalid_tokens                                                  \
 token_lifetime                                                                \
 token_name                                                                    \
