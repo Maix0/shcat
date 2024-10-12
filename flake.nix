@@ -4,12 +4,14 @@
   inputs.nixpkgs.url = "github:nixos/nixpkgs";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.generic_c.url = "github:Maix0/generic_c";
+  inputs.c_formatter_42.url = "github:Maix0/c_formatter_42-flake";
 
   outputs = {
     self,
     nixpkgs,
     flake-utils,
     generic_c,
+    c_formatter_42,
   }:
     flake-utils.lib.eachDefaultSystem (
       system: let
@@ -29,6 +31,7 @@
               norminette
               coreutils
               generic_c.packages.${system}.default
+              c_formatter_42.packages.${system}.default
               python312
               tree
             ]
