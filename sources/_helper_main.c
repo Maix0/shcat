@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/10 18:50:37 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:48:46 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	ft_take_args(t_state *state)
 		line_history_add(state->str_input);
 		if (parse_str(state))
 		{
+			state->last_exit = 2;
 			mem_free(state->str_input);
 			continue ;
 		}
