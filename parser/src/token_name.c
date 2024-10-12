@@ -6,15 +6,33 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 13:32:28 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 14:28:28 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 16:24:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "parser/token.h"
 
-// TO REMOVE
-t_str	token_name(t_token *token)
+static inline t_str	_token_name2(t_token *token)
+{
+	if (token->type == TOK_PIPE)
+		return ("PIPE");
+	if (token->type == TOK_RCARRET)
+		return ("RCARRET");
+	if (token->type == TOK_RPAREN)
+		return ("RPAREN");
+	if (token->type == TOK_SEMICOLON)
+		return ("SEMICOLON");
+	if (token->type == TOK_SQUOTE)
+		return ("SQUOTE");
+	if (token->type == TOK_WHITESPACE)
+		return ("WHITESPACE");
+	if (token->type == TOK_WORD)
+		return ("WORD");
+	return (NULL);
+}
+
+static inline t_str	_token_name1(t_token *token)
 {
 	if (token->type == TOK_NONE)
 		return ("NONE");
@@ -40,22 +58,11 @@ t_str	token_name(t_token *token)
 		return ("LPAREN");
 	if (token->type == TOK_NQUOTE)
 		return ("NQUOTE");
-	if (token->type == TOK_OR)
-		return ("OR");
-	if (token->type == TOK_PIPE)
-		return ("PIPE");
-	if (token->type == TOK_RCARRET)
-		return ("RCARRET");
-	if (token->type == TOK_RPAREN)
-		return ("RPAREN");
-	if (token->type == TOK_SEMICOLON)
-		return ("SEMICOLON");
-	if (token->type == TOK_SQUOTE)
-		return ("SQUOTE");
-	if (token->type == TOK_WHITESPACE)
-		return ("WHITESPACE");
-	if (token->type == TOK_WORD)
-		return ("WORD");
+	return (_token_name2(token));
+}
+
+t_str	token_name(t_token *token)
+{
 	if (token->type == TOK_NALPHANUM)
 		return ("NALPHANUM");
 	if (token->type == TOK_DLPAREN)
@@ -66,5 +73,7 @@ t_str	token_name(t_token *token)
 		return ("CMD");
 	if (token->type == TOK_REDIR)
 		return ("REDIR");
-	return (NULL);
+	if (token->type == TOK_OR)
+		return ("OR");
+	return (_token_name1(token));
 }
