@@ -24,24 +24,24 @@
 bool	line_edit_feed_block_ret(t_line_state *state, t_str *out, char c, \
 							bool *ret);
 
-/* This function is part of the multiplexed API of Linenoise, that is used
+/* This function is part of the multiplexed API of line, that is used
  * in order to implement the blocking variant of the API but can also be
  * called by the user directly in an event driven program. It will:
  *
- * 1. Initialize the linenoise state passed by the user.
+ * 1. Initialize the line state passed by the user.
  * 2. Put the terminal in RAW mode.
  * 3. Show the prompt.
- * 4. Return control to the user, that will have to call linenoiseEditFeed()
+ * 4. Return control to the user, that will have to call lineEditFeed()
  *    each time there is some data arriving in the standard input.
  *
- * The user can also call linenoiseEditHide() and linenoiseEditShow() if it
+ * The user can also call lineEditHide() and lineEditShow() if it
  * is required to show some input arriving asyncronously, without mixing
  * it with the currently edited line.
  *
- * When linenoiseEditFeed() returns non-NULL, the user finished with the
+ * When lineEditFeed() returns non-NULL, the user finished with the
  * line editing session (pressed enter CTRL-D/C): in this case the caller
- * needs to call linenoiseEditStop() to put back the terminal in normal
- * mode. This will not destroy the buffer, as long as the linenoiseState
+ * needs to call lineEditStop() to put back the terminal in normal
+ * mode. This will not destroy the buffer, as long as the lineState
  * is still valid in the context of the caller.
  *
  * The function returns 0 on success, or -1 if writing to standard output
@@ -95,8 +95,8 @@ bool	line_edit_feed(t_line_state *state, t_str *out)
 	return (false);
 }
 
-/* This is part of the multiplexed linenoise API. See linenoiseEditStart()
- * for more information. This function is called when linenoiseEditFeed()
+/* This is part of the multiplexed line API. See lineEditStart()
+ * for more information. This function is called when lineEditFeed()
  * returns something different than NULL. At this point the user input
  * is in the buffer, and we can restore the terminal in normal mode. */
 void	line_edit_stop(t_line_state *state)

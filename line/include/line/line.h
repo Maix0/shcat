@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 /// This code is higly inspired by this repository/libary:
-/// 		https://github.com/antirez/linenoise
+/// 		https://github.com/antirez/line
 
 #ifndef LINE_H
 # define LINE_H

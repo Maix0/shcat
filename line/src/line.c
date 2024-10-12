@@ -24,7 +24,7 @@
 
 /* This just implements a blocking loop for the multiplexed API.
  * In many applications that are not event-drivern, we can just call
- * the blocking linenoise API, wait for the user to complete the editing
+ * the blocking line API, wait for the user to complete the editing
  * and return the buffer. */
 t_str	line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 {
@@ -38,12 +38,12 @@ t_str	line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt)
 	return (res);
 }
 
-/* The high level function that is the main API of the linenoise library.
+/* The high level function that is the main API of the line library.
  * This function checks if the terminal has basic capabilities, just checking
  * for a blacklist of stupid terminals, and later either calls the line
  * editing function or uses dummy fgets() so that you will be able to type
  * something even in the most desperate of the conditions. */
-t_str	linenoise(t_const_str prompt)
+t_str	line(t_const_str prompt)
 {
 	t_str	retval;
 

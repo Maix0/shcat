@@ -30,7 +30,7 @@ void	line_edit_move_left(t_line_state *state);
 void	line_edit_move_right(t_line_state *state);
 void	line_edit_stop(t_line_state *state);
 
-t_str	linenoise(t_const_str prompt);
+t_str	line(t_const_str prompt);
 t_str	line_blocking_edit(t_fd *stdin_fd, t_fd *stdout_fd, t_const_str prompt);
 
 bool	line_history_add(t_const_str line);

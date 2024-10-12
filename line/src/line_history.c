@@ -19,7 +19,7 @@
 
 /* ================================ History ================================= */
 
-/* This is the API call to add a new entry in the linenoise history.
+/* This is the API call to add a new entry in the line history.
  * It uses a fixed array of char pointers that are shifted (memmoved)
  * when the history max length is reached in order to remove the older
  * entry and make room for the new one, so it is not exactly suitable for huge

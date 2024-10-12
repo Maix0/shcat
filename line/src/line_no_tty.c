@@ -15,9 +15,9 @@
 #include "line/_line_structs.h"
 #include "me/types.h"
 
-/* This function is called when linenoise() is called with the standard
+/* This function is called when line() is called with the standard
  * input file descriptor not attached to a TTY. So for example when the
- * program using linenoise is called in pipe or with a file redirected
+ * program using line is called in pipe or with a file redirected
  * to its standard input. In this case, we want to be able to return the
  * line regardless of its length (by default we are limited to 4k). */
 bool	line_no_tty_impl(t_str *out)
