@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 17:59:23 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/07 16:45:34 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:37:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,32 +18,32 @@
 
 enum e_token
 {
-	TOK_AEXP,		// a meta token, artih expansion
-	TOK_AMP,		// ampersand == &
-	TOK_AND,		// and == &&
-	TOK_CARRET,		// any carret == < > << >>
-	TOK_CMD,		// a meta token, which contains subtokens
-	TOK_DLCARRET,	// double left carret == <<
-	TOK_DLPAREN,	// double left parenthesis  '(('
-	TOK_DOLLAR,		// dollar == $
-	TOK_DQUOTE,		// double quote string
-	TOK_DRCARRET,	// double right carret == >>
-	TOK_DRPAREN,	// double right parenthesis '))'
-	TOK_EXPENSION,	// an expension == $<no_quote_word>; the $ is not in .string
-	TOK_LCARRET,	// left carret == <
-	TOK_LPAREN,		// left parenthesis == (
-	TOK_NALPHANUM,  // a non alphanumeric character, used in the expansion folding, then folded back into NQUOTE
-	TOK_NONE,		// NO TOKEN TYPE == INVALID / INEXISTANT TOKEN
-	TOK_NQUOTE,		// no quote string
-	TOK_OR,			// or == ||
-	TOK_PIPE,		// pipe == |
-	TOK_RCARRET,	// right carret == >
-	TOK_REDIR,		// a meta token, which contains <OPERATOR> being an [D](L|R)CARRET and the arg being a WORD
-	TOK_RPAREN,		// right parenthesis == )
-	TOK_SEMICOLON,	// semicolor == ;
-	TOK_SQUOTE,		// single quote string
-	TOK_WHITESPACE, // whitespace outside of quoted strings
-	TOK_WORD,		// a meta token, which contains subtokens
+	TOK_AEXP,
+	TOK_AMP,
+	TOK_AND,
+	TOK_CARRET,
+	TOK_CMD,
+	TOK_DLCARRET,
+	TOK_DLPAREN,
+	TOK_DOLLAR,
+	TOK_DQUOTE,
+	TOK_DRCARRET,
+	TOK_DRPAREN,
+	TOK_EXPENSION,
+	TOK_LCARRET,
+	TOK_LPAREN,
+	TOK_NALPHANUM,
+	TOK_NONE,
+	TOK_NQUOTE,
+	TOK_OR,
+	TOK_PIPE,
+	TOK_RCARRET,
+	TOK_REDIR,
+	TOK_RPAREN,
+	TOK_SEMICOLON,
+	TOK_SQUOTE,
+	TOK_WHITESPACE,
+	TOK_WORD,
 };
 
 typedef struct s_token
