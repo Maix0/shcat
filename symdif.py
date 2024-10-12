@@ -47,8 +47,8 @@ for line in dump_binary.stdout.split('\n'):
     if (len (words) >= 8 and words[3] == 'FUNC'):
         symbols_binary.add(words[7])
 
-#diff = list(symbols_archive - symbols_binary)
-diff = list(symbols_binary - symbols_archive)
+diff = list(symbols_archive - symbols_binary)
+#diff = list(symbols_binary - symbols_archive)
 diff.sort()
 for sym in diff:
     print(f"{sym}")

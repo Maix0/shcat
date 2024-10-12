@@ -1,21 +1,4 @@
 SRC_FILES =                                                                   \
-blx/blx                                                                       \
-blx/blx_create_fontsheet                                                      \
-blx/blx_handlers                                                              \
-blx/blx_keycode                                                               \
-blx/colors                                                                    \
-blx/draw/draw                                                                 \
-blx/draw/draw_sprite                                                          \
-blx/draw/draw_string                                                          \
-blx/inputs                                                                    \
-blx/logic                                                                     \
-blx/sprite/draw_image                                                         \
-blx/sprite/draw_pixel_onto                                                    \
-blx/sprite/draw_string                                                        \
-blx/sprite/free_image                                                         \
-blx/sprite/get_pixel                                                          \
-blx/sprite/new_image                                                          \
-blx/sprite/sprite_draw_onto_sprite                                            \
 char/isalnum                                                                  \
 char/isalpha                                                                  \
 char/isascii                                                                  \
