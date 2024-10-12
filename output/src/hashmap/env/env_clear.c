@@ -10,19 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "me/types.h"
-
-
-
 #include "me/hashmap/hashmap_env.h"
 #include "me/mem/mem.h"
-
+#include "me/types.h"
 
 void	hmap_env_clear(t_hashmap_env *self)
 {
-	t_usize					bucket_id;
-	t_entry_env		*cur;
-	t_entry_env		*next;
+	t_usize		bucket_id;
+	t_entry_env	*cur;
+	t_entry_env	*next;
 
 	bucket_id = 0;
 	while (bucket_id < self->num_buckets)

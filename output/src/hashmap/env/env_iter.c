@@ -12,15 +12,12 @@
 
 #include "me/hashmap/hashmap_env.h"
 
-t_error hmap_env_iter(t_hashmap_env *self,
-								 t_error (*func)(t_usize			 idx,
-												 const t_str *key,
-												 t_str *val, void *ctx),
-								 void *ctx)
+t_error	hmap_env_iter(t_hashmap_env *self, t_error (*func)(t_usize idx,
+			const t_str *key, t_str *val, void *ctx), void *ctx)
 {
-	t_usize				 bucket_id;
-	t_usize				 all_id;
-	t_entry_env *cur;
+	t_usize		bucket_id;
+	t_usize		all_id;
+	t_entry_env	*cur;
 
 	bucket_id = 0;
 	all_id = 0;

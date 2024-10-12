@@ -15,10 +15,9 @@
 #include "me/vec/vec_token.h"
 #include <stdlib.h>
 
-t_vec_token vec_token_new(t_usize				  capacity,
-									  t_free_token_item free_function)
+t_vec_token	vec_token_new(t_usize capacity, t_free_token_item free_function)
 {
-	t_vec_token out;
+	t_vec_token	out;
 
 	out = (t_vec_token){0};
 	out.free_func = free_function;
@@ -29,7 +28,7 @@ t_vec_token vec_token_new(t_usize				  capacity,
 }
 
 /// Return true in case of an error
-t_error vec_token_push(t_vec_token *vec, t_token element)
+t_error	vec_token_push(t_vec_token *vec, t_token element)
 {
 	if (vec == NULL)
 		return (ERROR);
@@ -40,9 +39,9 @@ t_error vec_token_push(t_vec_token *vec, t_token element)
 }
 
 /// Return true in case of an error
-t_error vec_token_reserve(t_vec_token *vec, t_usize wanted_capacity)
+t_error	vec_token_reserve(t_vec_token *vec, t_usize wanted_capacity)
 {
-	size_t new_capacity;
+	size_t	new_capacity;
 
 	if (vec == NULL)
 		return (ERROR);
@@ -51,8 +50,8 @@ t_error vec_token_reserve(t_vec_token *vec, t_usize wanted_capacity)
 		new_capacity = (vec->capacity * 3) / 2 + 1;
 		while (wanted_capacity > new_capacity)
 			new_capacity = (new_capacity * 3) / 2 + 1;
-		vec->buffer =
-			mem_realloc_array(vec->buffer, new_capacity, sizeof(t_token));
+		vec->buffer = mem_realloc_array(vec->buffer, new_capacity,
+				sizeof(t_token));
 		vec->capacity = new_capacity;
 	}
 	return (NO_ERROR);
@@ -60,10 +59,10 @@ t_error vec_token_reserve(t_vec_token *vec, t_usize wanted_capacity)
 
 /// Return true if the vector is empty
 /// This function is safe to call with value being NULL
-t_error vec_token_pop(t_vec_token *vec, t_token *value)
+t_error	vec_token_pop(t_vec_token *vec, t_token *value)
 {
-	t_token  temp_value;
-	t_token *ptr;
+	t_token	temp_value;
+	t_token	*ptr;
 
 	if (vec == NULL || vec->len == 0)
 		return (ERROR);
@@ -77,10 +76,10 @@ t_error vec_token_pop(t_vec_token *vec, t_token *value)
 }
 
 /// This function is safe to call with `free_elem` being NULL
-void vec_token_free(t_vec_token vec)
+void	vec_token_free(t_vec_token vec)
 {
 	if (vec.buffer == NULL)
-		return;
+		return ;
 	if (vec.free_func)
 	{
 		while (vec.len)

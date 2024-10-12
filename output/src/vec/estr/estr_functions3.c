@@ -15,16 +15,15 @@
 #include "me/vec/vec_estr.h"
 #include <stdlib.h>
 
-t_error vec_estr_push_front(t_vec_estr *vec,
-								   t_expandable_str	  element)
+t_error	vec_estr_push_front(t_vec_estr *vec, t_expandable_str element)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len == 0)
 		return (vec_estr_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 &&
-		vec_estr_reserve(vec, 3 * vec->len / 2 + 1))
+	if (vec->capacity < vec->len + 1 && vec_estr_reserve(vec, 3 * vec->len / 2
+			+ 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -37,9 +36,9 @@ t_error vec_estr_push_front(t_vec_estr *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_estr_pop_front(t_vec_estr *vec, t_expandable_str *value)
+t_error	vec_estr_pop_front(t_vec_estr *vec, t_expandable_str *value)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len <= 1)
 		return (vec_estr_pop(vec, value));
@@ -55,10 +54,10 @@ t_error vec_estr_pop_front(t_vec_estr *vec, t_expandable_str *value)
 	return (NO_ERROR);
 }
 
-void vec_estr_reverse(t_vec_estr *vec)
+void	vec_estr_reverse(t_vec_estr *vec)
 {
-	t_expandable_str temporary;
-	t_usize		  i;
+	t_expandable_str	temporary;
+	t_usize				i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -70,9 +69,9 @@ void vec_estr_reverse(t_vec_estr *vec)
 	}
 }
 
-t_error vec_estr_back(t_vec_estr *vec, t_expandable_str **out)
+t_error	vec_estr_back(t_vec_estr *vec, t_expandable_str **out)
 {
-	t_expandable_str *temporary;
+	t_expandable_str	*temporary;
 
 	if (out == NULL)
 		out = &temporary;

@@ -11,16 +11,14 @@
 /* ************************************************************************** */
 
 #include "me/mem/mem.h"
-#include "me/mem/mem.h"
-#include "me/mem/mem.h"
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
 #include <stdlib.h>
 
-t_error vec_ast_find(t_vec_ast *vec,
-							 bool (*fn)(const t_ast_node *), t_usize *index)
+t_error	vec_ast_find(t_vec_ast *vec, bool (*fn)(const t_ast_node *),
+		t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -37,11 +35,10 @@ t_error vec_ast_find(t_vec_ast *vec,
 	return (ERROR);
 }
 
-t_error vec_ast_find_starting(t_vec_ast *vec,
-									  bool (*fn)(const t_ast_node *),
-									  t_usize starting_index, t_usize *index)
+t_error	vec_ast_find_starting(t_vec_ast *vec, bool (*fn)(const t_ast_node *),
+		t_usize starting_index, t_usize *index)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || index == NULL)
 		return (ERROR);
@@ -58,10 +55,10 @@ t_error vec_ast_find_starting(t_vec_ast *vec,
 	return (ERROR);
 }
 
-t_error vec_ast_all(t_vec_ast *vec,
-							bool (*fn)(const t_ast_node *), bool *result)
+t_error	vec_ast_all(t_vec_ast *vec, bool (*fn)(const t_ast_node *),
+		bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -76,10 +73,10 @@ t_error vec_ast_all(t_vec_ast *vec,
 	return (ERROR);
 }
 
-t_error vec_ast_any(t_vec_ast *vec,
-							bool (*fn)(const t_ast_node *), bool *result)
+t_error	vec_ast_any(t_vec_ast *vec, bool (*fn)(const t_ast_node *),
+		bool *result)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL || result == NULL)
 		return (ERROR);
@@ -94,15 +91,13 @@ t_error vec_ast_any(t_vec_ast *vec,
 	return (ERROR);
 }
 
-void vec_ast_iter(t_vec_ast *vec,
-						  void (*fn)(t_usize index, t_ast_node *value,
-									 void *state),
-						  void *state)
+void	vec_ast_iter(t_vec_ast *vec, void (*fn)(t_usize index,
+			t_ast_node *value, void *state), void *state)
 {
-	t_usize idx;
+	t_usize	idx;
 
 	if (vec == NULL || fn == NULL)
-		return;
+		return ;
 	idx = 0;
 	while (idx < vec->len)
 	{

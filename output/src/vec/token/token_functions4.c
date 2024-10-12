@@ -15,7 +15,7 @@
 #include "me/vec/vec_token.h"
 #include <stdlib.h>
 
-t_token *vec_token_get(t_vec_token *vec, t_usize i)
+t_token	*vec_token_get(t_vec_token *vec, t_usize i)
 {
 	if (vec == NULL || vec->buffer == NULL)
 		return (NULL);
@@ -24,7 +24,7 @@ t_token *vec_token_get(t_vec_token *vec, t_usize i)
 	return (NULL);
 }
 
-t_token *vec_token_last(t_vec_token *vec)
+t_token	*vec_token_last(t_vec_token *vec)
 {
 	if (vec == NULL || vec->len == 0)
 		return (NULL);

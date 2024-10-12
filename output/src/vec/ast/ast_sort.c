@@ -13,15 +13,14 @@
 #include "me/types.h"
 #include "me/vec/vec_ast.h"
 
-void vec_ast_sort(t_vec_ast		   *v,
-						  t_vec_ast_sort_fn is_sorted_fn)
+void	vec_ast_sort(t_vec_ast *v, t_vec_ast_sort_fn is_sorted_fn)
 {
-	t_usize		  sorted_part;
-	t_usize		  i;
-	t_ast_node tmp;
+	t_usize		sorted_part;
+	t_usize		i;
+	t_ast_node	tmp;
 
 	if (v == NULL)
-		return;
+		return ;
 	sorted_part = v->len;
 	while (sorted_part > 0)
 	{

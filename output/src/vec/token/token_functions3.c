@@ -15,16 +15,15 @@
 #include "me/vec/vec_token.h"
 #include <stdlib.h>
 
-t_error vec_token_push_front(t_vec_token *vec,
-								   t_token	  element)
+t_error	vec_token_push_front(t_vec_token *vec, t_token element)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len == 0)
 		return (vec_token_push(vec, element));
 	i = vec->len - 1;
-	if (vec->capacity < vec->len + 1 &&
-		vec_token_reserve(vec, 3 * vec->len / 2 + 1))
+	if (vec->capacity < vec->len + 1 && vec_token_reserve(vec, 3 * vec->len / 2
+			+ 1))
 		return (ERROR);
 	while (i > 0)
 	{
@@ -37,9 +36,9 @@ t_error vec_token_push_front(t_vec_token *vec,
 	return (NO_ERROR);
 }
 
-t_error vec_token_pop_front(t_vec_token *vec, t_token *value)
+t_error	vec_token_pop_front(t_vec_token *vec, t_token *value)
 {
-	t_usize i;
+	t_usize	i;
 
 	if (vec->len <= 1)
 		return (vec_token_pop(vec, value));
@@ -55,10 +54,10 @@ t_error vec_token_pop_front(t_vec_token *vec, t_token *value)
 	return (NO_ERROR);
 }
 
-void vec_token_reverse(t_vec_token *vec)
+void	vec_token_reverse(t_vec_token *vec)
 {
-	t_token temporary;
-	t_usize		  i;
+	t_token	temporary;
+	t_usize	i;
 
 	i = 0;
 	while (i < vec->len / 2)
@@ -70,9 +69,9 @@ void vec_token_reverse(t_vec_token *vec)
 	}
 }
 
-t_error vec_token_back(t_vec_token *vec, t_token **out)
+t_error	vec_token_back(t_vec_token *vec, t_token **out)
 {
-	t_token *temporary;
+	t_token	*temporary;
 
 	if (out == NULL)
 		out = &temporary;
