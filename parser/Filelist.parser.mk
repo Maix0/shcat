@@ -20,10 +20,12 @@ token_utils                                                                   \
 tokenizer                                                                     \
 tokenizer_utils                                                               \
 ts_print                                                                      \
-yarn/ast_cmd                                                                  \
-yarn/ast_op                                                                   \
-yarn/yarn                                                                     \
-yarn/yarn_utils                                                               \
+yard/yard                                                                     \
+yard/yard_cmd                                                                 \
+yard/yard_cmd_word                                                            \
+yard/yard_cmd_word2                                                           \
+yard/yard_op                                                                  \
+yard/yard_utils                                                               \
 
 GEN_FILES =                                                                   \
                                                                               \

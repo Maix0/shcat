@@ -82,7 +82,7 @@ t_error	populate_env(t_hashmap_env *env, t_str envp[])
 	return (NO_ERROR);
 }
 
-t_error	yarn(t_vec_token ts, t_vec_ast *output);
+t_error	yard(t_vec_token ts, t_vec_ast *output);
 
 t_error	parse_str(t_state *state)
 {
@@ -93,7 +93,7 @@ t_error	parse_str(t_state *state)
 		return (ERROR);
 	if (ts_apply_passes(tokens, &tokens))
 		return (ERROR);
-	if (yarn(tokens, &ast))
+	if (yard(tokens, &ast))
 		return ((void)printf("failed to ast build\n"), (ERROR));
 	if (ast.len != 1)
 		return (ERROR);

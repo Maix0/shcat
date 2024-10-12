@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   yarn.c                                             :+:      :+:    :+:   */
+/*   yard.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -23,7 +23,7 @@ t_str	token_name(t_token *token);
 t_error	ast_from_cmd(t_token tok, t_vec_ast *output_queue);
 t_error	ast_from_op(t_token tok, t_vec_ast *output_queue);
 
-t_error	_yarn_parenthesis(\
+t_error	_yard_parenthesis(\
 		t_token tok, t_vec_token *stack, t_vec_ast *output_queue)
 {
 	t_token		op;
@@ -50,7 +50,7 @@ t_error	_yarn_parenthesis(\
 	return (NO_ERROR);
 }
 
-t_error	_yarn_operator(t_token tok, t_vec_token *stack, t_vec_ast *output_queue)
+t_error	_yard_operator(t_token tok, t_vec_token *stack, t_vec_ast *output_queue)
 {
 	t_token	op;
 
@@ -65,7 +65,7 @@ t_error	_yarn_operator(t_token tok, t_vec_token *stack, t_vec_ast *output_queue)
 	return (NO_ERROR);
 }
 
-t_error	_yarn_final(t_vec_token stack, t_vec_ast output_q, t_vec_ast *out)
+t_error	_yard_final(t_vec_token stack, t_vec_ast output_q, t_vec_ast *out)
 {
 	t_token	op;
 
@@ -81,7 +81,7 @@ t_error	_yarn_final(t_vec_token stack, t_vec_ast output_q, t_vec_ast *out)
 	return (*out = output_q, NO_ERROR);
 }
 
-t_error	_yarn_loop(t_token tok, t_vec_token *stack, t_vec_ast *output_q)
+t_error	_yard_loop(t_token tok, t_vec_token *stack, t_vec_ast *output_q)
 {
 	if (tok.type == TOK_CMD)
 	{
@@ -91,12 +91,12 @@ t_error	_yarn_loop(t_token tok, t_vec_token *stack, t_vec_ast *output_q)
 	else if (tok.type == TOK_OR \
 		|| tok.type == TOK_AND || tok.type == TOK_PIPE)
 	{
-		if (_yarn_operator(tok, stack, output_q))
+		if (_yard_operator(tok, stack, output_q))
 			return (ERROR);
 	}
 	else if (tok.type == TOK_RPAREN)
 	{
-		if (_yarn_parenthesis(tok, stack, output_q))
+		if (_yard_parenthesis(tok, stack, output_q))
 			return (ERROR);
 	}
 	else if (tok.type == TOK_LPAREN)
@@ -106,7 +106,7 @@ t_error	_yarn_loop(t_token tok, t_vec_token *stack, t_vec_ast *output_q)
 	return (NO_ERROR);
 }
 
-t_error	yarn(t_vec_token ts, t_vec_ast *out)
+t_error	yard(t_vec_token ts, t_vec_ast *out)
 {
 	t_token		tok;
 	t_vec_ast	output_q;
@@ -116,9 +116,9 @@ t_error	yarn(t_vec_token ts, t_vec_ast *out)
 	stack = vec_token_new(16, token_free);
 	while (!vec_token_pop_front(&ts, &tok))
 	{
-		if (_yarn_loop(tok, &stack, &output_q))
+		if (_yard_loop(tok, &stack, &output_q))
 			return (vec_token_free(stack), vec_ast_free(output_q), ERROR);
 	}
 	vec_token_free(ts);
-	return (_yarn_final(stack, output_q, out));
+	return (_yard_final(stack, output_q, out));
 }
