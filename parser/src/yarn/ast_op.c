@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/10 17:26:38 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:55:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "me/vec/vec_token.h"
 #include "parser/token.h"
 
-static enum e_ast_list_kind _ast_list_get_op(enum e_token ty)
+static enum e_ast_list_kind	_ast_list_get_op(enum e_token ty)
 {
 	if (ty == TOK_AND)
 		return (AST_LIST_AND);
@@ -26,9 +26,10 @@ static enum e_ast_list_kind _ast_list_get_op(enum e_token ty)
 	return (-1);
 }
 
-static t_error _tok_pipeline(t_vec_ast *output_queue, t_ast_node rhs, t_ast_node lhs)
+static inline t_error	_tok_pipeline(\
+					t_vec_ast *output_queue, t_ast_node rhs, t_ast_node lhs)
 {
-	t_ast_node ret;
+	t_ast_node	ret;
 
 	if (rhs->kind == AST_PIPELINE)
 	{
@@ -51,8 +52,10 @@ static t_error _tok_pipeline(t_vec_ast *output_queue, t_ast_node rhs, t_ast_node
 }
 
 /// en fonction de op, qui peut etre: TOK_AND TOK_PIPE TOK_OR
-/// choisir le bon ast_node a faire (t_ast_node->data.list + set operator ou t_asdt_node->data.pipeline)
-/// pop deux element de output_queue. pour l'instant la fonction doit print une error si il n'y as pas asser d'element
+/// choisir le bon ast_node a faire (t_ast_node->data.list + set operator ou
+/// t_asdt_node->data.pipeline)
+/// pop deux element de output_queue. pour l'instant la fonction doit print une
+/// error si il n'y as pas asser d'element
 /// utilise me_abort(MSG) pour faire un abort et print le msg + la stacktrace.
 ///
 /// a terme la fonction utilisera t_error et tt;
@@ -62,13 +65,14 @@ static t_error _tok_pipeline(t_vec_ast *output_queue, t_ast_node rhs, t_ast_node
 /// `ast/include/ast/_raw_structs.h`
 ///
 ///
-/// in the end we should change to using `t_error` and pushing the ast_node directly to output_queue in the function,
+/// in the end we should change to using `t_error` and pushing the ast_node
+/// directly to output_queue in the function,
 /// will change that later tho :)
-t_error ast_from_op(t_token tok, t_vec_ast *output_queue)
+t_error	ast_from_op(t_token tok, t_vec_ast *output_queue)
 {
-	t_ast_node ret;
-	t_ast_node lhs;
-	t_ast_node rhs;
+	t_ast_node	ret;
+	t_ast_node	lhs;
+	t_ast_node	rhs;
 
 	if (!(tok.type == TOK_AND || tok.type == TOK_OR || tok.type == TOK_PIPE))
 		return (ERROR);

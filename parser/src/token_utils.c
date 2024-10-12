@@ -6,14 +6,13 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/06 13:33:12 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/08 14:51:41 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/12 15:54:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "me/types.h"
 #include "parser/token.h"
 #include <stdio.h>
-
 
 t_str	token_name(t_token *token);
 
@@ -34,7 +33,8 @@ t_token	token_clone(t_token *tok)
 		ret.subtokens = vec_token_new(tok->subtokens.capacity, token_free);
 		i = 0;
 		while (i < tok->subtokens.len)
-			vec_token_push(&ret.subtokens, token_clone(&tok->subtokens.buffer[i++]));
+			vec_token_push(&ret.subtokens, token_clone(\
+											&tok->subtokens.buffer[i++]));
 	}
 	return (ret);
 }

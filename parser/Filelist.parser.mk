@@ -23,6 +23,7 @@ ts_print                                                                      \
 yarn/ast_cmd                                                                  \
 yarn/ast_op                                                                   \
 yarn/yarn                                                                     \
+yarn/yarn_utils                                                               \
 
 GEN_FILES =                                                                   \
                                                                               \
