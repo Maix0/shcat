@@ -43,7 +43,6 @@ ifeq ($(shell uname), Darwin)
 endif
 endif
 
-# TODO: ADD THIS WHEN FINISHING THIS:
 CFLAGS_ADDITIONAL	+= -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
@@ -130,7 +129,6 @@ re: header
 tokei:
 	/bin/sh -c 'tokei -tC,C\ Header -e tree-sitter-sh'
 
-
 build_filelist:
 	@$(MAKE) --no-print-directory -C ./stdme/ 		build_filelist
 	@$(MAKE) --no-print-directory -C ./allocator/ 	build_filelist
@@ -139,7 +137,6 @@ build_filelist:
 	@$(MAKE) --no-print-directory -C ./line/ 		build_filelist
 	@$(MAKE) --no-print-directory -C ./parser/		build_filelist
 	@$(MAKE) --no-print-directory -f ./Minishell.mk	build_filelist
-	@$(MAKE) --no-print-directory -C test ./Test.mk	build_filelist
-
+	
 #	phony
 .PHONY: all bonus clean fclean re header footer build_filelist
