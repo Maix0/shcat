@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 18:43:41 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:48 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 11:59:44 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ static inline struct s_global_passes	_get_global_passes(void)
 	{ts_double_lcarret, "double lcarret => dlcarret"}, \
 	{ts_double_rcarret, "double rcarrer => drcarret"}, \
 	{ts_fold_into_word, "fold into words"}, \
-	{ts_fold_redir, "fold redir+argument"}, \
 	{ts_remove_whitespace, "rm extra whitespace"}, \
+	{ts_fold_redir, "fold redir+argument"}, \
 	{ts_fold_cmd, "fold into cmd"}, \
 	{ts_verify_tokens, "verify only tokens"}, \
 	}});
