@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:55:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ t_error	parse_str(t_state *state)
 	if (ts_apply_passes(tokens, &tokens))
 		return (ERROR);
 	if (yard(tokens, &ast))
-		return ((void)printf("failed to ast build\n"), (ERROR));
+		return (ERROR);
 	if (ast.len != 1)
 		return (ERROR);
 	vec_ast_pop(&ast, &state->ast);

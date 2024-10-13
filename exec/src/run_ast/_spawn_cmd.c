@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/13 17:32:14 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/13 17:59:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ t_error	_spawn_cmd_and_run_end(\
 	struct s_ffree_state	ffree;
 	int						status;
 
+	status = 0;
 	ffree = (struct s_ffree_state){.state = state, .cmd_pipe = cmd_pipe};
 	info.forked_free_args = &ffree;
 	info.forked_free = (void (*)(void *))_ffree_func;
@@ -71,7 +72,7 @@ t_error	_spawn_cmd_and_run_end(\
 		return (close_fd(cmd_pipe.input), out->exit = 127, ERROR);
 	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
 		return (out->exit = -1, NO_ERROR);
-	if (waitpid(out->process.pid, &status, 0) == -1 && errno != ESRCH)
+	if (waitpid(out->process.pid, &status, 0) == -1 && errno != ECHILD)
 		return (ERROR);
 	if (WIFEXITED(status))
 		out->exit = WEXITSTATUS(status);

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/13 13:58:31 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/13 18:01:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/vec/vec_ast.h"
 #include "me/vec/vec_pid.h"
 #include <errno.h>
+#include <stdio.h>
 #include <sys/wait.h>
 
 t_usize	_pipeline_set_vars(\
@@ -47,9 +48,11 @@ void	_wait_pipeline(t_vec_pid pids, t_state *state, t_pipeline_result *out)
 
 	if (pids.len != 0)
 	{
+		waitpid_status = 0;
 		while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0 \
-			&& errno != ESRCH)
-			;
+			&& errno != ECHILD)
+		if (errno == ECHILD)
+			waitpid_status = 0;
 		while (waitpid(-1, NULL, 0) != -1)
 			;
 		if (WIFEXITED(waitpid_status))
