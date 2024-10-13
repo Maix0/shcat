@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 13:58:31 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 		if (child->kind == AST_COMMAND)
 			ret |= _pipeline_cmd(child, state, &cpipe, &pids);
 		else if (child->kind == AST_SUBSHELL)
-			ret |= _pipeline_cmd(child, state, &cpipe, &pids);
+			ret |= _subshell_cmd(child, state, &cpipe, &pids);
 		else
 			ret |= ((void)(printf("List in pipelines are unsupported,"\
 							" use a subshell !\n")), ERROR);

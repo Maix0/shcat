@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:44:53 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:57 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 13:58:52 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static t_error	_create_ast_redir(enum e_token ty, t_ast_node *out)
 		ret->data.file_redirection.op = AST_REDIR_APPEND;
 	else if (ty == TOK_LCARRET)
 		ret->data.file_redirection.op = AST_REDIR_INPUT;
-	else if (ty == TOK_DRCARRET)
+	else if (ty == TOK_RCARRET)
 		ret->data.file_redirection.op = AST_REDIR_OUTPUT;
 	return (*out = ret, NO_ERROR);
 }

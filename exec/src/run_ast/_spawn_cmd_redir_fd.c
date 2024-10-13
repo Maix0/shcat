@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 13:58:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_error	_redir_output_append(\
 		if (fname->len != 1)
 			return (vec_str_free(*fname), ERROR);
 		red_fd = open_fd(fname->buffer[0], FD_WRITE, \
-			O_TRUNC | O_CREAT | O_CLOEXEC, FP_ALL_READ | FP_ALL_WRITE);
+			O_APPEND | O_CREAT | O_CLOEXEC, FP_ALL_READ | FP_ALL_WRITE);
 		if (red_fd == NULL)
 			return (vec_str_free(*fname), ERROR);
 		info->stdout = fd(red_fd);
