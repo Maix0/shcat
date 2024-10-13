@@ -14,11 +14,11 @@ passes/paren_to_nquote                                                        \
 passes/remove_whitespace                                                      \
 passes/split_double_paren                                                     \
 passes/verify_invalid_tokens                                                  \
-tokenizer                                                                     \
-tokenizer_utils                                                               \
 token_lifetime                                                                \
 token_name                                                                    \
 token_utils                                                                   \
+tokenizer                                                                     \
+tokenizer_utils                                                               \
 ts_print                                                                      \
 yard/yard                                                                     \
 yard/yard_cmd                                                                 \

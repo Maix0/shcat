@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:23 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:30:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_error	_word_no_quote(t_state *state, t_word_result *res, t_vec_str *append)
 	return (NO_ERROR);
 }
 
-t_error	_word_do_quote(t_state *state, t_word_result *res, t_vec_str *append)
+t_error	_word_pass_quote(t_state *state, t_word_result *res, t_vec_str *append)
 {
 	t_string	tmp;
 	t_usize		i;
@@ -66,12 +66,7 @@ t_error	_word_into_str(t_ast_node self, t_state *state, t_vec_str *append)
 		return (_word_handle_star(&self->data.word, state, append));
 	if (run_word(&self->data.word, state, &res))
 		return (ERROR);
-	if (res.kind == AST_WORD_NO_QUOTE)
-	{
-		if (_word_no_quote(state, &res, append))
-			return (ERROR);
-	}
-	else if (_word_do_quote(state, &res, append))
+	if (_word_pass_quote(state, &res, append))
 		return (ERROR);
 	return (vec_estr_free(res.value), NO_ERROR);
 }

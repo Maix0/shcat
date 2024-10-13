@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:18 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:24:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	_assign_export(t_usize idx, t_str *arg, void *vctx)
 	ctx = vctx;
 	first_eq = str_find_chr(*arg, '=');
 	if (first_eq == NULL || first_eq == *arg)
-		return ;
+		hmap_env_insert(ctx->state->env, *arg, NULL);
 	key = str_substring(*arg, 0, first_eq - *arg);
 	value = str_substring(first_eq, 1, ~0llu);
 	if (hmap_env_insert(ctx->state->env, key, value))

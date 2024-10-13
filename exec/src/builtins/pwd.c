@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 13:58:37 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:19 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:22:56 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_error	builtin_pwd___(\
 			string_reserve(&s, s.capacity * 3);
 		else
 			return (*exit_code = 1, string_free(s), me_printf_fd(\
-			info.stderr, "cd: Unable to get current directory\n"), NO_ERROR);
+			info.stderr, "pwd: Unable to get current directory\n"), NO_ERROR);
 	}
 	me_printf_fd(info.stdout, "%s\n", s.buf);
 	string_free(s);

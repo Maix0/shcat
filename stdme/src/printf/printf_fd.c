@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 19:55:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:43 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:42:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,18 @@
 
 t_usize	me_vprintf_fd(t_fd *fd, t_const_str fmt, va_list *args)
 {
-	t_fprintf_arg	passthru;
+	t_sprintf_arg	passthru;
+	t_string		buf;
 
 	if (fd == NULL || fmt == NULL || args == NULL)
 		return (0);
-	passthru.fd = fd;
+	buf = string_new(16);
+	passthru.buffer = &buf;
 	passthru.total_print = 0;
-	me_printf_str_inner(fmt, &me_printf_write, args, (void *)&passthru);
+	me_printf_str_inner(fmt, &me_printf_append_string, args, (void *)&passthru);
+	if (write_fd(fd, (void *)buf.buf, buf.len, NULL))
+		perror("write");
+	string_free(buf);
 	return (passthru.total_print);
 }
 

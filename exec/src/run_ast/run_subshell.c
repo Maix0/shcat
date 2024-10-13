@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:35:02 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:27 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:24:55 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "me/mem/mem.h"
 #include "me/os/os.h"
 #include <sys/wait.h>
+#include <errno.h>
 
 t_error	_spawn_info_to_subshell(\
 	t_spawn_info *info, struct s_subshell_info *sinfo)
@@ -75,13 +76,12 @@ t_error	_wait_subshell(\
 		(dup2(sinfo.stderr->fd, 2), close_fd(sinfo.stderr));
 	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
 		return (out->stdout = sinfo.ret_stdout, NO_ERROR);
-	if (waitpid(forked, &status, 0) == -1)
+	if (waitpid(forked, &status, 0) == -1 && errno != ESRCH)
 		return (ERROR);
 	if (WIFEXITED(status))
 		out->exit = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
-		out->exit = WTERMSIG(status);
-	printf("out->exit for subshell is %i\n", out->exit);
+		out->exit = WTERMSIG(status) + 130;
 	sinfo.state->last_exit = out->exit;
 	return (NO_ERROR);
 }

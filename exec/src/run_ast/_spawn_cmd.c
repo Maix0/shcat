@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:27 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 17:32:14 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <errno.h>
 #include "line/line.h"
 #include "me/types.h"
+#include <errno.h>
 
 t_error	_redirection_fd(\
 	t_spawn_info *info, t_state *state, t_ast_node red);
@@ -70,12 +71,12 @@ t_error	_spawn_cmd_and_run_end(\
 		return (close_fd(cmd_pipe.input), out->exit = 127, ERROR);
 	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
 		return (out->exit = -1, NO_ERROR);
-	if (waitpid(out->process.pid, &status, 0) == -1)
+	if (waitpid(out->process.pid, &status, 0) == -1 && errno != ESRCH)
 		return (ERROR);
 	if (WIFEXITED(status))
 		out->exit = WEXITSTATUS(status);
 	if (WIFSIGNALED(status))
-		out->exit = WTERMSIG(status);
+		out->exit = WTERMSIG(status) + 128;
 	state->last_exit = out->exit;
 	return (NO_ERROR);
 }
@@ -86,6 +87,8 @@ t_error	_spawn_cmd_and_run(t_vec_str args, t_redirections redirs,
 	t_spawn_info			info;
 
 	info = (t_spawn_info){};
+	for (t_usize i = 0; i < args.len; i++)
+		printf("args[%zu] = %s\n", i, args.buffer[i]);
 	if (_setup_redirection(&info, state, redirs.cmd_pipe, &redirs.redirections))
 		return (ERROR);
 	redirs.redirections.len = 0;
