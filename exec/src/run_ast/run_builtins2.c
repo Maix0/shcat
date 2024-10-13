@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:24:49 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:23 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 15:09:08 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	_ffree_func(struct s_ffree_state *state)
 		return ;
 	hmap_env_free(state->state->env);
 	hmap_env_free(state->state->tmp_var);
-	close_fd(state->cmd_pipe.input);
 }
 
 bool	_is_builtin(t_const_str argv0)

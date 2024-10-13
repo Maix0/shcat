@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 15:53:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:28 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/13 15:03:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ struct s_file_slot	*get_unused_fd_slot(void)
 	return (NULL);
 }
 
-__attribute__((destructor(201))) void	close_all_slots(void)
+__attribute__((destructor(201)))
+void	close_all_slots(void)
 {
 	t_usize		i;
 	t_fd_array	*arr;
