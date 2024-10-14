@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:32:37 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/13 18:01:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:02:28 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	_wait_pipeline(t_vec_pid pids, t_state *state, t_pipeline_result *out)
 		waitpid_status = 0;
 		while (waitpid(pids.buffer[pids.len - 1], &waitpid_status, 0) < 0 \
 			&& errno != ECHILD)
+			;
 		if (errno == ECHILD)
 			waitpid_status = 0;
 		while (waitpid(-1, NULL, 0) != -1)

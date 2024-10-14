@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:13 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 14:12:42 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static inline void	ast_print_block2(t_ast_node self)
 	if (self->kind == AST_FUNCTION_DEFINITION)
 		return (ast_print_node_function_definition(self));
 	if (self->kind == AST_HEREDOC_REDIRECTION)
-		return (ast_print_notdone(self));
+		return (ast_print_node_heredoc_redirection(self));
 	if (self->kind == AST_IF)
 		return (ast_print_notdone(self));
 	if (self->kind == AST_LIST)

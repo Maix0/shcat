@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:07:12 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:15 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 14:12:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,9 @@ void	ast_print_node_file_redirection(t_ast_node self)
 	if (self->data.file_redirection.output != NULL)
 		ast_print(self->data.file_redirection.output);
 	return ((void) ast_print_node_file_redirection_heredoc(self));
+}
+
+void	ast_print_node_heredoc_redirection(t_ast_node self)
+{
+	printf("<<%s", self->data.heredoc_redirection.delimiter);
 }

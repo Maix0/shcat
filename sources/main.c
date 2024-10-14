@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/14 14:01:19 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:13:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,17 @@ t_error	split_str_first(t_const_str s, char splitter, t_str *before,
 	return (NO_ERROR);
 }
 
-void append_default_env(t_hashmap_env *env)
+void	append_default_env(t_hashmap_env *env)
 {
-	t_str *tmp;
-	t_str key;
-	t_str tmp2;
-	t_u64 shlvl;
-	
+	t_str	*tmp;
+	t_str	key;
+	t_str	tmp2;
+	t_u64	shlvl;
+
 	key = "SHLVL";
 	shlvl = 0;
 	tmp = hmap_env_get(env, &key);
 	(void)(tmp != NULL && str_to_u64(*tmp, 10, &shlvl));
-	(void)((tmp != NULL) && (str_free(*tmp), 1));
 	if (u64_to_str(shlvl + 1, &tmp2))
 		me_abort("Failed to set SHLVL");
 	hmap_env_insert(env, str_clone(key), tmp2);
@@ -84,7 +83,6 @@ void append_default_env(t_hashmap_env *env)
 	tmp = hmap_env_get(env, &key);
 	if (tmp == NULL)
 		hmap_env_insert(env, str_clone(key), str_clone(DFT_PATH));
-	
 }
 
 t_error	populate_env(t_hashmap_env *env, t_str envp[])

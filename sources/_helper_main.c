@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:01 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 15:03:01 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	exec_shcat(t_state *state)
 	if (state->ast != NULL && run_program(&state->ast->data.program, state,
 			&prog_res))
 	{
-		printf("Error when execting the Command \n");
+		printf("Error when executing the cmd\n");
 		state->last_exit = 127;
 	}
 	ast_free(state->ast);

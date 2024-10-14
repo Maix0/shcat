@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:27:30 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:15 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 14:22:39 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,12 @@ void	ast_print_node_word(t_ast_node self)
 	if (self->data.word.kind == AST_WORD_DOUBLE_QUOTE)
 		quote_type = "\"";
 	i = 0;
+	printf("<=");
 	printf("%s", quote_type);
 	while (i < self->data.word.inner.len)
+	{
 		ast_print(self->data.word.inner.buffer[i++]);
+	}
 	printf("%s", quote_type);
+	printf("=>");
 }

@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/03 20:38:29 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:13 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 14:15:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ void	ast_print_node_command(t_ast_node self)
 	i = 0;
 	while (i < self->data.command.prefixes.len)
 	{
+		printf(" _");
 		ast_print(self->data.command.prefixes.buffer[i++]);
-		printf(" ");
+		printf("_ ");
 	}
 	return (ast_print_node_command_helper(self));
 }

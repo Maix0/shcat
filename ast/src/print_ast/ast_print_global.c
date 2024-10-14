@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:34:09 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:14 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/14 14:14:36 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ast_print_node_raw_string(t_ast_node self)
 		return ;
 	if (self->kind != AST_RAW_STRING)
 		return ;
-	printf("%s", self->data.raw_string.str);
+	printf("{%s}", self->data.raw_string.str);
 }
 
 void	ast_print_node_regex(t_ast_node self)
