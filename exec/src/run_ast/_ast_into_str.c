@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/13 17:30:06 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/14 12:34:25 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,6 @@ bool	_word_is_star(t_ast_word *word);
 t_error	_word_handle_star(t_ast_word *word, t_state *state, t_vec_str *out);
 t_error	list_files_in_current_directory(t_vec_str *out);
 t_error	_word_into_str_inner(struct s_word_str_args args);
-
-t_error	_word_no_quote(t_state *state, t_word_result *res, t_vec_str *append)
-{
-	t_string	tmp;
-	t_usize		i;
-
-	tmp = string_new(64);
-	i = 0;
-	while (i < res->value.len)
-	{
-		if (!res->value.buffer[i].do_expand)
-			string_push(&tmp, res->value.buffer[i].value);
-		else if (_word_into_str_inner((struct s_word_str_args){i, \
-				state, &tmp, res, append, NULL, NULL, NULL}))
-			return (ERROR);
-		i++;
-	}
-	vec_str_push(append, tmp.buf);
-	return (NO_ERROR);
-}
 
 t_error	_word_pass_quote(t_state *state, t_word_result *res, t_vec_str *append)
 {

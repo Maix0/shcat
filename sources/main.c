@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/13 17:55:56 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/14 13:57:51 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,16 @@
 #include "parser/token.h"
 #include <errno.h>
 #include <sys/types.h>
+#include "me/convert/str_to_numbers.h"
+#include "me/convert/numbers_to_str.h"
 
 t_error	get_user_input(t_state *state);
 void	ast_print_node(t_ast_node self);
 void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status);
 void	exec_shcat(t_state *state);
 void	ft_take_args(t_state *state);
+
+#define DFT_PATH "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 // Foutre envp dans env
 // Chaque elemenet d'envp split au premier =
@@ -61,6 +65,28 @@ t_error	split_str_first(t_const_str s, char splitter, t_str *before,
 	return (NO_ERROR);
 }
 
+void append_default_env(t_hashmap_env *env)
+{
+	t_str *tmp;
+	t_str key;
+	t_str tmp2;
+	t_u64 shlvl;
+	
+	key = "SHLVL";
+	shlvl = 0;
+	tmp = hmap_env_get(env, &key);
+	(void)(tmp != NULL && str_to_u64(*tmp, 10, &shlvl));
+	(void)((tmp != NULL) && (str_free(*tmp), 1));
+	if (u64_to_str(shlvl + 1, &tmp2))
+		me_abort("Failed to set SHLVL");
+	hmap_env_insert(env, str_clone(key), str_clone(tmp2));
+	key = "PATH";
+	tmp = hmap_env_get(env, &key);
+	if (tmp == NULL)
+		hmap_env_insert(env, str_clone(key), str_clone(DFT_PATH));
+	
+}
+
 t_error	populate_env(t_hashmap_env *env, t_str envp[])
 {
 	t_usize	i;
@@ -68,17 +94,17 @@ t_error	populate_env(t_hashmap_env *env, t_str envp[])
 
 	i = 0;
 	if (envp == NULL || env == NULL)
-		return (printf("given a nullptr\n"), ERROR);
+		return (ERROR);
 	while (envp[i] != NULL)
 	{
 		if (split_str_first(envp[i], '=', &temp[0], &temp[1]))
 			return (ERROR);
 		if (temp[0] == NULL || temp[1] == NULL)
-			return (printf("TEMP NULL\n"), ERROR);
-		if (hmap_env_insert(env, temp[0], temp[1]))
-			printf("'%s' was already in the hmap ?????\n", temp[0]);
+			return (ERROR);
+		(hmap_env_insert(env, temp[0], temp[1]));
 		i++;
 	}
+	append_default_env(env);
 	return (NO_ERROR);
 }
 
