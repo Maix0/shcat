@@ -6,7 +6,7 @@
 #    By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/12 11:05:05 by rparodi           #+#    #+#              #
-#    Updated: 2024/10/12 17:16:48 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/14 14:00:30 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,8 @@ ifeq ($(shell uname), Darwin)
 endif
 endif
 
-CFLAGS_ADDITIONAL	+= -DNVALGRIND
+CFLAGS_ADDITIONAL	?=
+#CFLAGS_ADDITIONAL	+= -DNVALGRIND
 
 # TODO: REMOVE THIS WHEN FINISHING THIS:
 # CFLAGS_ADDITIONAL	+= -fsanitize=memory -fno-omit-frame-pointer  -fsanitize-memory-track-origins #-fuse-ld=lld -ffunction-sections -fdata-sections -Wl,--allow-multiple

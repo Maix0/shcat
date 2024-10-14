@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 14:40:38 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/14 13:57:51 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:01:19 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void append_default_env(t_hashmap_env *env)
 	(void)((tmp != NULL) && (str_free(*tmp), 1));
 	if (u64_to_str(shlvl + 1, &tmp2))
 		me_abort("Failed to set SHLVL");
-	hmap_env_insert(env, str_clone(key), str_clone(tmp2));
+	hmap_env_insert(env, str_clone(key), tmp2);
 	key = "PATH";
 	tmp = hmap_env_get(env, &key);
 	if (tmp == NULL)
