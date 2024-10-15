@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 18:32:50 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:59 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/15 21:43:35 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ t_error	_build_envp_iterator(t_usize idx, const t_str *key, t_str *val,
 	nval = hmap_env_get(s->tmp_vars, (t_str *)key);
 	if (nval == NULL)
 		nval = val;
+	if (*nval == NULL)
+		return (NO_ERROR);
 	if (string_push(&s->buf, *key) || string_push(&s->buf, "=") || \
 		string_push(&s->buf, *nval))
 		return (vec_str_free(s->out), ERROR);
