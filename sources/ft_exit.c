@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 11:35:51 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:52:00 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/15 21:37:32 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	ft_free_utils(t_state *s)
 
 void	ft_exit(t_state *maiboyerlpb, t_u8 exit_status)
 {
+	if (maiboyerlpb != NULL)
+		exit_status = maiboyerlpb->last_exit;
 	if (maiboyerlpb != NULL)
 		ft_free_utils(maiboyerlpb);
 	me_exit(exit_status);
