@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   _ast_into_str.c                                    :+:      :+:    :+:   */
+/*   _ast_into_str_main.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/14 15:02:01 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/15 21:30:02 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ t_error	_word_split_loop(\
 	{
 		if (val.do_expand)
 		{
+			if (val.value == NULL)
+				val.value = "";
 			if (str_split(val.value, " ", &split))
 				return (ERROR);
 			while (!vec_str_pop_front(&split, &stmp))

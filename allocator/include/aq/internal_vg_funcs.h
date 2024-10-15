@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 22:20:30 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:02 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/15 21:25:17 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,14 @@
 # endif
 
 # ifdef _INCLUDE_VALGRIND
+#  undef _INCLUDE_VALGRIND
+# endif
+
+# ifdef _INCLUDE_VALGRIND
 #  ifdef NVALGRIND
 #   undef NVALGRIND
 #  endif
-#  define VGFUNCS
+// #  define VGFUNCS //slt froz
 #  include <valgrind/memcheck.h>
 #  include <valgrind/valgrind.h>
 # endif

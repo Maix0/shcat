@@ -14,11 +14,11 @@ run_arithmetic/_to_ast_node                                                   \
 run_arithmetic/arithmetic                                                     \
 run_arithmetic/arithmetic_operation                                           \
 run_arithmetic/operator_bis                                                   \
-run_ast/_ast_into_str                                                         \
-run_ast/_ast_into_str2                                                        \
-run_ast/_ast_into_str3                                                        \
-run_ast/_ast_into_str4                                                        \
-run_ast/_ast_into_str5                                                        \
+run_ast/_ast_into_str_exp                                                     \
+run_ast/_ast_into_str_get_str                                                 \
+run_ast/_ast_into_str_into                                                    \
+run_ast/_ast_into_str_main                                                    \
+run_ast/_ast_into_str_star                                                    \
 run_ast/_get_pid                                                              \
 run_ast/_run_exit_code                                                        \
 run_ast/_run_exp_operators                                                    \
