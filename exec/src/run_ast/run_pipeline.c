@@ -59,7 +59,7 @@ void	_wait_pipeline(t_vec_pid pids, t_state *state, t_pipeline_result *out)
 		if (WIFEXITED(waitpid_status))
 			out->exit = WEXITSTATUS(waitpid_status);
 		if (WIFSIGNALED(waitpid_status))
-			out->exit = WTERMSIG(waitpid_status);
+			out->exit = WTERMSIG(waitpid_status) + 128;
 	}
 	else
 		out->exit = 127;
@@ -131,11 +131,11 @@ t_error	run_pipeline(t_ast_pipeline *pipeline, t_state *state,
 		cpipe.create_output = i < pipeline->statements.len - 1;
 		child = pipeline->statements.buffer[i++];
 		if (child->kind == AST_COMMAND)
-			ret |= _pipeline_cmd(child, state, &cpipe, &pids);
+			ret = _pipeline_cmd(child, state, &cpipe, &pids);
 		else if (child->kind == AST_SUBSHELL)
-			ret |= _subshell_cmd(child, state, &cpipe, &pids);
+			ret = _subshell_cmd(child, state, &cpipe, &pids);
 		else
-			ret |= ((void)(printf("List in pipelines are unsupported,"\
+			ret = ((void)(printf("List in pipelines are unsupported,"\
 							" use a subshell !\n")), ERROR);
 	}
 	return (_wait_pipeline(pids, state, out), ret);

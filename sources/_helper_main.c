@@ -41,7 +41,7 @@ t_error	get_user_input(t_state *state)
 		{
 			errno = 0;
 			lstate.pos = 0;
-			state->last_exit = 127;
+			state->last_exit = 130;
 			string_clear(&lstate.buf);
 			write_fd(lstate.output_fd, (void *)"^C\n", 3, NULL);
 			line_refresh_line(&lstate);

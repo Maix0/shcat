@@ -96,6 +96,7 @@ t_error	run_subshell(t_ast_subshell *subshell, t_state *state,
 	if (subshell == NULL || state == NULL || out == NULL)
 		return (ERROR);
 	mem_set_zero(&sinfo, sizeof(sinfo));
+	mem_set_zero(&info, sizeof(info));
 	sinfo.state = state;
 	if (_setup_redirection(&info, state, cmd_pipe, \
 		&subshell->suffixes_redirections))
