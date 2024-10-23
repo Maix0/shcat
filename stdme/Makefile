@@ -6,7 +6,7 @@
 #    By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/03 13:20:01 by maiboyer          #+#    #+#              #
-#    Updated: 2024/08/02 18:57:39 by maiboyer         ###   ########.fr        #
+#    Updated: 2024/10/23 14:48:53 by maiboyer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ NAME			=	libme.a
 LIB_NAME		?=	
 TARGET			=	$(BUILD_DIR)/$(NAME)
 CC				?=	clang
-CFLAGS			=	-Wno-unused-command-line-argument -Wall -Werror -Wextra -L$(BUILD_DIR) -MMD -rdynamic -DBASE_PATH='"$(BASE_PATH)/"'
+CFLAGS			=	 -Wall -Werror -Wextra -MMD -DBASE_PATH='"$(BASE_PATH)/"'
 CFLAGS			+=	$(CFLAGS_ADDITIONAL)
 
 -include 			./Filelist.$(ANAME).mk

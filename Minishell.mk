@@ -31,7 +31,7 @@ export BASE_PATH
 export BUILD_DIR
 
 # Flags
-CFLAGS 	= -Werror -Wextra -Wall -Wno-unused-command-line-argument -MMD -I./includes -I./output/include -I./stdme/output/include -rdynamic -Wl,-E
+CFLAGS 	= -Werror -Wextra -Wall  -MMD -I./includes -I./output/include -I./stdme/output/include  
 CFLAGS  += $(CFLAGS_ADDITIONAL)
 
 
