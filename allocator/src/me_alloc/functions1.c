@@ -18,8 +18,8 @@
 #include <assert.h>
 #include <errno.h>
 
-void		*__libc_malloc(t_usize size);
-void		__libc_free(void *ptr);
+void		*malloc(t_usize size);
+void		free(void *ptr);
 
 void	*m_malloc(struct s_allocator_melloc *self, t_usize size)
 {
@@ -64,14 +64,14 @@ void	m_uninit(struct s_allocator_melloc *self)
 			if (list->pages[idx].data != NULL)
 			{
 				vg_mempool_free(list, list->pages[idx].data);
-				__libc_free(list->pages[idx].data);
+				free(list->pages[idx].data);
 				list->pages[idx].size = 0;
 				list->pages[idx].data = NULL;
 			}
 			idx++;
 		}
 		list_next = list->next;
-		(__libc_free(list), vg_mempool_destroy(list), \
+		(free(list), vg_mempool_destroy(list), \
 		vg_mem_no_access(list, sizeof(*list)));
 		list = list_next;
 	}

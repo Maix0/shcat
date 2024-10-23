@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 16:51:10 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:07 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:52:47 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include "me/types.h"
 #include <errno.h>
 
-void		*__libc_malloc(t_usize size);
-void		__libc_free(void *ptr);
+void		*malloc(t_usize size);
+void		free(void *ptr);
 
 t_error	alloc_page_list(t_page_list **out)
 {
@@ -26,7 +26,7 @@ t_error	alloc_page_list(t_page_list **out)
 
 	if (out == NULL)
 		return (ERROR);
-	val = __libc_malloc(sizeof(*val));
+	val = malloc(sizeof(*val));
 	if (val == NULL)
 		return (ERROR);
 	mem_set_zero(val, sizeof(*val));
@@ -43,10 +43,10 @@ t_error	_alloc_new_page_inner(t_usize page_size, t_page_list *list)
 	if (list == NULL)
 		return (ERROR);
 	vg_mem_defined(list, sizeof(*list));
-	list->pages[list->len].data = __libc_malloc(page_size);
-	mem_set_zero(list->pages[list->len].data, page_size);
+	list->pages[list->len].data = malloc(page_size);
 	if (list->pages[list->len].data == NULL)
 		return (ERROR);
+	mem_set_zero(list->pages[list->len].data, page_size);
 	list->pages[list->len].size = page_size;
 	vg_mempool_alloc(list, list->pages[list->len].data, page_size);
 	chunk = get_first_block(&list->pages[list->len]);

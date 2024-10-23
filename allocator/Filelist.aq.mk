@@ -3,7 +3,6 @@ lc_alloc/functions1                                                           \
 lc_alloc/functions2                                                           \
 me_alloc/find_block                                                           \
 me_alloc/functions1                                                           \
-me_alloc/functions2                                                           \
 me_alloc/internals                                                            \
 me_alloc/merge_blocks                                                         \
 me_alloc/pages                                                                \

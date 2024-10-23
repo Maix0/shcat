@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:04:13 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:57 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/23 15:30:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ t_error	_yard_parenthesis(\
 	vec_token_pop(stack, &tok);
 	token_free(tok);
 	snode = ast_alloc(AST_SUBSHELL);
-	vec_ast_pop(output_queue, &tmp);
-	vec_ast_push(&snode->data.subshell.body, tmp);
+	if (!vec_ast_pop(output_queue, &tmp))
+		vec_ast_push(&snode->data.subshell.body, tmp);
 	vec_ast_push(output_queue, snode);
 	return (NO_ERROR);
 }

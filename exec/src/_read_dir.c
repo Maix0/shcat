@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 21:43:33 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:19 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/23 15:33:10 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ t_error	listing_files(t_string path, t_vec_str *out)
 			continue ;
 		vec_str_push(&ret, str_clone(entry->d_name));
 	}
+	close_dir(tmp);
 	return (*out = ret, NO_ERROR);
 }
 

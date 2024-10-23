@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:34:33 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:26 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/23 15:01:54 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ t_error	run_list(t_ast_list *list, t_state *state, t_list_result *out)
 	left = -1;
 	right = -1;
 	if (_run_get_exit_code(list->left, state, &left))
-		return (ERROR);
+		left = 127;
 	if ((list->op == AST_LIST_OR && left != 0) || (list->op == AST_LIST_AND
 			&& left == 0))
 	{
 		if (_run_get_exit_code(list->right, state, &right))
-			return (ERROR);
+			right = 127;
 		out->exit = right;
 	}
 	else
