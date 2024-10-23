@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 14:13:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/23 15:23:27 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/23 16:05:55 by rparodi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,28 @@
 #include "me/string/string.h"
 #include "me/types.h"
 #include "me/vec/vec_str.h"
+#include "me/char/char.h"
+#define CHARSET_LETTER "ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+#define CHARSET_NUMBER "0123456789"
 
 t_error	_append_key_to_vec(t_usize _, const t_str *key, t_str *v, void *vec);
 bool	_sort_str(t_str *_lhs, t_str *_rhs);
 t_error	get_uniq_keys(t_state *state, t_vec_str *out);
+
+bool	is_valid_name(t_str arg)
+{
+	size_t	i;
+
+	i = 0;
+	if (!str_find_chr(CHARSET_LETTER, arg[0]))
+		return (false);
+	while (arg[i] != '\0')
+	{
+		if (!str_find_chr(CHARSET_LETTER CHARSET_NUMBER, arg[i++]))
+			return (false);
+	}
+	return (true);
+}
 
 static void	_assign_export(t_usize idx, t_str *arg, void *vctx)
 {
@@ -34,8 +52,13 @@ static void	_assign_export(t_usize idx, t_str *arg, void *vctx)
 	ctx = vctx;
 	first_eq = str_find_chr(*arg, '=');
 	if (first_eq == NULL || first_eq == *arg)
+	{
 		hmap_env_insert(ctx->state->env, *arg, NULL);
+		return ;
+	}
 	key = str_substring(*arg, 0, first_eq - *arg);
+	if (!is_valid_name(key))
+		return ;
 	value = str_substring(first_eq, 1, ~0llu);
 	hmap_env_insert(ctx->state->env, key, value);
 }
