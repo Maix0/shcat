@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:30:09 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/14 15:07:42 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/24 22:57:49 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_error	_spawn_cmd_and_run_end(\
 	bpath = str_clone(info.binary_path);
 	if (spawn_process(info, &out->process))
 		return (close_fd(cmd_pipe.input), out->exit = 127, _err_cmd(bpath));
+	close_fd(cmd_pipe.input);
 	str_free(bpath);
 	if (cmd_pipe.create_output || cmd_pipe.input != NULL)
 		return (out->exit = -1, NO_ERROR);
