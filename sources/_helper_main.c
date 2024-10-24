@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 16:31:41 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/24 22:31:52 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/24 23:02:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,9 @@ void	exec_shcat(t_state *state)
 		vec_ast_push(&prog->data.program.body, state->ast);
 		state->ast = prog;
 	}
-	ast_print(state->ast);
 	if (state->ast != NULL && run_program(&state->ast->data.program, state,
 			&prog_res))
 	{
-		printf("Error when executing the cmd\n");
 		state->last_exit = 127;
 	}
 	ast_free(state->ast);
