@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/24 22:48:26 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/24 23:05:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ t_error	_word_handle_star(t_ast_word *word, t_state *state, t_vec_str *out);
 t_error	list_files_in_current_directory(t_vec_str *out);
 t_error	_word_into_str_inner(struct s_word_str_args args);
 
-t_error _word_split_loop_expand(\
-				t_expandable_str val, t_vec_str *append, t_string *tmp)
+t_error	_word_split_loop_expand(\
+		t_expandable_str val, t_vec_str *append, t_string *tmp)
 {
 	t_vec_str	split;
 	t_str		stmp;
-	
+
 	if (val.do_expand)
 	{
 		if (val.value == NULL)
@@ -36,7 +36,7 @@ t_error _word_split_loop_expand(\
 		if (split.len != 0)
 		{
 			vec_str_push(append, tmp->buf);
-			*tmp = string_new(16); 
+			*tmp = string_new(16);
 		}
 		while (!vec_str_pop_front(&split, &stmp))
 			vec_str_push(append, stmp);
@@ -47,11 +47,9 @@ t_error _word_split_loop_expand(\
 	return (NO_ERROR);
 }
 
-
 t_error	_word_split_loop(\
 		bool do_split, t_expandable_str val, t_vec_str *append, t_string *tmp)
 {
-
 	if (do_split)
 		return (_word_split_loop_expand(val, append, tmp));
 	else

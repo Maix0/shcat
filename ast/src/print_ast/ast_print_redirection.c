@@ -6,7 +6,7 @@
 /*   By: rparodi <rparodi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 13:07:12 by rparodi           #+#    #+#             */
-/*   Updated: 2024/10/24 22:30:02 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/24 23:04:06 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	ast_print_node_file_redirection_heredoc(t_ast_node self)
 {
 	if (self == NULL || self->kind != AST_HEREDOC_REDIRECTION)
-		return;
-	printf("<<%s", self->data.heredoc_redirection.delimiter);
+		return ;
+	printf("<<%s ", self->data.heredoc_redirection.delimiter);
 }
 //{
 //	if (self->data.file_redirection.op == AST_REDIR_HEREDOC)
