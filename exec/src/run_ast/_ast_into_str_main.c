@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/24 23:05:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/27 19:37:59 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_error	list_files_in_current_directory(t_vec_str *out);
 t_error	_word_into_str_inner(struct s_word_str_args args);
 
 t_error	_word_split_loop_expand(\
-		t_expandable_str val, t_vec_str *append, t_string *tmp)
+		t_expandable_str val, t_vec_str *append, t_string *tmp, bool *exist)
 {
 	t_vec_str	split;
 	t_str		stmp;
@@ -43,17 +43,10 @@ t_error	_word_split_loop_expand(\
 		vec_str_free(split);
 	}
 	else
+	{
 		string_push(tmp, val.value);
-	return (NO_ERROR);
-}
-
-t_error	_word_split_loop(\
-		bool do_split, t_expandable_str val, t_vec_str *append, t_string *tmp)
-{
-	if (do_split)
-		return (_word_split_loop_expand(val, append, tmp));
-	else
-		string_push(tmp, val.value);
+		*exist = true;
+	}
 	return (NO_ERROR);
 }
 
@@ -62,15 +55,23 @@ t_error	_word_split(\
 {
 	t_string	tmp;
 	t_usize		i;
+	bool		exist;
 
 	tmp = string_new(64);
 	i = 0;
+	exist = false;
 	while (i < res->value.len)
 	{
-		if (_word_split_loop(do_split, res->value.buffer[i++], append, &tmp))
-			return (string_free(tmp), ERROR);
+		if (do_split)
+			_word_split_loop_expand(res->value.buffer[i], append, &tmp, &exist);
+		else
+		{
+			string_push(&tmp, res->value.buffer[i].value);
+			exist = true;
+		}
+		i++;
 	}
-	if (!do_split || tmp.len != 0)
+	if (!do_split || tmp.len != 0 || exist)
 		vec_str_push(append, tmp.buf);
 	else
 		string_free(tmp);
