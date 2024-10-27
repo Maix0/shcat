@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/12 17:51:22 by rparodi          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:52:50 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,31 @@ bool	_word_is_star(t_ast_word *word)
 {
 	return (BONUS && word->kind == AST_WORD_NO_QUOTE && word->inner.len == 1 \
 	&& word->inner.buffer[0]->kind == AST_RAW_STRING \
-	&& str_compare("*", word->inner.buffer[0]->data.raw_string.str));
+	&& str_find_chr(word->inner.buffer[0]->data.raw_string.str, '*') != NULL);
+}
+
+bool	match(t_const_str pattern, t_const_str str)
+{
+	while (*pattern)
+	{
+		if (*pattern == '*')
+		{
+			if (!*(pattern + 1))
+				return (true);
+			while (*str)
+			{
+				if (match(pattern + 1, str))
+					return (true);
+				str++;
+			}
+			return (false);
+		}
+		else if (*pattern != *str)
+			return (false);
+		pattern++;
+		str++;
+	}
+	return (!*pattern && !*str);
 }
 
 t_error	_word_handle_star(t_ast_word *word, t_state *state, t_vec_str *out)
@@ -35,7 +59,12 @@ t_error	_word_handle_star(t_ast_word *word, t_state *state, t_vec_str *out)
 	if (list_files_in_current_directory(&files))
 		return (ERROR);
 	while (!vec_str_pop_front(&files, &s))
-		vec_str_push(out, s);
+	{
+		if (match(word->inner.buffer[0]->data.raw_string.str, s))
+			vec_str_push(out, s);
+		else
+			str_free(s);
+	}
 	vec_str_free(files);
 	return (NO_ERROR);
 }
