@@ -6,7 +6,7 @@
 /*   By: maiboyer <maiboyer@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/14 12:26:51 by maiboyer          #+#    #+#             */
-/*   Updated: 2024/10/27 19:37:59 by maiboyer         ###   ########.fr       */
+/*   Updated: 2024/10/28 11:42:11 by maiboyer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ t_error	_word_split_loop_expand(\
 	t_vec_str	split;
 	t_str		stmp;
 
-	if (val.do_expand)
+	if (val.do_expand && str_find_chr(val.value, ' '))
 	{
 		if (val.value == NULL)
 			val.value = "";
 		if (str_split(val.value, " \t\n\r\v", &split))
 			return (ERROR);
-		if (split.len != 0)
+		if (split.len != 0 && tmp->len != 0)
 		{
 			vec_str_push(append, tmp->buf);
 			*tmp = string_new(16);
@@ -43,10 +43,7 @@ t_error	_word_split_loop_expand(\
 		vec_str_free(split);
 	}
 	else
-	{
-		string_push(tmp, val.value);
-		*exist = true;
-	}
+		*exist = (string_push(tmp, val.value), true);
 	return (NO_ERROR);
 }
 
